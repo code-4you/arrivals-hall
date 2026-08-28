@@ -805,12 +805,21 @@ function buildRoom(R){
   box(cp.x,H,cp.z,Math.abs(rx)*R.w+Math.abs(fx)*R.d,0.3,Math.abs(rz)*R.w+Math.abs(fz)*R.d,darkMat,false);
   const gp=emissiveStrip(cp.x,H-0.18,cp.z,Math.abs(rx)*(R.w-3)+Math.abs(fx)*(R.d-3),0.1,
                          Math.abs(rz)*(R.w-3)+Math.abs(fz)*(R.d-3),0xbfd8ff,0.55);
-  // back wall: colour accent strip + a soft lit panel so the room reads as open, not a cave
+  // back wall: colour accent strip, and for fitted game rooms a big screenshot of the game
+  // (assets/walls/<roomid>.jpg) filling as much of the wall as its aspect allows.
   const bp=P(-hd+0.35,0);
   emissiveStrip(bp.x,3.2,bp.z,Math.abs(rx)*(R.w-1)+0.12,0.3,Math.abs(rz)*(R.w-1)+0.12,col,1.0);
-  const lit=new THREE.Mesh(new THREE.PlaneGeometry(R.w-3.5,2.4),
-    new THREE.MeshStandardMaterial({color:0x9fb8d8,emissive:0x8fb0d8,emissiveIntensity:0.38,roughness:0.7}));
-  lit.position.set(bp.x,1.75,bp.z);lit.rotation.y=Math.atan2(fx,fz);worldGroup.add(lit);
+  if(['hallwyl','velocity','rally','blindspots','crypt','cerebro'].indexOf(R.id)>=0){
+    const ap=P(-hd+0.45,0), ry=Math.atan2(fx,fz);
+    new THREE.TextureLoader().load('assets/walls/'+R.id+'.jpg',(tex)=>{
+      tex.encoding=THREE.sRGBEncoding;
+      const a=tex.image.width/tex.image.height;
+      const aw=Math.min(R.w-1, 5.6*a), ah=aw/a;       // wall is 12w x 6h — leave a small margin
+      const m=new THREE.Mesh(new THREE.PlaneGeometry(aw,ah),
+        new THREE.MeshBasicMaterial({map:tex}));
+      m.position.set(ap.x,3.0,ap.z);m.rotation.y=ry;worldGroup.add(m);
+    });
+  }
   // signage: name + sub on the header face, name again flat on the floor at the threshold
   const rotY=Math.atan2(fx,fz);
   const sp=P(hd+0.45,0);
