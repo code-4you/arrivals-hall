@@ -1896,7 +1896,7 @@ function buildVisitorBoard(){
   }
   const bVis=makePanel(36.9,'Visitors board','VISITORS · COUNTRY, STATE, LENGTH OF STAY');
   const bTim=makePanel(40.4,'Visit times','VISIT TIMES · LONGEST STAYS · ALL TIME');
-  function draw(b,title,rows,src){
+  function draw(b,title,rows,src,counts){
     const ctx=b.ctx;
     ctx.fillStyle='#0a1626';ctx.fillRect(0,0,760,560);
     ctx.strokeStyle='#8fb8ff';ctx.lineWidth=5;roundRect(ctx,10,10,740,540,14);ctx.stroke();
@@ -1905,7 +1905,7 @@ function buildVisitorBoard(){
     let y=142;
     if(!rows.length){ctx.fillStyle='#8497ac';ctx.font='italic 22px Segoe UI';
       ctx.fillText('Nobody logged yet — you are the first.',380,260);}
-    for(const r of rows.slice(0,11)){
+    for(const r of rows.slice(0,counts?10:11)){
       let place=[r.region,r.country].filter(Boolean).join(', ')||'Somewhere';
       if(+r.here){ctx.fillStyle='#b6ff9c';ctx.beginPath();ctx.arc(50,y-7,5,0,Math.PI*2);ctx.fill();}  // here right now
       ctx.textAlign='left';ctx.fillStyle='#dfe9f5';ctx.font='20px Segoe UI';
@@ -1919,6 +1919,11 @@ function buildVisitorBoard(){
       else{ctx.fillStyle='#8fb8ff';ctx.fillText(fmt(r.mins),712,y);}
       y+=34;
     }
+    if(counts){                                              // bounced vs stayed, all visitors
+      ctx.textAlign='center';ctx.font='bold 20px Segoe UI';
+      ctx.fillStyle='#8497ac';ctx.fillText('bounced '+counts.bounced,270,498);
+      ctx.fillStyle='#b6ff9c';ctx.fillText('stayed 2 min+ '+counts.stayed,500,498);
+    }
     ctx.textAlign='center';ctx.fillStyle='#8497ac';ctx.font='italic 19px Segoe UI';
     ctx.fillText('no names, ever',380,530);
     b.tex.needsUpdate=true;
@@ -1928,7 +1933,7 @@ function buildVisitorBoard(){
     draw(bVis,'VISITORS',self,'your visit');
     draw(bTim,'VISIT TIMES',self,'your visit');
     api({a:'visitors'}).then(r=>{if(r&&r.ok&&r.rows)draw(bVis,'VISITORS',r.rows,'');});
-    api({a:'visittimes'}).then(r=>{if(r&&r.ok&&r.rows)draw(bTim,'VISIT TIMES',r.rows,'');});
+    api({a:'visittimes'}).then(r=>{if(r&&r.ok&&r.rows)draw(bTim,'VISIT TIMES',r.rows,'',r.counts);});
   };
   visitorBoardRefresh=refresh;refresh();
 }
