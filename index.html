@@ -1878,17 +1878,29 @@ function buildWishBoard(){
    This device always shows its own visit; the live board (api a:'visit'/'visitors')
    takes over whenever the Forge server answers. Heartbeat: visitPing(), each minute. ---------- */
 function buildVisitorBoard(){
-  const R=ROOMS.find(r=>r.id==='fame');
-  const cnv=document.createElement('canvas');cnv.width=760;cnv.height=560;
-  const ctx=cnv.getContext('2d');
-  const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
   const fmt=m=>{m=Math.max(0,Math.round(+m||0));if(m<1)return 'just arrived';
     if(m<60)return '~'+m+' min';
     const hh=Math.floor(m/60),mm=m%60;return '~'+hh+' hr'+(hh>1?'s':'')+(mm?' '+mm+' min':'');};
-  function draw(rows,src){
+  // two boards on the foyer's east wall, beside the MAP: VISITORS (latest first)
+  // and VISIT TIMES (longest all-time stay first). Same rows, different order.
+  function makePanel(z,label,say){
+    const cnv=document.createElement('canvas');cnv.width=760;cnv.height=560;
+    const b={ctx:cnv.getContext('2d'),tex:new THREE.CanvasTexture(cnv)};
+    b.tex.encoding=THREE.sRGBEncoding;
+    const panel=new THREE.Mesh(new THREE.PlaneGeometry(3.4,3.4*560/760),
+      new THREE.MeshStandardMaterial({map:b.tex,emissive:0xffffff,emissiveMap:b.tex,emissiveIntensity:0.6,roughness:0.6}));
+    panel.position.set(7.62,2.6,z);panel.rotation.y=-Math.PI/2;
+    worldGroup.add(panel);
+    hotspot(6.8,z,2.2,label,()=>banner(say));
+    return b;
+  }
+  const bVis=makePanel(36.9,'Visitors board','VISITORS · COUNTRY, STATE, LENGTH OF STAY');
+  const bTim=makePanel(40.4,'Visit times','VISIT TIMES · LONGEST STAYS · ALL TIME');
+  function draw(b,title,rows,src){
+    const ctx=b.ctx;
     ctx.fillStyle='#0a1626';ctx.fillRect(0,0,760,560);
     ctx.strokeStyle='#8fb8ff';ctx.lineWidth=5;roundRect(ctx,10,10,740,540,14);ctx.stroke();
-    ctx.textAlign='center';ctx.fillStyle='#8fb8ff';ctx.font='bold 46px Segoe UI';ctx.fillText('VISITORS',380,64);
+    ctx.textAlign='center';ctx.fillStyle='#8fb8ff';ctx.font='bold 46px Segoe UI';ctx.fillText(title,380,64);
     if(src){ctx.fillStyle='#9fb4cc';ctx.font='19px Segoe UI';ctx.fillText(src,380,94);}
     let y=142;
     if(!rows.length){ctx.fillStyle='#8497ac';ctx.font='italic 22px Segoe UI';
@@ -1897,8 +1909,10 @@ function buildVisitorBoard(){
       let place=[r.region,r.country].filter(Boolean).join(', ')||'Somewhere';
       if(+r.here){ctx.fillStyle='#b6ff9c';ctx.beginPath();ctx.arc(50,y-7,5,0,Math.PI*2);ctx.fill();}  // here right now
       ctx.textAlign='left';ctx.fillStyle='#dfe9f5';ctx.font='20px Segoe UI';
-      while(place.length>2&&ctx.measureText(place).width>480)place=place.slice(0,-4)+'…';
+      while(place.length>2&&ctx.measureText(place).width>440)place=place.slice(0,-4)+'…';
       ctx.fillText(place,68,y);
+      if(+r.you){const w=ctx.measureText(place).width;             // your own line
+        ctx.fillStyle='#ffd27f';ctx.font='bold 17px Segoe UI';ctx.fillText('(you)',68+w+10,y);}
       ctx.textAlign='right';ctx.font='bold 20px Segoe UI';
       const mm=Math.max(0,Math.round(+r.mins||0));
       if(!+r.here&&mm<2){ctx.fillStyle='#8497ac';ctx.fillText('bounced',712,y);}   // gone within 2 min
@@ -1907,18 +1921,16 @@ function buildVisitorBoard(){
     }
     ctx.textAlign='center';ctx.fillStyle='#8497ac';ctx.font='italic 19px Segoe UI';
     ctx.fillText('no names, ever',380,530);
-    tex.needsUpdate=true;
+    b.tex.needsUpdate=true;
   }
   const refresh=()=>{
-    draw([{region:'This device',country:'',mins:(Date.now()-VISIT_T0)/60000,here:1}],'your visit');
-    api({a:'visitors'}).then(r=>{if(r&&r.ok&&r.rows)draw(r.rows,'');});
+    const self=[{region:'This device',country:'',mins:(Date.now()-VISIT_T0)/60000,here:1,you:1}];
+    draw(bVis,'VISITORS',self,'your visit');
+    draw(bTim,'VISIT TIMES',self,'your visit');
+    api({a:'visitors'}).then(r=>{if(r&&r.ok&&r.rows)draw(bVis,'VISITORS',r.rows,'');});
+    api({a:'visittimes'}).then(r=>{if(r&&r.ok&&r.rows)draw(bTim,'VISIT TIMES',r.rows,'');});
   };
   visitorBoardRefresh=refresh;refresh();
-  const panel=new THREE.Mesh(new THREE.PlaneGeometry(3.4,3.4*560/760),
-    new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
-  panel.position.set(7.62,2.6,36.9);panel.rotation.y=-Math.PI/2;   // foyer east wall, beside the MAP panel
-  worldGroup.add(panel);
-  hotspot(6.8,36.9,2.4,'Visitors board',()=>banner('VISITORS · COUNTRY, STATE, LENGTH OF STAY'));
 }
 
 /* ---------- SAVE GAME — the old Vault terminal, now a page on the main menu ---------- */
