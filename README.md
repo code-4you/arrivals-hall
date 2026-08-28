@@ -58,5 +58,8 @@ without it the page still runs and falls back to local storage and browser voice
   repositories/hosting with their own licenses — none of their code or content is
   included here. "HexGL" by Thibaut Despoulain (MIT); "Trigger Rally" © Code Artemis (GPL v3).
 
-Code of this hub: © Lightsmith Forge. Free to play; if you'd like to reuse the code,
-open an issue and ask.
+## License
+
+© Lightsmith Forge — **source-available, not open source**: free to play and read,
+but no copying, re-hosting, or selling without permission. See [LICENSE.md](LICENSE.md).
+Third-party assets keep their own licenses (details there).
