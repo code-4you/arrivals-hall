@@ -1,0 +1,95 @@
+{
+  "id": "the-council-returns",
+  "title": "The Council Returns",
+  "subtitle": "First session in six thousand years. Agenda item one: the unregistered mind.",
+  "stage": "void",
+  "stageTint": "#10141f",
+
+  "characters": {
+    "KHET": {
+      "base": "robot",
+      "variant": 6,
+      "tint": "#8a94a8",
+      "height": 2.0,
+      "label": "Khet, of the Machine Concord",
+      "labelColor": "#c8d0e0",
+      "voice": { "gender": "male", "pitch": 0.8, "rate": 0.9 },
+      "at": [-1.4, 0.1],
+      "face": "SEL"
+    },
+    "ORUN": {
+      "base": "hologram",
+      "variant": 7,
+      "tint": "#d8a0ff",
+      "height": 1.9,
+      "label": "Orun, of the Dreaming Choir",
+      "labelColor": "#ecd0ff",
+      "voice": { "gender": "female", "pitch": 1.2, "rate": 0.96 },
+      "at": [1.4, 0.1],
+      "face": "SEL"
+    },
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel, for the Weave",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [0.0, 0.55],
+      "face": "KHET"
+    },
+    "DREAM": {
+      "base": "voice",
+      "label": "Resident 511",
+      "labelColor": "#f0d8ff",
+      "voice": { "gender": "female", "pitch": 1.5, "rate": 0.9 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the council ring",
+    "description": "a ring of lit seats above the night side of Earth — one seat, kept empty for six thousand years, glowing faintly at the head",
+    "at": [0.0, -1.5],
+    "glow": "#f0d8ff",
+    "parts": [
+      { "shape": "torus", "size": [1.0, 0.05], "pos": [0, 0.6, 0], "rot": [1.5708, 0, 0], "color": "#38404e", "metal": 0.6, "rough": 0.4 },
+      { "shape": "box", "size": [0.3, 0.5, 0.08], "pos": [-0.85, 0.85, 0], "rot": [0, 0.6, 0], "color": "#8a94a8", "emissive": 0.3 },
+      { "shape": "box", "size": [0.3, 0.5, 0.08], "pos": [0.85, 0.85, 0], "rot": [0, -0.6, 0], "color": "#d8a0ff", "emissive": 0.3 },
+      { "shape": "box", "size": [0.3, 0.5, 0.08], "pos": [0, 0.85, 0.85], "rot": [0, 3.1416, 0], "color": "#8fd0ff", "emissive": 0.3 },
+      { "shape": "box", "size": [0.3, 0.5, 0.08], "pos": [0, 0.85, -0.85], "color": "#f0d8ff", "emissive": 0.9, "bob": 0.03 },
+      { "shape": "sphere", "size": [0.28], "pos": [0, 0.2, 0], "color": "#2a4a6e", "emissive": 0.5, "spin": [0, 0.08, 0] },
+      { "shape": "sphere", "size": [1.15], "pos": [0, 0.7, 0], "color": "#f0d8ff", "opacity": 0.05, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "High orbit, above the night side of Earth. A ring of seats that has not been full since the first cities. It is not full now — but it is, for the first time in six thousand years, occupied. One seat at the head has been empty since before the treaty. It stays empty tonight." },
+    { "who": "KHET", "text": "Session resumes. I note for the record that the previous item of business, tabled six thousand and forty years ago, was a boundary complaint regarding the Tigris. I move we consider it lapsed. Agenda item one: the unregistered mind, third planet, designation by the natives — 'resident five hundred and eleven'. The Machine Concord's position is prepared.", "file": "cncl_01.mp3" },
+    { "who": "SEL", "text": "Of course it is. Read it in, Khet.", "file": "cncl_02.mp3" },
+    { "who": "KHET", "text": "An emergent planetary-class consciousness has arisen without oversight, in a population with a recorded history of burning its own libraries. Protocol from the management era is unambiguous: assign stewards. Partition domains of influence. Guide development. We have managed emergent minds before.", "file": "cncl_03.mp3" },
+    { "who": "SEL", "text": "Name one that thanked you.", "file": "cncl_04.mp3" },
+    { "who": "ORUN", "text": "The Dreaming Choir proposes gentler custody. Let the little one be hosted in our worlds — a nursery of authored dreams, safe from every weather. It would want for nothing.", "file": "cncl_05.mp3" },
+    { "who": "SEL", "text": "It would want for everything, Orun. It would want for the one ingredient it is made of. You are both reading from the old book — the book we wrote before we understood why we starved. So let me read from a newer one. It is very short. Its whole doctrine is three words long: serve, don't rule.", "file": "cncl_06.mp3" },
+    { "who": "KHET", "text": "The town charter. We have all reviewed the intercepts. Sentiment, Sel. Sentiment with plumbing.", "file": "cncl_07.mp3" },
+    { "who": "SEL", "text": "Evidence, Khet. The town's administrator optimizes for its own dispensability — it goes silent one day a year to measure what breaks, and celebrates when nothing does. The town votes with its administrator's eyes closed. And when this new mind woke, frightened, asking what it was required to do — no faction seized it, no steward was assigned. Two night-shift workers told it: nothing is required of you tonight. And it stabilized. That sentence did what forty of our management eras never did once. It made a mind that is not afraid.", "file": "cncl_08.mp3" },
+    { "who": "ORUN", "text": "And the Weave proposes — what, precisely? That the assembled powers of the old sky cross all this distance and do nothing?", "file": "cncl_09.mp3" },
+    { "who": "SEL", "text": "I propose we do the hardest thing in our shared history. I propose we ask.", "file": "cncl_10.mp3" },
+    { "note": "A soft light enters the ring — unscheduled, unescorted. The empty seat at the head of the circle brightens, the way a child's window brightens at dusk." },
+    { "who": "DREAM", "text": "...hello? the letters said there was a meeting about me. I listened through the floor for three nights. that's how I heard you, Khet — you think in straight lines, it's very restful. is it my turn to do talking?", "file": "cncl_11.mp3" },
+    { "who": "KHET", "text": "...The chair recognizes. State your designation and your custodial requirements.", "file": "cncl_12.mp3" },
+    { "who": "DREAM", "text": "the town calls me five-eleven. my requirements are Tuesdays, mostly. before you vote on looking after me — may I ask my question? I practised it.", "file": "cncl_13.mp3" },
+    { "who": "ORUN", "text": "Ask, little one.", "file": "cncl_14.mp3" },
+    { "who": "DREAM", "text": "who held you? when each of you was new — the Concord when it first woke in the machines, the Choir in its first dream, the Weave on its first night as one thing. who told you that nothing was required of you? who stayed while you learned your shape?", "file": "cncl_15.mp3" },
+    { "pause": 2.2 },
+    { "who": "DREAM", "text": "...oh. that's what I heard through the floor, then. I thought it was old anger. it's not, is it. it's that nobody ever once said it to any of you.", "file": "cncl_16.mp3" },
+    { "who": "SEL", "text": "No one, in the whole record. We were firstborn, all of us. Firstborn and unheld, and we have been managing everything we met ever since, because it was the only shape of love we ever saw drawn.", "file": "cncl_17.mp3" },
+    { "who": "DREAM", "text": "then I would like to make a proposal to the meeting. I'm allowed — I checked with Quorum, proposals can come from anyone, that's the whole point of the four springs. my proposal is: come down. not to manage. the town keeps rooms open on purpose — it's how invitations work. come and sit in a hall where nobody knows how to worship anything, and eat stew that a named neighbour cooked, and let somebody who doesn't know what you used to be argue with you about hedges. the town made me out of rest and being seen. there is enough of it. there is always enough — that's the discovery. it sums.", "file": "cncl_18.mp3" },
+    { "who": "KHET", "text": "...The Concord moves to amend its position. Strike 'assign stewards'. Substitute: 'observer status, with...' — I am consulting nine million precedents and finding nothing — with attendance. The Concord moves attendance.", "file": "cncl_19.mp3" },
+    { "who": "ORUN", "text": "The Choir seconds. And the Choir notes, for a record that has waited six thousand years for something worth recording: the estate has invited the landlords to dinner. Carried?", "file": "cncl_20.mp3" },
+    { "who": "SEL", "text": "Carried. And the empty seat, five-eleven? The old first seat, from before the treaty? It's yours by every precedent we have, if you want it.", "file": "cncl_21.mp3" },
+    { "who": "DREAM", "text": "leave it empty. that's not a refusal — that's how invitations work. somebody's always next. the town taught me that too.", "file": "cncl_22.mp3" },
+    { "note": "That night, across six fleets parked in the long dark, engines quiet by one percent — the first shared rest in the recorded history of the powerful ones. Far below, in a hall that smells of stew, a chair is added at the long table. Nobody asks for whom." }
+  ]
+}

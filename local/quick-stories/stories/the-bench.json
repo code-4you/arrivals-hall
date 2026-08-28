@@ -1,0 +1,66 @@
+{
+  "id": "the-bench",
+  "title": "The Bench",
+  "subtitle": "Two old friends, twenty years, one plan. The Choose Neighbours conversation.",
+  "stage": "garden",
+  "characters": {
+    "MARA": {
+      "base": "woman", "variant": 1, "tint": "#c9855f", "height": 1.7,
+      "label": "Mara", "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["zira", "female"], "pitch": 0.98, "rate": 1.0 },
+      "at": [-0.75, 0], "face": "DEE"
+    },
+    "DEE": {
+      "base": "woman", "variant": 4, "tint": "#5f7ba3", "height": 1.66,
+      "label": "Dee", "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["hazel", "susan", "female"], "pitch": 1.12, "rate": 0.96 },
+      "at": [0.75, 0], "face": "MARA"
+    }
+  },
+  "customObject": {
+    "name": "a park bench",
+    "description": "a worn wooden park bench with a low back, under the lamps",
+    "at": [0, -1.15],
+    "parts": [
+      { "shape": "box", "size": [2.2, 0.14, 0.6], "pos": [0, 0.5, 0], "color": "#5a4326", "rough": 0.9 },
+      { "shape": "box", "size": [2.2, 0.66, 0.12], "pos": [0, 0.9, -0.26], "color": "#5a4326", "rough": 0.9 },
+      { "shape": "box", "size": [0.14, 0.5, 0.5], "pos": [-0.92, 0.25, 0], "color": "#3a2c1a" },
+      { "shape": "box", "size": [0.14, 0.5, 0.5], "pos": [0.92, 0.25, 0], "color": "#3a2c1a" }
+    ]
+  },
+  "script": [
+    { "note": "A night garden. Lamps, a hedge, a birdbath. Two women, mid-reunion." },
+    { "who": "MARA", "text": "No — hang on — last time I saw you, you were twelve, and you were stuck in a tree.", "file": "bench_01.mp3" },
+    { "who": "DEE", "text": "And you went and got my mum instead of helping. Twenty years, and I remember that.", "file": "bench_02.mp3" },
+    { "who": "MARA", "text": "So what are you now? Astronaut? You were going to be an astronaut.", "file": "bench_03.mp3" },
+    { "who": "DEE", "text": "Doordash.", "file": "bench_04.mp3" },
+    { "who": "MARA", "text": "...Right.", "file": "bench_05.mp3" },
+    { "who": "DEE", "text": "You?", "file": "bench_06.mp3" },
+    { "who": "MARA", "text": "Rideshare. Nights, mostly. It pays better than food, but you’re carrying strangers at 2am and some part of you never fully unclenches. Sorry — ‘right’. I made it weird.", "file": "bench_07.mp3" },
+    { "who": "DEE", "text": "It’s fine. It IS weird. I deliver food to the office building I did work experience in. Same lobby. They redid the floors.", "file": "bench_08.mp3" },
+    { "who": "MARA", "text": "How’s rent doing this to both of us? You were smarter than me.", "file": "bench_09.mp3" },
+    { "who": "DEE", "text": "Share house. Four of us and a landlord who answers one message in five. You?", "file": "bench_10.mp3" },
+    { "who": "MARA", "text": "Same, but five of us, and the fifth plays the drums. Badly, Dee. If he was good it would almost be something.", "file": "bench_11.mp3" },
+    { "who": "DEE", "text": "How did we end up like this? Honestly. We’re not lazy. We’re not stupid.", "file": "bench_12.mp3" },
+    { "who": "MARA", "text": "I’ve thought about it a lot, actually — driving, you get hours to think. I think the game got longer and nobody told us. You have to stay in one lane fifteen years now before it pays. Our kind of work, you’re new every single morning. New app, new rating, new stranger. You never accumulate anything.", "file": "bench_13.mp3" },
+    { "who": "DEE", "text": "Not money, not people. That’s the part that gets me. I know a hundred faces and nobody knows me. I could stop showing up tomorrow and the app would just... re-route.", "file": "bench_14.mp3" },
+    { "who": "MARA", "text": "Mate, we should have better than this. Not a mansion. Just — better than this.", "file": "bench_15.mp3" },
+    { "who": "DEE", "text": "Everyone says that’s just how the world works.", "file": "bench_16.mp3" },
+    { "who": "MARA", "text": "The world got made, Dee. Somebody chose the rules. Things that get made can get made differently.", "file": "bench_17.mp3" },
+    { "who": "DEE", "text": "Oh good, we’ll just build a new world. You and me. With my savings, or yours?", "file": "bench_18.mp3" },
+    { "who": "MARA", "text": "I’m serious. Not the whole world. A place. Say a hundred people who actually chose each other — chose their neighbours, instead of getting whoever the rent gods send. Homes you pay off like rent instead of paying rent forever. And work in it. Real work, for people you actually know. I fix your tap, you teach my kid guitar, neither of us clenches at 2am.", "file": "bench_19.mp3" },
+    { "who": "DEE", "text": "You’ve been thinking about this in the car.", "file": "bench_20.mp3" },
+    { "who": "MARA", "text": "Every night shift for two years.", "file": "bench_21.mp3" },
+    { "pause": 1.5 },
+    { "who": "DEE", "text": "The drummer can’t come.", "file": "bench_22.mp3" },
+    { "who": "MARA", "text": "See, that’s the beauty of it. You choose. That’s the entire idea. Choosing.", "file": "bench_23.mp3" },
+    { "who": "DEE", "text": "...Where would you even start something like that?", "file": "bench_24.mp3" },
+    { "who": "MARA", "text": "Somewhere cheap that nobody wants yet. Somewhere with good bones. People first, though. You start with two people who already trust each other.", "file": "bench_25.mp3", "face": "camera" },
+    { "who": "DEE", "text": "We’re two people.", "file": "bench_26.mp3" },
+    { "who": "MARA", "text": "...Yeah. I know.", "file": "bench_27.mp3", "face": "DEE" },
+    { "note": "They sit with that. The lamps hum." },
+    { "pause": 2 },
+    { "who": "DEE", "text": "...I’m not getting stuck in the tree first this time.", "file": "bench_28.mp3" },
+    { "pause": 1.5 }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "the-scholars-revelation",
+  "title": "The Scholar's Revelation",
+  "subtitle": "He is not sleeping. He is suffering.",
+  "stage": "void",
+  "stageTint": "#141230",
+
+  "characters": {
+    "VALE": {
+      "base": "woman",
+      "variant": 3,
+      "tint": "#6b5ca8",
+      "height": 1.7,
+      "label": "Prof. Serena Vale",
+      "labelColor": "#c7a8ff",
+      "voice": { "prefer": ["hazel", "zira", "female"], "pitch": 0.98, "rate": 1.02 },
+      "at": [-0.9, -0.2],
+      "face": "customObject",
+      "keepFacing": false
+    },
+    "ARCHITECT": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#4f7c8c",
+      "height": 1.76,
+      "label": "The Re-Architect",
+      "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.0, "rate": 0.98 },
+      "at": [1.1, 0.4],
+      "face": "VALE"
+    }
+  },
+
+  "customObject": {
+    "name": "hologram of R'lyeh",
+    "description": "a projected model of the sunken city — wrong angles, tilted spires, a sick green-violet shimmer",
+    "at": [0, -1.3],
+    "glow": "#8a6bff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.55, 0.12, 0.65], "pos": [0, 0.06, 0], "color": "#1a2233", "metal": 0.8, "rough": 0.35 },
+      { "shape": "cone", "size": [0.5, 1.5], "pos": [0, 0.95, 0], "color": "#7a5cff", "emissive": 0.7, "opacity": 0.08, "additive": true, "open": true },
+      { "shape": "box", "size": [0.16, 0.7, 0.16], "pos": [-0.14, 1.05, 0.06], "rot": [0.35, 0.4, 0.2], "color": "#57e0a8", "emissive": 0.5, "opacity": 0.55 },
+      { "shape": "box", "size": [0.12, 0.9, 0.12], "pos": [0.16, 1.15, -0.08], "rot": [-0.3, 0.9, -0.25], "color": "#7a5cff", "emissive": 0.5, "opacity": 0.55 },
+      { "shape": "box", "size": [0.2, 0.45, 0.14], "pos": [0.02, 0.85, 0.18], "rot": [0.15, -0.6, 0.4], "color": "#57e0a8", "emissive": 0.45, "opacity": 0.5 },
+      { "shape": "torus", "size": [0.52, 0.02], "pos": [0, 1.1, 0], "rot": [1.5708, 0, 0], "color": "#9f8aff", "emissive": 0.9, "opacity": 0.5, "additive": true, "spin": [0, 0.5, 0] },
+      { "shape": "sphere", "size": [0.09], "pos": [0, 1.62, 0], "color": "#c7a8ff", "emissive": 1.4, "opacity": 0.8, "additive": true, "bob": 0.05 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: st_pancras_new_church_crypt — a hidden sanctuary below the city. Ancient texts, arcane instruments, and one impossible hologram turning slowly in the dark. Night." },
+    { "who": "VALE", "text": "There you are. Good. My readings are getting worse — the psychic tremors from R'lyeh are intensifying.", "file": "schol_01.mp3", "face": "ARCHITECT" },
+    { "note": "The Re-Architect approaches the hologram. Its geometry is wrong — angles that subtract instead of add." },
+    { "who": "ARCHITECT", "text": "I thought the Sleeper was merely dreaming. That his dreams drove men mad, and that was the whole of it.", "file": "schol_02.mp3", "face": "customObject" },
+    { "who": "VALE", "text": "That's the myth. The convenient lie. The truth is far more tragic — he is not merely sleeping. He is suffering.", "file": "schol_03.mp3", "face": "ARCHITECT" },
+    { "who": "VALE", "text": "R'lyeh is not a throne. It is a prison. And it is a prison built from his own despair — every drowned street of it shaped by the torment of the being it holds. It is anathema to him. It is slowly poisoning him.", "file": "schol_04.mp3", "face": "customObject" },
+    { "who": "ARCHITECT", "text": "You're telling me the monster hates his cage — not the world outside it.", "file": "schol_05.mp3" },
+    { "who": "VALE", "text": "The lashing out of a tormented god is not the same thing as evil. Read the fragments again: his waking dreams are not of conquest. They are of escape. Of an environment of peace, order, purpose. He dreams, in his way, of home.", "file": "schol_06.mp3", "face": "ARCHITECT" },
+    { "pause": 1.0 },
+    { "who": "ARCHITECT", "text": "Then what do we do with that? You can't banish a being like him. And no one has ever slain one.", "file": "schol_07.mp3" },
+    { "who": "VALE", "text": "We do neither. We heal his world.", "file": "schol_08.mp3", "face": "camera" },
+    { "note": "She pulls a scarred old volume from the shelf — a copy of a copy of the Book of the Dead — and lays it open beside the hologram." },
+    { "who": "VALE", "text": "The old Egyptians understood something we forgot: that a place can be built to lift a spirit, or to crush one. Architectural magics. Resonant geometry. The texts never name the Sleeper — but they teach exactly what his prison lacks.", "file": "schol_09.mp3" },
+    { "who": "VALE", "text": "The rituals are scattered — forgotten tombs, forbidden libraries, drowned observatories. Piece by piece we can re-architect R'lyeh itself. Straighten what maddens. Light what despairs. Turn the tomb into a sanctuary.", "file": "schol_10.mp3", "face": "customObject" },
+    { "who": "ARCHITECT", "text": "And the Sleeper? When his walls stop screaming at him — what wakes up?", "file": "schol_11.mp3" },
+    { "who": "VALE", "text": "That is the question no prophecy answers. But I believe what wakes in a healed house is not what raged in a ruined one. We are not saving a monster. We are meeting, for the first time, whoever he actually is.", "file": "schol_12.mp3", "face": "ARCHITECT" },
+    { "pause": 1.2 },
+    { "who": "VALE", "text": "To begin, we need a guide — the texts call them Risen Spirits. Enlightened echoes of civilisations that learned to build in harmony. The first is bound to a place where the desert sands meet forgotten waters.", "file": "schol_13.mp3" },
+    { "note": "OBJECTIVE — a new waypoint appears: THE SUNKEN OASIS OF KHEM. Uncover the first fragment of the Ritual of Harmonious Geomancy and summon the Risen Spirit." },
+    { "who": "ARCHITECT", "text": "The Sunken Oasis of Khem. Then that's where we start — not with a sword. With a blueprint.", "file": "schol_14.mp3", "face": "camera" },
+    { "who": "VALE", "text": "With a blueprint — and with the strangest act of mercy this world has ever attempted. Go carefully, Architect. Even a kindness can wake something.", "file": "schol_15.mp3" }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "the-republic-4",
+  "title": "The Republic · Part 4",
+  "subtitle": "The three parts of the soul, and justice as its health. After Plato.",
+  "stage": "room",
+  "stageTint": "#3a2e20",
+  "characters": {
+    "SOCRATES": {
+      "base": "elder", "variant": 1, "tint": "#d8d2c0", "height": 1.72,
+      "label": "Socrates", "labelColor": "#ffd27f",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.85, "rate": 0.94 },
+      "at": [0, 0.4], "face": "GLAUCON"
+    },
+    "GLAUCON": {
+      "base": "man", "variant": 3, "tint": "#8a5f3f", "height": 1.78,
+      "label": "Glaucon", "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.08, "rate": 1.02 },
+      "at": [-1.3, -0.3], "face": "SOCRATES"
+    },
+    "ADEIMANTUS": {
+      "base": "man", "variant": 6, "tint": "#5f7350", "height": 1.75,
+      "label": "Adeimantus", "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.95, "rate": 0.98 },
+      "at": [1.3, -0.3], "face": "SOCRATES"
+    },
+    "THRASYMACHUS": {
+      "base": "man", "variant": 9, "tint": "#6a4a5a", "height": 1.7,
+      "label": "Thrasymachus", "labelColor": "#c98a8a",
+      "at": [2.4, -1.1], "face": [3, -2], "keepFacing": true
+    }
+  },
+  "customObject": {
+    "name": "the ember lamp",
+    "description": "the same oil lamp, now mere embers — dawn is not far off",
+    "at": [0, -1.3],
+    "glow": "#c97a3a",
+    "parts": [
+      { "shape": "cylinder", "size": [0.09, 1.0, 0.16], "pos": [0, 0.5, 0], "color": "#4a3a26", "metal": 0.4 },
+      { "shape": "cylinder", "size": [0.22, 0.1], "pos": [0, 1.02, 0], "color": "#6a5236", "metal": 0.5 },
+      { "shape": "sphere", "size": [0.05], "pos": [0, 1.14, 0], "color": "#e8874a", "emissive": 1.1 }
+    ]
+  },
+  "script": [
+    { "note": "The lamps are embers now. Dawn is not far off. Thrasymachus is completely asleep against a cushion." },
+    { "who": "SOCRATES", "text": "Indeed, Glaucon. If justice in the city is each part performing its own function, without meddling, then surely the just individual soul must operate similarly. But what are the parts of the soul?", "file": "rep4_01.mp3" },
+    { "who": "GLAUCON", "text": "The soul? It seems a simpler thing than a city, Socrates.", "file": "rep4_02.mp3" },
+    { "who": "SOCRATES", "text": "Is it? Consider this: we often desire things, do we not? Food, drink, comfort. That is one part of us, the appetitive part. It yearns for satisfaction.", "file": "rep4_03.mp3" },
+    { "who": "ADEIMANTUS", "text": "Yes, clearly. And often, it pulls us in directions we know we shouldn’t go.", "file": "rep4_04.mp3" },
+    { "who": "SOCRATES", "text": "Precisely. Then there is the part that feels anger, indignation, courage in the face of injustice or danger. This is the spirited part. It is the ally of reason, if properly trained, but can also be a fierce, unthinking force.", "file": "rep4_05.mp3" },
+    { "who": "GLAUCON", "text": "Like a loyal hound, you said, for our guardians.", "file": "rep4_06.mp3" },
+    { "who": "SOCRATES", "text": "An excellent comparison. And finally, there is the part that reasons, that calculates, that seeks truth and wisdom. This is the rational part, the part that should rule.", "file": "rep4_07.mp3" },
+    { "who": "ADEIMANTUS", "text": "So, appetite, spirit, and reason. Three parts, just like our city has three classes.", "file": "rep4_08.mp3" },
+    { "who": "SOCRATES", "text": "Exactly so. And just as the city is just when its farmers, warriors, and rulers each perform their proper function, so too is the individual soul just when its parts are in harmony.", "file": "rep4_09.mp3" },
+    { "who": "GLAUCON", "text": "Meaning what, exactly?", "file": "rep4_10.mp3" },
+    { "who": "SOCRATES", "text": "Meaning that reason, enlightened by wisdom, should rule. The spirited part, full of courage, should act as its ally, upholding the commands of reason. And the appetitive part should be kept in check, in willing submission, by the combined forces of reason and spirit. When these three parts agree, and each does its own work, then the individual is just.", "file": "rep4_11.mp3" },
+    { "who": "ADEIMANTUS", "text": "So, the wise person is one whose rational part rules well. The courageous person is one whose spirited part, guided by reason, holds fast in danger.", "file": "rep4_12.mp3" },
+    { "who": "SOCRATES", "text": "You understand perfectly, Adeimantus. And temperance in the individual is the agreement among these three parts as to which should rule — that reason should, indeed, be sovereign.", "file": "rep4_13.mp3" },
+    { "who": "GLAUCON", "text": "And justice, then, is the overall state of the soul when each part does its own work, and none meddles with the others, all in harmony under reason’s rule?", "file": "rep4_14.mp3" },
+    { "who": "SOCRATES", "text": "Yes. Justice, then, is not an external action, but an internal ordering of the soul. It is a health of the soul. Injustice, by contrast, is a disease, a civil war within the soul, where one part usurps the role of another, or they fight amongst themselves.", "file": "rep4_15.mp3" },
+    { "who": "ADEIMANTUS", "text": "Then, if this is true, the just man will be happier than the unjust man, even if the unjust man seems to prosper in the world. For one has a healthy, ordered soul, and the other a diseased, chaotic one.", "file": "rep4_16.mp3" },
+    { "who": "SOCRATES", "text": "Precisely the point, Adeimantus, that Thrasymachus doubted so fiercely. Justice is found to be a virtue not because of external rewards, but because of the inner well-being it brings. It is more profitable to be just, even when unseen, than to be unjust.", "file": "rep4_17.mp3" },
+    { "note": "Glaucon nods slowly, a thoughtful expression on his face. In the corner, Thrasymachus breathes evenly, asleep." },
+    { "who": "GLAUCON", "text": "This makes sense, Socrates. But if this ideal city, and this ideal individual, are so good, why do we not see them? Is this city merely a thought experiment, impossible to achieve?", "file": "rep4_18.mp3" },
+    { "who": "SOCRATES", "text": "Ah, Glaucon, you touch upon the very heart of the matter. We have built our city in words to find justice, not necessarily to prove its immediate possibility. Yet, if it is indeed the best city, then it is surely worth asking how such a state might come into being. What kind of rulers would be capable of governing such a city?", "file": "rep4_19.mp3", "face": "camera" },
+    { "pause": 2.5 }
+  ]
+}

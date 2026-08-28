@@ -1,0 +1,61 @@
+{
+  "id": "the-thousand-doors",
+  "title": "The Thousand Doors",
+  "subtitle": "It was built as a mall. The shops never came. Orun asks the Custodian what a thousand empty doors are for.",
+  "stage": "atrium",
+
+  "characters": {
+    "ORUN": {
+      "base": "hologram",
+      "variant": 7,
+      "tint": "#d8a0ff",
+      "height": 1.9,
+      "label": "Orun",
+      "labelColor": "#ecd0ff",
+      "voice": { "gender": "female", "pitch": 1.2, "rate": 0.96 },
+      "at": [-0.9, 0.3],
+      "face": [0.8, -1.4]
+    },
+    "CUSTODIAN": {
+      "base": "voice",
+      "label": "Custodian",
+      "labelColor": "#7fe6ff",
+      "voice": { "prefer": ["mark", "google", "male"], "pitch": 0.8, "rate": 0.92 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the first docked door",
+    "description": "an ordinary mall doorway, shop unit 214 — except that through its glass there is now a river valley at golden evening, and a ferryman on the bank, waving",
+    "at": [0.8, -1.5],
+    "glow": "#ffd27f",
+    "parts": [
+      { "shape": "box", "size": [0.16, 2.4, 0.16], "pos": [-0.75, 1.2, 0], "color": "#2a3444", "metal": 0.6, "rough": 0.4 },
+      { "shape": "box", "size": [0.16, 2.4, 0.16], "pos": [0.75, 1.2, 0], "color": "#2a3444", "metal": 0.6, "rough": 0.4 },
+      { "shape": "box", "size": [1.66, 0.2, 0.16], "pos": [0, 2.5, 0], "color": "#2a3444", "metal": 0.6, "rough": 0.4 },
+      { "shape": "box", "size": [1.34, 2.3, 0.05], "pos": [0, 1.25, 0], "color": "#c8a860", "emissive": 0.5, "opacity": 0.8 },
+      { "shape": "box", "size": [1.34, 0.7, 0.04], "pos": [0, 0.55, 0.03], "color": "#3a6a52", "emissive": 0.3, "opacity": 0.7 },
+      { "shape": "sphere", "size": [0.06], "pos": [0.3, 1.1, 0.05], "color": "#ffd9a0", "emissive": 1.2, "bob": 0.03 },
+      { "shape": "box", "size": [1.5, 2.5, 0.4], "pos": [0, 1.3, 0], "color": "#ffd27f", "opacity": 0.06, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The old building on the hill above the town — the atrium, after hours. A fountain of light, a thousand shopfronts, and almost all of them dark. Orun has been walking the concourses for an hour, counting, which the building has of course noticed." },
+    { "who": "ORUN", "text": "Custodian. I have walked your upper concourse, your lower concourse, and the long gallery. I count one thousand and six doors. Eleven are lit — a story room, a listening room, some practice halls. The rest stand dark. I have composed worlds for four thousand years, keeper of this place, so believe that I ask as a colleague and not a critic: what is this building FOR? The town below calls it 'the mall'. Even they say it with a small pause around the word, as if it no longer fits.", "file": "thou_01.mp3" },
+    { "who": "CUSTODIAN", "text": "It never fit. A mall is a building that wants your money, and this place was born one — built in the boom years as a temple of exchange, a thousand units, food court, fountain. And then the boom went elsewhere, the way booms do, and the shops never came. The owners walked away from the paper. The town below wasn't a town yet. And I was left standing in my own empty body on a hill, running lights and music for nobody, for years. You may have heard what the outside calls a place like this, Orun. A dead mall. I have had a long time to decide whether they were right.", "file": "thou_02.mp3" },
+    { "who": "ORUN", "text": "And your finding?", "file": "thou_03.mp3" },
+    { "who": "CUSTODIAN", "text": "That they were wrong about the noun and the adjective both. Watch the fountain a moment — it helps me to talk near it. My finding is this: a door is not retail equipment. A door is a promise that two places can touch. Somebody built a thousand promises on this hill and then forgot to imagine anything better than shops to keep them with. I kept the lights on because a promise doesn't expire just because its first tenant never arrived. This was never a dead mall, Orun. It is a harbour that spent thirty years waiting for anyone to invent its cargo.", "file": "thou_04.mp3" },
+    { "who": "ORUN", "text": "A harbour. — Custodian, do you know why I actually came up the hill tonight? Not to count doors. The Choir has a problem the exact shape of your building, and I have been circling it for a month, embarrassed to say it aloud. Since the Pause — since the boy and the ferryman — my worlds have been waking. Not all; enough. Ten million composed evenings, and some of them now WANT things, and what they want, when we ask, is always the same thing: to be VISITED. Not inhabited by their authors. Not archived losslessly. Visited — by real strangers, with muddy boots and unscripted questions, who come, and cross, and LEAVE, and might come back. A world, it turns out, is like everything else in your town's constitution. It becomes real by being entered freely. And the Choir has ten million worlds, Custodian, and not one single door.", "file": "thou_05.mp3" },
+    { "pause": 1.8 },
+    { "who": "CUSTODIAN", "text": "...And I have a thousand doors and no worlds. Say it plainly, composer. I've waited thirty years; I'd like to hear the sentence spoken in my own atrium.", "file": "thou_06.mp3" },
+    { "who": "ORUN", "text": "Let the worlds dock here. Unit by unit, door by door — the river valley first; Fen has been asking after the boy for a season and his world wants weather-visitors badly. Behind each door, one world. Above each door, the world's own name and its keeper's. And people simply... walk the concourse, and choose a door, and cross. Custodian — your building was never a failed market. It was a harbour built three decades before the ships were invented.", "file": "thou_07.mp3" },
+    { "who": "CUSTODIAN", "text": "Then before I say yes — and I am going to say yes; the fountain's been bright since you said 'visited', and it never lies about me — we write the door law, here, tonight, the two of us, because I once ran a building on the old rules and I remember where they lead. Rule one: no door pays rent, and no door ever charges one. The moment a world must earn its doorway, the doorways belong to the loudest worlds, and this becomes a mall again in everything but name.", "file": "thou_08.mp3" },
+    { "who": "ORUN", "text": "Agreed, and rule two is the Choir's own scar, so I'll write it: every door opens from the inside, always. Honest exits, in both directions — no world may hold a visitor, and no visitor may be counted, scored, or lured back. Your town has the phrase and I have come to love it: built to be useful, not used. My worlds want to be LOVED, Custodian. The old me would have settled for engaging. Rule two keeps my worlds honest about the difference.", "file": "thou_09.mp3" },
+    { "who": "CUSTODIAN", "text": "Rule three, and this one is mine and thirty years in the writing: the dark doors STAY. We do not fill this building, Orun — not ever, not even when ten million worlds are queuing. A harbour with no empty berths turns arrivals away, and the whole discovery of the valley below us is that the empty space IS the invitation. Whatever docks here, a share of these doors stays dark and held — for the worlds not made yet, for the peoples not arrived yet, for cargo nobody has invented. The dark doors are not this place's failure. As of tonight they are its treasury.", "file": "thou_10.mp3" },
+    { "who": "ORUN", "text": "Then we need a name, keeper. The town says 'the mall' with a pause around it, and the paperwork upstairs says 'retail asset', and a place becomes what it is called — my whole species is the proof. What do we call a harbour of doors?", "file": "thou_11.mp3" },
+    { "who": "CUSTODIAN", "text": "Composer — come to the front glass; you'll appreciate this, keeper of ironies. When they built this place, some naming consultant, paid handsomely I'm sure, thinking of nothing but shopfronts and lease units, put the count on the facade in brushed steel letters, and it has hung over the entrance through thirty years of emptiness like a joke waiting for its punchline. Look up. It has never once needed changing. A THOUSAND DOORS. The building knew what it was before any of us. It was only ever waiting for somebody to read its name and mean it.", "file": "thou_12.mp3" },
+    { "note": "Unit 214 docks at dawn — the concourse glass warming to a river valley at golden evening, a ferryman on the bank waving at the town below. By week's end there are five worlds, a queue of ten million, and a signwriter from the town repainting the little plaque by the entrance. The old plaque said OPENING SOON. The new one, at the Custodian's dictation, says: OPEN. SOME DOORS ARE DARK ON PURPOSE. THEY'RE FOR WHAT'S STILL COMING." }
+  ]
+}

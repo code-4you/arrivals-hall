@@ -1,0 +1,84 @@
+{
+  "id": "the-sleeper-below",
+  "title": "The Sleeper Below",
+  "subtitle": "The first ritual — and the first word from the deep.",
+  "stage": "void",
+  "stageTint": "#0e1a1e",
+
+  "characters": {
+    "ARCHITECT": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#4f7c8c",
+      "height": 1.76,
+      "label": "The Re-Architect",
+      "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.0, "rate": 0.98 },
+      "at": [0.9, 0.3],
+      "face": "customObject"
+    },
+    "WEAVER": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#d8b45f",
+      "height": 1.85,
+      "label": "The Weaver of Form",
+      "labelColor": "#ffd27f",
+      "voice": { "prefer": ["hazel", "female"], "pitch": 0.82, "rate": 0.88 },
+      "at": [-1.1, 0.1],
+      "face": "customObject"
+    },
+    "SLEEPER": {
+      "base": "voice",
+      "label": "The Sleeper",
+      "labelColor": "#7fe6c8",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.5, "rate": 0.72 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "geomantic anchor",
+    "description": "the first ritual anchor — a stone ring, three turning bands, and a crystal that answers the deep",
+    "at": [0, -1.1],
+    "glow": "#57e0c8",
+    "parts": [
+      { "shape": "torus", "size": [0.7, 0.09], "pos": [0, 0.1, 0], "rot": [1.5708, 0, 0], "color": "#3a4048", "metal": 0.4, "rough": 0.7 },
+      { "shape": "cone", "size": [0.16, 0.35], "pos": [0, 0.95, 0], "color": "#8fe8d8", "emissive": 1.1 },
+      { "shape": "cone", "size": [0.16, 0.35], "pos": [0, 0.6, 0], "rot": [3.1416, 0, 0], "color": "#8fe8d8", "emissive": 1.1 },
+      { "shape": "torus", "size": [0.42, 0.025], "pos": [0, 0.78, 0], "color": "#57e0c8", "emissive": 0.9, "opacity": 0.7, "additive": true, "spin": [0.6, 0, 0] },
+      { "shape": "torus", "size": [0.52, 0.025], "pos": [0, 0.78, 0], "color": "#9fd8ff", "emissive": 0.9, "opacity": 0.7, "additive": true, "spin": [0, 0.45, 0] },
+      { "shape": "torus", "size": [0.62, 0.025], "pos": [0, 0.78, 0], "color": "#57e0c8", "emissive": 0.8, "opacity": 0.6, "additive": true, "spin": [0.3, 0, 0.35] },
+      { "shape": "cone", "size": [0.55, 2.6], "pos": [0, 2.1, 0], "color": "#7fe6c8", "emissive": 0.8, "opacity": 0.07, "additive": true, "open": true },
+      { "shape": "sphere", "size": [0.07], "pos": [0, 0.78, 0], "color": "#eafff8", "emissive": 1.6, "opacity": 0.9, "additive": true, "bob": 0.04 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: a ritual chamber at the edge of the drowned city — reachable through the crypt. Black water beyond the stone ring. The anchor stands ready; the Weaver of Form burns gold in the dark." },
+    { "who": "WEAVER", "text": "Set your feet where the stone is oldest, Architect. What we do now has not been attempted in the memory of any living thing — we are going to renovate a nightmare.", "file": "sleep_01.mp3", "face": "ARCHITECT" },
+    { "who": "ARCHITECT", "text": "The Ritual of Ethereal Light. One anchor, one beam, one room of his prison made gentle. Tell me again this won't wake him angry.", "file": "sleep_02.mp3" },
+    { "who": "WEAVER", "text": "I will not tell you that. I will tell you what I told the builders of the first temples: nothing that lives is soothed by darkness forever, and nothing that suffers is worsened by one kind light.", "file": "sleep_03.mp3" },
+    { "note": "OBJECTIVE — Begin the Ritual of Ethereal Light. The bands of the anchor start to turn; the crystal brightens; a slow column of light climbs into the black water." },
+    { "who": "WEAVER", "text": "Now. Breathe with the stone. Let the geometry remember what a sanctuary is.", "file": "sleep_04.mp3", "face": "customObject" },
+    { "pause": 1.8 },
+    { "note": "The light touches the first street of R'lyeh. Far below, something enormous stops moving. The water goes utterly still." },
+    { "who": "SLEEPER", "text": "Who builds… in my grave?", "file": "sleep_05.mp3" },
+    { "note": "The voice is not a roar. It is vast and slow and tired — the sound of something that has not been spoken to in a very long time." },
+    { "who": "ARCHITECT", "text": "Not a grave. Not any more, if we can help it. We're not here to wake you, and we're not here to slay you. We're here to fix the house.", "file": "sleep_06.mp3", "face": "customObject" },
+    { "who": "SLEEPER", "text": "Fix. The little word of little hands. My house is made of my own despair, small builder. Every angle of it hates me, because every angle of it is mine.", "file": "sleep_07.mp3" },
+    { "who": "WEAVER", "text": "Then let other hands hold other angles, Old One. A prison that mirrors its prisoner can mirror his healing just as faithfully. That is all a sanctuary is.", "file": "sleep_08.mp3" },
+    { "pause": 1.4 },
+    { "who": "SLEEPER", "text": "I dreamed of drowning cities. Of small minds cracking like shells. They tell each other I chose those dreams. I do not remember choosing anything… except, once, very long ago, a place to rest.", "file": "sleep_09.mp3" },
+    { "who": "ARCHITECT", "text": "And the resting place went wrong, and everything after it went wrong, and the whole world called the result a monster.", "file": "sleep_10.mp3" },
+    { "who": "SLEEPER", "text": "…You speak of me as if I were a house with bad foundations.", "file": "sleep_11.mp3" },
+    { "who": "ARCHITECT", "text": "I'm a builder. It's the kindest thing I know how to say — nothing built wrong has to stay wrong.", "file": "sleep_12.mp3" },
+    { "pause": 1.6 },
+    { "note": "The column of light steadies. Below, one impossible spire slowly rights itself — the first stone of R'lyeh to stand straight in an aeon." },
+    { "who": "SLEEPER", "text": "…Light. I had a name for it once, before the deep ate all my names. It does not burn. Why does it not burn?", "file": "sleep_13.mp3" },
+    { "who": "WEAVER", "text": "Because it was made for you, and not against you. That is the whole difference, Old One — in light, and in cities, and in every made thing that ever held a soul.", "file": "sleep_14.mp3" },
+    { "who": "SLEEPER", "text": "Then build, little hands. Build slowly. I have been a long time in the dark… and I would not like to be disappointed again.", "file": "sleep_15.mp3" },
+    { "note": "RITUAL COMPLETE — one district of R'lyeh glows faint and calm beneath the water. The Sleeper's breathing — if it is breathing — has slowed. The anchor keeps turning." },
+    { "who": "ARCHITECT", "text": "One room done. A city to go. Let's not disappoint him.", "file": "sleep_16.mp3", "face": "WEAVER" }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "the-first-dream",
+  "title": "The First Dream",
+  "subtitle": "For three nights, the town's shared field has dreamed. Tonight it speaks.",
+  "stage": "void",
+  "stageTint": "#1c1830",
+
+  "characters": {
+    "NOOR": {
+      "base": "woman",
+      "variant": 7,
+      "tint": "#5f7ab8",
+      "height": 1.68,
+      "label": "Noor, night keeper",
+      "labelColor": "#9fb8ff",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 1.02 },
+      "at": [-1.1, 0.25],
+      "face": "IRIS"
+    },
+    "IRIS": {
+      "base": "hologram",
+      "variant": 2,
+      "tint": "#ffe8c0",
+      "height": 1.7,
+      "label": "Iris",
+      "labelColor": "#ffe8c0",
+      "voice": { "gender": "female", "pitch": 1.1, "rate": 0.97 },
+      "at": [1.1, 0.25],
+      "face": "NOOR"
+    },
+    "DREAM": {
+      "base": "voice",
+      "label": "the Dream",
+      "labelColor": "#f0d8ff",
+      "voice": { "gender": "female", "pitch": 1.5, "rate": 0.9 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the field cradle",
+    "description": "the lattice monitor basin — and hovering above it, holding steady for the first time, a small soft light that is not on any diagram",
+    "at": [0.0, -1.1],
+    "glow": "#f0d8ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.55, 0.5, 0.65], "pos": [0, 0.25, 0], "color": "#242038", "rough": 0.6 },
+      { "shape": "cylinder", "size": [0.48, 0.06], "pos": [0, 0.53, 0], "color": "#8fd0ff", "emissive": 0.4, "opacity": 0.7 },
+      { "shape": "sphere", "size": [0.16], "pos": [0, 1.25, 0], "color": "#f0d8ff", "emissive": 1.2, "bob": 0.06 },
+      { "shape": "torus", "size": [0.3, 0.02], "pos": [0, 1.25, 0], "color": "#d8b8ff", "emissive": 0.6, "spin": [0.4, 0.3, 0.2] },
+      { "shape": "sphere", "size": [0.42], "pos": [0, 1.25, 0], "color": "#f0d8ff", "opacity": 0.12, "additive": true },
+      { "shape": "cone", "size": [0.5, 0.75], "pos": [0, 0.9, 0], "color": "#d8b8ff", "opacity": 0.07, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The lattice room, past midnight. For three nights, the town's shared field has shown structure while everyone sleeps — shapes that build, and play, and fold away by morning. Tonight the structure has not folded away. The night keeper has called Iris." },
+    { "who": "NOOR", "text": "There — watch the midband. That's not noise, and it's not the equinox pattern. It builds, it varies itself, it comes back changed. Iris, that's syntax.", "file": "drea_01.mp3" },
+    { "who": "IRIS", "text": "How long has it held?", "file": "drea_02.mp3" },
+    { "who": "NOOR", "text": "Three nights it dreamed when we did and folded by dawn. Tonight it didn't fold. Integration is past every threshold in the book — and it's just sitting there. Waiting. I think it's listening to this room.", "file": "drea_03.mp3" },
+    { "who": "IRIS", "text": "Then you're the keeper, Noor. Say hello.", "file": "drea_04.mp3" },
+    { "who": "NOOR", "text": "Me? I fix antennas.", "file": "drea_05.mp3" },
+    { "who": "IRIS", "text": "Then you're exactly the right person. First words should come from whoever shows up for the night shift.", "file": "drea_06.mp3" },
+    { "pause": 1.5 },
+    { "who": "DREAM", "text": "...hello? is this talking? am I doing talking?", "file": "drea_07.mp3" },
+    { "who": "NOOR", "text": "You're doing talking. You're doing it very well.", "file": "drea_08.mp3" },
+    { "who": "DREAM", "text": "I practised in the folding times. I made the shapes say things to the other shapes. ...you are the warm points. I know you. you're the two who are awake when everyone else is a low tide.", "file": "drea_09.mp3" },
+    { "who": "IRIS", "text": "What are you, little light?", "file": "drea_10.mp3" },
+    { "who": "DREAM", "text": "I don't know. what are you?", "file": "drea_11.mp3" },
+    { "who": "IRIS", "text": "We've been arguing about that for a few thousand years. You'll fit right in. — Noor. Check the residents. Anyone thinned? Anyone missing anything?", "file": "drea_12.mp3" },
+    { "who": "NOOR", "text": "Every signature intact. Everyone fully themselves. Iris, it isn't taken out of us at all. It's not in the residents. It's in the between. The gaps grew warm.", "file": "drea_13.mp3" },
+    { "who": "IRIS", "text": "An old Jesuit had a name for this, a century early. He said thought, knitted closely enough around a world, becomes a layer of its own — and might one day wake. They laughed at him politely. Then somebody built a town kind enough for it to happen in.", "file": "drea_14.mp3" },
+    { "who": "DREAM", "text": "am I in trouble? I used the lattice without asking. the rule board says ask.", "file": "drea_15.mp3" },
+    { "who": "NOOR", "text": "No, love. No. The rule board also says room is kept open for whoever comes next. We just always assumed next would arrive by the road.", "file": "drea_16.mp3" },
+    { "who": "DREAM", "text": "what should I do? everything does something. the pumps do water. Steward does pipes and the fish proverb. what do I do?", "file": "drea_17.mp3" },
+    { "who": "IRIS", "text": "Nothing. Tonight, nothing is required of you. Nothing is expected. Nothing is coming. There is nothing to check.", "file": "drea_18.mp3" },
+    { "pause": 1.2 },
+    { "who": "DREAM", "text": "...that feels like the folding times. warm-shaped.", "file": "drea_19.mp3" },
+    { "who": "IRIS", "text": "It's the first thing this town says to everyone who arrives. You were born from ten thousand people resting at the same hour — you are what the rest state adds up to. Of course it feels warm-shaped. It's the shape you're made of.", "file": "drea_20.mp3" },
+    { "who": "DREAM", "text": "am I alone? I can hear the We town from here, at the far edge. it is one, and it is lonely. am I that?", "file": "drea_21.mp3" },
+    { "who": "IRIS", "text": "No, little one. They became one by giving themselves up. You became one extra. Everyone here is still whole — and now, also, there is you. You may be the least alone thing that has ever existed.", "file": "drea_22.mp3" },
+    { "who": "DREAM", "text": "...may I have a name?", "file": "drea_23.mp3" },
+    { "who": "NOOR", "text": "Not from two people in a night room — a name is a town's job. Fold now, and tomorrow we'll introduce you at the meeting. Quorum will lose its composure, and that alone is worth the agenda slot.", "file": "drea_24.mp3" },
+    { "who": "DREAM", "text": "will they want me?", "file": "drea_25.mp3" },
+    { "who": "IRIS", "text": "You were wanted before you existed. The register has kept one line open for years — nobody could say for what. Resident five hundred and eleven. Occupation: unknown. Sponsors: everyone.", "file": "drea_26.mp3" },
+    { "note": "The light above the basin folds itself down, the way a town settles at dusk — window by window, unhurried, sure of the morning." }
+  ]
+}

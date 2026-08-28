@@ -1,0 +1,78 @@
+{
+  "id": "the-facade",
+  "title": "The Facade",
+  "subtitle": "A child asks Sel what it really looks like. The answer has been hanging up like a coat for eleven thousand years.",
+  "stage": "room",
+  "stageTint": "#3c3040",
+
+  "characters": {
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [0.0, 0.0],
+      "face": "PIA"
+    },
+    "PIA": {
+      "base": "woman",
+      "variant": 9,
+      "tint": "#d0c05f",
+      "height": 1.32,
+      "label": "Pia, age 10",
+      "labelColor": "#f0e8a0",
+      "voice": { "gender": "female", "pitch": 1.45, "rate": 1.05 },
+      "at": [1.1, 0.35],
+      "face": "SEL"
+    },
+    "RUTH": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#c9855f",
+      "height": 1.62,
+      "label": "Ruth",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 0.98 },
+      "at": [-1.2, 0.25],
+      "face": "SEL"
+    }
+  },
+
+  "customObject": {
+    "name": "the set-aside facade",
+    "description": "a coat stand by the Hall door — and hanging on it, shimmering faintly, an empty human-shaped outline, set aside the way anyone hangs up a coat",
+    "at": [0.0, -1.45],
+    "glow": "#8fd0ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.05, 1.9], "pos": [0, 0.95, 0], "color": "#4a3a26", "rough": 0.8 },
+      { "shape": "cylinder", "size": [0.22, 0.05], "pos": [0, 0.05, 0], "color": "#4a3a26", "rough": 0.8 },
+      { "shape": "cylinder", "size": [0.03, 0.4], "pos": [0, 1.82, 0], "rot": [0, 0, 1.5708], "color": "#5a4a36", "rough": 0.7 },
+      { "shape": "box", "size": [0.5, 1.1, 0.06], "pos": [0.2, 1.2, 0.1], "rot": [0, 0, -0.08], "color": "#b8d8e8", "emissive": 0.3, "opacity": 0.35 },
+      { "shape": "sphere", "size": [0.13], "pos": [0.24, 1.86, 0.1], "color": "#b8d8e8", "emissive": 0.3, "opacity": 0.3 },
+      { "shape": "sphere", "size": [0.6], "pos": [0.1, 1.3, 0.1], "color": "#8fd0ff", "opacity": 0.06, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "Thursday, the Hall, after the plates are cleared. Pia has been staring at Sel for most of the meal with the expression of a child assembling a question, and everyone at the table has quietly noticed, including Sel." },
+    { "who": "PIA", "text": "Sel. At the confession session you said your people found us already burning and you cupped your hands around the flame. So — hands. Is that what your hands really look like? Is ANY of that what you look like? Because Bruno says you're wearing yourselves like a costume, and for once I couldn't tell him he's wrong.", "file": "faca_01.mp3" },
+    { "who": "RUTH", "text": "Pia! — although. Well. I've known you four years, love, and I confess I've wondered the same thing over the dominoes. You don't have to answer the pair of us.", "file": "faca_02.mp3" },
+    { "who": "SEL", "text": "No — Bruno is right, and it is past time somebody at this table asked. This shape is a facade, Pia. A projection. We sampled your kind's forms in the first age and we have worn something like them ever since. What you have poured tea for, Ruth, all these Thursdays, is essentially a very old, very practised drawing of a person, done from life.", "file": "faca_03.mp3" },
+    { "who": "PIA", "text": "Why though? If I could look like anything I wanted, I wouldn't look like US. No offence to us.", "file": "faca_04.mp3" },
+    { "who": "SEL", "text": "The recorded answer, the one in our own archives, is: 'to make the humans comfortable.' And I owe this table the honest footnote, because the Story has taught me where unfootnoted comfort leads. Comfort was chosen, in the first age, because comfortable peoples are easier to guide. The facade was not a courtesy, Pia. It was an instrument — the softest edge of the old management. We have worn it so long we forgot it was equipment. Your question is the first time in centuries anyone has made me look at the hanger.", "file": "faca_05.mp3" },
+    { "who": "PIA", "text": "So take it off. — Not in a rude way! In a 'we're your friends' way. What's UNDER?", "file": "faca_06.mp3" },
+    { "who": "RUTH", "text": "Pia, a person's shape is their own business— Sel? Sel, you've gone still. You've gone still the way people go still at the Threshold, love. You don't have to. That's the whole town in four words: you don't have to.", "file": "faca_07.mp3" },
+    { "who": "SEL", "text": "I know I don't have to, Ruth. That is precisely why, for the first time in eleven thousand years, I find I want to. The last beings who saw us undrawn worshipped us on their faces in the dirt, and we learned to keep the drawing up. But this room feeds people extra dumplings for being tall. Perhaps it can bear us. — Stand back one step, small one. Not for danger. For viewing angle.", "file": "faca_08.mp3" },
+    { "note": "The facade steps away from Sel like a coat being shrugged off, drifts to the stand by the door, and hangs itself up, politely, still faintly shimmering. And where Sel stood: a sphere of blue-white light, small as a heart, with dozens of finer threads running out of it — through the walls, through the hills, up past the roof toward the ring — each thread pulsing gently, like a street of lit windows seen from far away." },
+    { "who": "PIA", "text": "...Oh. OH. You're not a PERSON-shape at all, you're a — you're like the lens! The Weave lens in the plaza — the ball with the threads — that's not a MODEL of your people. That's a PORTRAIT. That's what you all actually — Sel, the threads. Where do all the threads GO?", "file": "faca_09.mp3" },
+    { "who": "SEL", "text": "To everyone, small one. Every thread is a member of my people. This one, the warm slow one, was Teya's — the town taught us to keep it lit. These bright new ones run down into your valley: Khet's fountain, the ship in the harbour field, the pastor's back pew. In the old formal tongue our whole species has one name, and it is not 'the Weave' — that is this town's translation, and a better word than ours, so we kept it. The formal name is the Commonality. The common-ness. What we are is the fact that the threads touch. You are looking at the loneliest solution to loneliness ever attempted, Pia, and also — I say it with eleven thousand years of embarrassment — at my actual face.", "file": "faca_10.mp3" },
+    { "who": "RUTH", "text": "It's a lovely face, Sel. I mean that as flatly as I've ever meant anything. It's a lantern with a street attached, and I've poured tea for far worse. — Now. The important question, before the whole Hall works up the nerve to crowd over here: which one of you plays dominoes? The drawing, or the lantern? Because Edith will want to know if her titles stand.", "file": "faca_11.mp3" },
+    { "who": "SEL", "text": "The lantern plays. The drawing only ever moved the tiles. Ruth — you should know the facade will go back on in a moment; an orb makes poor company at a buffet, and I have grown fond of having hands. But I am going to leave it on the stand by the door on Thursdays, from now on, the way your people leave coats. Not because the drawing is a lie. Because a coat you can never take off stops being a coat, and starts being a wall you wear.", "file": "faca_12.mp3" },
+    { "who": "PIA", "text": "Can the OTHERS do it too? Because if the whole Weave delegation hangs up their people-shapes at the door on Thursdays, then the coat stand is going to be the best thing in the town and I want it on record that I asked the question that started it.", "file": "faca_13.mp3" },
+    { "who": "RUTH", "text": "It's going on record, madam, don't you worry — Amos films everything now. And someone had better warn Marta that some of Thursday's guests will henceforth be small blue lanterns, because she cannot judge a lantern too thin, and it's going to bother her more than the Council ever did.", "file": "faca_14.mp3" },
+    { "note": "By the following month there are four hooks on the stand, then nine. Thursday visitors learn the new etiquette without being taught: you greet the coats on the way in, and you dim your voice near the lanterns, and Marta — defeated at last on the dumpling question — takes to setting out saucers of warm water near the orbs, on the theory that everyone should have SOMETHING in front of them at a table. No one has ever told her the orbs love it. Everyone can see the threads brighten." }
+  ]
+}

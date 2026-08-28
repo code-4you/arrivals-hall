@@ -1,0 +1,74 @@
+{
+  "id": "the-whisper-below",
+  "title": "The Whisper Below",
+  "subtitle": "The Sleeper's cult hears the same truth — and gets it wrong.",
+  "stage": "garden",
+  "stageTint": "#141c12",
+
+  "characters": {
+    "RORIC": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#4a5a3a",
+      "height": 1.72,
+      "label": "Roric",
+      "labelColor": "#a8d88a",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.8, "rate": 0.95 },
+      "at": [-0.6, -0.3],
+      "face": "customObject"
+    },
+    "WREN": {
+      "base": "woman",
+      "variant": 3,
+      "tint": "#5a6a4a",
+      "height": 1.62,
+      "label": "Wren",
+      "labelColor": "#c8e8a8",
+      "voice": { "prefer": ["zira", "female"], "pitch": 1.08, "rate": 0.96 },
+      "at": [0.9, 0.2],
+      "face": "RORIC"
+    }
+  },
+
+  "customObject": {
+    "name": "the swamp shrine",
+    "description": "a crude altar of lashed wood and carved effigies — and on it, a bone-pale fragment that hums",
+    "at": [-0.1, -1.4],
+    "glow": "#6fd86a",
+    "parts": [
+      { "shape": "box", "size": [1.2, 0.5, 0.6], "pos": [0, 0.25, 0], "color": "#2c2418", "rough": 0.95 },
+      { "shape": "box", "size": [0.14, 0.8, 0.14], "pos": [-0.5, 0.65, -0.2], "rot": [0, 0.4, 0.12], "color": "#3a2f1c", "rough": 0.95 },
+      { "shape": "box", "size": [0.14, 0.95, 0.14], "pos": [0.48, 0.72, -0.15], "rot": [0, -0.3, -0.1], "color": "#3a2f1c", "rough": 0.95 },
+      { "shape": "cone", "size": [0.1, 0.3], "pos": [-0.5, 1.12, -0.2], "color": "#4a5a3a", "rough": 0.9 },
+      { "shape": "cone", "size": [0.1, 0.32], "pos": [0.48, 1.26, -0.15], "color": "#4a5a3a", "rough": 0.9 },
+      { "shape": "box", "size": [0.4, 0.1, 0.12], "pos": [0, 0.56, 0.1], "rot": [0, 0.2, 0], "color": "#d8d2be", "emissive": 0.35, "bob": 0.008 },
+      { "shape": "sphere", "size": [0.16], "pos": [0, 0.62, 0.1], "color": "#6fd86a", "emissive": 0.9, "opacity": 0.16, "additive": true, "bob": 0.008 },
+      { "shape": "sphere", "size": [0.05], "pos": [-0.75, 0.1, 0.45], "color": "#8fe89a", "emissive": 1.1, "opacity": 0.5, "additive": true, "bob": 0.02 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: a future swamp environment — bio-luminescent fungi, black water, a shrine of lashed wood. Night. OBJECTIVE — observe the Swamp Camp without being seen." },
+    { "note": "A low rhythmic chant fades. Two figures remain at the shrine: Roric, the camp's leader, and Wren, young, newest of the robes. The player watches from the reeds." },
+    { "who": "RORIC", "text": "The Sleeper stirs, Wren. The whispers grow louder every night now. The dreams come sharper. He hungers for release from his dark prison.", "file": "whis_01.mp3" },
+    { "who": "WREN", "text": "I felt it too. Last night. Like a door being tried, somewhere under the world. It didn't feel like hunger though, Roric. It felt like…", "file": "whis_02.mp3" },
+    { "who": "RORIC", "text": "Like what?", "file": "whis_03.mp3", "face": "WREN" },
+    { "who": "WREN", "text": "Homesickness.", "file": "whis_04.mp3" },
+    { "pause": 1.4 },
+    { "who": "RORIC", "text": "The world outside is poison, girl. A cage of light and false hope. They sell you a job and a room and call it a life. Only in the depths is there truth. When he rises, he will wash all of it clean.", "file": "whis_05.mp3", "face": "camera" },
+    { "who": "WREN", "text": "You always say 'clean'. But the fragment — listen to it. It doesn't sound like an army. It sounds like someone turning over in their sleep, trying to get comfortable, for ten thousand years.", "file": "whis_06.mp3", "face": "customObject" },
+    { "note": "She's right. Up close, the bone-pale fragment hums — a low, exhausted note. Not a war drum. A moan." },
+    { "who": "RORIC", "text": "It hums with his agony! A relic of the sunken city itself — and his agony is our instruction. We harvest, we offer, we hasten the awakening. His pain ends when everything ends. That is mercy, Wren. That is the only mercy left.", "file": "whis_07.mp3" },
+    { "who": "WREN", "text": "…Or his pain ends when the pain ends. What if he doesn't want the world gone, Roric? What if he just wants a better room?", "file": "whis_08.mp3" },
+    { "pause": 1.6 },
+    { "who": "RORIC", "text": "That is the softest heresy I have ever heard spoken at this shrine.", "file": "whis_09.mp3", "face": "WREN" },
+    { "who": "WREN", "text": "It's not heresy to hope the god you serve could be happy. I joined because the world had no place for me. I didn't join to end it. I joined to matter to something.", "file": "whis_10.mp3" },
+    { "who": "RORIC", "text": "Then matter quietly. Tend the harvest. Guard the fragment — there are scholars in the city, I'm told, who would steal it for their own soft heresies. Rituals to REBUILD his prison, as if a cage could be made kind.", "file": "whis_11.mp3", "face": "camera" },
+    { "who": "WREN", "text": "…As if a cage could be made kind.", "file": "whis_12.mp3" },
+    { "note": "She says it slowly, the way you repeat a thing you intend to think about later, alone." },
+    { "who": "RORIC", "text": "Sleep, Wren. And if he speaks in your dreams — remember which of us he speaks THROUGH.", "file": "whis_13.mp3" },
+    { "note": "Roric withdraws into the dark between the huts. Wren stays a moment, one hand near the humming fragment — not quite touching it." },
+    { "who": "WREN", "text": "…A better room. If anyone's building one down there — build faster.", "file": "whis_14.mp3", "face": "customObject" },
+    { "note": "OBJECTIVE UPDATE — the fragment of R'lyeh is a key component of Vale's ritual. Retrieve it — or return when Wren stands watch alone. FADE OUT on the shrine's green glow." }
+  ]
+}

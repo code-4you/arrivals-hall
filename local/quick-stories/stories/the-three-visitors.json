@@ -1,0 +1,86 @@
+{
+  "id": "the-three-visitors",
+  "title": "The Three Visitors",
+  "subtitle": "A dying mining town, a bar at closing time, and a stranger who leaks light.",
+  "stage": "room",
+  "stageTint": "#4a3a2a",
+
+  "characters": {
+    "VEY": {
+      "base": "hologram",
+      "variant": 5,
+      "tint": "#b8d8e8",
+      "height": 1.82,
+      "label": "Vey",
+      "labelColor": "#d8f0ff",
+      "voice": { "gender": "male", "pitch": 1.02, "rate": 0.94 },
+      "at": [0.0, -0.4],
+      "face": "MAC"
+    },
+    "MAC": {
+      "base": "man",
+      "variant": 9,
+      "tint": "#8a5a3a",
+      "height": 1.8,
+      "label": "Mac",
+      "labelColor": "#ffb87a",
+      "voice": { "gender": "male", "pitch": 0.82, "rate": 1.04 },
+      "at": [-1.25, 0.3],
+      "face": "VEY"
+    },
+    "SAM": {
+      "base": "man",
+      "variant": 4,
+      "tint": "#5a7a5a",
+      "height": 1.75,
+      "label": "Sam",
+      "labelColor": "#b6ff9c",
+      "voice": { "gender": "male", "pitch": 1.05, "rate": 1.0 },
+      "at": [1.25, 0.3],
+      "face": "VEY"
+    }
+  },
+
+  "customObject": {
+    "name": "the last elevator cage",
+    "description": "the mine's decommissioned elevator cage, hauled up and parked beside the bar as a monument — the town's whole story in one rusted box",
+    "at": [0.0, -1.6],
+    "glow": "#ffb86a",
+    "parts": [
+      { "shape": "box", "size": [1.1, 1.7, 1.0], "pos": [0, 0.85, 0], "color": "#4a3428", "metal": 0.6, "rough": 0.8 },
+      { "shape": "box", "size": [1.1, 0.1, 1.0], "pos": [0, 1.75, 0], "color": "#3a2a20", "metal": 0.7, "rough": 0.7 },
+      { "shape": "cylinder", "size": [0.035, 0.9], "pos": [-0.5, 1.3, 0.48], "color": "#2a201a", "metal": 0.8, "rough": 0.6 },
+      { "shape": "cylinder", "size": [0.035, 0.9], "pos": [0.5, 1.3, 0.48], "color": "#2a201a", "metal": 0.8, "rough": 0.6 },
+      { "shape": "cylinder", "size": [0.03, 0.7], "pos": [0, 2.15, 0], "color": "#5a4a3a", "metal": 0.8, "rough": 0.5 },
+      { "shape": "sphere", "size": [0.06], "pos": [0.35, 1.55, 0.5], "color": "#ffb86a", "emissive": 0.9, "bob": 0.02 }
+    ]
+  },
+
+  "script": [
+    { "note": "A bar in a mining town, closing time. The mine shut for good at noon — final shift, final siren. Mac is drinking like it's a job. Sam is polishing a glass that has been clean for ten minutes. The door opens on a stranger who is slightly wrong in a way nobody can name, until the lamplight goes through his hand." },
+    { "who": "SAM", "text": "Evening. Bar's technically shut, but today of all days I'm not sending anyone back out there. How can I help?", "file": "mine_01.mp3" },
+    { "who": "VEY", "text": "Water, thank you. Purely for appearances — it gives the hands something to do. May I sit?", "file": "mine_02.mp3" },
+    { "who": "MAC", "text": "Mate, no offence, but the light from that lamp just went straight through your arm. What are you?", "file": "mine_03.mp3" },
+    { "who": "VEY", "text": "Human. Mostly. Transfigured, is the word — I traded the solid body in some years back, out at the community in the west. And before you reach for the word 'alien': I was born four streets from this bar. Vey Kowalski. My father worked seam nine.", "file": "mine_04.mp3" },
+    { "who": "MAC", "text": "...Little Vey Kowalski. You used to fall off the war memorial. Well. You've changed.", "file": "mine_05.mp3" },
+    { "who": "VEY", "text": "So has the town, Mac. I heard the siren this morning from the ridge. I have come to bring you — and I apologise in advance for how this sounds — a new understanding of the value of your lives. A vision that makes it worth staying on this planet for.", "file": "mine_06.mp3" },
+    { "who": "MAC", "text": "Get real. This is a mining town. Was. People had meaning in work here, mate — real work, rock and weight, not visions. And it's gone, so drink your appearance-water and spare us the seminar.", "file": "mine_07.mp3" },
+    { "who": "VEY", "text": "You're expecting me to argue. Old Vey would have. Here's what the community actually taught me: you're right. The meaning WAS the work — but not the rock. The mine gave every man three things without ever naming them: mates you saw daily, a house the wage could carry, and work that visibly mattered to the town. The seam ran out; the three things went with it. That's the whole catastrophe. It's not in your souls, Mac. It was in the ground, and the ground closed.", "file": "mine_08.mp3" },
+    { "who": "SAM", "text": "So what's the vision part? The understanding-of-life part? Because from behind this bar it mostly looks like blokes staring into glasses.", "file": "mine_09.mp3" },
+    { "who": "VEY", "text": "The vision part comes with a rule that will surprise you: I'm not allowed to teach it here. The community locks the whole inner path — the rest state, the Ladder, all of it — behind the three things. Home, people, purpose, stable, first. We call it the lock, and it's the least popular and most important rule we have.", "file": "mine_10.mp3" },
+    { "who": "MAC", "text": "Why? If your enlightenment's so good, hand it out. Cheaper than re-opening a mine.", "file": "mine_11.mp3" },
+    { "who": "VEY", "text": "Because meditation taught to a stranded town isn't a gift, it's a sedative. Teaching a man in the pit to watch his thoughts doesn't raise him out of the pit — it teaches him to furnish it. The abyss with better posture is still the abyss. Inner vision is the roof of the house, Mac. You don't deliver roofs to people who have no walls and call it housing.", "file": "mine_12.mp3" },
+    { "who": "SAM", "text": "Then what DO you deliver? Because that door's going to open every night this month on men with no shift to go to, and 'how can I help' is all I've got, and it's starting to sound thin.", "file": "mine_13.mp3" },
+    { "who": "VEY", "text": "This. It's called the Finder. A living map: every place within reach where the three things are actually available — the community, yes, but also eleven towns like this one that turned themselves around, work programs with housing attached, places built by people fleeing exactly this. Ranked honestly, failures listed. You feed it what a man had here, and it answers with where that still exists. Not paradise. A new seam.", "file": "mine_14.mp3" },
+    { "note": "He sets a card on the bar. It glows faintly where his hand held it. Mac does not pick it up. He also does not look away from it." },
+    { "who": "MAC", "text": "And the part you're not saying — your glowing lot need us more than we need you. That's it, isn't it? Something in your paradise runs on people.", "file": "mine_15.mp3" },
+    { "who": "VEY", "text": "Sharp as your father. Yes. The transfigured are held in shape by community — by being known. A town's worth of attention is what I wear instead of bones now. I can be out here, among strangers, nine days before I start to come apart. This is day eight. You watched my hand go thin an hour ago and were too polite to mention it. I spent my ninth day on this town, Mac, because it's mine. That's the vision, if you want it in one sentence: a life is a thing other people hold up, and the holding can be built on purpose. Everything else — the light, the Ladder, all of it — is plumbing.", "file": "mine_16.mp3" },
+    { "pause": 1.6 },
+    { "who": "MAC", "text": "...This Finder. Does it have anywhere with a pub like this one? Proper pub. Not a juice hall with cushions.", "file": "mine_17.mp3" },
+    { "who": "VEY", "text": "Three, currently. One of which has the walls, the cellar, the licence — and no publican. It's four doors from a boathouse where a man teaches boys to build boats. The listing has been open a year. Apparently publicans are the hard part.", "file": "mine_18.mp3" },
+    { "note": "Sam sets down the glass he has been polishing for eleven minutes. It has never been cleaner." },
+    { "who": "SAM", "text": "...How can I help.", "file": "mine_19.mp3" },
+    { "who": "VEY", "text": "Sam. I thought you'd never ask.", "file": "mine_20.mp3" },
+    { "note": "He leaves before midnight — a man made of borrowed light, walking east with one day left in him, past the war memorial he used to fall off. On the bar, the card keeps glowing, faintly, where everyone can see it. Nobody puts it away." }
+  ]
+}

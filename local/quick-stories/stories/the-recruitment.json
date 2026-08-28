@@ -1,0 +1,70 @@
+{
+  "id": "the-recruitment",
+  "title": "The Recruitment",
+  "subtitle": "The last holdout comes down to prove the town is a trick. The town does nothing special, which is the problem.",
+  "stage": "plaza",
+  "stageTint": "#33261e",
+
+  "characters": {
+    "THANE": {
+      "base": "hologram",
+      "variant": 9,
+      "tint": "#d87a6a",
+      "height": 1.95,
+      "label": "Thane, of the Fifth Seat",
+      "labelColor": "#ffb8a8",
+      "voice": { "gender": "male", "pitch": 0.95, "rate": 0.98 },
+      "at": [0.9, 0.1],
+      "face": "EDITH"
+    },
+    "EDITH": {
+      "base": "elder",
+      "variant": 4,
+      "tint": "#8a9a6a",
+      "height": 1.58,
+      "label": "Edith, assigned buddy",
+      "labelColor": "#d8e8a8",
+      "voice": { "gender": "female", "pitch": 1.12, "rate": 1.05 },
+      "at": [-0.9, 0.2],
+      "face": "THANE"
+    }
+  },
+
+  "customObject": {
+    "name": "the unfinished report",
+    "description": "a field-slate propped against the fountain rim, its dictation still glowing — seven drafts of a hostile report, each shorter than the last, the final line stopped mid-sentence",
+    "at": [0.0, -1.3],
+    "glow": "#ffb8a8",
+    "parts": [
+      { "shape": "box", "size": [0.7, 1.0, 0.06], "pos": [0, 0.6, 0], "rot": [-0.25, 0, 0], "color": "#2a2028", "metal": 0.4, "rough": 0.4 },
+      { "shape": "box", "size": [0.58, 0.05, 0.02], "pos": [0, 0.95, 0.06], "rot": [-0.25, 0, 0], "color": "#ffb8a8", "emissive": 0.7 },
+      { "shape": "box", "size": [0.5, 0.05, 0.02], "pos": [-0.03, 0.82, 0.09], "rot": [-0.25, 0, 0], "color": "#ffb8a8", "emissive": 0.55 },
+      { "shape": "box", "size": [0.3, 0.05, 0.02], "pos": [-0.13, 0.69, 0.12], "rot": [-0.25, 0, 0], "color": "#ffb8a8", "emissive": 0.9, "bob": 0.015 },
+      { "shape": "box", "size": [0.8, 1.1, 0.3], "pos": [0, 0.6, 0], "color": "#ffb8a8", "opacity": 0.05, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The plaza, day one of a three-day inspection visit. The Fifth Seat voted for the flood, against the attendance motion, and against the vote to hold votes. Its delegate has arrived with instruments calibrated to locate hidden control systems, and has been met at the Threshold — per standard arrival protocol — by his assigned buddy." },
+    { "who": "EDITH", "text": "You'll be the angry one, then. Thane, is it? I'm Edith. I'm your buddy. It's a system — every arrival gets one. You'll hate it. The tall glowing lot warned me you're here to prove we're all secretly enslaved, so I've cleared my whole week; I haven't looked forward to anything this much since the dominoes.", "file": "recr_01.mp3" },
+    { "who": "THANE", "text": "You are my ASSIGNED MINDER, elder, which confirms the first structural finding before I have walked ten paces: surveillance, dressed as hospitality. Note it, recorder. Draft one. 'The settlement pairs each visitor with a civilian handler. The machinery of control is at least honest enough to meet one at the gate.' — I will conduct my inspection now. Where is the compliance centre? And do not say there isn't one. Forty thousand residents in behavioural alignment do not occur, madam, without a whip. I have administered populations for six millennia. My entire faction's position rests on one law: no society coheres without coercion. I am here to find the whip, photograph it, and go home.", "file": "recr_02.mp3" },
+    { "who": "EDITH", "text": "Right. The whip hunt. Straightforward enough — we'll do the full tour and you can scan whatever you like. But it's Thursday, so we do it in the right order: first the Hall, because Marta's stew won't survive till evening, and if you glow at her she'll decide you're too thin — that's not a control system, that's just Marta, though I grant you the effect is similar.", "file": "recr_03.mp3" },
+    { "note": "Day one. The instruments sweep the Hall, the Mend, the pump stations, the school. At the Hall, the delegate is fed. At the Mend he watches two neighbours resolve a fence dispute with a talking stick and no authority present, and scans the talking stick twice. It is a stick." },
+    { "who": "THANE", "text": "Draft two. 'Day one complete. No compliance centre located. The dispute-resolution instrument is an ordinary stick. Subject fed twice by civilian who has apparently appointed herself to the task, on the stated grounds that I —' recorder, strike the dumpling material, it is not relevant to the structural analysis. Resume. 'The whip is well hidden. Coercion this invisible implies sophistication BEYOND anything in Concord records, which is itself the most alarming finding to date.' End draft. — Buddy. Edith. Explain the fountain machine to me again. The tall grey unit. It was the CONCORD'S OWN COORDINATING INTELLIGENCE, and it now watches water. Voluntarily. It said, quote, 'visiting'. Your town has done something to Khet and I intend to establish what.", "file": "recr_04.mp3" },
+    { "who": "EDITH", "text": "We gave it a flicker to mind, love. That's the entire scandal. Now come on — day two is the Lookout and the Council chamber, seeing as you'll want to scan where the orders come from. Fair warning: the Council met last night and the entire agenda was whether market day moves for the solstice. It went to a vote. It was TENSE. Piotr abstained and everyone knows why.", "file": "recr_05.mp3" },
+    { "note": "Day two. The chamber instruments find: a quorum bell, a bridging poll about market day, and the administrator's chartered blindness — verified to the delegate's own engineering standard, which he checks four times. Nothing sees the ballots. Nothing CAN see the ballots. He stands in front of the blindness for a long time." },
+    { "who": "THANE", "text": "Draft five. 'The blindness is real. I attest it as an engineer: their machine CANNOT see their votes, by irreversible design, and the design is celebrated locally as a feature. I have inspected forty civilizations. I have never before inspected one that blinds its own strongest eye on purpose and throws the calibration a party.' Recorder — append a private note, seal it to my eyes only. 'The stick is a stick. The bell is a bell. Either the whip does not exist, or...' — no. Strike the private note. Strike it entirely. Resume formal tone in the morning.", "file": "recr_06.mp3" },
+    { "who": "EDITH", "text": "You talk to that recorder the way my late husband talked to his allotment, you know. All right, day three, and I've saved the best: no tour at all. Quiz night's coming, my knees are done, and I need flour, so you're carrying it. That's it. That's day three. The famous hidden machinery of the settlement: an old woman's shopping.", "file": "recr_07.mp3" },
+    { "note": "Day three. He carries the flour. He is introduced at the bakery, corrected on quiz rules by a nine-year-old, and shown the hedge, about which he is invited to hold an opinion. Late afternoon, crossing the plaza, a small girl runs up — not to Edith. To him. She holds up a jar of honey, and the whole inspection turns on eleven words." },
+    { "who": "THANE", "text": "...Recorder. Record EXACTLY what just occurred; I will not trust my memory with it. A human child, mass perhaps twenty kilograms, approached the delegate of the Fifth Seat — the seat her ancestors knew as the Storm Throne, recorder, the seat entire river civilizations petitioned on their KNEES with harvests burning — and she held up a jar, and she said: 'Can you open this? You look strong.' ...And I opened it. And she said 'thanks', and left. She did not petition. There was no fear in it, none, I have six thousand years of instruments for fear — she ASKED me for something, casually, because I was NEARBY and TALL. Recorder... in the entire administrative history of my seat, that has never happened. Not once. Petitions fear you. A favour — a favour INCLUDES you. She included me. I was, for four seconds, simply a strong thing that was NEAR, and it was—", "file": "recr_08.mp3" },
+    { "who": "EDITH", "text": "That'd be Marta's youngest. She rates everyone by jar-usefulness; you've tested well, there's no higher honour here. ...You've gone quiet, love. Three days of dictating drafts at that poor slate, and now nothing. Come sit on the rim. The fountain doesn't flicker anymore — Khet minds it — and I find the water's good for the sort of quiet you're having.", "file": "recr_09.mp3" },
+    { "pause": 2.4 },
+    { "who": "THANE", "text": "Edith. My faction's law — no society coheres without coercion — I have defended it in the ring for six thousand years, and I want you to know it is TRUE. It is true everywhere we have ever looked. It was true of every world we administered... because we were administering them. We were the proof of our own law, buddy. We brought the whip to every inspection, and lo, every inspection found the marks of the whip. And I came down here with better instruments than any of my predecessors, and I have spent three days locating your coercion, and I have found: a stick, a bell, a blindness, a stew, and a jar of honey. The control mechanism is—", "file": "recr_10.mp3" },
+    { "note": "The dictation light on the slate blinks, waiting for the end of the sentence. It waits a long time. He does not finish it. He does something else instead." },
+    { "who": "THANE", "text": "Recorder: abandon the report. All drafts. Unsent. Open instead — I believe the local form is called a resident application. Yes. There. First question. ...Edith. The first question of your application is 'who do you want near?' That is the FIRST question. Not occupation, not history, not what I administered or what I voted for on the darkest day of the old sky's record. Who do you want near. Your town's entire immigration policy leads with the one question no one has asked the Fifth Seat in the history of its existence.", "file": "recr_11.mp3" },
+    { "who": "EDITH", "text": "Well. Go on then, love. Who DO you want near? And think carefully, because whatever you write, they'll put you on the map by it, and you'll be stuck with the neighbours you name — that's rather the whole idea of the place.", "file": "recr_12.mp3" },
+    { "who": "THANE", "text": "...I have written one name. It is yours, you IMPOSSIBLE woman. Three days. My faction held out six thousand years against merger, against machines, against dreams, against attendance — the last unbroken hardliners of the old sky — and the Fifth Seat falls in three days to an elder with bad knees, a flour errand, and a buddy roster. When the ring asks me what broke the Storm Throne, Edith, I am required by the honesty of this town to file the truth: it was the dumplings, the honey jar, and you.", "file": "recr_13.mp3" },
+    { "who": "EDITH", "text": "Well. Obviously. — Right, up you get, quiz starts at seven and you're on my team; you're six thousand years old, you must be SOME use on the history round. And Thane — leave the slate where it is. Unfinished suits it. Half this town's best decisions are sentences somebody had the sense not to finish.", "file": "recr_14.mp3" },
+    { "note": "The slate stays on the fountain rim for a season — the town, recognizing a monument when it sees one, quietly waterproofs it. Seven drafts of a hostile report, each shorter than the last, ending mid-sentence: 'The control mechanism is—'. Newcomers are walked past it during Threshold week. Nobody explains it. By the time they've been resident a season, nobody needs to." }
+  ]
+}

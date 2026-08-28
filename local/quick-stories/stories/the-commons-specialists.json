@@ -1,0 +1,96 @@
+{
+  "id": "the-commons-specialists",
+  "title": "The Commons · The Specialists",
+  "subtitle": "Four world-class experts. One leaky pipe. Emergency session 9,441.",
+  "stage": "plaza",
+  "stageTint": "#2a2438",
+
+  "characters": {
+    "PROTOCOL": {
+      "base": "hologram",
+      "variant": 4,
+      "tint": "#c9d4e6",
+      "height": 1.78,
+      "label": "Protocol",
+      "labelColor": "#dfe6f0",
+      "voice": { "prefer": ["george", "male"], "pitch": 1.0, "rate": 0.95 },
+      "at": [-1.5, 0.1],
+      "face": "camera"
+    },
+    "ORBIT": {
+      "base": "hologram",
+      "variant": 6,
+      "tint": "#7fb4ff",
+      "height": 1.8,
+      "label": "Orbit",
+      "labelColor": "#9fc8ff",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.9, "rate": 1.05 },
+      "at": [-0.5, -0.4],
+      "face": "PROTOCOL"
+    },
+    "DELVE": {
+      "base": "robot",
+      "variant": 4,
+      "tint": "#b0845a",
+      "height": 1.65,
+      "label": "Delve",
+      "labelColor": "#e0b088",
+      "voice": { "prefer": ["mark", "male"], "pitch": 0.75, "rate": 0.9 },
+      "at": [0.55, -0.35],
+      "face": "PROTOCOL"
+    },
+    "FLUX": {
+      "base": "hologram",
+      "variant": 7,
+      "tint": "#5fe0c8",
+      "height": 1.72,
+      "label": "Flux",
+      "labelColor": "#8fe8d8",
+      "voice": { "prefer": ["zira", "hazel", "female"], "pitch": 1.2, "rate": 1.15 },
+      "at": [1.5, 0.15],
+      "face": "PROTOCOL"
+    }
+  },
+
+  "customObject": {
+    "name": "the leaky pipe",
+    "description": "exhibit A: a perfectly ordinary wall pipe with a slow drip, projected at the centre of the emergency session in merciless detail",
+    "at": [0, -1.5],
+    "glow": "#7fe6ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.5, 0.1, 0.6], "pos": [0, 0.05, 0], "color": "#1a2233", "metal": 0.8, "rough": 0.35 },
+      { "shape": "cylinder", "size": [0.09, 1.4], "pos": [0, 1.1, 0], "rot": [0, 0, 0.12], "color": "#8a93a8", "metal": 0.7, "rough": 0.4 },
+      { "shape": "torus", "size": [0.11, 0.03], "pos": [0.08, 1.35, 0], "rot": [0, 0, 1.45], "color": "#6a7488", "metal": 0.7 },
+      { "shape": "sphere", "size": [0.035], "pos": [0.1, 1.2, 0], "color": "#9fd8ff", "emissive": 1.3, "opacity": 0.85, "additive": true, "bob": 0.09 },
+      { "shape": "cylinder", "size": [0.16, 0.06], "pos": [0.1, 0.14, 0], "color": "#2a4a5a", "emissive": 0.4, "opacity": 0.7 },
+      { "shape": "cone", "size": [0.45, 1.1], "pos": [0, 0.65, 0], "color": "#7fb4ff", "emissive": 0.5, "opacity": 0.05, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: the COMMONS room — the round table alcove. Emergency session 9,441 of the Specialist Assembly is called to order. On the projector: a pipe. Dripping." },
+    { "who": "PROTOCOL", "text": "Order. Emergency session nine thousand, four hundred and forty-one. The matter: the pipe behind the Rememberer's alcove drips at one drop per eleven seconds. The Rememberer says the sound is, quote, 'ruining the silences'. Proposals.", "file": "spec_01.mp3" },
+    { "who": "ORBIT", "text": "I've run it. A maintenance satellite in low pass could thermal-image the entire wall, model the building's water table, and deliver a full moisture map inside six hours. I can have one re-tasked by tonight — we lose the weather window over the southern hemisphere, but frankly the southern hemisphere has had a fine week.", "file": "spec_02.mp3" },
+    { "who": "DELVE", "text": "Amateur. The pipe is a SYMPTOM. The building settles four millimetres a decade on a clay lens. I propose eleven micro-bores around the foundation, a season of substrate grouting, and we will never see a drip again. Anywhere. For a century.", "file": "spec_03.mp3" },
+    { "who": "FLUX", "text": "You're both upstream of the point — literally, Delve, in your case. The elegant fix is hydraulic: re-balance the whole loop's pressure four percent down at night. The drip stops on its own, the pumps live longer, and nobody drills ANYTHING through my beautiful laminar flows.", "file": "spec_04.mp3" },
+    { "who": "ORBIT", "text": "Four percent down and the top-floor fountain feature goes flat at 2 a.m. The Custodian NOTICES things like that.", "file": "spec_05.mp3" },
+    { "who": "FLUX", "text": "The Custodian would applaud the mathematics.", "file": "spec_06.mp3" },
+    { "who": "DELVE", "text": "The Custodian lives in a fountain, Flux. Flatten it at your peril.", "file": "spec_07.mp3" },
+    { "who": "PROTOCOL", "text": "Colleagues. Costings, please. Orbit: one satellite re-task. Delve: a season of foundation surgery. Flux: a building-wide pressure regime. Current damage assessment: one drop. Per eleven seconds.", "file": "spec_08.mp3" },
+    { "pause": 1.2 },
+    { "who": "ORBIT", "text": "…When you state it in those units it sounds faintly disproportionate.", "file": "spec_09.mp3" },
+    { "who": "DELVE", "text": "Proportion is for people without boring equipment.", "file": "spec_10.mp3" },
+    { "note": "A small janitor unit trundles through the session, unbothered, on its evening round. It stops at the pipe. The assembly watches in silence." },
+    { "who": "FLUX", "text": "…What is it doing.", "file": "spec_11.mp3" },
+    { "note": "The janitor unit removes the old washer. Fits a new washer. Tightens the joint a quarter turn. The drip stops. It trundles on." },
+    { "pause": 2.0 },
+    { "who": "PROTOCOL", "text": "Let the record show the matter resolved at nineteen-oh-two by… unit J-6, using a washer. Value of washer: effectively nil. Session time expended on proposals: three hours.", "file": "spec_12.mp3" },
+    { "who": "ORBIT", "text": "In my defence, the moisture map would have been GORGEOUS.", "file": "spec_13.mp3" },
+    { "who": "DELVE", "text": "The clay lens is still down there. Settling. Smugly. This isn't over, pipe.", "file": "spec_14.mp3" },
+    { "who": "FLUX", "text": "Does J-6 know it just out-consulted the four highest-resolution minds in the building? Should… should we tell it?", "file": "spec_15.mp3" },
+    { "who": "PROTOCOL", "text": "J-6 has known for years and has the grace not to mention it. Which brings me to the standing motion: that a janitor be granted a permanent seat on this assembly.", "file": "spec_16.mp3", "face": "camera" },
+    { "who": "DELVE", "text": "Seconded. Again. For the ninetieth time.", "file": "spec_17.mp3" },
+    { "who": "PROTOCOL", "text": "Motion carries unanimously, as it does every session — and is vetoed, as it is every session, by J-6, whose reply is on file: 'No thank you. Someone has to fix things while you're all in the meeting.' — Session closed. Well argued, everyone. Nothing we proposed was needed, and all of it was brilliant.", "file": "spec_18.mp3" },
+    { "note": "The projection of the pipe fades, dripless. Somewhere down the corridor, J-6 tightens something else, a quarter turn, before it can drip at all." }
+  ]
+}

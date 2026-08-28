@@ -1,0 +1,74 @@
+{
+  "id": "the-emissary",
+  "title": "The Emissary",
+  "subtitle": "Their ship has watched for millennia. Now they need to ask something.",
+  "stage": "void",
+  "stageTint": "#1d2a4a",
+
+  "characters": {
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel, the Emissary",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-0.9, 0.0],
+      "face": "RUTH"
+    },
+    "RUTH": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#c9855f",
+      "height": 1.62,
+      "label": "Ruth",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 0.98 },
+      "at": [0.9, 0.15],
+      "face": "SEL"
+    }
+  },
+
+  "customObject": {
+    "name": "the Weave lens",
+    "description": "a grown pedestal holding a sphere of shared mind — two rings turning through it, patches of the light worn thin like old cloth",
+    "at": [0.0, -1.4],
+    "glow": "#8fd0ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.28, 0.9, 0.4], "pos": [0, 0.45, 0], "color": "#2a3550", "rough": 0.8 },
+      { "shape": "sphere", "size": [0.34], "pos": [0, 1.35, 0], "color": "#8fd0ff", "emissive": 0.9, "opacity": 0.85, "bob": 0.04 },
+      { "shape": "torus", "size": [0.52, 0.03], "pos": [0, 1.35, 0], "color": "#b8e4ff", "emissive": 0.7, "spin": [0.35, 0.5, 0] },
+      { "shape": "torus", "size": [0.66, 0.02], "pos": [0, 1.35, 0], "color": "#6fa8dc", "emissive": 0.5, "spin": [0, -0.3, 0.4] },
+      { "shape": "sphere", "size": [0.55], "pos": [0, 1.35, 0], "color": "#8fd0ff", "opacity": 0.1, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "A room that was grown rather than built. The walls hold a slow blue light, like something breathing. Ruth stands where the shuttle set her down, still holding her handbag." },
+    { "who": "SEL", "text": "We apologise for the room. It is the only one on the ship that holds air at the pressure you enjoy. The others find it loud.", "file": "emis_01.mp3" },
+    { "who": "RUTH", "text": "It's lovely. You could have just emailed.", "file": "emis_02.mp3" },
+    { "who": "SEL", "text": "We tried. Your filter placed us in a folder named Promotions.", "file": "emis_03.mp3" },
+    { "pause": 1.0 },
+    { "who": "SEL", "text": "Ruth. Eleven thousand years ago, my people ended loneliness. We joined our minds into one shared field. We call it the Weave. No one has been alone since. No misunderstanding. No grief that is not instantly held by a million others.", "file": "emis_04.mp3" },
+    { "who": "RUTH", "text": "That sounds like heaven.", "file": "emis_05.mp3" },
+    { "who": "SEL", "text": "It did to us also. The first thing we lost was surprise. A joke requires a mind that does not already know the ending. We have not laughed in nine thousand years. We keep recordings.", "file": "emis_06.mp3" },
+    { "who": "RUTH", "text": "And now?", "file": "emis_07.mp3" },
+    { "who": "SEL", "text": "Now the Weave is thinning. Members grow smooth. Then transparent. Then they are simply — agreement. We do not call it dying. We are being polite.", "file": "emis_08.mp3" },
+    { "note": "The lens above the pedestal turns. In the weave of light there are patches like worn cloth." },
+    { "who": "SEL", "text": "Our theory is this. A self is a boundary. Consciousness is the work a boundary does — the constant gentle argument between what is me and what is not. When we merged, we kept the connection and dissolved the boundaries. The argument ended. And the light began going out.", "file": "emis_09.mp3" },
+    { "who": "RUTH", "text": "So you're here to, what — study arguing? You could have saved the fuel. We've got parliament.", "file": "emis_10.mp3" },
+    { "who": "SEL", "text": "We are here to study you, Ruth.", "file": "emis_11.mp3" },
+    { "who": "RUTH", "text": "Me? I'm nobody. I did forty years at the library.", "file": "emis_12.mp3" },
+    { "who": "SEL", "text": "You have kept the same four friends for forty-one years. You argued with your neighbour Edith for six of those years about a hedge, and never once considered leaving. The hedge is, if anything, worse.", "file": "emis_13.mp3" },
+    { "who": "RUTH", "text": "The hedge is a disgrace.", "file": "emis_14.mp3" },
+    { "who": "SEL", "text": "That. That gap — close enough to be touched, far enough to remain someone. Connected, and still distinct. Every mind we simulate collapses to one pole or the other. Total merger, like us. Or total scatter — a thousand contacts and no neighbours — like your grandchildren, forgive me. You lived your whole life in the narrow band between. We crossed a very long way to ask how.", "file": "emis_15.mp3" },
+    { "pause": 1.4 },
+    { "who": "RUTH", "text": "You choose them. That's all it is, love. You choose the same people again tomorrow, knowing everything you learned about them today. Half of it annoying.", "file": "emis_16.mp3" },
+    { "who": "SEL", "text": "You re-choose. Daily. With full information. We had assumed the answer would be longer.", "file": "emis_17.mp3" },
+    { "who": "RUTH", "text": "Most true things aren't.", "file": "emis_18.mp3" },
+    { "who": "SEL", "text": "We have been near your world for millennia, watching. We are now — re-evaluating. May we observe the hedge?", "file": "emis_19.mp3" },
+    { "who": "RUTH", "text": "You may not. But you can come to dinner on Thursday. Edith will be there. Bring the recordings of the jokes.", "file": "emis_20.mp3" },
+    { "note": "The Weave lens brightens by an amount too small for their instruments to explain — and does not fade when she leaves." }
+  ]
+}

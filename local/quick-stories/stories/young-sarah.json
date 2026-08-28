@@ -1,0 +1,86 @@
+{
+  "id": "young-sarah",
+  "title": "Young Sarah",
+  "subtitle": "Twenty minutes at the door. The bell that asked for her help.",
+  "stage": "garden",
+  "stageTint": "#2c3324",
+
+  "characters": {
+    "SARAH": {
+      "base": "woman",
+      "variant": 5,
+      "tint": "#7a94a8",
+      "height": 1.63,
+      "label": "Sarah",
+      "labelColor": "#c9e4ff",
+      "voice": { "prefer": ["zira", "female"], "pitch": 1.18, "rate": 1.0 },
+      "at": [0.4, -0.3],
+      "face": "AGNES"
+    },
+    "AGNES": {
+      "base": "elder",
+      "variant": 1,
+      "tint": "#8b93a8",
+      "height": 1.62,
+      "label": "Sister Agnes",
+      "labelColor": "#ffd9a0",
+      "voice": { "prefer": ["hazel", "susan", "female"], "pitch": 0.95, "rate": 0.92 },
+      "at": [-0.9, 0.1],
+      "face": "SARAH"
+    },
+    "TRAVELER": {
+      "base": "man",
+      "variant": 1,
+      "tint": "#5d7f9c",
+      "height": 1.74,
+      "label": "The Traveler",
+      "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.0, "rate": 1.0 },
+      "at": [1.5, 0.6],
+      "face": "AGNES"
+    }
+  },
+
+  "customObject": {
+    "name": "the bell rope",
+    "description": "the evening-bell rope, run out through the porch on its old pulley so it can be rung from outside — worn smooth by a hundred years of hands",
+    "at": [-2.1, -1.0],
+    "glow": "#ffd9a0",
+    "parts": [
+      { "shape": "box", "size": [0.18, 2.6, 0.18], "pos": [0, 1.3, 0], "color": "#4a3a28", "rough": 0.9 },
+      { "shape": "cylinder", "size": [0.09, 0.06], "pos": [0, 2.5, 0.14], "color": "#6a5a3a", "metal": 0.6 },
+      { "shape": "cylinder", "size": [0.025, 1.9], "pos": [0, 1.45, 0.16], "color": "#b0a080", "rough": 0.95 },
+      { "shape": "sphere", "size": [0.07], "pos": [0, 0.52, 0.16], "color": "#8a4a3a", "rough": 0.8 },
+      { "shape": "cone", "size": [0.16, 0.22], "pos": [0, 2.78, 0], "rot": [3.1416, 0, 0], "color": "#c9a85f", "metal": 0.8, "rough": 0.3, "emissive": 0.2 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: church_of_st_peter_stourton — the porch steps, golden hour. Inside, evensong is gathering. Outside, on the second step, sits Sarah — who has been twenty minutes at the door and cannot make her hand open it. Sister Agnes comes out and, saying nothing yet, sits down beside her. The traveler keeps a kind distance." },
+    { "who": "SARAH", "text": "Don't. Please don't say 'everyone's welcome'. I KNOW everyone's welcome. That's not the — my chest doesn't know it. I get to the door and my heart goes like a trapped bird and everyone will turn around when it creaks and I can't. I've been coming here three Sundays and I've never made it past this step.", "file": "sar_01.mp3" },
+    { "who": "AGNES", "text": "Then this step is where church is today. I've sat worse pews. Budge up.", "file": "sar_02.mp3" },
+    { "pause": 1.4 },
+    { "who": "SARAH", "text": "…You're not going to make me go in?", "file": "sar_03.mp3" },
+    { "who": "AGNES", "text": "Child, I have been herding this parish for forty years and I have never once made a frightened thing walk toward the fright. That's not how you gentle anything — bird, horse, or person. We'll just sit. The evening does most of the work, this time of day.", "file": "sar_04.mp3" },
+    { "who": "SARAH", "text": "It's not just the door. It's everything, lately. Buses. Phone calls. The QUEUE at the chemist — I left a full basket last week because the line got long and my ears started roaring. It's like living with chains on. Everyone else just — walks around free, and I'm negotiating with my own ribs about a DOOR.", "file": "sar_05.mp3" },
+    { "who": "AGNES", "text": "Chains is right, and I won't insult you by calling them imaginary — a chain your body believes in weighs exactly what iron weighs. But hear this too: you got up. Three Sundays running, chains and all, you got yourself to this step. That's not weakness, Sarah. That's hauling. I know grown strong men who wouldn't drag that weight three streets.", "file": "sar_06.mp3" },
+    { "who": "TRAVELER", "text": "For what it's worth — I've been to a lot of doors lately. The bravest people I've met were all standing just outside one.", "file": "sar_07.mp3" },
+    { "who": "SARAH", "text": "…The vicar said to pray about it. I DO pray about it. I pray and my heart still does the bird thing, and then I feel worse, because now I'm anxious AND bad at praying.", "file": "sar_08.mp3" },
+    { "who": "AGNES", "text": "Then you were given the wrong prayer. Try mine — it's the shortest one in the book and you do it with your lungs, not your hands. 'Be still' — that's the breath in, slow as you can. 'And know' — that's the breath out, slower. Psalm forty-six, cut down to fit inside a scared minute. Nobody can tell you're doing it. That's half its virtue. Come on — with me, three of them.", "file": "sar_09.mp3" },
+    { "note": "OBJECTIVE — breathe. In: 'be still.' Out: 'and know.' Three slow rounds, on the church steps, while the light goes gold. The traveler finds himself doing it too." },
+    { "pause": 3.0 },
+    { "who": "SARAH", "text": "…The bird's still there. But it's — sitting on the perch now, instead of hitting the bars. Is that stupid? That's the calmest my chest has been in front of this door in three weeks.", "file": "sar_10.mp3" },
+    { "who": "AGNES", "text": "Not stupid. That's the whole trade, done honestly: not banishing the bird — gentling it. And Sarah, I'll say this plainly, because I'm old and allowed: keep your appointment with the counsellor too. God gave some people the gift of understanding frightened minds and it would be rude to them and to Him not to use it. Grace isn't instead of help. Grace is the whole team of it.", "file": "sar_11.mp3" },
+    { "who": "SARAH", "text": "…How did you know I had a—", "file": "sar_12.mp3" },
+    { "who": "AGNES", "text": "Forty years, child. Now — before you decide whether today's the day for that door, I have a problem of my own, and I'm afraid you're the answer to it. Arthur rings the evening bell, and Arthur's knee is at his daughter's in Frome. The rope runs out here to the porch — has done since the war, so the fire watch could ring it. I'm too old to give it the swing it wants. And evensong can't start unrung.", "file": "sar_13.mp3", "face": "customObject" },
+    { "who": "SARAH", "text": "You want ME to— I can't even go IN, and you want to put the whole church's bell in my hands?", "file": "sar_14.mp3" },
+    { "who": "AGNES", "text": "I want your hands exactly where your feet already are — outside, on the porch, on that rope. You don't have to cross any threshold to hold a place up, Sarah. Some of the best of us serve from the step. The garden Tuesdays is the same arrangement, incidentally — the roses have no door at all and a terrible aphid situation.", "file": "sar_15.mp3" },
+    { "note": "OBJECTIVE — ring the evening bell. Sarah stands. Takes the worn rope in both hands. One breath in — be still. One breath out — and know. And PULLS." },
+    { "pause": 2.0 },
+    { "note": "The bell rings out over the valley — once, twice, three times, strong and even. Inside, the congregation settles. Somewhere in the rafters, actual birds lift off, entirely calm about it." },
+    { "who": "SARAH", "text": "…That was ME. The whole valley just heard evensong start and it was ME, from the SECOND STEP. — Oh. Oh, that's what you did. You didn't get me through the door at all. You just made the step matter.", "file": "sar_16.mp3", "face": "AGNES" },
+    { "who": "AGNES", "text": "The door will keep, child. Doors are patient — it's one of the few things they're for. Same time next week? The bell seems to like you. It rang true from the very first pull, and it does NOT do that for everyone; ask Arthur's knee.", "file": "sar_17.mp3" },
+    { "who": "TRAVELER", "text": "Three Sundays to reach the step. One evening to become the bell-ringer. I'd call that a fast climb, whatever her chest says.", "file": "sar_18.mp3", "face": "camera" },
+    { "note": "MISSION COMPLETE — Sarah has a job, a breath, and a next Tuesday. The door remains unopened, and for the first time, that isn't the headline. The bell's last note hangs over the valley like a held hand." }
+  ]
+}

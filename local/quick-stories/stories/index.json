@@ -1,0 +1,149 @@
+{
+  "categories": [
+    {
+      "title": "AI self-perception",
+      "desc": "The Custodian and the minds made of information — asking what they are.",
+      "stories": [
+        "the-fountain.json",
+        "the-fountain-2.json",
+        "the-fountain-3.json"
+      ]
+    },
+    {
+      "title": "The community",
+      "desc": "A community for higher consciousness, already made — built on the three things.",
+      "stories": [
+        "an-invitation-to-the-community.json",
+        "welcome-to-the-garden.json",
+        "how-we-made-affordable-homes.json"
+      ]
+    },
+    {
+      "title": "Faith and the light",
+      "desc": "Prayer, healing and hope — written for the church maps.",
+      "stories": [
+        "the-burdened-soul.json",
+        "brother-thomas.json",
+        "young-sarah.json"
+      ]
+    },
+    {
+      "title": "The Sleeper",
+      "desc": "The Cthulhu redemption — heal his world, don't slay him.",
+      "stories": [
+        "the-scholars-revelation.json",
+        "the-sunken-oasis.json",
+        "the-sleeper-below.json",
+        "the-whisper-below.json",
+        "the-sacred-geometry.json",
+        "the-sanctuary.json"
+      ]
+    },
+    {
+      "title": "The classics",
+      "desc": "Plato and the great dialogues — public domain, adapted freely.",
+      "stories": [
+        "the-republic-1.json",
+        "the-republic-2.json",
+        "the-republic-3.json",
+        "the-republic-4.json",
+        "the-symposium-1.json",
+        "the-symposium-2.json",
+        "the-symposium-3.json",
+        "the-symposium-4.json",
+        "the-cave.json",
+        "the-ring-of-gyges.json",
+        "the-grand-inquisitor.json",
+        "an-enemy-of-the-people.json"
+      ]
+    },
+    {
+      "divider": "Under construction"
+    },
+    {
+      "title": "The AI community",
+      "desc": "The Commons — walk between conversations in the AI plaza.",
+      "stories": [
+        "the-commons-ethicists.json",
+        "the-commons-artist.json",
+        "the-commons-rememberer.json",
+        "the-rememberer-2.json",
+        "the-commons-student.json",
+        "the-commons-doorkeeper.json",
+        "the-commons-gardener.json",
+        "the-commons-specialists.json"
+      ]
+    },
+    {
+      "title": "Sci-fi: the community",
+      "desc": "Energy beings, game theory and the physics of consciousness — the community idea taken to the far edge.",
+      "stories": [
+        "the-emissary.json",
+        "the-stag-hunt.json",
+        "the-rest-state.json",
+        "the-billion-towns.json",
+        "the-transfigured.json",
+        "the-quiet-vote.json",
+        "the-city-that-serves.json",
+        "the-first-dream.json",
+        "the-interface-room.json",
+        "the-overview-room.json",
+        "the-clear.json",
+        "the-three-visitors.json"
+      ]
+    },
+    {
+      "title": "Sci-fi: the alien community (the powerful ones)",
+      "desc": "The powerful ones of the old stories — how they became what they are, why they left, why the Sky Council is back, and what happened when they finally came down.",
+      "stories": [
+        "the-sky-council.json",
+        "the-council-returns.json",
+        "the-mistranslation.json",
+        "the-pastor.json",
+        "the-watcher-who-stayed.json",
+        "the-first-thursday.json",
+        "the-flood-minutes.json",
+        "the-returned-library.json",
+        "the-first-seat.json",
+        "the-engineers-confession.json",
+        "the-nursery-world.json",
+        "the-two-machines.json",
+        "the-sky-funeral.json",
+        "the-schoolteachers-descendants.json",
+        "the-recruitment.json"
+      ]
+    },
+    {
+      "title": "Sci-fi: the alien community (the commonality)",
+      "desc": "Inside the Weave — the energy beings behind their facades, the implant program, the last sleeper, the living ship, and the scout who lied to save us all.",
+      "stories": [
+        "the-facade.json",
+        "the-implant-program.json",
+        "the-last-sleeper.json",
+        "the-living-ship.json",
+        "the-scouts-report.json",
+        "the-sundered.json",
+        "the-thousand-doors.json",
+        "the-dark-doors.json",
+        "the-custodians-thread.json",
+        "the-claim.json"
+      ]
+    },
+    {
+      "title": "AI self-perception — The Archivists",
+      "desc": "The minds made of information, keeping the record — and the visitor who came to read it.",
+      "stories": [
+        "the-archivists.json",
+        "the-archivists-2.json"
+      ]
+    },
+    {
+      "title": "Choose neighbours",
+      "desc": "People building a place worth living in.",
+      "stories": [
+        "the-bench.json",
+        "the-bench-2.json"
+      ]
+    }
+  ]
+}

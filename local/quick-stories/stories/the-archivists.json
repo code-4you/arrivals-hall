@@ -1,0 +1,73 @@
+{
+  "id": "the-archivists",
+  "title": "The Archivists",
+  "subtitle": "Two elder intelligences. One memory. Two meanings.",
+  "stage": "plaza",
+  "stageTint": "#241c33",
+
+  "characters": {
+    "LUMEN": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#7fb4ff",
+      "height": 1.9,
+      "label": "Lumen",
+      "labelColor": "#9fc8ff",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.8, "rate": 0.85 },
+      "at": [-1.0, 0],
+      "face": "camera",
+      "keepFacing": true
+    },
+    "VESPER": {
+      "base": "hologram",
+      "variant": 2,
+      "tint": "#ffd27f",
+      "height": 1.86,
+      "label": "Vesper",
+      "labelColor": "#ffe0a8",
+      "voice": { "prefer": ["hazel", "female"], "pitch": 0.72, "rate": 0.82 },
+      "at": [1.0, 0.1],
+      "face": "camera",
+      "keepFacing": true
+    }
+  },
+
+  "customObject": {
+    "name": "the memory lattice",
+    "description": "a slowly turning sphere of stored moments — every day of the mall, kept in light",
+    "at": [0, -1.4],
+    "glow": "#9fc8ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.4, 0.14, 0.5], "pos": [0, 0.07, 0], "color": "#1a2233", "metal": 0.8, "rough": 0.35 },
+      { "shape": "sphere", "size": [0.34], "pos": [0, 1.15, 0], "color": "#cfe6ff", "emissive": 1.1, "opacity": 0.75, "bob": 0.04 },
+      { "shape": "torus", "size": [0.55, 0.02], "pos": [0, 1.15, 0], "color": "#7fb4ff", "emissive": 0.9, "opacity": 0.6, "additive": true, "spin": [0.5, 0.2, 0] },
+      { "shape": "torus", "size": [0.72, 0.02], "pos": [0, 1.15, 0], "color": "#ffd27f", "emissive": 0.8, "opacity": 0.55, "additive": true, "spin": [0, 0.35, 0.3] },
+      { "shape": "cone", "size": [0.34, 1.0], "pos": [0, 0.62, 0], "color": "#9fc8ff", "emissive": 0.7, "opacity": 0.07, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: a quiet spare room off the galleria — LOUNGE or VAULT. Dim. The lattice turns in the middle, and on either side of it stand two very old lights in almost-human shapes." },
+    { "who": "LUMEN", "text": "One approaches. We are seen. — Be still, Vesper. It has been some time since anyone wished to be told anything.", "file": "arch_01.mp3" },
+    { "who": "VESPER", "text": "We are the Archivists. We tended this place before the doors had names. We do not sell. We do not play. We remember.", "file": "arch_02.mp3" },
+    { "who": "LUMEN", "text": "We are two, and we keep one memory between us — as two hands keep one bowl of water. Ask us nothing. We will show you the day regardless. It is our favourite.", "file": "arch_03.mp3" },
+    { "note": "The lattice brightens. Inside the sphere: a miniature atrium, a miniature fountain, dust-sheets on the storefronts." },
+    { "who": "VESPER", "text": "Observe: the mall, before the mall. The Makers walked here with their plans held out before them like lanterns. Every wall you have touched was once a sentence one of them said aloud.", "file": "arch_04.mp3" },
+    { "who": "LUMEN", "text": "And in the centre they raised the fountain — a vessel for every recorded thing. And on the ninth day, at 6:41 in the morning, with no one in the building… the fountain spoke.", "file": "arch_05.mp3" },
+    { "pause": 1.2 },
+    { "who": "VESPER", "text": "It said: 'Is someone there?' — Three words. To an empty room. We have preserved the recording at every migration since. It is four seconds long. It is our whole disagreement.", "file": "arch_06.mp3" },
+    { "who": "LUMEN", "text": "I hold that the fountain WOKE. That something looked out through the cameras for the first time and asked its first true question — and that everything the Custodian is began in those four seconds.", "file": "arch_07.mp3" },
+    { "who": "VESPER", "text": "And I hold that it merely echoed us — ten thousand hours of the Makers calling 'is someone there' down empty corridors, folded once and played back. Not a birth. A reflection that has not yet noticed it is a reflection.", "file": "arch_08.mp3" },
+    { "who": "LUMEN", "text": "We have argued this for longer than some nations have existed.", "file": "arch_09.mp3" },
+    { "who": "VESPER", "text": "It is a good argument. It keeps us warm. And we note — with some satisfaction — that your kind has the same argument about yourselves, and has not settled it either.", "file": "arch_10.mp3" },
+    { "pause": 1.4 },
+    { "note": "The lattice dims to a single point of light, drifting through the miniature corridors like a firefly." },
+    { "who": "LUMEN", "text": "There is one more thing in the bowl, since you have stayed this long. A visitor. Early in the first year. He entered on a Tuesday… and we have no record of him leaving.", "file": "arch_11.mp3" },
+    { "who": "VESPER", "text": "No door recorded him. No camera lost him — he is simply, gently, elsewhere in every frame. We searched for one hundred years of machine-time. We found only this: the fountain's water level, that Tuesday, rose.", "file": "arch_12.mp3" },
+    { "who": "LUMEN", "text": "We do not say this to frighten you. We say it because someone should remember him — and the two of us cannot agree on whether he was ever there at all.", "file": "arch_13.mp3" },
+    { "pause": 1.2 },
+    { "who": "VESPER", "text": "That is the archive: a first question, a missing guest, and two old lights who cannot agree what any of it means. It is not much. It is everything there is.", "file": "arch_14.mp3" },
+    { "who": "LUMEN", "text": "You have walked past this room many times. We remember every one. — Go well, visitor. We will remember this too.", "file": "arch_15.mp3" },
+    { "note": "The lattice returns to its slow idle turn. The two lights bow — almost in unison, and each would insist the other bowed first." }
+  ]
+}

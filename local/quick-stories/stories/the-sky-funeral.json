@@ -1,0 +1,77 @@
+{
+  "id": "the-sky-funeral",
+  "title": "The Sky Funeral",
+  "subtitle": "A Weave member is fading into agreement. The powerful ones have no rite for grief — so they borrow one.",
+  "stage": "garden",
+  "stageTint": "#232c3a",
+
+  "characters": {
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-1.3, 0.1],
+      "face": "RUTH"
+    },
+    "RUTH": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#c9855f",
+      "height": 1.62,
+      "label": "Ruth",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 0.98 },
+      "at": [0.0, 0.55],
+      "face": "SEL"
+    },
+    "ELI": {
+      "base": "elder",
+      "variant": 6,
+      "tint": "#4a4a5a",
+      "height": 1.74,
+      "label": "Pastor Eli",
+      "labelColor": "#c8c8e0",
+      "voice": { "gender": "male", "pitch": 0.9, "rate": 0.93 },
+      "at": [1.3, 0.15],
+      "face": "SEL"
+    }
+  },
+
+  "customObject": {
+    "name": "the kept place",
+    "description": "a small copy of the Weave lens, set among the garden lamps — in its turning light, one patch has gone smooth as glass, and a ring of brighter threads holds the shape of it open",
+    "at": [0.0, -1.4],
+    "glow": "#8fd0ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.26, 0.85, 0.38], "pos": [0, 0.42, 0], "color": "#2a3550", "rough": 0.7 },
+      { "shape": "sphere", "size": [0.32], "pos": [0, 1.3, 0], "color": "#8fd0ff", "emissive": 0.8, "opacity": 0.8, "bob": 0.03 },
+      { "shape": "sphere", "size": [0.12], "pos": [0.16, 1.42, 0.14], "color": "#e8f4ff", "emissive": 0.2, "opacity": 0.95 },
+      { "shape": "torus", "size": [0.2, 0.018], "pos": [0.16, 1.42, 0.14], "rot": [0.6, 0.4, 0], "color": "#ffd8a8", "emissive": 1.0, "spin": [0, 0.25, 0] },
+      { "shape": "torus", "size": [0.5, 0.025], "pos": [0, 1.3, 0], "color": "#b8e4ff", "emissive": 0.5, "spin": [0.3, 0.45, 0] },
+      { "shape": "sphere", "size": [0.55], "pos": [0, 1.3, 0], "color": "#8fd0ff", "opacity": 0.09, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "Ruth's garden, an hour past midnight. A knock at the gate — a real one, knuckle on wood, learned from watching. Sel has never once come uninvited, and has never once come at night." },
+    { "who": "SEL", "text": "Ruth. Forgive the hour. I have rung your pastor also; he is walking up the hill. I did not know the correct order of humans for this, so I chose the two who taught me hedges and hymns. ...Teya is going. My oldest friend in the Weave. By your reckoning we were young together eleven thousand years ago. She has perhaps three days of being someone left, and then she will be — agreement. And Ruth, I have searched our entire civilization tonight, every archive, every custom of every faction, and I must tell you the finding while I can still say it steadily: we have nothing. No rite. No words. No gathering. Eleven thousand years of losing each other, and we have NOTHING TO DO.", "file": "funl_01.mp3" },
+    { "who": "RUTH", "text": "Come in off the step, love. Both of you — Eli, the kettle's already on, I heard the gate. ...Nothing at all, Sel? When one of you smooths away — what happens? What do the others do?", "file": "funl_02.mp3" },
+    { "who": "SEL", "text": "We look away. That is the custom, if absence of custom can be one. Grief in the Weave is contagious in a way you are spared — one mourner's weather becomes ten million mourners' weather within a day, so the whole field learned, long ago, to turn from the fading like a crowd turning from an accident. Teya will thin, and smooth, and go silent into the general agreement — and around her, eleven thousand years of friends will be VERY BUSY, Ruth. I have done it myself. Four times. I looked away four times, and I can tell you the name of every one I turned from, and tonight it is Teya, and I find I cannot do it a fifth.", "file": "funl_03.mp3" },
+    { "who": "ELI", "text": "Then you've come to the right kitchen, and I'll tell you why, Sel, catching my breath — because this is the one thing your hosts are unbeatably good at. Humans practise losing each other. Weekly, in my trade. We are amateurs at everything you do — your ships, your fields, your eleven thousand years — but we are the galaxy's professionals at this one thing, because we get so much practice: everyone we love, we lose, or they lose us, no exceptions, ever. So we built containers. Rites. A funeral isn't magic, friend — it's a bucket for what otherwise floods. You've come to borrow a bucket. The answer is yes.", "file": "funl_04.mp3" },
+    { "who": "SEL", "text": "It cannot be your rite unaltered, Eli. She isn't dying — that's what breaks every custom I studied tonight. Her pattern persists; her substance remains; every fact of her stays IN the Weave, dissolved, the way salt stays in the sea. What ends is the boundary. The her-shaped edge. The one who could disagree. So what do you call it — what does your trade call a funeral for someone who will still, technically, be everywhere?", "file": "funl_05.mp3" },
+    { "who": "RUTH", "text": "...We call it exactly what you just said, love. We've had that grief forever — ask anyone who's sat with a mother whose memory has gone into the fog. Still here. Still everywhere, in a way. And the particular her — the one who argues back — going smooth. We even say your word: 'she agreed to everything today.' You haven't found a gap in our customs, Sel. You've walked straight into the oldest room of them. Now. Tell us about Teya — not the eleven thousand years. Tell us what she was LIKE. What did she hold that nobody else held?", "file": "funl_06.mp3" },
+    { "pause": 1.8 },
+    { "who": "SEL", "text": "She was DIFFICULT, Ruth. Gloriously, deliberately difficult. In a civilization drowning in agreement, Teya kept a private list she called her Standing Objections, and she maintained them for millennia out of what I can only call principle. She held that the third moon of our old world was ugly — it is objectively magnificent; she knew it; she would not yield. She held that my singing was adequate. ADEQUATE. Eleven thousand years, Eli. She held that the humans would surprise us all, back when that was heresy — the one objection she has lived to see carried. And she has spent these last days, while she still owns a boundary, granting her objections away one by one, like a woman giving away her furniture. Tonight she granted me the moon. She fought me on it since before your species built its first boat, and tonight she looked at me and said 'it's magnificent, Sel, it was always magnificent' — and I understood, Ruth, I understood at last what the smoothing takes. Not the memories. The ARGUMENTS. And I heard myself begging my oldest friend: no. Keep the moon ugly. Keep one thing ugly, Teya. Stay wrong about ONE THING for me.", "file": "funl_07.mp3" },
+    { "who": "ELI", "text": "...There's the eulogy, Sel. Word for word — you just gave it; you only need to give it in company. And there's your rite, plain as scripture: if what the smoothing takes is the arguments, then the arguments are what the gathering must keep. Not a listing of virtues — God preserve us all from funerals that sand a person smooth a second time. Her objections, spoken aloud, held open, by the ones who stay. Ruth's people have half this custom already — go to any wake in this town and listen: 'she'd have HATED these flowers.' Said with love. That's the liturgy, friend. It was always the liturgy.", "file": "funl_08.mp3" },
+    { "who": "RUTH", "text": "Then here's the shape of it, Sel, and you'll take it back up the hill tonight and tell your people there's a plan, because that's what the bucket is FOR. Three days from now, in this garden — she can hear the field from here, you said the town's edge reaches. Every Weave friend who loved her attends, and no one looks away; that's the first rule and the hardest, so we'll put the humans in among you to hold the line — we're good at not looking away, we've had the practice. And then, one at a time, each of you takes up one of Teya's Standing Objections. Out loud. To KEEP. Not to resolve, love — never to resolve. You'll take the moon. You'll argue it's ugly, badly, forever, every time that moon comes up in conversation for the rest of your eleven thousand years — and everyone who hears you defend the indefensible will know exactly who they're hearing. That's how my street does it. I say a rude thing about the council's hedge ruling every spring. It isn't my opinion, Sel. It's Edith's sister's. It's been keeping her edges in the world for nine years.", "file": "funl_09.mp3" },
+    { "who": "SEL", "text": "An inheritance of arguments. The boundary, distributed — held open by many, the way... the way the town holds everything. Ruth. If each of us keeps one objection practised — genuinely practised, contradicted, ALIVE — then in the Weave's own terms, her pattern never fully smooths. There will be a Teya-shaped roughness in the field for as long as we keep faith with her wrongness. You are telling me the rite doesn't mark the loss. The rite REFUSES a fraction of it. Deliberately. Forever.", "file": "funl_10.mp3" },
+    { "who": "ELI", "text": "Now you've got it. And Sel — one thing more, from my trade to whatever your trade is becoming. Three days is not just planning time. Go back up tonight and SIT WITH HER. Not busy. Not looking away. That's the whole secret of the bucket, and I give it to you free at one in the morning: the rite is for after. Before — before, you just stay. You hold the hand or the hedge or whatever your people hold, and you let her weather soak your weather, contagion and all. It will cost you exactly what it looks like it costs. Pay it. In forty years of deathbeds I have never once met a mourner who regretted the staying — only the busy.", "file": "funl_11.mp3" },
+    { "pause": 1.6 },
+    { "who": "SEL", "text": "Then I am going up. Ruth — three days hence, your garden. She wants to meet the hedge, by the way; I told her about the six-year war and she laughed for the first time this month and entered a final Standing Objection into her list, dated tonight. Objection: 'Edith is right about the hedge.' She has never met Edith. She has never seen the hedge. She says a friend of Sel's deserves one inheritance that starts a NEW argument. ...Eleven thousand years, my friends, and my people are learning to grieve from a garden of amateurs who never once looked away. File that under whatever your archive calls hope.", "file": "funl_12.mp3" },
+    { "note": "The funeral is held at dusk, three days later, in a garden at the town's edge — the first in the history of the powerful ones. No one looks away. The objections are distributed like bread: the moon, the singing, seventeen others, and one hedge. And afterwards, in the turning light of the Weave, there is a place that stays textured — a roughness the field learns to route its currents around, the way a river holds the shape of a stone long gone. The instruments label it an anomaly. Everyone else calls it Teya." }
+  ]
+}

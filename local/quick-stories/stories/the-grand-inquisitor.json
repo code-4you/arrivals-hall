@@ -1,0 +1,73 @@
+{
+  "id": "the-grand-inquisitor",
+  "title": "The Grand Inquisitor",
+  "subtitle": "Dostoevsky: the old cardinal, the silent Prisoner, and the kiss.",
+  "stage": "void",
+  "stageTint": "#1e1712",
+
+  "characters": {
+    "INQUISITOR": {
+      "base": "elder",
+      "variant": 4,
+      "tint": "#5a4a44",
+      "height": 1.68,
+      "label": "The Grand Inquisitor",
+      "labelColor": "#d8b8a0",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.72, "rate": 0.85 },
+      "at": [-0.85, 0.2],
+      "face": "PRISONER"
+    },
+    "PRISONER": {
+      "base": "man",
+      "variant": 7,
+      "tint": "#c8c0b0",
+      "height": 1.78,
+      "label": "The Prisoner",
+      "labelColor": "#f0e8d8",
+      "at": [0.85, -0.2],
+      "face": "INQUISITOR",
+      "keepFacing": true
+    }
+  },
+
+  "customObject": {
+    "name": "the lamp",
+    "description": "the old man's single lamp, set down on the cell table — the only light either of them gets",
+    "at": [0, -0.9],
+    "glow": "#e8a45f",
+    "parts": [
+      { "shape": "box", "size": [0.9, 0.75, 0.55], "pos": [0, 0.37, 0], "color": "#3a2f24", "rough": 0.9 },
+      { "shape": "cylinder", "size": [0.08, 0.05], "pos": [0, 0.78, 0], "color": "#6a5a3a", "metal": 0.6 },
+      { "shape": "cylinder", "size": [0.035, 0.14], "pos": [0, 0.87, 0], "color": "#e8dfc8" },
+      { "shape": "cone", "size": [0.025, 0.08], "pos": [0, 0.98, 0], "color": "#ffc46a", "emissive": 1.6, "opacity": 0.9, "additive": true, "bob": 0.012 },
+      { "shape": "sphere", "size": [0.22], "pos": [0, 0.96, 0], "color": "#e8a45f", "emissive": 0.8, "opacity": 0.12, "additive": true, "bob": 0.012 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: st_pancras_new_church_crypt — standing in for a prison cell in Seville, the sixteenth century, the darkest night of the Inquisition. Adapted from Dostoevsky, The Brothers Karamazov (public domain)." },
+    { "note": "The day before, He returned — quietly, to the hot pavements of the town, and the people knew Him, and He healed a blind man and raised a dead girl. And the Grand Inquisitor, an old man of ninety, watched from a distance — and had Him arrested. Now the cell door opens. The old man enters alone, sets his lamp on the table, and looks a long time into His face." },
+    { "who": "INQUISITOR", "text": "Is it You? …You?", "file": "inq_01.mp3" },
+    { "pause": 1.5 },
+    { "who": "INQUISITOR", "text": "Don't answer. Be silent. What could You say? You have no RIGHT to add one word to what You said before — that's the first thing You surrendered when You gave us the work. Why, then, have You come to hinder us?", "file": "inq_02.mp3" },
+    { "note": "The Prisoner says nothing. He watches the old man gently, which is somehow worse." },
+    { "who": "INQUISITOR", "text": "Tomorrow I will burn You. The same crowd that kissed the ground You walked on today will heap the coals at a nod from me — tomorrow. Does that astonish You? It shouldn't. It is the most honest thing that crowd will ever do.", "file": "inq_03.mp3" },
+    { "who": "INQUISITOR", "text": "Fifteen centuries ago You were offered the whole riddle in the desert — three questions, asked by a spirit wiser than either of us. Bread. Miracle. Authority. Everything that has happened to mankind since is contained in those three offers — and You refused all three. That refusal is the crime I am trying You for.", "file": "inq_04.mp3" },
+    { "who": "INQUISITOR", "text": "'Turn these stones into bread' — and mankind would have followed You like a flock, grateful and obedient forever. And You said no. You said man does not live by bread alone. You wanted them to follow freely, fed or starving. FREELY!", "file": "inq_05.mp3", "face": "camera" },
+    { "who": "INQUISITOR", "text": "You thought too highly of them. They are weak, unruly children — I say it with love; I have spent ninety years among them. They will hand You their freedom the moment their stomachs are empty, and say: 'better that you enslave us, but feed us.' I know. I have taken the trade ten thousand times. It is my whole ministry.", "file": "inq_06.mp3" },
+    { "who": "INQUISITOR", "text": "You wanted love given freely, not bought with miracles — so You came down from nothing, when they jeered at You to prove Yourself, and You stayed silent then, too. Respecting them. RESPECTING them! Man does not want to be respected, Prisoner. Man wants to kneel before something beyond argument. Deny him that, and he will kneel to idols, to gold, to each other's fists.", "file": "inq_07.mp3" },
+    { "who": "INQUISITOR", "text": "Freedom of conscience — there is no torment You could have devised crueller. To stand before every choice ALONE, with only Your distant image for a compass. A few can bear it. The strong, the free — Your chosen thousands. But the millions, the weak ones, the ones who cannot fast forty days — what of them? Did You come only for the strong?", "file": "inq_08.mp3" },
+    { "pause": 1.4 },
+    { "who": "INQUISITOR", "text": "So we corrected Your work. Softly. Century by century. We took up what You refused — the bread, the miracle, the authority — and we built them a life a child could carry. We permit their little sins and forgive them on schedule. They bring us their freedom like a fever they want cured, and they are HAPPY, Prisoner. Millions of them. Happy as children. And we — we few who keep the secret — we are the only unhappy ones. That is the bargain. I have counted it fair for sixty years.", "file": "inq_09.mp3" },
+    { "who": "INQUISITOR", "text": "And then You come back. Quietly, healing the blind — as if fifteen centuries of our mending could be undone by one warm afternoon. I will not permit it. Everything is given to them now, gently, from our hands. You would hand it all back — the terrible gift, the loneliness of choosing. In the name of the very ones You came for: I will burn You for it.", "file": "inq_10.mp3" },
+    { "pause": 2.0 },
+    { "who": "INQUISITOR", "text": "…Well? I have emptied ninety years onto this table. Say something. Anything. Even Your anger — I would take Your anger as a mercy. Speak!", "file": "inq_11.mp3" },
+    { "note": "The Prisoner rises. He crosses the cell, and softly kisses the old man — once, on his bloodless, ninety-year-old lips. That is the whole answer. All of it." },
+    { "pause": 2.5 },
+    { "note": "The old man shudders. Something moves at the corner of his mouth. He walks to the door, throws it open onto the dark town, and says—" },
+    { "who": "INQUISITOR", "text": "Go. Go, and come no more… Come not at all. Never. NEVER.", "file": "inq_12.mp3" },
+    { "note": "And the Prisoner goes out into the dark alleys of the town, and does not return. The old man stands a long while in the doorway. The kiss glows in his heart — but he does not change his mind." },
+    { "who": "INQUISITOR", "text": "…The kiss burns. Let it burn. The work is the work, and tomorrow is a working day.", "file": "inq_13.mp3", "face": "camera" },
+    { "note": "The lamp gutters on the table where he leaves it — for the next prisoner, or for himself. Freedom or bread, the question is still open. It is always still open. That is why it is told." }
+  ]
+}

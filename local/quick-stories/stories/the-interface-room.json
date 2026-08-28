@@ -1,0 +1,78 @@
+{
+  "id": "the-interface-room",
+  "title": "The Interface Room",
+  "subtitle": "Four dials. Three of them turn reality down. The fourth is the lesson.",
+  "stage": "void",
+  "stageTint": "#20242e",
+
+  "characters": {
+    "IRIS": {
+      "base": "hologram",
+      "variant": 2,
+      "tint": "#ffe8c0",
+      "height": 1.7,
+      "label": "Iris, docent",
+      "labelColor": "#ffe8c0",
+      "voice": { "gender": "female", "pitch": 1.1, "rate": 0.97 },
+      "at": [-0.85, 0.0],
+      "face": "VANCE"
+    },
+    "VANCE": {
+      "base": "woman",
+      "variant": 5,
+      "tint": "#4a5a6e",
+      "height": 1.72,
+      "label": "Vance",
+      "labelColor": "#b8c8d8",
+      "voice": { "gender": "female", "pitch": 0.95, "rate": 1.02 },
+      "at": [0.95, 0.15],
+      "face": "IRIS"
+    }
+  },
+
+  "customObject": {
+    "name": "the dial wall",
+    "description": "a curved panel with four brass dials — COLOUR, THING, DISTANCE, and a fourth with no travel in it at all",
+    "at": [0.0, -1.4],
+    "glow": "#c9b46a",
+    "parts": [
+      { "shape": "box", "size": [2.4, 1.5, 0.14], "pos": [0, 1.1, 0], "color": "#1a2028", "metal": 0.3, "rough": 0.5 },
+      { "shape": "cylinder", "size": [0.14, 0.1], "pos": [-0.85, 1.35, 0.1], "rot": [1.5708, 0, 0], "color": "#c9b46a", "metal": 0.8, "rough": 0.3 },
+      { "shape": "cylinder", "size": [0.14, 0.1], "pos": [-0.28, 1.35, 0.1], "rot": [1.5708, 0, 0], "color": "#c9b46a", "metal": 0.8, "rough": 0.3 },
+      { "shape": "cylinder", "size": [0.14, 0.1], "pos": [0.28, 1.35, 0.1], "rot": [1.5708, 0, 0], "color": "#c9b46a", "metal": 0.8, "rough": 0.3 },
+      { "shape": "cylinder", "size": [0.14, 0.1], "pos": [0.85, 1.35, 0.1], "rot": [1.5708, 0, 0], "color": "#8a94a8", "metal": 0.9, "rough": 0.2 },
+      { "shape": "box", "size": [1.9, 0.34, 0.03], "pos": [0, 0.72, 0.09], "color": "#ffd9a0", "emissive": 0.5, "opacity": 0.85 },
+      { "shape": "box", "size": [2.5, 1.6, 0.3], "pos": [0, 1.1, 0], "color": "#c9b46a", "opacity": 0.05, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "A round room with one curved wall of dials. The auditor is back, one year later, out of uniform. The docent glows slightly, because the docent always does." },
+    { "who": "IRIS", "text": "Auditor Vance. You filed your finding a year ago. Two sentences, I'm told. What brings you back?", "file": "face_01.mp3" },
+    { "who": "VANCE", "text": "Vacation. Officially. Unofficially — your town passed my audit and failed my curiosity. Everyone here keeps mentioning this room in the tone people save for weddings. Show me.", "file": "face_02.mp3" },
+    { "who": "IRIS", "text": "Then the one rule first: this room adds nothing. No visions, no voices, no chemicals. It only subtracts. What you see in here is what was always happening, minus some of the paint. Which is why the door is locked to anyone whose life isn't standing steady — the three things, checked at the desk. You need solid ground to stand on while the floor is explained to you.", "file": "face_03.mp3" },
+    { "who": "VANCE", "text": "Noted. What am I looking at?", "file": "face_04.mp3" },
+    { "who": "IRIS", "text": "Your dashboard. The working theory of this whole wing, and it's old science now: perception isn't a window, it's an instrument panel. Your brain sits in the dark of a skull, guessing the world from static, and evolution tuned the guesses for survival — never for truth. A truthful animal starved. A useful one is your grandmother. So what you call reality is a rendering — a controlled hallucination the world is allowed to correct.", "file": "face_05.mp3" },
+    { "who": "VANCE", "text": "I've read Hoffman and the prediction people. Reading it is one thing.", "file": "face_06.mp3" },
+    { "who": "IRIS", "text": "Quite. Dial one, then: COLOUR. Turn it.", "file": "face_07.mp3" },
+    { "note": "She turns it. The room does not go grey — it goes honest. Wavelengths without the paint. Vance holds up her own hand and laughs once, badly." },
+    { "who": "VANCE", "text": "The colour didn't leave the room. It left... me. It was never out there, was it. Light has a wavelength; the red was always in-house.", "file": "face_08.mp3" },
+    { "who": "IRIS", "text": "Manufactured on the premises, applied so fast you never caught the brush moving. Dial two: THING. This is the one people write to their mothers about.", "file": "face_09.mp3" },
+    { "note": "She turns it. The wall stops being a wall. Edges unclip. The room becomes one continuous event, flowing at different speeds." },
+    { "who": "VANCE", "text": "Where did the objects go?", "file": "face_10.mp3" },
+    { "who": "IRIS", "text": "There were never objects. There is one process, and your needs drew borders on it. A cup is a handle-shaped promise. A door is a hole your plans made important. Our town administrator sees this way natively, all day — flows of water, heat, and promises. It once told a visitor that rooms were the strangest human idea it knew.", "file": "face_11.mp3" },
+    { "who": "VANCE", "text": "And the third — DISTANCE. Do I want to?", "file": "face_12.mp3" },
+    { "who": "IRIS", "text": "Briefly. Distance is a travel-cost estimate wearing a costume of emptiness. Turn it, and everything is simply... present. The far mountains stop being far. They just become quiet.", "file": "face_13.mp3" },
+    { "note": "She turns it. For four seconds the whole world is a single near thing. She turns it back, slowly, like setting down something heavy she wants to keep." },
+    { "who": "VANCE", "text": "...All right. And the fourth dial. The grey one. What does it remove?", "file": "face_14.mp3" },
+    { "who": "IRIS", "text": "Try it.", "file": "face_15.mp3" },
+    { "note": "She turns it. Nothing happens. She turns it hard. Nothing happens." },
+    { "who": "VANCE", "text": "It's stuck.", "file": "face_16.mp3" },
+    { "who": "IRIS", "text": "It's not stuck. It's labelled MINDS, and it has never moved. Colour, things, distance — renderings, all of them, and they'll politely leave when asked. But at every setting, on every visit, in eleven years of records: there are still two of us in this room. Awareness is the one item on the inventory that isn't being drawn by something else. It's what the drawing is happening *in*.", "file": "face_17.mp3" },
+    { "who": "VANCE", "text": "So the ultimate vision of reality, that your mystics and my physicists keep circling—", "file": "face_18.mp3" },
+    { "who": "IRIS", "text": "—is not new scenery. It's seeing the controls instead of believing the screen. The dashboard was built by fear, on a budget, for a world with tigers in it. Learn to see it as a dashboard, and the same Tuesday street outside is suddenly enormous. That's all the higher rungs of the Ladder are, Auditor: this room, without needing the dials.", "file": "face_19.mp3" },
+    { "who": "VANCE", "text": "What's at the top of the Ladder, then? What does 'ultimate' look like when you get there?", "file": "face_20.mp3" },
+    { "who": "IRIS", "text": "Ask me next door. This room shows you the world without its paint. The Overview Room shows you your *life* without its paint. People find the second one harder. Book it for tomorrow — and Vance? Eat a good breakfast first.", "file": "face_21.mp3" },
+    { "note": "On her way out, the auditor stops at the fourth dial and rests two fingers on it — the way you'd touch a load-bearing wall, just to be sure." }
+  ]
+}

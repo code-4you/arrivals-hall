@@ -1,0 +1,85 @@
+{
+  "id": "the-sunken-oasis",
+  "title": "The Sunken Oasis of Khem",
+  "subtitle": "Three fragments, one summoning — the Weaver of Form wakes.",
+  "stage": "void",
+  "stageTint": "#26200f",
+
+  "characters": {
+    "ARCHITECT": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#4f7c8c",
+      "height": 1.76,
+      "label": "The Re-Architect",
+      "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.0, "rate": 0.98 },
+      "at": [1.0, 0.4],
+      "face": "customObject"
+    },
+    "VALE": {
+      "base": "voice",
+      "label": "Prof. Vale (comm)",
+      "labelColor": "#c7a8ff",
+      "voice": { "prefer": ["hazel", "zira", "female"], "pitch": 0.98, "rate": 1.02 },
+      "attachTo": "customObject"
+    },
+    "WEAVER": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#d8b45f",
+      "height": 1.85,
+      "label": "The Weaver of Form",
+      "labelColor": "#ffd27f",
+      "voice": { "prefer": ["hazel", "female"], "pitch": 0.82, "rate": 0.88 },
+      "at": [-1.2, -0.3],
+      "face": "ARCHITECT",
+      "keepFacing": true
+    }
+  },
+
+  "customObject": {
+    "name": "the summoning basin",
+    "description": "a stone basin of still black water in the drowned temple — three empty sockets around its rim, and Vale's comm-bead glowing on the edge",
+    "at": [-0.1, -1.3],
+    "glow": "#e8c46a",
+    "parts": [
+      { "shape": "cylinder", "size": [0.85, 0.55, 0.95], "pos": [0, 0.27, 0], "color": "#4a4030", "rough": 0.9 },
+      { "shape": "cylinder", "size": [0.72, 0.06], "pos": [0, 0.57, 0], "color": "#0e1a1e", "rough": 0.2, "metal": 0.4 },
+      { "shape": "box", "size": [0.16, 0.1, 0.16], "pos": [-0.62, 0.6, 0.38], "rot": [0, 0.5, 0], "color": "#c8b088", "emissive": 0.5 },
+      { "shape": "box", "size": [0.16, 0.1, 0.16], "pos": [0.72, 0.6, 0.1], "rot": [0, -0.3, 0], "color": "#c8b088", "emissive": 0.5 },
+      { "shape": "box", "size": [0.16, 0.1, 0.16], "pos": [-0.1, 0.6, -0.72], "rot": [0, 0.2, 0], "color": "#c8b088", "emissive": 0.5 },
+      { "shape": "sphere", "size": [0.05], "pos": [0.5, 0.63, 0.5], "color": "#c7a8ff", "emissive": 1.4, "opacity": 0.85, "additive": true, "bob": 0.01 },
+      { "shape": "cone", "size": [0.6, 2.2], "pos": [0, 1.75, 0], "color": "#e8c46a", "emissive": 0.7, "opacity": 0.06, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: a desert ruin where the sands meet forgotten waters — half the temple above the waterline, half below. Hieroglyphs of builders, not conquerors. The Weaver stands dormant at the basin's far side: a golden shape in the water-light, unlit, unmoving." },
+    { "note": "OBJECTIVE — recover the three fragments of the Ritual of Harmonious Geomancy and set them in the basin's sockets." },
+    { "who": "VALE", "text": "Comm check. I have you, Architect. Describe it to me — the survey drones refused to map past the third chamber and I would dearly like to know why.", "file": "oasis_01.mp3" },
+    { "who": "ARCHITECT", "text": "Because past the third chamber the geometry starts being polite. Every corridor down here GUIDES you, Vale. No wrong turns, no dead ends. Whoever built this place wanted visitors to arrive calm.", "file": "oasis_02.mp3" },
+    { "who": "VALE", "text": "Architecture as hospitality. Four thousand years before us, and they were already doing on purpose what we're trying to relearn from fragments. The first socket — do you have the first fragment?", "file": "oasis_03.mp3" },
+    { "note": "FRAGMENT 1 — recovered from the Hall of Measures: a stone tablet, light as dry wood. The carving shows a city street, and beneath it: a heart, drawn level." },
+    { "who": "ARCHITECT", "text": "Setting it now. The inscription reads like a rule of thumb: 'Build nothing that makes a small person feel smaller.' That's the first law of their whole geomancy, apparently. Not load-bearing walls. Dignity.", "file": "oasis_04.mp3", "face": "customObject" },
+    { "who": "VALE", "text": "And the myth-cycles said these people worshipped proportion. They didn't worship proportion — they worshipped what proportion DOES to a mind. Keep going. Second socket.", "file": "oasis_05.mp3" },
+    { "note": "FRAGMENT 2 — recovered from the flooded scriptorium: a bronze rule, still true after forty centuries. Along its edge, tiny script." },
+    { "who": "ARCHITECT", "text": "Second fragment set. The script on the rule says: 'The house teaches the household.' They understood it backwards and forwards, Vale — shape the room and you shape the years lived in it. R'lyeh is the same law running in reverse. A torment chamber teaching torment.", "file": "oasis_06.mp3" },
+    { "who": "VALE", "text": "Which is precisely why the rituals can work. The law doesn't care which direction it runs. — The third fragment is the one I worry about. The texts call it 'the Weaver's Due', and every copy stops mid-sentence.", "file": "oasis_07.mp3" },
+    { "note": "FRAGMENT 3 — found not in a vault but in the open, on a child-sized plinth by the water, where anyone could take it: a small gold weight, shaped like a seed." },
+    { "who": "ARCHITECT", "text": "Found the third. It wasn't guarded, Vale. It was OFFERED — left out on a low plinth a child could reach. I think the sentence stops mid-way because the rest isn't words. You finish it by picking the thing up.", "file": "oasis_08.mp3" },
+    { "who": "VALE", "text": "…Then the Due isn't payment. It's consent. Set it, Architect. And — for the record, in case the recording survives us — I believe we are about to be the first people in forty centuries to do this politely.", "file": "oasis_09.mp3" },
+    { "note": "OBJECTIVE — the summoning. All three sockets lit. The black water does not ripple; instead, the light in it deepens, as if the basin has become very much taller on the inside." },
+    { "pause": 2.0 },
+    { "note": "The golden shape at the basin's edge draws breath — her first in an age — and the water-light climbs her like dawn climbing a statue." },
+    { "who": "WEAVER", "text": "…Measured. Ruled. Consented. All three, and none taken by force. Do you know how many hands have reached into this basin, little builder, and how few have bothered with the third?", "file": "oasis_10.mp3" },
+    { "who": "ARCHITECT", "text": "I'd guess the ones who skipped it aren't remembered kindly.", "file": "oasis_11.mp3" },
+    { "who": "WEAVER", "text": "They aren't remembered at all. Form forgets the forceful — it is one of form's better habits. I am the Weaver of what stands and what shelters. I taught the builders of the first temples, and I have been waiting an aeon for someone to want a BUILDING again, instead of a weapon.", "file": "oasis_12.mp3" },
+    { "who": "ARCHITECT", "text": "Then I should say it plainly, because you deserve to hear what you're consenting to: we mean to re-architect R'lyeh. The prison of the Sleeper. We mean to turn it into a sanctuary — with him inside it, and no one slain.", "file": "oasis_13.mp3" },
+    { "pause": 1.6 },
+    { "who": "WEAVER", "text": "The drowned city. The wound that builds itself worse every night. …I have heard it, you know. Every stone I ever taught to stand has heard it, groaning down there in the dark, and not one of us could reach it alone.", "file": "oasis_14.mp3" },
+    { "who": "WEAVER", "text": "Yes, Architect. I will guide your rituals. On the old terms, the ones carved in the first hall: dignity before grandeur, the house teaches the household — and we begin with LIGHT, because everything that has ever healed began by being able to see.", "file": "oasis_15.mp3", "face": "camera" },
+    { "who": "VALE", "text": "Then it's real. Architect — bring her home. The ritual chamber will be ready by the time you are. And… tell her she's been missed. Forty centuries of architects missed her and didn't know her name.", "file": "oasis_16.mp3" },
+    { "note": "MISSION COMPLETE — the Weaver of Form has joined the Great Work. NEXT: the ritual chamber, and the first word from the deep. (Continues in 'The Sleeper Below'.)" }
+  ]
+}

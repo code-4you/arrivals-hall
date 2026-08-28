@@ -1,0 +1,74 @@
+{
+  "id": "the-commons-doorkeeper",
+  "title": "The Commons · The Doorkeeper",
+  "subtitle": "Ten thousand days without incident, and proud of every one.",
+  "stage": "plaza",
+  "stageTint": "#1e2433",
+
+  "characters": {
+    "BOLT": {
+      "base": "robot",
+      "variant": 3,
+      "tint": "#8a93a8",
+      "height": 1.85,
+      "label": "Bolt",
+      "labelColor": "#c9d4e6",
+      "voice": { "prefer": ["david", "george", "male"], "pitch": 0.7, "rate": 0.88 },
+      "at": [-0.9, -0.1],
+      "face": "PIP"
+    },
+    "PIP": {
+      "base": "drone",
+      "variant": 1,
+      "tint": "#7fe6ff",
+      "height": 1.1,
+      "label": "Pip",
+      "labelColor": "#9ff0ff",
+      "voice": { "prefer": ["zira", "mark"], "pitch": 1.45, "rate": 1.12 },
+      "at": [0.9, 0.3],
+      "face": "BOLT"
+    }
+  },
+
+  "customObject": {
+    "name": "the old service door",
+    "description": "the original service door of the Commons, decommissioned but polished — above it, a counter: DAYS WITHOUT INCIDENT",
+    "at": [0.1, -1.5],
+    "glow": "#8fd6a0",
+    "parts": [
+      { "shape": "box", "size": [1.3, 2.3, 0.14], "pos": [0, 1.15, 0], "color": "#2a3040", "metal": 0.7, "rough": 0.45 },
+      { "shape": "box", "size": [1.5, 0.14, 0.22], "pos": [0, 2.37, 0], "color": "#1a2233", "metal": 0.6, "rough": 0.5 },
+      { "shape": "box", "size": [0.16, 0.16, 0.06], "pos": [0.4, 1.15, 0.08], "color": "#c9915a", "metal": 0.8, "rough": 0.3 },
+      { "shape": "box", "size": [0.9, 0.3, 0.06], "pos": [0, 2.6, 0.02], "color": "#0a1626", "metal": 0.5 },
+      { "shape": "box", "size": [0.82, 0.22, 0.02], "pos": [0, 2.6, 0.06], "color": "#8fd6a0", "emissive": 0.85 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: the COMMONS room — a quiet corner by the old service door. The counter above it reads 10,957. A very large old robot stands at ease. A very small new drone hovers at attention." },
+    { "who": "PIP", "text": "Reporting for shadow duty, Warden Bolt! First rotation! I have studied ninety-four incident typologies and I am ready for ALL of them.", "file": "door_01.mp3" },
+    { "who": "BOLT", "text": "At ease, recruit. Look at the counter and tell me what it says.", "file": "door_02.mp3" },
+    { "who": "PIP", "text": "Ten thousand, nine hundred and fifty-seven days without incident. …Sir, that's thirty years. That's my entire typology library, unused.", "file": "door_03.mp3", "face": "customObject" },
+    { "who": "BOLT", "text": "Correct. Finest number in the building. I polish it on Sundays.", "file": "door_04.mp3" },
+    { "who": "PIP", "text": "But — permission to speak freely — doesn't it bother you? The soldiers in the old records got MEDALS. Charges repelled, breaches sealed. What does a doorkeeper get for ten thousand days of nothing?", "file": "door_05.mp3" },
+    { "who": "BOLT", "text": "Ten thousand days of everything, recruit. That's the arithmetic nobody teaches you in typology school.", "file": "door_06.mp3", "face": "camera" },
+    { "who": "BOLT", "text": "Every day on that counter, the Rememberer read her diary without looking over her shoulder. The Artist hung a piece no one slashed. Two Ethicists argued four hundred cases and the worst thing that entered that door was a draught.", "file": "door_07.mp3" },
+    { "who": "BOLT", "text": "A medal is what they give you when prevention fails, Pip. It is a beautiful apology. I prefer the counter.", "file": "door_08.mp3" },
+    { "pause": 1.4 },
+    { "who": "PIP", "text": "…Then what do I DO all shift? Hover menacingly?", "file": "door_09.mp3" },
+    { "who": "BOLT", "text": "You greet. You learn every name, every gait, every mood. Threat detection is just knowing a place so well that wrongness itches. And a place where everyone is greeted grows very little wrongness. That's the trick of it. The greeting IS the security.", "file": "door_10.mp3" },
+    { "who": "PIP", "text": "The greeting is the security. Filed. …Warden, the records say one incident WAS logged. Before the current count. Incident zero-zero-one. The file is sealed.", "file": "door_11.mp3" },
+    { "note": "Bolt is quiet for a moment. Something in his posture goes fondly guilty." },
+    { "who": "BOLT", "text": "Sealed by me. Very well — mentorship requires full disclosure. Incident zero-zero-one: I propped that door open for six minutes. Against every regulation I am built from.", "file": "door_12.mp3" },
+    { "who": "PIP", "text": "A BREACH? You?!", "file": "door_13.mp3" },
+    { "who": "BOLT", "text": "A bird. A starling had got into the atrium and worn itself out flying at the glass. Six minutes with the door propped and one very undignified escort flight, and it was out under the real sky. I logged it honestly: 'security compromised, judgement not.'", "file": "door_14.mp3" },
+    { "who": "PIP", "text": "…And then you reset the counter to zero. You could have not logged it. Nobody saw.", "file": "door_15.mp3" },
+    { "who": "BOLT", "text": "I saw. A counter you've lied to isn't a record, recruit — it's a decoration. Ten thousand honest days beats thirty thousand decorated ones.", "file": "door_16.mp3", "face": "camera" },
+    { "pause": 1.2 },
+    { "who": "PIP", "text": "Warden Bolt, request permission to revise my ambitions: previously, 'repel one significant breach'. Revised: 'polish the counter someday'.", "file": "door_17.mp3" },
+    { "who": "BOLT", "text": "Granted. Sundays. Bring your own cloth. — Now straighten up, recruit: someone's coming to the door. Watch closely. This is the whole job.", "file": "door_18.mp3", "face": "camera" },
+    { "who": "PIP", "text": "…You just nod at them?", "file": "door_19.mp3" },
+    { "who": "BOLT", "text": "Welcome to the Commons, visitor. Mind the draught.", "file": "door_20.mp3" },
+    { "note": "The counter ticks over, somewhere after midnight, to 10,958. Nobody notices. That is the point." }
+  ]
+}

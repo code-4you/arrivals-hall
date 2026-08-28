@@ -1,0 +1,72 @@
+{
+  "id": "the-cave",
+  "title": "The Cave",
+  "subtitle": "Plato's allegory — the shadows, the painful turn, and the walk back down.",
+  "stage": "void",
+  "stageTint": "#241c14",
+
+  "characters": {
+    "SOCRATES": {
+      "base": "elder",
+      "variant": 1,
+      "tint": "#d8d2c0",
+      "height": 1.72,
+      "label": "Socrates",
+      "labelColor": "#ffd27f",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.85, "rate": 0.94 },
+      "at": [-0.9, 0.1],
+      "face": "GLAUCON"
+    },
+    "GLAUCON": {
+      "base": "man",
+      "variant": 3,
+      "tint": "#8a5f3f",
+      "height": 1.78,
+      "label": "Glaucon",
+      "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.08, "rate": 1.02 },
+      "at": [1.0, 0.2],
+      "face": "SOCRATES"
+    }
+  },
+
+  "customObject": {
+    "name": "the fire and the puppet-wall",
+    "description": "a low fire behind a parapet wall, with cut-out figures held above it — the machinery that makes the only world the prisoners have ever seen",
+    "at": [0.0, -1.5],
+    "glow": "#ff9c4a",
+    "parts": [
+      { "shape": "box", "size": [2.2, 0.7, 0.18], "pos": [0, 0.35, 0.5], "color": "#3a2e22", "rough": 0.9 },
+      { "shape": "cone", "size": [0.3, 0.55], "pos": [0, 0.35, -0.4], "color": "#ff9c4a", "emissive": 1.6, "opacity": 0.85 },
+      { "shape": "sphere", "size": [0.16], "pos": [0, 0.2, -0.4], "color": "#ffd27f", "emissive": 1.2 },
+      { "shape": "box", "size": [0.3, 0.4, 0.03], "pos": [-0.55, 1.0, 0.5], "color": "#1a140e", "rough": 1.0 },
+      { "shape": "box", "size": [0.24, 0.34, 0.03], "pos": [0.5, 1.05, 0.5], "rot": [0, 0, 0.2], "color": "#1a140e", "rough": 1.0, "bob": 0.03 },
+      { "shape": "cylinder", "size": [0.02, 0.5], "pos": [-0.55, 0.65, 0.5], "color": "#2a201a", "rough": 0.9 },
+      { "shape": "cylinder", "size": [0.02, 0.5], "pos": [0.5, 0.7, 0.5], "rot": [0, 0, 0.2], "color": "#2a201a", "rough": 0.9 }
+    ]
+  },
+
+  "script": [
+    { "note": "After Plato, Republic, Book Seven. Night. A fire, a wall, and two Athenians who have been walking and talking for hours." },
+    { "who": "SOCRATES", "text": "Now then, Glaucon — let me show you a picture of our nature, as it stands with education and the lack of it. Imagine men living in an underground cave since childhood, legs and necks chained so they cannot move, able to look only at the wall in front of them.", "file": "cave_01.mp3" },
+    { "who": "GLAUCON", "text": "A grim picture. Go on.", "file": "cave_02.mp3" },
+    { "who": "SOCRATES", "text": "Behind them, higher up, a fire burns. Between the fire and the prisoners runs a road with a low wall along it — like the screen a puppeteer hides behind. And along that wall, men carry figures: statues of people, animals carved in wood and stone, held up so they pass above the wall. Some of the carriers speak; others are silent.", "file": "cave_03.mp3" },
+    { "who": "GLAUCON", "text": "A strange image, Socrates. And strange prisoners.", "file": "cave_04.mp3" },
+    { "who": "SOCRATES", "text": "Like ourselves, Glaucon. Like ourselves. Tell me: what would such prisoners have seen, all their lives, but the shadows the fire throws on the wall in front of them? And when the carriers speak, and the echo comes off the wall — wouldn't they swear it was the shadows talking?", "file": "cave_05.mp3" },
+    { "who": "GLAUCON", "text": "They'd have no choice. The shadows would be the whole of reality to them.", "file": "cave_06.mp3" },
+    { "who": "SOCRATES", "text": "And they'd become experts in it, no doubt. Honours among them, prizes for the sharpest eye — the man who best remembers which shadows come first, which follow, which travel together, and who can best predict what the wall will show next. A whole science of the wall, Glaucon. Whole careers.", "file": "cave_07.mp3" },
+    { "who": "GLAUCON", "text": "You're smiling. Now free one of them.", "file": "cave_08.mp3" },
+    { "who": "SOCRATES", "text": "Very well — suppose one is unchained and made to stand, turn his neck, and walk toward the fire. Every part of it hurts. The light stabs his eyes; the figures he's shown seem less real than the shadows he knew, because his eyes are built for the dark. And if you told him — 'what you saw before was nonsense; THIS is closer to what is' — wouldn't he turn back to the wall, where he could see properly, and trust the shadows over the truth?", "file": "cave_09.mp3" },
+    { "who": "GLAUCON", "text": "He would. Anyone would.", "file": "cave_10.mp3" },
+    { "who": "SOCRATES", "text": "Then he must be dragged — Plato's word is nearly that rough — up the steep passage and out into the sun, angry and blinded. And there, too, it goes by degrees: first he can bear shadows. Then reflections of men and trees in water. Then the things themselves. Then the night sky, the moon, the stars — easier than daylight. And at last, the sun itself: not its image in water, but the sun, alone, in its own place.", "file": "cave_11.mp3" },
+    { "who": "GLAUCON", "text": "And then he would reason about it — that the sun is what makes the seasons and the years, governs everything in the visible world, and is, in a way, the cause of everything he and his fellows ever saw on that wall.", "file": "cave_12.mp3" },
+    { "who": "SOCRATES", "text": "Just so. And remembering his old home, and the wisdom of the cave, and his fellow prisoners — do you think he'd envy the prize-winners of the wall? Or would he feel like Homer's ghost, and rather be a poor servant of a poor master above ground than the most decorated man in the dark?", "file": "cave_13.mp3" },
+    { "who": "GLAUCON", "text": "He'd take the poverty and the daylight. But Socrates — now send him back down. You always send them back down.", "file": "cave_14.mp3" },
+    { "who": "SOCRATES", "text": "Because that is the whole point, Glaucon, and everyone forgets it. Down he goes, out of the sun into the dark, and his eyes fail him again — a man coming from light into darkness stumbles exactly like a man coming from darkness into light. And there he sits, clumsy at the old shadow-games, while the prisoners laugh: 'He went up with working eyes and came down with ruined ones. The journey is a disease.' And if anyone tries to unchain them and lead them up — wouldn't they kill him, if they could catch him?", "file": "cave_15.mp3" },
+    { "who": "GLAUCON", "text": "...They did catch him, Socrates. They will, I mean. Given the chance.", "file": "cave_16.mp3" },
+    { "who": "SOCRATES", "text": "So my friends keep telling me. Yet the law of our city in words stands: whoever has seen the sun must go back down. Not to live on the mountain congratulating himself — the vision that stays above ground helps no one. He descends, sits among the shadows he no longer believes in, and helps, patiently, with better eyes than anyone knows. The ascent was never for him alone. That is what education is, Glaucon: not putting sight into blind eyes, but turning the whole soul around until it faces the light it always had.", "file": "cave_17.mp3" },
+    { "who": "GLAUCON", "text": "Then answer me plainly, before we sleep. The fire, the wall, the sun — what are they, here, tonight, for us?", "file": "cave_18.mp3" },
+    { "who": "SOCRATES", "text": "The cave is the world your eyes report. The fire is every power that decides which shadows you're shown. The shadows are the day's opinions, dressed as things. And the sun, Glaucon, is the Good itself — hardest of all to see, last of all to be seen, and the cause of everything right and beautiful in everything else. And now I have a question for whoever is listening to US, this late, in the dark: you, there — which way are you facing, just now?", "file": "cave_19.mp3" },
+    { "note": "The fire burns low. The puppet-figures lean against the wall, off duty. Twenty-four centuries later, in a town in the west, somebody built the room." }
+  ]
+}

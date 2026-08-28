@@ -1,0 +1,81 @@
+{
+  "id": "the-quiet-vote",
+  "title": "The Quiet Vote",
+  "subtitle": "Full telepathy is on the ballot. The town that said yes has stopped writing.",
+  "stage": "plaza",
+
+  "characters": {
+    "QUORUM": {
+      "base": "hologram",
+      "variant": 4,
+      "tint": "#7fd0c0",
+      "height": 1.95,
+      "label": "Quorum, moderator",
+      "labelColor": "#aff0e0",
+      "voice": { "gender": "male", "pitch": 1.0, "rate": 0.95 },
+      "at": [0.0, -0.7],
+      "face": "SERA"
+    },
+    "SERA": {
+      "base": "woman",
+      "variant": 6,
+      "tint": "#d09a5f",
+      "height": 1.66,
+      "label": "Sera",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "female", "pitch": 1.08, "rate": 1.04 },
+      "at": [-1.25, 0.3],
+      "face": "QUORUM"
+    },
+    "ROOK": {
+      "base": "elder",
+      "variant": 3,
+      "tint": "#6a5a7a",
+      "height": 1.72,
+      "label": "Rook",
+      "labelColor": "#c8b8e0",
+      "voice": { "gender": "male", "pitch": 0.85, "rate": 0.94 },
+      "at": [1.25, 0.3],
+      "face": "QUORUM"
+    }
+  },
+
+  "customObject": {
+    "name": "the lattice pillar",
+    "description": "the town's telepathic lattice — a tall pillar with two bands of light: the wide one it could carry, and the narrow warm one it does",
+    "at": [0.0, -1.45],
+    "glow": "#7fd0c0",
+    "parts": [
+      { "shape": "cylinder", "size": [0.16, 2.4, 0.22], "pos": [0, 1.2, 0], "color": "#26303e", "metal": 0.5, "rough": 0.4 },
+      { "shape": "torus", "size": [0.42, 0.05], "pos": [0, 1.9, 0], "rot": [1.5708, 0, 0], "color": "#d05a7a", "emissive": 0.6, "spin": [0, 0.6, 0] },
+      { "shape": "torus", "size": [0.3, 0.035], "pos": [0, 1.35, 0], "rot": [1.5708, 0, 0], "color": "#ffd27f", "emissive": 0.9, "spin": [0, -0.25, 0] },
+      { "shape": "sphere", "size": [0.1], "pos": [0, 2.45, 0], "color": "#aff0e0", "emissive": 1.1, "bob": 0.03 },
+      { "shape": "cylinder", "size": [0.5, 2.3, 0.5], "pos": [0, 1.2, 0], "color": "#7fd0c0", "opacity": 0.05, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The plaza, full for the vote. The lattice pillar stands ready to carry more than it has ever carried. The moderator does not vote, and never has." },
+    { "who": "QUORUM", "text": "Item one — the only item. The settlement of Openmind has offered us their upgrade: full thought-sharing on the lattice. Mind to mind, nothing withheld. As your administrator I hold no opinion, by charter and by design. I will enumerate consequences on request. Sera has the floor.", "file": "vote_01.mp3" },
+    { "who": "SERA", "text": "Friends. We already carry each other's groceries and half of each other's secrets. This ends the gap for good — no more misunderstanding, ever. No more explaining yourself to the person you love at midnight and failing. And no more lonely rooms. You all read Openmind's first letters. They were beautiful.", "file": "vote_02.mp3" },
+    { "who": "ROOK", "text": "They were. Read the later ones. Each letter shorter than the last. The final one arrived in spring — one word long. The word was: We.", "file": "vote_03.mp3" },
+    { "who": "SERA", "text": "Maybe they're simply happy.", "file": "vote_04.mp3" },
+    { "who": "ROOK", "text": "Then let one of them come here and say so. Alone. If any of them can still come alone.", "file": "vote_05.mp3" },
+    { "pause": 1.4 },
+    { "who": "QUORUM", "text": "A consequence enumeration has been requested. In every projection I run, full sharing abolishes deception in the first year. Then debate, since positions merge before they can be argued. Then surprise. Then — this is the one I would flag, if I were permitted to flag — it abolishes requests. Nothing is ever asked for again, because every need is pre-known. A town that cannot ask has nothing left to give.", "file": "vote_06.mp3" },
+    { "who": "ROOK", "text": "I've been married fifty-three years. I can tell that woman's thoughts from across a field in the rain. It does not follow that I want them delivered into my skull, labelled and sorted. A message means something because it crossed a distance to reach you. Hand someone your entire mind and you haven't spoken — you've flooded.", "file": "vote_07.mp3" },
+    { "who": "SERA", "text": "And the man on Delta Row? Full lattice, four hundred neighbours — and he was dead three days before anyone wondered why his lights were off. I'm not chasing bliss, Rook. I never was. I just don't want another door we find too late.", "file": "vote_08.mp3" },
+    { "pause": 1.2 },
+    { "who": "ROOK", "text": "...No. Neither do I. So don't give me his thoughts, girl. Give me his weather.", "file": "vote_09.mp3" },
+    { "who": "SERA", "text": "His weather?", "file": "vote_10.mp3" },
+    { "who": "QUORUM", "text": "There is a narrow band. The lattice can carry presence without content: you would feel that your chosen people are — and how they are. Heavy. Bright. Storm. Falling. Never why. Never words. Two old Earth philosophers arrive here by different roads: one taught that another person is a face you meet, never a country you annex. The other put it in five words — all real living is meeting. And a meeting requires two.", "file": "vote_11.mp3" },
+    { "who": "SERA", "text": "Weather, not thoughts. So the day he went dark, forty of us feel the drop in pressure — and somebody knocks within the hour.", "file": "vote_12.mp3" },
+    { "who": "ROOK", "text": "Close enough to be touched. Far enough to remain someone. I hear the aliens crossed half the galaxy to learn that one, and an old librarian taught it to them over a hedge.", "file": "vote_13.mp3" },
+    { "who": "QUORUM", "text": "The motion as amended: the weather-band for all who opt in, full sharing permitted within a household by unanimous consent, renewed yearly, with an honest exit at any hour. Voting is open. I will now look away — as always, I cannot see a ballot before it is cast. It is my favourite of my blindnesses.", "file": "vote_14.mp3" },
+    { "note": "Hands rise. The narrow band carries the count so Quorum learns it last, from the town clerk, like everybody else." },
+    { "who": "QUORUM", "text": "The weather-band passes, three hundred and eleven to forty. The forty are invited, as always, to the objectors' supper, where the food is traditionally better.", "file": "vote_15.mp3" },
+    { "who": "SERA", "text": "Rook. When it switches on tonight — may I choose you? You and Marta?", "file": "vote_16.mp3" },
+    { "who": "ROOK", "text": "Girl, at my age my weather is mostly light drizzle with scattered complaints. ...Yes. Choose us. We'll feel you bright from across the square, and that will do us both good.", "file": "vote_17.mp3" },
+    { "note": "That night the town feels itself for the first time: mostly calm, one blaze of joy over the birthing house, and one small grief on Delta Row — held, within the hour, by forty separate noticings. Nobody flooded. Nobody alone." }
+  ]
+}

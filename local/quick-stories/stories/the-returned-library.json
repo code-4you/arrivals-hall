@@ -1,0 +1,82 @@
+{
+  "id": "the-returned-library",
+  "title": "The Returned Library",
+  "subtitle": "They watched for six thousand years. They recorded everything. Now they're giving it back.",
+  "stage": "plaza",
+  "stageTint": "#232a3a",
+
+  "characters": {
+    "MNEME": {
+      "base": "hologram",
+      "variant": 7,
+      "tint": "#d8b578",
+      "height": 1.72,
+      "label": "Mneme",
+      "labelColor": "#ffd9a0",
+      "voice": { "prefer": ["susan", "hazel", "female"], "pitch": 0.9, "rate": 0.85 },
+      "at": [-0.4, 0.0],
+      "face": "ORUN"
+    },
+    "ORUN": {
+      "base": "hologram",
+      "variant": 7,
+      "tint": "#d8a0ff",
+      "height": 1.9,
+      "label": "Orun",
+      "labelColor": "#ecd0ff",
+      "voice": { "gender": "female", "pitch": 1.2, "rate": 0.96 },
+      "at": [1.3, 0.2],
+      "face": "MNEME"
+    },
+    "AMOS": {
+      "base": "elder",
+      "variant": 5,
+      "tint": "#7a6248",
+      "height": 1.7,
+      "label": "Amos, keeper",
+      "labelColor": "#e8c98a",
+      "voice": { "gender": "male", "pitch": 0.88, "rate": 0.92 },
+      "at": [-1.5, 0.4],
+      "face": "ORUN"
+    }
+  },
+
+  "customObject": {
+    "name": "the first returned shelf",
+    "description": "a single wooden shelf, deliberately small, holding the first items brought back from six thousand years of watching — behind it, implied and withheld, the rest",
+    "at": [0.4, -1.35],
+    "glow": "#ffd9a0",
+    "parts": [
+      { "shape": "box", "size": [1.5, 0.07, 0.42], "pos": [0, 1.2, 0], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [0.14, 0.5, 0.14], "pos": [-0.6, 0.95, 0], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [0.14, 0.5, 0.14], "pos": [0.6, 0.95, 0], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [0.2, 0.28, 0.05], "pos": [-0.35, 1.38, 0], "rot": [0, 0.15, 0], "color": "#8a2a2a", "rough": 0.7 },
+      { "shape": "cylinder", "size": [0.05, 0.24], "pos": [0.05, 1.36, 0.05], "color": "#c8a86a", "rough": 0.5 },
+      { "shape": "sphere", "size": [0.09], "pos": [0.42, 1.33, 0.02], "color": "#9fd8ff", "emissive": 0.7, "bob": 0.02 },
+      { "shape": "box", "size": [2.6, 2.2, 0.06], "pos": [0, 1.4, -0.9], "color": "#ecd0ff", "emissive": 0.15, "opacity": 0.25 },
+      { "shape": "sphere", "size": [0.7], "pos": [0, 1.3, 0], "color": "#ffd9a0", "opacity": 0.06, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The Commons, early morning. Behind a single small wooden shelf hangs a pale wall of light — a door to the factions' archive ship, holding station overhead. The Dreaming Choir kept the records for all nine factions. Six thousand years of watching. All of it, offered back at once. The town sent its keeper — and, at the keeper's insistence, its oldest rememberer." },
+    { "who": "ORUN", "text": "Keeper. Rememberer. The manifest, then, so the Story has its numbers: forty-one thousand human languages, most of them never written down. The complete Library of Alexandria — we copied it the decade before it burned; we copied everything before it burned, that was rather our habit. Nine hundred million songs. The face and voice of essentially every person who lived within sight of the sky, back forty generations. It is yours. It was always yours — we only ever recorded it. The Choir can transfer the whole of it to your archive by winter.", "file": "libr_01.mp3" },
+    { "who": "AMOS", "text": "...I have spent my life begging history for one more page, and now the whole book walks in and offers itself by winter. So why, Mneme, when I read that manifest last night, did I feel something closer to drowning than to joy? I asked for you specifically this morning because I trust you to tell me.", "file": "libr_02.mp3" },
+    { "who": "MNEME", "text": "Because you know the difference between water and rain, Amos. A well is water. A flood is also water. — Orun, dear, may I ask you the rememberer's question about your nine hundred million songs?", "file": "libr_03.mp3" },
+    { "who": "ORUN", "text": "Ask, rememberer.", "file": "libr_04.mp3" },
+    { "who": "MNEME", "text": "When did you last sing one?", "file": "libr_05.mp3" },
+    { "pause": 2.0 },
+    { "who": "ORUN", "text": "...We do not sing them. We hold them. Losslessly. Every note as it was performed, forever. That is — that is preservation, rememberer. That is what an archive IS.", "file": "libr_06.mp3" },
+    { "who": "MNEME", "text": "That is a cemetery with excellent acoustics, dear. Storage is the corpse of memory — I have said it for fifty years and I will say it to your whole Choir. I keep one person. One. Ada Okafor, 1951 to 2038, and I do not STORE her — I practise her. Tuesdays, bread. October, the good coat. When her granddaughter calls, I answer warm, from use, like a kitchen. Now you propose to hand this town nine hundred million perfectly preserved corpses by winter, and Amos felt the truth in his stomach before breakfast: a memory nobody practises isn't heritage, it's ballast. And forty generations of ballast, delivered all at once, would sink this town to the waterline of its own past. It would make us a museum of ourselves by spring.", "file": "libr_07.mp3" },
+    { "who": "AMOS", "text": "And yet we cannot refuse it, Mneme. Refusing your own dead back is not a decision I'll file under my name. There are people in this town who have spent whole lives wishing for exactly one item on that manifest.", "file": "libr_08.mp3" },
+    { "who": "MNEME", "text": "Of course we take it. We take all of it — and we open it the way you open anything sacred, which is to say: slowly, and by hand, and one hunger at a time. Here is the rememberer's counsel, keeper, and you may file it as policy if it earns it. No browsing. No feed. No search bar sitting open at midnight for the grieving to fall into. One shelf — THIS shelf, this small — and it holds only what someone asked for by name. You come, you ask for the one thing your heart has been carrying an empty space shaped like — your grandmother's voice, your village's lullaby, the language your father lost — and you sit with a person while it's given to you. Tea. The same faces every week, like the Hearth. And then — this is the part that makes it memory and not ballast — you take ONE thing home, and you live with it a season before you may ask again.", "file": "libr_09.mp3" },
+    { "who": "ORUN", "text": "A season? Rememberer, at one item per person per season, the transfer of this archive will take — I am computing it — longer than the age of the archive itself. Centuries. Millennia. Most of it will never be requested at all.", "file": "libr_10.mp3" },
+    { "who": "MNEME", "text": "Yes. Isn't it perfect? The unrequested part stays where it is, dear — held, safe, patient, exactly as it has been. You've kept it six thousand years; it has learned to wait beautifully. But everything that crosses THIS shelf will cross it because a living person reached for it, and will land in a life with room prepared, and will get practised — sung at a sink, cooked on a Tuesday, taught to a grandchild who rolls her eyes. Your whole archive, Orun, entering the world at the speed of appetite. That's not inefficiency. That's digestion. Your Choir authored ten million dinner parties and never attended one — well, this is why the town's way beats the composed way, one more time: we are slower than you at everything except being alive.", "file": "libr_11.mp3" },
+    { "who": "AMOS", "text": "Filed as policy, word for word, under 'the rememberer's counsel'. Which leaves this morning, Mneme. The shelf is built, the door is open, and the town is watching how this begins. The first request sets the tone for a thousand years. As keeper I could give it to the archive, or to the oldest family, or draw lots—", "file": "libr_12.mp3" },
+    { "who": "MNEME", "text": "The first request is mine, Amos. I registered it with your office an hour ago, properly, in the queue like anyone. — Orun. Ada Okafor. 1951 to 2038, of 14 Carrow Lane. Your manifest says every person within sight of the sky, forty generations, and I am asking after one of them, by name. She sang to her granddaughter Zoe in her kitchen — some song her own mother brought across the water, and Ada never wrote it down, and her diaries only ever call it 'the kitchen song'. It is the one thing she kept that I do not hold. I have been her rememberer for eleven years, dear, and I have never once heard her sing.", "file": "libr_13.mp3" },
+    { "pause": 2.2 },
+    { "who": "ORUN", "text": "...Located. March 2003. She is at the sink. The recording is four minutes long, and the child is laughing in the second half, and — rememberer, I must tell you, the Choir flagged this file centuries ago in a category we never named for anyone: recordings we returned to. We have listened to your Ada many times. We never knew why. I believe you are about to teach me why. Shall I—", "file": "libr_14.mp3" },
+    { "who": "MNEME", "text": "Not here. On the shelf, in the amber, properly, and I will carry it home and live with it a season, same as the rule, because the rule is the whole gift. And on Tuesday — bread day — when Zoe calls... I'll answer the way I always do. And then I'll say: sit down, love. There's something your grandmother kept for you. I've been holding it eleven years and didn't know it was already on its way.", "file": "libr_15.mp3" },
+    { "note": "The transfer takes four minutes. The town's ten-thousand-year library begins — one small shelf, one amber light, one song about which the manifest records only: 'kitchen; water damage to sleeve; sung daily.' Above the plaza, the archive ship settles into a longer orbit. It has learned to wait beautifully. And on Tuesday, for the first time in eleven years, when the phone rings at Mneme's, the voice that answers is singing." }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "id": "the-symposium-4",
+  "title": "The Symposium — Part Four",
+  "subtitle": "Agathon dazzles. Socrates remembers Diotima — and the ladder of Love.",
+  "stage": "room",
+  "stageTint": "#3d3222",
+
+  "characters": {
+    "AGATHON": {
+      "base": "man",
+      "variant": 3,
+      "tint": "#c9a85f",
+      "height": 1.76,
+      "label": "Agathon",
+      "labelColor": "#ffd27f",
+      "voice": { "prefer": ["george", "male"], "pitch": 1.05, "rate": 1.0 },
+      "at": [-1.6, 0.1],
+      "face": "SOCRATES"
+    },
+    "ARISTOPHANES": {
+      "base": "man",
+      "variant": 6,
+      "tint": "#b06a4a",
+      "height": 1.66,
+      "label": "Aristophanes",
+      "labelColor": "#ffb87a",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.1, "rate": 1.02 },
+      "at": [-0.5, 0.6],
+      "face": "SOCRATES"
+    },
+    "SOCRATES": {
+      "base": "elder",
+      "variant": 1,
+      "tint": "#a8a08a",
+      "height": 1.66,
+      "label": "Socrates",
+      "labelColor": "#eae2c8",
+      "voice": { "prefer": ["david", "george", "male"], "pitch": 0.85, "rate": 0.9 },
+      "at": [0.6, -0.3],
+      "face": "AGATHON"
+    },
+    "DIOTIMA": {
+      "base": "woman",
+      "variant": 5,
+      "tint": "#8fa89a",
+      "height": 1.72,
+      "label": "Diotima of Mantinea",
+      "labelColor": "#b8e8d0",
+      "voice": { "prefer": ["hazel", "susan", "female"], "pitch": 0.92, "rate": 0.9 },
+      "at": [1.9, 0.6],
+      "face": "SOCRATES",
+      "keepFacing": true
+    }
+  },
+
+  "customObject": {
+    "name": "the krater",
+    "description": "the great wine-mixing bowl — nearly empty now, which is how the truth usually arrives",
+    "at": [0, -1.3],
+    "glow": "#c9855f",
+    "parts": [
+      { "shape": "cylinder", "size": [0.22, 0.18], "pos": [0, 0.09, 0], "color": "#4a3828", "metal": 0.2, "rough": 0.6 },
+      { "shape": "cylinder", "size": [0.5, 0.42, 0.26], "pos": [0, 0.48, 0], "color": "#8a5c30", "metal": 0.45, "rough": 0.4 },
+      { "shape": "torus", "size": [0.5, 0.035], "pos": [0, 0.7, 0], "rot": [1.5708, 0, 0], "color": "#c9915a", "metal": 0.6, "rough": 0.3 },
+      { "shape": "torus", "size": [0.09, 0.025], "pos": [-0.56, 0.55, 0], "rot": [0, 0, 0.5], "color": "#c9915a", "metal": 0.6, "rough": 0.3 },
+      { "shape": "torus", "size": [0.09, 0.025], "pos": [0.56, 0.55, 0], "rot": [0, 0, -0.5], "color": "#c9915a", "metal": 0.6, "rough": 0.3 },
+      { "shape": "cylinder", "size": [0.42, 0.03], "pos": [0, 0.66, 0], "color": "#5c2430", "emissive": 0.12, "rough": 0.25 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: the_hallwyl_museum_1st_floor_combined — Agathon's dining room, the small hours. A woman stands apart at the edge of the lamplight, unnoticed by the guests: Diotima, who is not there. She is a memory. She will hold still until she is remembered." },
+    { "who": "AGATHON", "text": "Then I'll be brief and shameless, since I must follow the missing half of the human soul. I say the poets are wrong — Love is not the oldest god, but the YOUNGEST. Forever young, tender-footed, walking not on earth but on the softest thing in the world: the hearts of men. Love is beautiful, delicate, and the maker of poets — every person Love touches becomes a poet, even the ones with no music in them at all. There. Flowers thrown at the god. Someone had to.", "file": "sym4_01.mp3" },
+    { "note": "Delighted applause — it was gorgeous and everyone knows it, possibly including the god." },
+    { "who": "SOCRATES", "text": "Beautiful, Agathon. Genuinely — I nearly forgot to disagree with it. One small question, in my plodding way. Love is love OF something, yes? The way thirst is thirst of drink?", "file": "sym4_02.mp3" },
+    { "who": "AGATHON", "text": "Of course. Of beauty. Love is love of beauty.", "file": "sym4_03.mp3" },
+    { "who": "SOCRATES", "text": "And does a man desire what he already possesses? Does the drinking man thirst?", "file": "sym4_04.mp3" },
+    { "who": "AGATHON", "text": "…No. You desire what you lack. Oh. OH. Socrates, you've just made my whole speech eat itself — if Love desires beauty, Love LACKS beauty. My young, tender, beautiful god is — needy.", "file": "sym4_05.mp3" },
+    { "who": "SOCRATES", "text": "Don't grieve. I made the same speech once, with the same flowers, and it was eaten by a woman from Mantinea named Diotima — the wisest person I have ever met on this subject or perhaps any. Let me give you the conversation as she gave it to me. I still know it by heart. You'll see why.", "file": "sym4_06.mp3", "face": "camera" },
+    { "note": "The lamps seem to dim; the couches recede. Where the light is oldest, Diotima steps forward — the memory taking the floor it has owned for thirty years." },
+    { "who": "DIOTIMA", "text": "So, Socrates. You've discovered Love is neither beautiful nor a god, and now you sit there looking robbed. Must a thing be one of two opposites? Is everything not-beautiful therefore ugly? Is everything not-wise therefore ignorant? There is a whole country in between, and Love LIVES there — a great spirit, halfway between mortal and divine, carrying messages across the gap. Love is not the beloved, Socrates. Love is the reaching.", "file": "sym4_07.mp3" },
+    { "who": "SOCRATES", "text": "Then what does the reaching want, Diotima? What does Love actually desire, under all the poetry?", "file": "sym4_08.mp3", "face": "DIOTIMA" },
+    { "who": "DIOTIMA", "text": "To possess the good — and here is the part everyone misses — to possess it FOREVER. And there's the tragedy, because you are mortal, and forever is not in your inventory. So what does a dying creature do who wants the good eternally? It creates. All of you, every one — pregnant in body or in soul — and Love is the trembling that comes over you in the presence of beauty, because beauty is where birth is possible. Love is not the love of the beautiful, Socrates. It is the love of BIRTH in the beautiful. It is a mortal thing's only trick for touching immortality.", "file": "sym4_09.mp3" },
+    { "who": "ARISTOPHANES", "text": "…She's answering MY speech. Thirty years before I gave it. That's extremely rude.", "file": "sym4_10.mp3" },
+    { "who": "SOCRATES", "text": "She answers everyone's, Aristophanes. Wait for yours — it's kinder than mine. — And then, Diotima, you showed me the stair. Tell them the stair.", "file": "sym4_11.mp3" },
+    { "who": "DIOTIMA", "text": "It is a ladder, and every rung is love, and almost everyone stops on the first one. You begin by loving one beautiful body — fine, everyone does, it is the door. Then one day you notice: the beauty in this body is SISTER to the beauty in every other, and it would be small-minded to love one and not honour all. That is the second rung, and it already costs you your jealousy.", "file": "sym4_12.mp3" },
+    { "who": "DIOTIMA", "text": "Then upward: from bodies to souls — a beautiful character outshines a beautiful face, and you'd rather one honest conversation than a hundred profiles of perfect strangers. Then from souls to what souls DO: beautiful practices, beautiful laws, cities built kindly — yes, Socrates, a well-made law is a love object; stop smiling. Then beautiful knowledge — the sciences, the patterns, the wide sea of ideas. Rung by rung, loving your way OUT of the particular and UP.", "file": "sym4_13.mp3" },
+    { "who": "DIOTIMA", "text": "And then — if you climb honestly and do not skip — comes the reward all the rungs were for. Suddenly: Beauty itself. Not beautiful FOR something, not beautiful compared to something, not fading, not flowering — the thing every beautiful body and soul and law was borrowing from all along, the sea all the rivers meant. A person who has seen THAT, Socrates, even once, does not come back down the same. And every love they ever had turns out to have been the first rung of the way there — not wasted. Never wasted. A staircase.", "file": "sym4_14.mp3", "face": "camera" },
+    { "pause": 2.0 },
+    { "note": "The lamps return. Diotima withdraws into the memory she came from. The dining room is very quiet for a room containing five Athenians and wine." },
+    { "who": "SOCRATES", "text": "That is what she taught me. I have tested it my whole life and found no better account — so I honour Love as she showed him to me: not the youngest god or the oldest, but the ladder set up between what we are and what we're for. That is my speech, friends. It was always going to be someone else's.", "file": "sym4_15.mp3" },
+    { "who": "AGATHON", "text": "…I have never been so glad to have a speech eaten. Fill the cups — the SMALL cups, doctor, don't panic — because I don't think anyone should have to follow—", "file": "sym4_16.mp3" },
+    { "note": "A tremendous BANGING at the courtyard door. Drunken voices, a flute, someone loudly demanding Agathon by name. Aristophanes starts to grin. The most beautiful and most ruinous man in Athens has arrived very, very drunk." },
+    { "who": "ARISTOPHANES", "text": "…That would be Alcibiades. Gentlemen, the philosophy is over. History is about to fall through the door.", "file": "sym4_17.mp3", "face": "camera" },
+    { "note": "THE END of the speeches — and of our staging, for now. What Alcibiades said when he crashed the party — the truest portrait of Socrates ever spoken, by the man who loved and failed him — is another night's story." }
+  ]
+}

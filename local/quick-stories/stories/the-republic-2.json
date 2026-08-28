@@ -1,0 +1,87 @@
+{
+  "id": "the-republic-2",
+  "title": "The Republic · Part 2",
+  "subtitle": "The ring of Gyges, and a city built in words to find justice writ large. After Plato.",
+  "stage": "room",
+  "stageTint": "#4a3b28",
+  "characters": {
+    "SOCRATES": {
+      "base": "elder", "variant": 1, "tint": "#d8d2c0", "height": 1.72,
+      "label": "Socrates", "labelColor": "#ffd27f",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.85, "rate": 0.94 },
+      "at": [0, 0.5], "face": "THRASYMACHUS"
+    },
+    "GLAUCON": {
+      "base": "man", "variant": 3, "tint": "#8a5f3f", "height": 1.78,
+      "label": "Glaucon", "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.08, "rate": 1.02 },
+      "at": [-1.6, -0.2], "face": "SOCRATES"
+    },
+    "ADEIMANTUS": {
+      "base": "man", "variant": 6, "tint": "#5f7350", "height": 1.75,
+      "label": "Adeimantus", "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.95, "rate": 0.98 },
+      "at": [-2.8, -2.4], "face": "SOCRATES"
+    },
+    "THRASYMACHUS": {
+      "base": "man", "variant": 9, "tint": "#6a4a5a", "height": 1.7,
+      "label": "Thrasymachus", "labelColor": "#c98a8a",
+      "voice": { "prefer": ["male"], "pitch": 0.8, "rate": 1.04 },
+      "at": [1.7, -0.4], "face": "SOCRATES"
+    },
+    "POLEMARCHUS": {
+      "base": "man", "variant": 4, "tint": "#4a6a7a", "height": 1.74,
+      "label": "Polemarchus", "labelColor": "#7fe6ff",
+      "at": [2.7, -1.6], "face": "SOCRATES"
+    }
+  },
+  "customObject": {
+    "name": "the ring of Gyges",
+    "description": "a plain gold band that grants invisibility — it hangs turning in the lamplight as Glaucon describes it",
+    "at": [-1.1, 1.5],
+    "glow": "#ffd27f", "spin": true, "hover": true,
+    "parts": [
+      { "shape": "torus", "size": [0.26, 0.055], "pos": [0, 1.35, 0], "rot": [1.2, 0, 0.3], "color": "#ffd27f", "emissive": 1.1 },
+      { "shape": "torus", "size": [0.34, 0.012], "pos": [0, 1.35, 0], "rot": [1.2, 0, 0.3], "color": "#fff3d0", "emissive": 0.8, "opacity": 0.5 },
+      { "shape": "sphere", "size": [0.19], "pos": [0, 1.35, 0], "color": "#ffe8b0", "emissive": 0.35, "opacity": 0.16 }
+    ]
+  },
+  "script": [
+    { "note": "Cephalus’s house, night. The flickering oil lamps cast long shadows. Thrasymachus, though challenged, still holds a defiant posture." },
+    { "who": "SOCRATES", "text": "Your argument, Thrasymachus, that the unjust man is happier, stronger, more prosperous than the just… it is a serious claim. It suggests that injustice is a virtue, and justice a folly. But is it truly so? Does the skilled craftsman, the doctor, the pilot, strive to outdo others in skill, or to achieve the standard of their craft?", "file": "rep2_01.mp3" },
+    { "who": "THRASYMACHUS", "text": "They strive for their own advantage, as does any man with sense! You speak of craft, I speak of power. The unjust ruler, the man who exploits, he takes more, he has more. He is happy.", "file": "rep2_02.mp3" },
+    { "who": "SOCRATES", "text": "Consider a band of robbers, Thrasymachus. If they were utterly unjust to one another, constantly cheating and betraying, could they achieve anything? Could they even exist as a band? Does not even their injustice require a measure of justice among themselves to succeed in their unjust enterprise?", "file": "rep2_03.mp3" },
+    { "note": "Thrasymachus grunts, unwilling to concede, but a flicker of thought crosses his face." },
+    { "who": "SOCRATES", "text": "And if injustice breeds faction, hatred, and strife, whether in a city, a family, or a single soul, how can it produce happiness? While justice brings friendship and harmony. Surely, the unjust soul, divided against itself, cannot be happy.", "file": "rep2_04.mp3" },
+    { "note": "Thrasymachus scoffs." },
+    { "who": "THRASYMACHUS", "text": "You spin elegant webs, Socrates, but the world outside these walls proves me right every day. The powerful thrive, the just suffer. It is a fact.", "file": "rep2_05.mp3" },
+    { "note": "Glaucon interjects, earnest." },
+    { "who": "GLAUCON", "text": "Socrates, I confess, Thrasymachus’s words have unsettled me. I do not believe him, but I see his point. We praise justice, yes, but do we praise it for itself, or for the rewards it brings — reputation, honor, the avoidance of punishment? It seems we laud justice for the appearance of it, for what others think.", "file": "rep2_06.mp3" },
+    { "note": "Socrates turns his full attention to Glaucon, a spark in his eye." },
+    { "who": "GLAUCON", "text": "Hear me out. Let us imagine two rings. One we give to a perfectly just man, and one to a perfectly unjust man. These are not ordinary rings, but rings like the one Gyges found, that grant invisibility.", "file": "rep2_07.mp3" },
+    { "note": "Polemarchus leans forward, intrigued." },
+    { "who": "GLAUCON", "text": "With such a ring, the just man could commit any act without fear of consequence. He could steal, lie, murder, satisfy any desire. And the unjust man could do the same. If both had this power, do you truly believe, Socrates, that the just man would remain just? Would he not, like the unjust man, use the ring to gain every advantage, knowing he could escape detection?", "file": "rep2_08.mp3" },
+    { "note": "A heavy silence falls. Thrasymachus smirks, a triumphant glint in his eye." },
+    { "pause": 1.5 },
+    { "who": "GLAUCON", "text": "It seems, then, that people are just unwillingly, by compulsion, because they lack the power to be unjust. If they had the power, they would be unjust. This is the common view. They act justly only because they fear the consequences of injustice.", "file": "rep2_09.mp3" },
+    { "note": "Socrates is thoughtful, then a slight smile." },
+    { "who": "SOCRATES", "text": "A powerful challenge, Glaucon. You present the case for injustice so vividly that it is as if you yourself believe it.", "file": "rep2_10.mp3" },
+    { "who": "GLAUCON", "text": "I don’t! But I want to hear it refuted. I want to know what justice is, not merely what it seems to be. I want you to prove that justice is good for its own sake, and not merely for its rewards or reputation.", "file": "rep2_11.mp3" },
+    { "note": "Adeimantus, Glaucon’s brother, steps forward from the shadows, where he has been listening intently." },
+    { "who": "ADEIMANTUS", "text": "Indeed, Socrates. Consider how parents teach their children. They tell them to be just, yes, but for what reason? Because the gods will reward them, because they will be honored by men. Never do they praise justice for its intrinsic worth, for what it does to the soul of the just man. They only praise the good reputation that comes from justice.", "file": "rep2_12.mp3", "moveTo": [-2.0, -0.9] },
+    { "note": "Socrates nods slowly." },
+    { "who": "SOCRATES", "text": "Ah, my dear friends, you have indeed raised the bar. You ask for a proof that justice is the greatest good, to be chosen above all else, for itself alone. This is no small task. It requires a deeper examination.", "file": "rep2_13.mp3" },
+    { "who": "SOCRATES", "text": "But perhaps, since the matter is so large, we might examine it first not in the individual, but in something larger, where justice might be writ large and more easily discerned. Let us, in our discussion, construct a city from the ground up.", "file": "rep2_14.mp3" },
+    { "note": "Thrasymachus rolls his eyes, but Glaucon and Adeimantus lean in, eager." },
+    { "who": "SOCRATES", "text": "Imagine a city. What would be its first needs? Food, shelter, clothing, tools… Therefore, we would need farmers, builders, weavers, shoemakers, carpenters. Each doing one task, specializing. For one man cannot do many things well.", "file": "rep2_15.mp3" },
+    { "who": "GLAUCON", "text": "A city of simple needs. The healthy city, perhaps.", "file": "rep2_16.mp3" },
+    { "who": "SOCRATES", "text": "Precisely. And if each person performs their own task, and exchanges with others, there would be enough. They would eat barley and wheat, drink wine, live in simple houses, make sacrifices to the gods, and live their lives in peace and health.", "file": "rep2_17.mp3" },
+    { "note": "Glaucon, slightly disappointed." },
+    { "who": "GLAUCON", "text": "But Socrates, if you were founding a city for pigs, you would feed them in that way. Men desire more. Couches to recline on, rich sauces, perfumes, fine clothes, paintings, gold and silver. We want a more luxurious city.", "file": "rep2_18.mp3" },
+    { "note": "Socrates smiles, a knowing glint in his eyes." },
+    { "who": "SOCRATES", "text": "Ah, the feverish city, then. Very well. If we are to have luxury, we will need more than just farmers and builders. We will need hunters, poets, artists, beauticians, cooks, servants. And more land, for all these new needs. And if we need more land, we will need…", "file": "rep2_19.mp3" },
+    { "who": "ADEIMANTUS", "text": "…Warriors. To take land, or to defend our own from those who would take it from us.", "file": "rep2_20.mp3" },
+    { "who": "SOCRATES", "text": "Indeed. And these warriors, these guardians of our luxurious city, must be of a particular nature. They must be spirited, strong, swift, and courageous, like noble hounds. But they must also be gentle to their own citizens, and fierce only to enemies. How shall we find and train such men? This, my friends, is where justice will begin to reveal itself.", "file": "rep2_21.mp3", "face": "camera" },
+    { "pause": 2.5 }
+  ]
+}

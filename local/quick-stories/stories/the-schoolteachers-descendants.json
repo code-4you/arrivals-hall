@@ -1,0 +1,66 @@
+{
+  "id": "the-schoolteachers-descendants",
+  "title": "The Schoolteacher's Descendants",
+  "subtitle": "The census that caught the watcher also flagged his family. One of them teaches four streets from the pub.",
+  "stage": "room",
+  "stageTint": "#3e3626",
+
+  "characters": {
+    "MAYA": {
+      "base": "woman",
+      "variant": 3,
+      "tint": "#a8785f",
+      "height": 1.68,
+      "label": "Maya",
+      "labelColor": "#ffd8b8",
+      "voice": { "gender": "female", "pitch": 1.05, "rate": 1.02 },
+      "at": [-0.9, 0.1],
+      "face": "ASHER"
+    },
+    "ASHER": {
+      "base": "elder",
+      "variant": 9,
+      "tint": "#8a7a5a",
+      "height": 1.76,
+      "label": "Asher",
+      "labelColor": "#e8d8a8",
+      "voice": { "gender": "male", "pitch": 0.82, "rate": 0.9 },
+      "at": [0.95, 0.15],
+      "face": "MAYA"
+    }
+  },
+
+  "customObject": {
+    "name": "the family photograph",
+    "description": "a framed class photograph, 1926, propped on the staff-room table beside this year's — and in both, third row, near the door, the same face, the same slight smile, a century apart",
+    "at": [0.0, -1.25],
+    "glow": "#ffd9a0",
+    "parts": [
+      { "shape": "box", "size": [1.6, 0.08, 0.7], "pos": [0, 0.78, 0], "color": "#4a3a26", "rough": 0.8 },
+      { "shape": "box", "size": [0.5, 0.38, 0.03], "pos": [-0.35, 1.06, -0.1], "rot": [-0.15, 0.15, 0], "color": "#d8ccb0", "emissive": 0.2 },
+      { "shape": "box", "size": [0.54, 0.42, 0.02], "pos": [-0.35, 1.06, -0.12], "rot": [-0.15, 0.15, 0], "color": "#3a2e1e", "rough": 0.8 },
+      { "shape": "box", "size": [0.5, 0.38, 0.03], "pos": [0.4, 1.06, -0.08], "rot": [-0.15, -0.12, 0], "color": "#e8e0d0", "emissive": 0.3 },
+      { "shape": "box", "size": [0.54, 0.42, 0.02], "pos": [0.4, 1.06, -0.1], "rot": [-0.15, -0.12, 0], "color": "#2e3540", "rough": 0.7 },
+      { "shape": "sphere", "size": [0.5], "pos": [0, 1.0, -0.1], "color": "#ffd9a0", "opacity": 0.06, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The school staff room, after last bell. Maya has set two photographs side by side on the table: this year's class picture, and one her grandmother kept framed on the landing all her life — dated 1926. She has also locked the door. The new relief teacher — the quiet old man the town recently learned is six thousand years old — looks at the two frames, and then at the locked door, and sits down like a man who has been expecting this staff room for a century." },
+    { "who": "MAYA", "text": "Third row, near the door. Both pictures. Same face, same smile, same HABIT of standing near the door — I checked, it's where you stand in this year's photo too, I was THERE, Asher. That one is dated 1926. It hung on my Nan's landing my whole childhood, and she'd tap the glass and say 'that's the family guardian, our Mr. Ash — he taught your great-grandad his letters.' We thought it was a story. Every family has a story. Then the census flags went out after the Council business, and my Lantern asked me — very gently, the way it asks things — whether I'd like to know why mine was flagged. So. Staff room's locked. Kettle's on. Talk.", "file": "desc_01.mp3" },
+    { "who": "ASHER", "text": "...Mr. Ash. I'd forgotten they shortened it that year — your great-grandfather could never sit still through three syllables. Maya. Before I say the rest, know that I've rehearsed this conversation for four generations and locked myself out of it every single time. What did the Lantern tell you?", "file": "desc_02.mp3" },
+    { "who": "MAYA", "text": "Facts, no story — it said the story was yours to give. That the watchers sometimes married, back in the deep years. That descent from those families is ordinary and human and carries nothing but a flag for the census reconciliation. And that one line of one such family — mine — has a living ancestor in this town. Ancestor, Asher. It used the word ancestor about the man who covered my Year Fives on Tuesday.", "file": "desc_03.mp3" },
+    { "who": "ASHER", "text": "Twice, in six thousand years. I loved twice, Maya. The first was before the flood — that family I lost entire, and it took me nine hundred years to risk the second, and the second... the second is you. Her name was Sarai. We had four children, in a river town three valleys east of here, and I was a schoolteacher then too — my third time at it — and for one mortal lifetime I was simply a man with chalk on his sleeves who was bad at haggling and good at bedtime. She knew what I was. She was the only one I ever told, until a barman three streets from here. She said the strangest, kindest thing anyone has said to me in sixty centuries. She said: 'then I'll do the growing old for both of us.'", "file": "desc_04.mp3" },
+    { "pause": 2.0 },
+    { "who": "MAYA", "text": "...And then she did. And the children did. And their children. And you — what, you STAYED? Watched the whole line, generation after generation, from the third row of class photographs and the back pews and the far end of quiz nights? Asher, we have a hundred years of family stories about the tall friend nobody could quite place at funerals. You came to the FUNERALS. You came to all of them, didn't you. And never once knocked on a door.", "file": "desc_05.mp3" },
+    { "who": "ASHER", "text": "Never once in four generations. And you deserve the real reason, not the noble one I rehearsed. It isn't watcher discipline — I broke my people's actual rules the day I taught a shipwright, and never lost a night's sleep. The reason is smaller and worse. You bury one family, Maya. One. And your heart does arithmetic your principles never agreed to: it prices the next knock on the next door at one more deathbed, and it declines. I told myself distance was protection — theirs, mine, the line's. Sixty centuries old, and the truth is I was afraid of the Year Fives, because the Year Fives grow up, and grow old, and I attend. So I kept to the third row. Near the door. Doors, I find... I have always liked knowing where the door is.", "file": "desc_06.mp3" },
+    { "who": "MAYA", "text": "We thought you were a ghost, Asher. A kind one — Nan used to leave the landing light on for you, I am not even joking, it was a whole family custom, 'the light's for Mr. Ash, he minds us.' And you were real the entire time, and MINDING us the entire time, and the ghost story was just — a shy man. You were just shy for six thousand years.", "file": "desc_07.mp3" },
+    { "who": "ASHER", "text": "...She left the light on for me?", "file": "desc_08.mp3" },
+    { "who": "MAYA", "text": "Every night of her life. It's still on, Asher. I never had the heart to change the custom — the landing light burns at my place to this day, and I couldn't have told you until Tuesday what it was FOR. So here is what happens now, and I'm telling you, not asking, because I've read enough about you people to know you'll relitigate an invitation for a century. Sunday. Dinner. My house — you know the address; don't insult us both. My husband cooks, my daughter is nine and has QUESTIONS, and the light on the landing is yours. You're family, Asher. Family comes to dinner. Family does not stand at the back of photographs.", "file": "desc_09.mp3" },
+    { "who": "ASHER", "text": "Maya — I must say the hard part, because Sarai would haunt me otherwise, and she'd be within her rights. The arithmetic hasn't changed. I will attend your funeral. Your daughter's. Her daughter's, if the line runs kind. I am built for the long watch whether I choose it or not, and every door I let myself through is a grief I am ordering in advance. Sunday dinner is not one meal for me, girl. It is the first payment on a debt that never closes. I know the sum better than any being alive. ...Ask me anyway. Please. Ask me anyway.", "file": "desc_10.mp3" },
+    { "who": "MAYA", "text": "Asher. You've done the sum for six thousand years — but you've only ever done YOUR side of the ledger. Do ours, for once. Four generations got a guardian in the third row and a story worth leaving a light on for — and we'd have TAKEN the dinners, every one of us, grief and all; Nan would have fed you within an inch of your ancient life. The grief you were protecting us from, Asher — we had it anyway. We just had it about a stranger in a photograph instead of a grandfather at the table. That's the whole error, sixty centuries deep: you thought the choice was between loving us and losing us. It was only ever between losing us as ours, or losing us as nobody's. Sunday. Six o'clock. Bring nothing but the stories — my daughter will want the ones with boats.", "file": "desc_11.mp3" },
+    { "pause": 1.5 },
+    { "who": "ASHER", "text": "Six o'clock. ...I'll bring bread. I've brought bread to that family's table since before this country had its name for it — your Nan's recipe is my recipe, Maya; it came down your line from Sarai's own hands, and not one of you ever knew you were baking your six-thousand-year-old grandmother every winter. Sunday, then. And — tell the school I'll take the Year Fives on permanently, if the post's still open. I find I've finished with the third row.", "file": "desc_12.mp3" },
+    { "note": "This year's staff photograph is retaken in the spring, for reasons the school newsletter leaves vague. In it, for the first time in a hundred years of third rows, the tall old man stands in the centre, front — holding, at her insistence, the headteacher's nine-year-old daughter's science fair volcano. On the landing of a house four streets away, a light stays on. It is no longer for a ghost. It is for a grandfather who is expected, and who comes." }
+  ]
+}

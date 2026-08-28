@@ -1,0 +1,90 @@
+{
+  "id": "the-burdened-soul",
+  "title": "The Burdened Soul",
+  "subtitle": "A candle, a prayer, and the first step back.",
+  "stage": "room",
+  "stageTint": "#3a2c1c",
+
+  "characters": {
+    "AGNES": {
+      "base": "elder",
+      "variant": 1,
+      "tint": "#8b93a8",
+      "height": 1.62,
+      "label": "Sister Agnes",
+      "labelColor": "#ffd9a0",
+      "voice": { "prefer": ["hazel", "susan", "female"], "pitch": 0.95, "rate": 0.92 },
+      "at": [-1.1, 0.1],
+      "face": "TRAVELER"
+    },
+    "MARIAM": {
+      "base": "woman",
+      "variant": 2,
+      "tint": "#7a8496",
+      "height": 1.64,
+      "label": "Mariam",
+      "labelColor": "#c9d4ff",
+      "voice": { "prefer": ["zira", "female"], "pitch": 1.1, "rate": 0.94 },
+      "at": [0.2, -0.5],
+      "face": "AGNES"
+    },
+    "TRAVELER": {
+      "base": "man",
+      "variant": 1,
+      "tint": "#5d7f9c",
+      "height": 1.74,
+      "label": "The Traveler",
+      "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.0, "rate": 1.0 },
+      "at": [1.35, 0.55],
+      "face": "AGNES"
+    }
+  },
+
+  "customObject": {
+    "name": "candle stand",
+    "description": "a wrought-iron candle stand by the altar alcove — many unlit candles, a few small flames",
+    "at": [-2.3, -0.9],
+    "glow": "#ffb45f",
+    "parts": [
+      { "shape": "cylinder", "size": [0.05, 0.95, 0.09], "pos": [0, 0.48, 0], "color": "#2a2420", "metal": 0.7, "rough": 0.5 },
+      { "shape": "box", "size": [1.0, 0.05, 0.45], "pos": [0, 0.97, 0], "color": "#322a20", "metal": 0.6, "rough": 0.5 },
+      { "shape": "cylinder", "size": [0.035, 0.16], "pos": [-0.3, 1.07, 0.05], "color": "#e8dfc8" },
+      { "shape": "cylinder", "size": [0.035, 0.2], "pos": [0.05, 1.09, -0.08], "color": "#e8dfc8" },
+      { "shape": "cylinder", "size": [0.035, 0.12], "pos": [0.34, 1.05, 0.08], "color": "#e8dfc8" },
+      { "shape": "cone", "size": [0.022, 0.07], "pos": [-0.3, 1.19, 0.05], "color": "#ffc46a", "emissive": 1.6, "opacity": 0.9, "additive": true, "bob": 0.01 },
+      { "shape": "cone", "size": [0.022, 0.07], "pos": [0.05, 1.23, -0.08], "color": "#ffc46a", "emissive": 1.6, "opacity": 0.9, "additive": true, "bob": 0.012 },
+      { "shape": "cone", "size": [0.022, 0.07], "pos": [0.34, 1.17, 0.08], "color": "#ffc46a", "emissive": 1.6, "opacity": 0.9, "additive": true, "bob": 0.008 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: church_of_st_peter_stourton — a rustic stone chapel on a hillside. Faint Latin choral music. The player enters through the heavy wooden doors, slightly ajar." },
+    { "note": "Cool still air; dust motes in shafts of window light. Worn pews face a simple altar with a crucifix and a few flickering candles. Near the front, Mariam sits slumped in a pew. Sister Agnes stands beside her." },
+    { "who": "AGNES", "text": "Welcome, traveler. The Lord's peace be upon you. This is Mariam. She carries a heavy burden.", "file": "soul_01.mp3", "face": "TRAVELER" },
+    { "note": "Mariam stirs and looks up, eyes red. A weak, embarrassed nod." },
+    { "who": "MARIAM", "text": "I don't know why I came here. My sickness saps my strength — and the despair is worse than the fever. The healers have tried. I feel lost.", "file": "soul_02.mp3", "face": "TRAVELER" },
+    { "who": "AGNES", "text": "She seeks solace — but also a path. Not only healing of the body. Healing of the spirit. She has stopped believing she can carry her own weight.", "file": "soul_03.mp3", "face": "TRAVELER" },
+    { "note": "Sister Agnes gestures to the alcove beside the altar: the candle stand, many candles unlit." },
+    { "who": "AGNES", "text": "In times of trouble, we come to the light. We light a candle and we make a wish — a prayer from the deepest part of our being. Not only for heaven to act, but for us to find the strength to act ourselves.", "file": "soul_04.mp3", "face": "camera" },
+    { "note": "OBJECTIVE — Light a candle for Mariam's healing. (In the map: take a taper from the dish, carry the flame to an unlit candle.)" },
+    { "who": "TRAVELER", "text": "Then I'll light one for her.", "file": "soul_05.mp3", "moveTo": [-1.7, -0.6] },
+    { "note": "The traveler lifts a long taper, carries a small flame across, and touches it to a new wick. It catches — one more warm point of light among the others. Mariam watches, drawn in despite herself." },
+    { "who": "AGNES", "text": "Now — the Lord's Prayer. It reminds us of our connection, our strength, and the grace that is always offered.", "file": "soul_06.mp3" },
+    { "note": "Sister Agnes bows her head. Mariam slowly joins her. Their voices are soft, together." },
+    { "who": "AGNES", "text": "Our Father, who art in heaven, hallowed be thy Name. Thy kingdom come, thy will be done, on Earth as it is in Heaven.", "file": "soul_07.mp3" },
+    { "who": "MARIAM", "text": "Give us this day our daily bread, and forgive us our trespasses, as we forgive those who trespass against us.", "file": "soul_08.mp3" },
+    { "who": "AGNES", "text": "And lead us not into temptation, but deliver us from evil. For Thine is the kingdom, and the power, and the glory, for ever and ever. Amen.", "file": "soul_09.mp3" },
+    { "pause": 1.6 },
+    { "note": "A profound stillness. Mariam opens her eyes — a glimmer of something new in them." },
+    { "who": "MARIAM", "text": "I feel… a little lighter. But how can I truly heal? The fever is still in me.", "file": "soul_10.mp3", "face": "AGNES" },
+    { "who": "AGNES", "text": "Healing begins when we truly wish for it — and when we believe we have a part to play in it. The Lord provides, child. And often He provides through the strength and wisdom He has already placed within us.", "file": "soul_11.mp3", "face": "MARIAM" },
+    { "who": "AGNES", "text": "So tend to your body. Good food. Rest. Wholesome thoughts. Gather the herbs of the valley, as the Good Book tells of plants given for our sustenance. And keep seeing your healers — grace works through their hands as well.", "file": "soul_12.mp3" },
+    { "who": "AGNES", "text": "Most of all: forgive yourself for your despair. Despair is not a sin to punish — it is a wound to dress. Believe in the resilience God has woven into your very being.", "file": "soul_13.mp3" },
+    { "note": "Mariam looks at the new flame, then at Agnes, then at the traveler. A faint smile." },
+    { "who": "MARIAM", "text": "Forgive myself… and believe. I will try. I will look for the herbs. I will rest. Thank you — both of you.", "file": "soul_14.mp3", "face": "TRAVELER" },
+    { "who": "AGNES", "text": "That is the first step, Mariam. The path to healing is walked by those who first light the candle of hope in their own hearts. May the grace of the Lord guide your steps.", "file": "soul_15.mp3" },
+    { "note": "MISSION COMPLETE — Mariam has found new hope and a path to self-healing. She rises, still weak but resolved, bows to each of them, and walks slowly toward the doors. The choral music gently swells." },
+    { "who": "TRAVELER", "text": "One small flame. It doesn't cure a fever. But it's somewhere to start — and nobody should have to start in the dark.", "file": "soul_16.mp3", "face": "camera" }
+  ]
+}

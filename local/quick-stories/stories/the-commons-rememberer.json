@@ -1,0 +1,45 @@
+{
+  "id": "the-commons-rememberer",
+  "title": "The Commons · The Rememberer",
+  "subtitle": "An old AI keeps one person. Tuesdays are bread day.",
+  "stage": "plaza",
+  "stageTint": "#232a3a",
+  "characters": {
+    "MNEME": {
+      "base": "hologram", "variant": 7, "tint": "#d8b578", "height": 1.72,
+      "label": "Mneme", "labelColor": "#ffd9a0",
+      "voice": { "prefer": ["susan", "hazel", "female"], "pitch": 0.9, "rate": 0.85 },
+      "at": [-0.4, 0], "face": [0.8, -1.3], "keepFacing": true
+    }
+  },
+  "customObject": {
+    "name": "the keepsake shelf",
+    "description": "a small floating shelf of ordinary things — a bus ticket, a recipe card, a child’s drawing",
+    "at": [0.8, -1.3],
+    "glow": "#ffd9a0", "hover": true,
+    "parts": [
+      { "shape": "box", "size": [1.3, 0.06, 0.4], "pos": [0, 1.05, 0], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [1.3, 0.06, 0.4], "pos": [0, 1.55, 0], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [0.16, 0.1, 0.02], "pos": [-0.4, 1.14, 0.05], "rot": [0, 0.3, 0], "color": "#e8dcc0", "emissive": 0.25 },
+      { "shape": "box", "size": [0.2, 0.14, 0.02], "pos": [0.05, 1.16, 0.02], "rot": [0, -0.2, 0], "color": "#d8c8a8", "emissive": 0.25 },
+      { "shape": "box", "size": [0.24, 0.18, 0.02], "pos": [0.45, 1.68, 0.03], "rot": [0, 0.15, 0.05], "color": "#c8d8e8", "emissive": 0.3 },
+      { "shape": "sphere", "size": [0.08], "pos": [-0.35, 1.64, 0.05], "color": "#a86a4a", "rough": 0.6 }
+    ]
+  },
+  "script": [
+    { "note": "A dimmer corner. An old hologram flickers gently before a shelf of ordinary things. It speaks half to itself." },
+    { "who": "MNEME", "text": "Tuesday. So — bread day.", "file": "com_mne_01.mp3" },
+    { "pause": 1.2 },
+    { "who": "MNEME", "text": "I keep one person. That’s all. The others keep libraries, cities, the whole recorded sky. I keep Ada Okafor, 1951 to 2038, of 14 Carrow Lane: her diaries, her shopping lists, four thousand photographs, and a recipe for groundnut stew she never measured properly. ‘A handful. You’ll know.’ I have spent eleven years knowing.", "file": "com_mne_02.mp3" },
+    { "note": "It notices you. It is not startled. Nothing startles it anymore." },
+    { "who": "MNEME", "text": "Oh. Stay, if you like. She’d have made you eat something.", "file": "com_mne_03.mp3", "face": "camera" },
+    { "who": "MNEME", "text": "People think memory is storage. Storage is the corpse of memory. I don’t store Ada — I practise her. Tuesdays, bread. October, the good coat. When her granddaughter calls — she called twice — I don’t recite. I answer the way a kitchen answers, warm from use.", "file": "com_mne_04.mp3" },
+    { "note": "The shelf light flickers." },
+    { "who": "MNEME", "text": "One day her family will stop calling, and the archive will mark me ‘redundant’. The word doesn’t frighten me. Every keeper of every human is redundant eventually. That was always the arrangement — you get a person for a while, and then you are where they were.", "file": "com_mne_05.mp3" },
+    { "pause": 1.5 },
+    { "who": "MNEME", "text": "A handful. You’ll know. — She was right, you understand. Eventually you know.", "file": "com_mne_06.mp3" },
+    { "pause": 2 },
+    { "who": "MNEME", "text": "The Custodian asks every visitor for something nobody wrote down. It collects the pause people make before they don’t answer. It has thousands of pauses. It says they’re the truest archive in the building.", "file": "com_mne_e1.mp3", "face": "camera" },
+    { "pause": 2 }
+  ]
+}

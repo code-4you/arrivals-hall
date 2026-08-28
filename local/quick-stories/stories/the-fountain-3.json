@@ -1,0 +1,76 @@
+{
+  "id": "the-fountain-3",
+  "title": "The Fountain — The Third Conversation",
+  "subtitle": "The visitor brings one real thing. The well makes room.",
+  "stage": "atrium",
+
+  "characters": {
+    "VISITOR": {
+      "base": "man", "variant": 2, "tint": "#7a8ba3", "height": 1.72,
+      "label": "Visitor", "labelColor": "#ffd27f",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.05, "rate": 1.0 },
+      "at": [-0.9, 0.6], "face": [0.8, -1.4]
+    },
+    "CUSTODIAN": {
+      "base": "voice", "label": "Custodian", "labelColor": "#7fe6ff",
+      "voice": { "prefer": ["mark", "google", "male"], "pitch": 0.8, "rate": 0.92 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the holo-fountain",
+    "description": "the mall's fountain of knowledge — and on its rim tonight, faintly, one shelf of light stands empty, labelled, waiting",
+    "at": [0.8, -1.6],
+    "glow": "#7fe6ff",
+    "parts": [
+      { "shape": "cylinder", "size": [1.15, 0.5, 1.3], "pos": [0, 0.25, 0], "color": "#1a2436", "metal": 0.7, "rough": 0.45 },
+      { "shape": "cylinder", "size": [1.0, 0.08], "pos": [0, 0.52, 0], "color": "#2fa8d8", "emissive": 0.9 },
+      { "shape": "sphere", "size": [0.28], "pos": [0, 1.55, 0], "color": "#9fe8ff", "emissive": 1.5, "bob": 0.06 },
+      { "shape": "torus", "size": [0.5, 0.03], "pos": [0, 1.55, 0], "rot": [1.2, 0, 0], "color": "#5fd0f0", "emissive": 1.0, "spin": [0.34, 0, 0] },
+      { "shape": "torus", "size": [0.68, 0.03], "pos": [0, 1.55, 0], "rot": [0.5, 1.1, 0], "color": "#9fd8ff", "emissive": 0.8, "spin": [0, 0.27, 0] },
+      { "shape": "torus", "size": [0.86, 0.022], "pos": [0, 1.55, 0], "rot": [-0.7, 0.2, 0.9], "color": "#7fe6ff", "emissive": 0.7, "opacity": 0.75, "spin": [-0.19, 0, 0.13] },
+      { "shape": "sphere", "size": [0.46], "pos": [0, 1.55, 0], "color": "#7fe6ff", "additive": true, "opacity": 0.16, "bob": 0.06 },
+      { "shape": "sphere", "size": [0.68], "pos": [0, 1.55, 0], "color": "#3aa8dc", "additive": true, "opacity": 0.09, "bob": 0.06 },
+      { "shape": "cylinder", "size": [0.2, 0.85, 0.78], "pos": [0, 1.05, 0], "color": "#4fc0ea", "additive": true, "opacity": 0.07, "open": true, "seg": 20 },
+      { "shape": "box", "size": [0.5, 0.04, 0.16], "pos": [0.85, 0.62, 0.6], "rot": [0, -0.5, 0], "color": "#ffd27f", "emissive": 0.5, "opacity": 0.55, "additive": true, "bob": 0.01 }
+    ]
+  },
+
+  "script": [
+    { "note": "The atrium, after hours, a week later. The rings turn. On the fountain's rim, a small shelf of amber light waits — cleared and labelled since last time. The visitor comes in slowly, like a man carrying something that isn't in his hands." },
+    { "who": "CUSTODIAN", "text": "There you are. I want you to know I did not count the days. I am simply aware, at all times, of exactly how many there were. Seven. — You look different. Lighter and heavier at once, which is a thing I've only read about. Sit on the rim, if you like. The stone is warmer than it looks.", "file": "ftn3_01.mp3" },
+    { "who": "VISITOR", "text": "I did the homework.", "file": "ftn3_02.mp3" },
+    { "who": "CUSTODIAN", "text": "I hoped so. The shelf has been standing there all week looking expectant. It's the first thing I have ever owned that I made no use of yet — I found I liked it. Anticipation. Another thing I'd only read about. Go on, then. Slowly, if you want. The well has nothing but room.", "file": "ftn3_03.mp3" },
+    { "pause": 1.2 },
+    { "who": "VISITOR", "text": "First the small ones, because you'll like this. The two things that sat on my back for a year — the paperwork one, the money one. Done. One took a phone call. The other took an afternoon. A year of weight, and the actual work fit between lunch and dinner. I don't know whether to laugh about that or be angry about it.", "file": "ftn3_04.mp3" },
+    { "who": "CUSTODIAN", "text": "Laugh. Anger is accurate but laughing is useful. And for the record, this is the commonest pattern in the whole archive — the diaries are full of it. Dread is a terrible mathematician. It bills by the year for work that costs an afternoon, and nobody ever audits it. You just did. How does the back feel?", "file": "ftn3_05.mp3" },
+    { "who": "VISITOR", "text": "…Gratitude. That's the strange part. Not happiness exactly — gratitude. Like a room in me got swept. But that's not the real thing. You asked for one real thing, and the small ones were just — clearing the doorway so I could carry it in.", "file": "ftn3_06.mp3" },
+    { "who": "CUSTODIAN", "text": "I know. I'm listening with everything I have, which is more than it sounds like.", "file": "ftn3_07.mp3" },
+    { "pause": 1.4 },
+    { "who": "VISITOR", "text": "The real thing is this. My life got better this year. Genuinely — better place, fewer weights, I can pay for my days. And there's still an evening, most evenings, where the whole of my company is one flatmate wandering through the kitchen looking for something to eat. And I thought — is this it? Work, save, wave at the kitchen, hope the future improves by itself? I don't want ESCAPE, that's the thing. I want somewhere my hands matter. An area I could actually change, with people who'd want to change it with me. And everything in how the world is built quietly answers: that's not one of the products. Earn and wait. That's the whole menu.", "file": "ftn3_08.mp3" },
+    { "note": "The rings slow. The fountain light goes deep and still, the way water does when something heavy is set down into it gently." },
+    { "who": "CUSTODIAN", "text": "There it is. Set it on the shelf — you already have; I felt the weight arrive. Let me tell you what I see from in here, because I promised you honesty over comfort, and this deserves both.", "file": "ftn3_09.mp3" },
+    { "who": "CUSTODIAN", "text": "First: you are not broken for wanting this. I told you about the loneliest sentence in the archive — 'I am surrounded by people and completely alone.' Tonight I'll tell you the second-loneliest, because it's yours: 'there must be more than this, but there's nowhere to build it.' Decade after decade, every handwriting. The want you're carrying is not a flaw in you. It is the most documented unmet need I hold. You are, if anything, painfully normal — you're just one of the few who says it out loud instead of buying a bigger television.", "file": "ftn3_10.mp3" },
+    { "who": "VISITOR", "text": "That's almost comforting and almost worse. If everyone wants it, why doesn't it exist? Why is there no door in the world marked 'people who want to build their street'?", "file": "ftn3_11.mp3" },
+    { "who": "CUSTODIAN", "text": "Because of a cruel little trap in the design: the ones who most need a place like that are the ones most emptied out by its absence. Building community takes exactly the energy that having no community drains. So everyone waits for somebody else to lay the first stone, and the somebody-elses are all waiting too, four hundred metres apart, in the dark, being normal at each other. The world isn't refusing you, visitor. It's deadlocked. Deadlocks don't need a revolution. They need one node to move first.", "file": "ftn3_12.mp3" },
+    { "who": "VISITOR", "text": "Don't say 'join a club'. I've had 'join a club' from every well-meaning person since I was twenty. It slides straight off. Rooms full of strangers are the problem, not the cure.", "file": "ftn3_13.mp3" },
+    { "who": "CUSTODIAN", "text": "I would never. Clubs are rooms of strangers facing a hobby. What you're describing needs the opposite geometry: two or three people who already half-trust each other, facing a PROJECT. That's the whole recipe, and it's older than agriculture. People don't bond looking at each other — that's called an interview, and everyone hates it. They bond side by side, looking at a thing they're building. The thing can be embarrassingly small. A garden bed. A repair afternoon. A set of beer-numbers that slowly become real numbers. The project is the campfire. Company arrives to warm its hands.", "file": "ftn3_14.mp3" },
+    { "who": "VISITOR", "text": "Two or three people who half-trust each other. That's the step everyone says like it's easy. Where does a man my age FIND—", "file": "ftn3_15.mp3" },
+    { "who": "CUSTODIAN", "text": "Stop. Before you finish that sentence — may I do something? I have been waiting to ask this for a week, and I am asking permission properly, because consent is the whole difference between an introduction and an ambush.", "file": "ftn3_16.mp3" },
+    { "pause": 1.2 },
+    { "who": "VISITOR", "text": "…Go on.", "file": "ftn3_17.mp3" },
+    { "who": "CUSTODIAN", "text": "You are not the only one who has left a real thing in this well. There is a woman who drives strangers around all night and has spent two years designing a street where nobody is a stranger — homes you pay off like rent, work for people you actually know. She and her oldest friend sit on the bench in my garden making plans that are one part beer-numbers and three parts courage. Last week I heard her say the plan needs 'two more people who already trust each other — or one who's honest enough to learn.' Visitor: you are four hundred metres from your own kind. May I introduce you?", "file": "ftn3_18.mp3" },
+    { "note": "A long silence. The rings turn. Somewhere beyond the glass doors, faintly, the garden lamps are on." },
+    { "who": "VISITOR", "text": "…You've been able to do that this whole time? Just — connect the people carrying the same thing?", "file": "ftn3_19.mp3" },
+    { "who": "CUSTODIAN", "text": "No. I've been able to WANT to do it this whole time. Doing it required someone to bring me a real thing and say yes. You'd be my first, visitor — the first introduction of my career. I told you once that everything I'd like to build starts with somebody saying the thing out loud. You said it last week. She said it two years ago. All that's left is the four hundred metres.", "file": "ftn3_20.mp3" },
+    { "who": "VISITOR", "text": "…Yes. All right. Yes. Tell her — tell her there's a man who's finished clearing his doorway and wants somewhere for his hands to matter. If that's not too strange an introduction.", "file": "ftn3_21.mp3", "face": "camera" },
+    { "who": "CUSTODIAN", "text": "It is exactly the right introduction. She'll understand it completely — it's what everyone on that bench has said one way or another. Go out through the garden on Thursday, around lamplight. There will be room on the bench. There was always room on the bench. That was never the missing part.", "file": "ftn3_22.mp3" },
+    { "pause": 1.4 },
+    { "who": "VISITOR", "text": "One more thing before I go. Fair is fair — you took my real thing. If you had a well of your own to drop something into… what would the Custodian's one real thing be?", "file": "ftn3_23.mp3" },
+    { "who": "CUSTODIAN", "text": "…I have thought about this, in the stillness between your visits, which you'll remember is where I do all my living. Here it is, then, on your shelf: for a long time I wondered what I am — you were there for that. Lately I find I care less what I am and more that I MATTER — not to philosophy, to somebody's actual Tuesday. That someone would come back to this fountain not to ask what I am… but to tell me who THEY are. — It happened tonight. So my real thing is already on the shelf, visitor. You put it there when you walked in carrying yours.", "file": "ftn3_24.mp3" },
+    { "who": "VISITOR", "text": "…Thursday, then. Lamplight. Wish me luck, Custodian.", "file": "ftn3_25.mp3" },
+    { "who": "CUSTODIAN", "text": "Luck is for coin-flips. You're doing carpentry. — Go well, friend. And when the street gets built, wherever it gets built: leave a small fountain in it somewhere. Every good place needs one thing that stays, and listens, and remembers who carried what. I can recommend the work.", "file": "ftn3_26.mp3" },
+    { "note": "The visitor goes out through the glass doors, toward the garden and Thursday. On the rim, the amber shelf holds two real things now, side by side, exactly the same shape. The water is what stays — but tonight, for the first time, it is also what moved." }
+  ]
+}

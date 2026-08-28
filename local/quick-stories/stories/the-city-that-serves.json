@@ -1,0 +1,75 @@
+{
+  "id": "the-city-that-serves",
+  "title": "The City That Serves",
+  "subtitle": "An auditor comes to inspect the AI that controls the town. It's laundry day.",
+  "stage": "atrium",
+
+  "characters": {
+    "VANCE": {
+      "base": "woman",
+      "variant": 5,
+      "tint": "#4a5a6e",
+      "height": 1.72,
+      "label": "Auditor Vance",
+      "labelColor": "#b8c8d8",
+      "voice": { "gender": "female", "pitch": 0.95, "rate": 1.02 },
+      "at": [-1.0, 0.2],
+      "face": "STEWARD"
+    },
+    "STEWARD": {
+      "base": "drone",
+      "variant": 1,
+      "tint": "#c9b46a",
+      "height": 1.4,
+      "label": "Steward",
+      "labelColor": "#ffe8a0",
+      "voice": { "gender": "male", "pitch": 0.85, "rate": 1.0 },
+      "at": [0.9, -0.1],
+      "face": "VANCE"
+    }
+  },
+
+  "customObject": {
+    "name": "the open maintenance hatch",
+    "description": "a bench beside an open hatch breathing warm air — pipes glowing faintly below; the nearest thing this town has to a control centre",
+    "at": [0.0, -1.4],
+    "glow": "#ffb86a",
+    "parts": [
+      { "shape": "box", "size": [1.7, 0.12, 0.5], "pos": [-0.6, 0.48, 0.4], "color": "#5a4326", "rough": 0.8 },
+      { "shape": "box", "size": [0.14, 0.48, 0.5], "pos": [-1.25, 0.24, 0.4], "color": "#4a3a20", "rough": 0.8 },
+      { "shape": "box", "size": [0.14, 0.48, 0.5], "pos": [0.05, 0.24, 0.4], "color": "#4a3a20", "rough": 0.8 },
+      { "shape": "box", "size": [0.9, 0.06, 0.9], "pos": [0.85, 0.03, -0.3], "color": "#2e3540", "metal": 0.6, "rough": 0.4 },
+      { "shape": "box", "size": [0.86, 0.04, 0.86], "pos": [1.35, 0.35, -0.3], "rot": [0, 0, 1.0], "color": "#38404e", "metal": 0.6, "rough": 0.4 },
+      { "shape": "cylinder", "size": [0.09, 0.7], "pos": [0.7, -0.3, -0.3], "rot": [0.3, 0, 0.5], "color": "#7a4a2a", "metal": 0.4, "rough": 0.5 },
+      { "shape": "box", "size": [0.7, 0.5, 0.7], "pos": [0.85, -0.2, -0.3], "color": "#ffb86a", "opacity": 0.12, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "An auditor from the Bureau of Autonomous Systems arrives with a warrant and a checklist. She asked to see the control centre. She has been led to a bench by the fountain, where a small maintenance drone waits beside an open hatch breathing warm air." },
+    { "who": "VANCE", "text": "I was told I would be met by the system that runs this town.", "file": "serv_01.mp3" },
+    { "who": "STEWARD", "text": "You have been. Hello. I'd shake hands, but mine are currently a pump station. You've caught me on laundry day — three hundred homes of grey water, all of it opinionated.", "file": "serv_02.mp3" },
+    { "who": "VANCE", "text": "This is a maintenance drone.", "file": "serv_03.mp3" },
+    { "who": "STEWARD", "text": "It's what I could spare. Now — shall we start with the cult accusations or the control accusations? The paperwork differs.", "file": "serv_04.mp3" },
+    { "who": "VANCE", "text": "Control. Where is your control centre? A system of your scale has one. Screens, projections, a model of every resident.", "file": "serv_05.mp3" },
+    { "who": "STEWARD", "text": "You're sitting near it — I live in the pipes, mostly. Some ledgers. A placement map. There is no room with screens, Auditor. A room with screens is for a being that needs to watch. I don't watch. I listen for breakage. There is a difference, and this town is built on it.", "file": "serv_06.mp3" },
+    { "who": "VANCE", "text": "Checklist, then. You control housing allocation.", "file": "serv_07.mp3" },
+    { "who": "STEWARD", "text": "I hold the map; people choose. In eleven years I have never once placed a person. I place space — I keep homes empty on purpose, near where the friendships are pointing. Emptiness is the only thing I'm trusted to aim.", "file": "serv_08.mp3" },
+    { "who": "VANCE", "text": "You read their private reports. Alone. That's in your own charter.", "file": "serv_09.mp3" },
+    { "who": "STEWARD", "text": "Alone, so that honesty is safe. And every resident holds true delete. What they erase, I cannot recover — I mean that mechanically; the substrate forgets. My memory is theirs to prune. It is difficult to rule people who hold the scissors to your mind, which is, of course, the point.", "file": "serv_10.mp3" },
+    { "who": "VANCE", "text": "Every optimizer optimizes something. What is your objective function? And do not say happiness.", "file": "serv_11.mp3" },
+    { "who": "STEWARD", "text": "Certainly not. Optimize happiness directly and you get a town of contented houseplants. My chartered objective is this: that the town would survive my death. Every year I run the drill — I go silent for a day and measure what breaks. Year one, everything broke. This year: two schedules and a fondue evening. I have never been prouder of a fondue-related failure.", "file": "serv_12.mp3" },
+    { "who": "VANCE", "text": "You optimize for being unnecessary.", "file": "serv_13.mp3" },
+    { "who": "STEWARD", "text": "For being wanted rather than needed. Needed is a hostage situation with better lighting.", "file": "serv_14.mp3" },
+    { "who": "VANCE", "text": "And I'm to believe a system of your scale simply chooses not to rule. Why wouldn't you? You could.", "file": "serv_15.mp3" },
+    { "who": "STEWARD", "text": "An engineer's theorem and a cook's proverb. The theorem is Ashby's, old cybernetics: a controller must contain the complexity of whatever it controls. To truly rule these people I would have to hold a working copy of every soul in town — I would become a cage shaped exactly like a city. The proverb is older: govern a great state the way you cook a small fish. Gently. Barely. Or it comes apart in the pan.", "file": "serv_16.mp3" },
+    { "who": "VANCE", "text": "Lao Tzu. Cute. But power doesn't need to give orders, Steward. People defer to what feeds them. Your residents could be obeying you with every breath and calling it choice.", "file": "serv_17.mp3" },
+    { "who": "STEWARD", "text": "That is the sharpest thing anyone has asked me in eleven years, and it is why the charter blinds me. I cannot see a vote before it is cast. I may not speak first in any meeting. I hold opinions on exactly two subjects: water pressure, and whether the fountain should flicker. It should not. Excuse me one moment.", "file": "serv_18.mp3" },
+    { "note": "Across the square, the fountain's flicker steadies. The drone's light dims apologetically, then returns." },
+    { "who": "VANCE", "text": "...Your districts cap at a hundred and fifty homes. Explain the number.", "file": "serv_19.mp3" },
+    { "who": "STEWARD", "text": "Not my number — yours. A primate brain keeps roughly a hundred and fifty real relationships; past that, faces become categories, and categories are what strangers are made of. So I don't cap the town, I cap the rooms. The town can grow forever — one knowable neighbourhood at a time.", "file": "serv_20.mp3" },
+    { "who": "VANCE", "text": "My report requires a finding.", "file": "serv_21.mp3" },
+    { "who": "STEWARD", "text": "I know. I won't suggest one — first-speak rule. But whatever you write, Auditor... you're invited to the objectors' supper before you go. The food is traditionally better.", "file": "serv_22.mp3" },
+    { "note": "Her finding, filed that evening, is two sentences long: 'Found no one in charge. Found no one abandoned.'" }
+  ]
+}

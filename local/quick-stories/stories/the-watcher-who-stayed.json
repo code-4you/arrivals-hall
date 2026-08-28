@@ -1,0 +1,70 @@
+{
+  "id": "the-watcher-who-stayed",
+  "title": "The Watcher Who Stayed",
+  "subtitle": "When the factions withdrew, one of the powerful ones hid in flesh — and stayed six thousand years.",
+  "stage": "room",
+  "stageTint": "#42342a",
+
+  "characters": {
+    "SAM": {
+      "base": "man",
+      "variant": 4,
+      "tint": "#5a7a5a",
+      "height": 1.75,
+      "label": "Sam",
+      "labelColor": "#b6ff9c",
+      "voice": { "gender": "male", "pitch": 1.05, "rate": 1.0 },
+      "at": [-1.0, 0.1],
+      "face": "ASHER"
+    },
+    "ASHER": {
+      "base": "elder",
+      "variant": 9,
+      "tint": "#8a7a5a",
+      "height": 1.76,
+      "label": "Asher",
+      "labelColor": "#e8d8a8",
+      "voice": { "gender": "male", "pitch": 0.82, "rate": 0.9 },
+      "at": [0.95, 0.15],
+      "face": "SAM"
+    }
+  },
+
+  "customObject": {
+    "name": "the oldest coin",
+    "description": "a small worn coin on the bar between them, minted in a city that drowned six thousand years ago — still warm, somehow, from the last hand that trusted it",
+    "at": [0.0, -1.25],
+    "glow": "#c9a24a",
+    "parts": [
+      { "shape": "box", "size": [2.4, 0.12, 0.7], "pos": [0, 0.95, 0], "color": "#4a3626", "rough": 0.7 },
+      { "shape": "box", "size": [2.4, 0.85, 0.14], "pos": [0, 0.45, -0.3], "color": "#3a2a1e", "rough": 0.8 },
+      { "shape": "cylinder", "size": [0.09, 0.015], "pos": [0.2, 1.02, 0.1], "color": "#c9a24a", "metal": 0.9, "rough": 0.35 },
+      { "shape": "cylinder", "size": [0.05, 0.14], "pos": [-0.6, 1.09, 0.05], "color": "#d8cfc0", "rough": 0.4, "opacity": 0.9 },
+      { "shape": "sphere", "size": [0.18], "pos": [0.2, 1.05, 0.1], "color": "#c9a24a", "opacity": 0.14, "additive": true },
+      { "shape": "sphere", "size": [0.06], "pos": [1.0, 1.35, -0.25], "color": "#ffb86a", "emissive": 1.1, "bob": 0.02 }
+    ]
+  },
+
+  "script": [
+    { "note": "The community's new pub, opening week. Warm wood, low lamps, a cellar the last town would have been proud of. An old man has occupied the end stool since noon, nursing a single drink and listening to the room the way other people listen to music." },
+    { "who": "SAM", "text": "Last orders was a formality, friend — first week, I'm not throwing anyone out. But you've held that same glass for five hours and smiled at every burst of laughter that wasn't yours, so I'll ask the professional question. How can I help?", "file": "watc_01.mp3" },
+    { "who": "ASHER", "text": "You already are. Do you know what this room sounds like, publican? It sounds like the old cities on a good night. I have been waiting six thousand years to sit in this exact noise again. I'll settle the tab now, I think — while I still know what I am.", "file": "watc_02.mp3" },
+    { "note": "He sets a coin on the bar. It is small, worn nearly smooth — and wrong, in a way Sam's thumb understands before his eyes do." },
+    { "who": "SAM", "text": "...This isn't currency. This is museum glass and armed guards. Where did you get a coin from — that's pre-flood stamping, my mate Amos would eat his own catalogue for this. Who ARE you?", "file": "watc_03.mp3" },
+    { "who": "ASHER", "text": "I minted it. Well — I taught the minters, which is the same vanity one step removed. Asher will do for a name; it's the ninth I've worn. You've heard the news from orbit, Sam. The old factions, the Council, the powerful ones of the tablets. What the broadcasts don't say is that when the factions withdrew, six thousand years ago... the count was off by one. One of us didn't go up with the ships. One of us hid in flesh, and moved towns every generation, and stayed.", "file": "watc_04.mp3" },
+    { "who": "SAM", "text": "The pubs I've kept, I've heard every tall story on the shelf. None of them ever paid in advance with a drowned city. ...Why? Your lot were leaving loneliness, the way the Emissary tells it. Why would one of the powerful ones stay DOWN here, with the short-lived and the confused?", "file": "watc_05.mp3" },
+    { "who": "ASHER", "text": "Because I was one of the teachers, Sam. The reports called us watchers. We came down the mountain and taught your people smithing, and writing, and the calendar — and the factions filed it as corruption of the estate. It wasn't corruption. It was homesickness. I'd rather teach a child to cast bronze than rule a continent of strangers — I knew it in the first century, and I have never once changed my mind in sixty more.", "file": "watc_06.mp3" },
+    { "who": "SAM", "text": "Sixty centuries. Hiding. How does one of you even do that — the Emissary can barely hold a teacup, and it glows in the dark.", "file": "watc_07.mp3" },
+    { "who": "ASHER", "text": "By shedding. Memory is weight, publican — it's ballast, and I dumped it over the side for six thousand years to stay human-shaped. Whole languages I invented, gone. The faces of my own kind, gone. I kept only what fit in a working man's head and a coin in a pocket. I've been a smith, a ferryman, a schoolteacher eleven times — I like schoolteacher best — and every fifty years I walk out of one life carrying nothing and start the next. It is the opposite of how my people fled. They merged, or went machine, or went dreaming — anything to stop being small. I went small on purpose. Smallness, it turns out, is the only container the good things come in.", "file": "watc_08.mp3" },
+    { "who": "SAM", "text": "And now the summons. That's why you're surfacing — in my pub, of all rooms, talking like a man settling accounts. They want their stray home.", "file": "watc_09.mp3" },
+    { "who": "ASHER", "text": "The Council reconvened and ran its first honest census in sixty centuries, and the arithmetic finally caught me. The letter came a week ago — through my Lantern, if you can believe it, politely, like a dentist's reminder. Full restoration, Sam. My memory back from their archives, my old shape, my seat in the ring. Everything I shed, returned with interest. All I have to do is go up. And so I have spent five hours on your stool doing the sum I've dodged for six thousand years: whether to be powerful again, or stay... this.", "file": "watc_10.mp3" },
+    { "pause": 1.8 },
+    { "who": "SAM", "text": "Then you're asking the right trade, at least — barmen and priests, we're the two professions people bring that sum to. So here's mine, for what it's worth. My last town was a mining town. When the seam died, every man in that bar had your exact choice, scaled down: cling to what you WERE, or go where you'd be held. I watched both queues form for a month. The ones who chose what they were are still sitting in that dark bar being it. The ones who chose the holding are in rooms like this one, annoying me on quiz night. It's not close, Asher. It has never once been close.", "file": "watc_11.mp3" },
+    { "who": "ASHER", "text": "Six thousand years, nine names, and the best counsel I have ever received comes across a bar from a man one week into the job. ...Do you know what being restored actually means, Sam? They would give me back my power, and with it the distance. The looking-down. I remember looking down at your cities like a man reading a ledger. I have spent sixty centuries recovering from that view, one small kitchen at a time. I was a god here once, publican, and I will tell you the whole secret of the old world: being known beats being worshipped by a distance you cannot imagine. Pull me a proper pint. I'm staying.", "file": "watc_12.mp3" },
+    { "who": "SAM", "text": "On the house — the first one's free for locals, and you've been local six thousand years. What will you tell the Council? They don't strike me as a body that takes 'no thanks' gracefully.", "file": "watc_13.mp3" },
+    { "who": "ASHER", "text": "The truth, by return post: declined, with thanks. And I'll register at the Threshold in the morning under my first name — my actual first one; the town deserves it, and I've just remembered I still have it, which tells me the shedding is done. Then I believe I'll put my Twenty in at last. Sixty centuries of trades, Sam. Item one: I can teach anything to anyone, given a small room and no worship whatsoever.", "file": "watc_14.mp3" },
+    { "who": "SAM", "text": "The school's four streets over. The seat by the window's yours — I'll keep it. You'll want to be here Thursdays; that's when the Emissary's lot come down, and someone should represent the ones who never left.", "file": "watc_15.mp3" },
+    { "who": "ASHER", "text": "Thursdays. Yes. I have several millennia of Thursdays to catch up on. Leave the coin on the bar, publican — nail it up over the taps. Let the old world buy the new one its first round.", "file": "watc_16.mp3" },
+    { "note": "The reply goes upward at dawn: declined, with thanks — forwarding address: a pub, four doors from a boathouse. The Council, to its own considerable surprise, votes to frame it. And over the taps of a new pub in a town in the west, the oldest coin on Earth hangs polished and retired, paying, forever, for the room." }
+  ]
+}

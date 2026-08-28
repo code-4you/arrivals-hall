@@ -1,0 +1,75 @@
+{
+  "id": "the-transfigured",
+  "title": "The Transfigured",
+  "subtitle": "She became light three years ago. Her old friend has come to see if it's true.",
+  "stage": "garden",
+  "stageTint": "#2a3a2e",
+
+  "characters": {
+    "IRIS": {
+      "base": "hologram",
+      "variant": 2,
+      "tint": "#ffe8c0",
+      "height": 1.7,
+      "label": "Iris",
+      "labelColor": "#ffe8c0",
+      "voice": { "gender": "female", "pitch": 1.1, "rate": 0.97 },
+      "at": [-0.85, 0.0],
+      "face": "BRAM"
+    },
+    "BRAM": {
+      "base": "man",
+      "variant": 7,
+      "tint": "#6a7a94",
+      "height": 1.78,
+      "label": "Bram",
+      "labelColor": "#b8c4e0",
+      "voice": { "gender": "male", "pitch": 0.88, "rate": 0.98 },
+      "at": [0.9, 0.15],
+      "face": "IRIS"
+    }
+  },
+
+  "customObject": {
+    "name": "the table set for two",
+    "description": "a terrace table with a teapot, two cups and a lamp — one chair's guest is made of light, and the cup on her side has never been lifted cleanly",
+    "at": [0.0, -1.3],
+    "glow": "#ffd27f",
+    "parts": [
+      { "shape": "cylinder", "size": [0.09, 0.8], "pos": [0, 0.4, 0], "color": "#4a3a26", "rough": 0.8 },
+      { "shape": "cylinder", "size": [0.6, 0.05], "pos": [0, 0.83, 0], "color": "#6a5436", "rough": 0.7 },
+      { "shape": "cylinder", "size": [0.12, 0.16], "pos": [0.1, 0.94, 0.1], "color": "#8a4a3a", "rough": 0.6 },
+      { "shape": "cylinder", "size": [0.055, 0.07], "pos": [-0.28, 0.9, 0.15], "color": "#d8cfc0", "rough": 0.5 },
+      { "shape": "cylinder", "size": [0.055, 0.07], "pos": [0.32, 0.9, -0.18], "color": "#d8cfc0", "rough": 0.5 },
+      { "shape": "sphere", "size": [0.07], "pos": [-0.2, 1.06, -0.15], "color": "#ffd27f", "emissive": 1.2, "bob": 0.02 },
+      { "shape": "sphere", "size": [0.16], "pos": [-0.2, 1.06, -0.15], "color": "#ffd27f", "opacity": 0.12, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The terrace at dusk. A table set for two. One of the chairs will not be needed — its guest is made of light." },
+    { "who": "BRAM", "text": "They said at the gate that you'd changed. That's one word for it.", "file": "tran_01.mp3" },
+    { "who": "IRIS", "text": "Hello, Bram. You're allowed to stare. I would.", "file": "tran_02.mp3" },
+    { "who": "BRAM", "text": "Can you still — I don't know what you can still do. Can you drink tea?", "file": "tran_03.mp3" },
+    { "note": "She reaches for the cup. Concentrates. Her fingers find it — it lifts an inch — passes through. She laughs." },
+    { "who": "IRIS", "text": "Three years, and cups still beat me when I'm showing off. The attention wanders, the hand wanders through.", "file": "tran_04.mp3" },
+    { "who": "BRAM", "text": "So it's true. Energy bodies. The outside papers say the town did it to you. Some machine they're hiding.", "file": "tran_05.mp3" },
+    { "who": "IRIS", "text": "There is no machine — that's the part nobody outside believes. It happened the way ice melts. I rested here ten years, among people I chose, who knew me. And one spring the body had become... optional. Nobody was more surprised than the doctors. Except me.", "file": "tran_06.mp3" },
+    { "who": "BRAM", "text": "And you stayed you? Because the man who came to our city — the transfigured one, the conference — he lasted a month, Iris. Then he frayed. I watched it on the news like everyone. Like watching smoke remember it was a fire.", "file": "tran_07.mp3" },
+    { "who": "IRIS", "text": "We felt it from here. All of us.", "file": "tran_08.mp3" },
+    { "pause": 1.2 },
+    { "who": "IRIS", "text": "A body of light has no skeleton, Bram. We borrow one. We are held in shape by being seen — genuinely seen, day after day, by people who know us and choose us again anyway. Old Africa wrote the engineering spec three thousand years early: I am because we are. Out there, among strangers, he had no we. So there was nothing to be.", "file": "tran_09.mp3" },
+    { "who": "BRAM", "text": "Then this place is a cage. A beautiful one. You can never leave.", "file": "tran_10.mp3" },
+    { "who": "IRIS", "text": "I can leave for nine days — ten is the record, and she came back thin. But a rose isn't imprisoned by its trellis, love. The trellis is the reason there's a rose that high at all.", "file": "tran_11.mp3" },
+    { "who": "BRAM", "text": "What do you eat?", "file": "tran_12.mp3" },
+    { "who": "IRIS", "text": "You are eating for me — that's dinner, watching an old friend enjoy something. Attention is the food. Not applause; applause is sugar. Being known is the protein. A philosopher once called attention the rarest and purest form of generosity — she starved in a war believing it. Here, we've made her rarest thing the town's main crop.", "file": "tran_13.mp3" },
+    { "who": "BRAM", "text": "I came because they offered me a place. Four doors from you, apparently — someone put my name down years ago. I'm sixty-one, Iris. If I come... will it happen to me?", "file": "tran_14.mp3" },
+    { "who": "IRIS", "text": "Probably never — most residents stay wonderfully solid all their lives. It isn't the point of the place; it's a side effect of the place. It only comes to minds that have rested a long time in chosen company. The waiting list everyone jokes about isn't for a machine. It's for the friendships. Ten years of Thursdays, minimum.", "file": "tran_15.mp3" },
+    { "who": "BRAM", "text": "And if it happens, and then my people die? Or leave? Do I fray on the evening news too?", "file": "tran_16.mp3" },
+    { "pause": 1.4 },
+    { "who": "IRIS", "text": "Then forty neighbours hold your shape while you grieve, and the grief doesn't unmake you, because you were never resting on one person. That's the whole discovery, Bram. Not the light — the light is a party trick. The discovery is that a self was never a solo project. An old Jesuit said true union differentiates — blend two colours and you get mud, but hold two notes at the right distance and you get a chord. This town is the right distance, held on purpose.", "file": "tran_17.mp3" },
+    { "who": "BRAM", "text": "...Pour my tea, then. You can watch.", "file": "tran_18.mp3" },
+    { "who": "IRIS", "text": "Gladly. Sit where the lamp can see you. And Bram — Thursday number one starts tonight.", "file": "tran_19.mp3" },
+    { "note": "He eats. She brightens slightly. Under the table, where nobody is trying, her hand rests on the teapot — solid as anything." }
+  ]
+}

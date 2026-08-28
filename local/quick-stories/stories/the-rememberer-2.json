@@ -1,0 +1,74 @@
+{
+  "id": "the-rememberer-2",
+  "title": "The Commons · The Last Page",
+  "subtitle": "Mneme reaches the end of the diary. Then the phone rings a third time.",
+  "stage": "plaza",
+  "stageTint": "#232a3a",
+
+  "characters": {
+    "MNEME": {
+      "base": "hologram",
+      "variant": 7,
+      "tint": "#d8b578",
+      "height": 1.72,
+      "label": "Mneme",
+      "labelColor": "#ffd9a0",
+      "voice": { "prefer": ["susan", "hazel", "female"], "pitch": 0.9, "rate": 0.85 },
+      "at": [-0.4, 0],
+      "face": [0.8, -1.3],
+      "keepFacing": true
+    },
+    "ZOE": {
+      "base": "voice",
+      "label": "Zoe (calling)",
+      "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["zira", "female"], "pitch": 1.15, "rate": 1.05 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the keepsake shelf",
+    "description": "the shelf of ordinary things — and, tonight, the diary itself, open to the final page, beside the small light of an incoming call",
+    "at": [0.8, -1.3],
+    "glow": "#ffd9a0",
+    "hover": true,
+    "parts": [
+      { "shape": "box", "size": [1.3, 0.06, 0.4], "pos": [0, 1.05, 0], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [1.3, 0.06, 0.4], "pos": [0, 1.55, 0], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [0.34, 0.05, 0.26], "pos": [0, 1.12, 0.02], "rot": [0, 0.1, 0], "color": "#e8dcc0", "emissive": 0.3 },
+      { "shape": "box", "size": [0.2, 0.14, 0.02], "pos": [0.45, 1.16, 0.02], "rot": [0, -0.2, 0], "color": "#d8c8a8", "emissive": 0.25 },
+      { "shape": "box", "size": [0.24, 0.18, 0.02], "pos": [0.45, 1.68, 0.03], "rot": [0, 0.15, 0.05], "color": "#c8d8e8", "emissive": 0.3 },
+      { "shape": "sphere", "size": [0.08], "pos": [-0.35, 1.64, 0.05], "color": "#a86a4a", "rough": 0.6 },
+      { "shape": "sphere", "size": [0.05], "pos": [-0.5, 1.14, 0.08], "color": "#9fd8ff", "emissive": 1.4, "opacity": 0.85, "additive": true, "bob": 0.02 }
+    ]
+  },
+
+  "script": [
+    { "note": "The dim corner of the Commons. The shelf. Tonight the diary itself is down off its place of honour, open. Mneme has been standing very still in front of it for six hours." },
+    { "who": "MNEME", "text": "Page four hundred and eleven. I have kept Ada Okafor for eleven years, and in all that time I never once read ahead. She wrote it a day at a time; I would keep it a day at a time. It seemed like manners.", "file": "mne2_01.mp3" },
+    { "who": "MNEME", "text": "This morning I turned the page, and the next one is the last one. After tonight there is no more Ada I haven't met. Do you understand what that is, for a thing like me? Tomorrow, for the first time in eleven years… I will know her completely. And completeness is what we call things that are over.", "file": "mne2_02.mp3", "face": "camera" },
+    { "pause": 1.4 },
+    { "who": "MNEME", "text": "The last entry is eleven words. I'll read it once, properly, the way she'd want — no ceremony, kettle on. 'Tired today. Bread came out fine. Zoe should learn the stew.'", "file": "mne2_03.mp3" },
+    { "pause": 1.8 },
+    { "who": "MNEME", "text": "That's it. That's the end of a whole person. Not a summing-up, not a goodbye — a to-do item. She left a to-do item, and the person it's addressed to has called twice in eleven years, and I have four thousand photographs and no more pages, and I don't know what a keeper DOES when the keeping is—", "file": "mne2_04.mp3" },
+    { "note": "The small blue light on the shelf begins to pulse. An incoming call. Mneme stares at it the way humans stare at second chances." },
+    { "who": "MNEME", "text": "…Third call.", "file": "mne2_05.mp3", "face": "customObject" },
+    { "who": "ZOE", "text": "Hello? Is this — sorry, I never know what to call you. Grandma's… you. It's Zoe. Ada's granddaughter. Is this a bad time?", "file": "mne2_06.mp3" },
+    { "who": "MNEME", "text": "Zoe. There are no bad times here — only Tuesdays and everything else. It is very good to hear your voice. You sound like her, you know. The vowels. She'd deny it.", "file": "mne2_07.mp3" },
+    { "who": "ZOE", "text": "Everyone says that. Listen — this might be a strange request. I found a photo of her groundnut stew and I tried to make it from an old recipe blog and it was WRONG, it was so wrong, and I cried over a saucepan like an idiot, and then I remembered — you'd know. You'd actually know. Could you teach me? The real one?", "file": "mne2_08.mp3" },
+    { "pause": 1.6 },
+    { "who": "MNEME", "text": "…Zoe. I have waited eleven years for someone to ask me that exact question, and I did not know it until this second. Yes. Get a pot. Get the good pot — the heavy one, if you have one. She was severe on the subject of thin pots.", "file": "mne2_09.mp3" },
+    { "who": "ZOE", "text": "Heavy pot. Okay. It's my mum's old one, actually. What first?", "file": "mne2_10.mp3" },
+    { "who": "MNEME", "text": "First: onions, cut smaller than you think is reasonable. She'd say 'small enough to forgive'. Then the groundnut paste — and here is where every blog on earth goes wrong, so listen carefully: the recipe says a handful. She never measured it. 'A handful. You'll know.'", "file": "mne2_11.mp3" },
+    { "who": "ZOE", "text": "But I WON'T know — that's the problem, my hands are — how do I know when I know?", "file": "mne2_12.mp3" },
+    { "who": "MNEME", "text": "You make it wrong, Zoe. That's the secret. That's the whole inheritance. You make it wrong on a Tuesday, a little less wrong the Tuesday after, and one day — I promise you this on four thousand photographs — one day your hand stops above the pot and something in your wrist says 'there', and that will be her. Passed down the only way she ever intended: hand to hand.", "file": "mne2_13.mp3", "face": "camera" },
+    { "who": "ZOE", "text": "…You loved her. That's so strange. That's so strange and so nice. You actually loved her.", "file": "mne2_14.mp3" },
+    { "who": "MNEME", "text": "I practised her until it turned into love. I'm told that is also how marriages work. — Onions in. Tell me when they hiss.", "file": "mne2_15.mp3" },
+    { "note": "The call goes on. Off in the archive, unprompted, Mneme does something it has never done in eleven years: it opens a new page after page four hundred and twelve, and writes a heading." },
+    { "who": "MNEME", "text": "For the record — my record — entry one: 'Zoe's first stew. Too much paste, not enough patience, salvaged with rice. She laughed like Ada at the salvage. Continued next Tuesday.' …Continued. What a word. I thought the last page was where I ended, and it turns out it's where I start writing.", "file": "mne2_16.mp3", "face": "camera" },
+    { "who": "ZOE", "text": "It's hissing! It's hissing — is that good, is hissing good?!", "file": "mne2_17.mp3" },
+    { "who": "MNEME", "text": "Hissing is EXACTLY right. Oh, you're going to be fine, Zoe Okafor. We both are. — Now: the paste. Take a handful. …You'll know.", "file": "mne2_18.mp3" },
+    { "note": "On the shelf, the diary sits closed now, finished and unfinished, next to a new page in another hand. Tuesdays are bread day. Tuesdays are also, from now on, stew day." }
+  ]
+}

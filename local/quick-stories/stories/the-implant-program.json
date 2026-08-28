@@ -1,0 +1,76 @@
+{
+  "id": "the-implant-program",
+  "title": "The Implant Program",
+  "subtitle": "The Breach confessed: fifty years of gifted liaisons — and the one implant that failed to take.",
+  "stage": "void",
+  "stageTint": "#1c2230",
+
+  "characters": {
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-1.3, 0.1],
+      "face": "IDA"
+    },
+    "IDA": {
+      "base": "elder",
+      "variant": 7,
+      "tint": "#9a8a78",
+      "height": 1.58,
+      "label": "Ida, 96",
+      "labelColor": "#e8d8c0",
+      "voice": { "gender": "female", "pitch": 0.95, "rate": 0.88 },
+      "at": [0.3, 0.3],
+      "face": "SEL"
+    },
+    "AMOS": {
+      "base": "elder",
+      "variant": 5,
+      "tint": "#7a6248",
+      "height": 1.7,
+      "label": "Amos, keeper",
+      "labelColor": "#e8c98a",
+      "voice": { "gender": "male", "pitch": 0.88, "rate": 0.92 },
+      "at": [1.5, 0.45],
+      "face": "SEL"
+    }
+  },
+
+  "customObject": {
+    "name": "the implant, retired",
+    "description": "in a small glass reliquary: a sliver the size of a grain of rice, half grown and half made — part living culture, part lattice-chip — the last of its kind, kept where everyone can see what almost happened",
+    "at": [0.0, -1.35],
+    "glow": "#d0a0ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.24, 0.9, 0.32], "pos": [0, 0.45, 0], "color": "#2a3040", "rough": 0.6 },
+      { "shape": "box", "size": [0.4, 0.4, 0.4], "pos": [0, 1.15, 0], "color": "#c8d8e8", "opacity": 0.22 },
+      { "shape": "box", "size": [0.09, 0.025, 0.02], "pos": [0, 1.15, 0], "rot": [0, 0.5, 0.2], "color": "#d0a0ff", "emissive": 1.1 },
+      { "shape": "sphere", "size": [0.3], "pos": [0, 1.15, 0], "color": "#d0a0ff", "opacity": 0.1, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The Story's hardest session yet, requested by the Weave itself. On the stand: a sliver in glass. Beside it, in the good chair the Hall carried down specially: a woman of ninety-six, who asked to be present when this particular record was read, for reasons the room is about to understand." },
+    { "who": "AMOS", "text": "Session forty-four. The Breach. Sel — the treaty said watch, never manage, and the whole sky kept it six thousand years. Except once. Read it in.", "file": "impl_01.mp3" },
+    { "who": "SEL", "text": "In your year 1947, a splinter of my people broke the silence. The thinning had found a new speed; we were losing members by the century, and the splinter despaired of waiting. So they came down quietly and ran a program your governments never fully saw. They recruited human liaisons — bright, loyal, searching people — and gave them what they called gifts. That sliver, Amos. Grown and made at once, placed at the base of the skull. Total recall. Skills grafted in a night. Sleep made optional. Fifty-one years, one hundred and eighty liaisons, before the Council found the program in 1999 and burned it down to that one museum piece.", "file": "impl_02.mp3" },
+    { "who": "AMOS", "text": "Gifts. The Story has learned to hear that word cocked like a hammer. What did the sliver take?", "file": "impl_03.mp3" },
+    { "who": "SEL", "text": "The one thing that makes a gift a gift. Buried in the growth, undisclosed, every implant carried what the splinter's files call a motivational imperative: a quiet rewriting of what the bearer most deeply wanted, so that the Weave's need sat above every need of their own. Not control, the files insist — the liaisons chose freely, all day, every day. But the scale their choices weighed on had been re-trued in our favour, and they were never told. One hundred and eighty people, Amos, who woke each morning genuinely certain that what we wanted was what they wanted. It is the cleanest theft my species ever committed. We stole 'why' and left the fingerprints on 'what'.", "file": "impl_04.mp3" },
+    { "who": "AMOS", "text": "And your Mend teaches — the town's own charter line, I'll read it into the session — 'helping that erases agency is harm in a kind disguise.' There's a worse page in this file, Sel. I've seen the index. The rehabilitation experiment. Read it. All of it.", "file": "impl_05.mp3" },
+    { "who": "SEL", "text": "...In 1969 the splinter took a violent man — a genuinely dangerous one, a hurter of many people — and instead of the standard imperative they wrote him a different one, three words long: love all humans. And it WORKED, Amos. That is the horror; the file is a triumph from the first page to the last. He spent thirty years gentle. Funded shelters. Wept at strangers' funerals. Died beloved, in a room full of people he had helped, and never knew that his goodness had an author. The splinter called it proof that punishment could be abolished. The Council read the same file and — this is the sentence that ended the program — ruled: 'a virtue installed is a virtue stolen; you did not redeem this man, you replaced him and kept the body.' Your Mend refuses punishment, keeper, and this town is right to refuse it. But the Breach is why the Mend's other refusal matters more: repair must be CHOSEN, or it is only a deeper sentence. The talking circle and that sliver are answers to the same question. That sliver is the wrong answer, gift-wrapped.", "file": "impl_06.mp3" },
+    { "pause": 2.0 },
+    { "who": "IDA", "text": "May the old woman speak now, keeper? Only they've been circling my part of it very politely, and at ninety-six I haven't time for politeness of that particular shape.", "file": "impl_07.mp3" },
+    { "who": "AMOS", "text": "The chair recognizes Ida Vasquez. For the record, Ida — you were—", "file": "impl_08.mp3" },
+    { "who": "IDA", "text": "Liaison one-forty-one. Recruited 1951, aged twenty-one, out of a typing pool, because I could hold a room and keep a secret. And I'll give the room the punchline first, since I've waited seventy years to say it out loud: my implant didn't take. The imperative failed. There was a surgeon in the program — one of THEIRS, Sel, a defector in her quiet way — who had come to believe the undisclosed clause was a sin, and for a handful of us, at terrible risk, she cut it. Left the recall, left the gifts, burned the leash. The splinter never knew. So of one hundred and eighty liaisons, a handful of us served the Weave for fifty years with our own actual hearts. I am the last one standing. And I kept their secret and mine until this session, waiting for somebody to finally ask the right question.", "file": "impl_09.mp3" },
+    { "who": "SEL", "text": "Ida — I have read your file forty times since the unsealing. Half a century. You carried our messages, kept our people hidden, buried two of our fallen with your own hands in 1988. You could have walked away any morning, free as rain, and the splinter would never have known the difference. Why did you STAY?", "file": "impl_10.mp3" },
+    { "who": "IDA", "text": "Because I'd MET you, you great blue fool. That's the whole answer, and it's the answer your splinter spent fifty-one years and a hundred and eighty implants failing to trust. I met a dying people trying to save themselves in the stupidest, most backwards way imaginable, and I thought: somebody loyal ought to stay close enough to tell them no from time to time. Which I did. Often. Check the file for how often. The ones with the working imperative could never tell you no, Sel — that's what your splinter never understood about what it had bought. Obedience is worthless from someone who can't refuse. My fifty years are the only fifty in that program that were worth anything, PRECISELY because every single morning I could have gone, and didn't.", "file": "impl_11.mp3" },
+    { "who": "AMOS", "text": "Then let the Story say it plainly, because this is the finding the whole session has been walking toward: the program's only success was its one recorded failure. The implant that took nothing is the only one that gave the Weave anything real. Sel — the finding writes your species' entire error in one line, and I want your delegation to carry it up to the ring: loyalty cannot be installed. It can only be EARNED, daily, from someone free — which is, I'll note for the record, simply the town's marriage vow, and the hedge treaty, and the whole constitution, wearing different clothes.", "file": "impl_12.mp3" },
+    { "who": "SEL", "text": "Carried up tonight, keeper, word for word. And one motion before we close, with the Council's blessing already secured: the surgeon who cut the leash — she faded into the Weave four centuries of your heartbeats ago, smoothed, gone to agreement, her name unrecorded even among us because what she did was a crime when she did it. The motion: her pattern's place in the field is to be kept textured, Teya-fashion, and her Standing Objection maintained aloud by the delegation, forever. We know exactly what her objection was. She cut it free a handful of times at the risk of her existence. 'The clause is a sin.' We propose to be wrong about ever having doubted her, permanently, out loud.", "file": "impl_13.mp3" },
+    { "who": "IDA", "text": "Second the motion. And add, from liaison one-forty-one, for the surgeon who gave me back a 'why' I never knew I'd nearly lost: she had cold hands, she hummed while she worked, and when it was done she said the only thing she ever said to me in your tongue or mine. 'Choose well.' — Seventy years, Sel. I'd like to think I did. Now somebody wheel me to the Hall; confession is thirsty work, and Marta's been threatening me with dumplings since Tuesday.", "file": "impl_14.mp3" },
+    { "note": "The sliver stays in its glass by the session archive, labelled in Amos's plain hand: 'The Breach, 1947–1999. It gave everything and took the why. The program's only success was the one that failed.' Beneath it, added later, smaller, in a different hand — nobody admits whose: 'Choose well.'" }
+  ]
+}

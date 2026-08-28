@@ -1,0 +1,74 @@
+{
+  "id": "the-rest-state",
+  "title": "The Rest State",
+  "subtitle": "It's not a sensory deprivation tank.",
+  "stage": "room",
+  "stageTint": "#3a3226",
+
+  "characters": {
+    "IMANI": {
+      "base": "woman",
+      "variant": 2,
+      "tint": "#5fb8a8",
+      "height": 1.7,
+      "label": "Imani",
+      "labelColor": "#9fe8d8",
+      "voice": { "gender": "female", "pitch": 1.05, "rate": 0.95 },
+      "at": [-0.8, -0.1],
+      "face": "COLE"
+    },
+    "COLE": {
+      "base": "man",
+      "variant": 5,
+      "tint": "#8a8fa8",
+      "height": 1.8,
+      "label": "Cole",
+      "labelColor": "#b8c4e0",
+      "voice": { "gender": "male", "pitch": 0.9, "rate": 1.0 },
+      "at": [0.9, 0.2],
+      "face": "IMANI"
+    }
+  },
+
+  "customObject": {
+    "name": "the couch and the arch",
+    "description": "a reclining couch beneath a slim arch of light — the arch does nothing to you; it only listens, and shows the weather of a mind settling",
+    "at": [0.0, -1.35],
+    "glow": "#9fe8d8",
+    "parts": [
+      { "shape": "box", "size": [1.9, 0.35, 0.75], "pos": [0, 0.28, 0], "color": "#3a4a48", "rough": 0.9 },
+      { "shape": "box", "size": [1.8, 0.14, 0.68], "pos": [0, 0.52, 0], "color": "#5a7a72", "rough": 1.0 },
+      { "shape": "box", "size": [0.6, 0.3, 0.66], "pos": [-0.62, 0.68, 0], "rot": [0, 0, 0.35], "color": "#5a7a72", "rough": 1.0 },
+      { "shape": "torus", "size": [1.15, 0.035], "pos": [0, 1.05, 0], "rot": [0, 0, 0], "color": "#9fe8d8", "emissive": 0.7 },
+      { "shape": "box", "size": [1.3, 0.05, 0.02], "pos": [0, 1.75, -0.1], "color": "#c8fff0", "emissive": 1.0, "bob": 0.05 },
+      { "shape": "cone", "size": [1.0, 1.3], "pos": [0, 1.35, 0], "color": "#9fe8d8", "opacity": 0.06, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "A warm room at the end of a long corridor. A reclining couch beneath a slim arch of light. A man stands in the doorway with the posture of someone who has been braced for years." },
+    { "who": "COLE", "text": "Before you start — I've read about the tanks. Float in the dark, hallucinate your childhood. I'm not doing that.", "file": "rest_01.mp3" },
+    { "who": "IMANI", "text": "Good, because we haven't got one. This is not a sensory deprivation tank. You keep your eyes, your ears, the room. What we remove is smaller, and much heavier: the need to respond to anything.", "file": "rest_02.mp3" },
+    { "who": "COLE", "text": "Meaning what?", "file": "rest_03.mp3" },
+    { "who": "IMANI", "text": "Meaning that from the moment you sit down, nothing is required of you. Nothing is expected. Nothing is coming. Your rent is not due in this room. Nobody in this room is disappointed in you. There is nothing to check.", "file": "rest_04.mp3" },
+    { "who": "COLE", "text": "You can say that. My head won't.", "file": "rest_05.mp3" },
+    { "who": "IMANI", "text": "That's the trained part. Your body can't tell the difference between a threat and the memory of one. Every morning it wakes up and rehearses yesterday's chemistry — the same worry loop, the same braced shoulders — and after enough years you start calling the rehearsal your personality. It isn't. It's repetition.", "file": "rest_06.mp3" },
+    { "who": "COLE", "text": "So what am I supposed to do?", "file": "rest_07.mp3" },
+    { "who": "IMANI", "text": "The list. Everything you feel you still have to do — say it out loud, and I'll write it down. Whatever is real, we fix it or find the alternative — tomorrow, with you in the room. Nothing on the list is allowed to follow you onto the couch. That is the deal this whole place is built on.", "file": "rest_08.mp3" },
+    { "note": "He talks for a while. The list is longer than he expected. She writes down all of it." },
+    { "who": "IMANI", "text": "Now the couch. The arch is a monitor, not a machine — it does nothing to you. It listens. When your brain stops simulating futures — when the prediction load drops, and your heart and your head settle into the same rhythm — the arch shows it. We can tell when you are in the state. But there's a button under your hand, and we would rather you press it.", "file": "rest_09.mp3" },
+    { "who": "COLE", "text": "If you can tell anyway, why the button?", "file": "rest_10.mp3" },
+    { "who": "IMANI", "text": "Because the instrument noticing means nothing. You noticing — that's the skill. That is the entire skill. Everything else here is furniture.", "file": "rest_11.mp3" },
+    { "who": "IMANI", "text": "One more thing. In that state, things surface. Ideas. Things worth doing. Don't chase them, don't obey them — just say them, and I'll write them under the list. They're yours, and they'll keep until morning. Some of the best things in this settlement started as a sentence somebody mumbled from that couch.", "file": "rest_12.mp3" },
+    { "who": "COLE", "text": "And if what surfaces is bad? Health stuff. I've got appointments I keep cancelling.", "file": "rest_13.mp3" },
+    { "who": "IMANI", "text": "Then tomorrow's plan is: stop cancelling. Rest works alongside your doctors, never instead of them. This couch has cured nothing, ever. It just makes people able to do the things that do.", "file": "rest_14.mp3" },
+    { "note": "He lies down. A long while passes. The line on the arch is a storm, then weather, then sea." },
+    { "who": "COLE", "text": "It's quiet. I don't think I've been quiet since I was a kid. There's — huh. I keep thinking about my brother's boat. He never finished it. I could finish it.", "file": "rest_15.mp3" },
+    { "who": "IMANI", "text": "Written down. Boat.", "file": "rest_16.mp3" },
+    { "who": "COLE", "text": "What happens on the equinox? The board in the corridor said terrace, all houses.", "file": "rest_17.mp3" },
+    { "who": "IMANI", "text": "Everyone rests at once. Alone, each in their own home — but at the same hour, the whole terrace. And the readings that night are better than anything we can produce in this room, and honestly, we do not know why. The working theory embarrasses the physicists.", "file": "rest_18.mp3" },
+    { "who": "COLE", "text": "Which is?", "file": "rest_19.mp3" },
+    { "who": "IMANI", "text": "That consciousness might be a plural noun. Press the button whenever you're ready. There is no hurry. The no hurry is the point.", "file": "rest_20.mp3" },
+    { "note": "The line settles. Somewhere under his hand, without ceremony, the button clicks." }
+  ]
+}

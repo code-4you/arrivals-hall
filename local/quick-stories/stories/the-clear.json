@@ -1,0 +1,84 @@
+{
+  "id": "the-clear",
+  "title": "The Clear",
+  "subtitle": "The top of the Ladder. Nobody goes alone. Everybody comes back for the dishes.",
+  "stage": "room",
+  "stageTint": "#4a4438",
+
+  "characters": {
+    "COLE": {
+      "base": "man",
+      "variant": 5,
+      "tint": "#8a8fa8",
+      "height": 1.8,
+      "label": "Cole",
+      "labelColor": "#b8c4e0",
+      "voice": { "gender": "male", "pitch": 0.9, "rate": 1.0 },
+      "at": [0.0, 0.5],
+      "face": "IRIS"
+    },
+    "IMANI": {
+      "base": "woman",
+      "variant": 2,
+      "tint": "#5fb8a8",
+      "height": 1.7,
+      "label": "Imani",
+      "labelColor": "#9fe8d8",
+      "voice": { "gender": "female", "pitch": 1.05, "rate": 0.95 },
+      "at": [-1.2, 0.1],
+      "face": "COLE"
+    },
+    "IRIS": {
+      "base": "hologram",
+      "variant": 2,
+      "tint": "#ffe8c0",
+      "height": 1.7,
+      "label": "Iris",
+      "labelColor": "#ffe8c0",
+      "voice": { "gender": "female", "pitch": 1.1, "rate": 0.97 },
+      "at": [1.2, 0.1],
+      "face": "COLE"
+    }
+  },
+
+  "customObject": {
+    "name": "the one window",
+    "description": "the summit room is bare except for a single window onto an ordinary street — the most advanced instrument the town owns",
+    "at": [0.0, -1.5],
+    "glow": "#ffe8c0",
+    "parts": [
+      { "shape": "box", "size": [1.5, 2.0, 0.12], "pos": [0, 1.3, 0], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [1.2, 1.7, 0.04], "pos": [0, 1.3, 0.02], "color": "#cfe4ff", "emissive": 0.35, "opacity": 0.9 },
+      { "shape": "box", "size": [0.05, 1.7, 0.06], "pos": [0, 1.3, 0.05], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [1.2, 0.05, 0.06], "pos": [0, 1.3, 0.05], "color": "#3a3428", "rough": 0.8 },
+      { "shape": "box", "size": [1.4, 1.9, 0.4], "pos": [0, 1.3, 0.1], "color": "#ffe8c0", "opacity": 0.05, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The summit room, top of the practice house. It is bare: one mat, one window onto an ordinary street. Three years since a tired man first lay on a couch downstairs and said the quiet had surprised him." },
+    { "who": "IMANI", "text": "Signatures are steady. Rest state: old news, you've held that for years. Witness: locked since spring — you watch the thoughts go by like weather now, you don't board them. And the third rung held all this month, which is why we're standing here. How do you feel?", "file": "clr_01.mp3" },
+    { "who": "COLE", "text": "Like asking why the most advanced room in this town is empty except for a window.", "file": "clr_02.mp3" },
+    { "who": "IRIS", "text": "Because the instrument for the last rung is the one you walked in with. Cole — you know why it took three years, and why we wouldn't sell a shortcut to the man who once offered to fund a wing?", "file": "clr_03.mp3" },
+    { "who": "COLE", "text": "Because a rung isn't a level you unlock. It's a permission the nervous system grants. And it doesn't grant it until the life underneath is actually safe — home, people, something worth doing. You can't fake it a floor at a time.", "file": "clr_04.mp3" },
+    { "who": "IRIS", "text": "And the other rule?", "file": "clr_05.mp3" },
+    { "who": "COLE", "text": "Nobody goes alone. Which I assumed was ceremony, honestly.", "file": "clr_06.mp3" },
+    { "who": "IRIS", "text": "It's load-bearing. A vision held by one nervous system flickers and dies — or worse, curdles into private religion. Held between people, it stays lit. I'm your trellis today; Imani is your witness. Whatever you see, you see it accompanied. That's not the safety protocol, Cole. That's the *finding*. Now — the window. Take your time. There is no hurry. The no hurry is the point.", "file": "clr_07.mp3" },
+    { "note": "He stands at the window. A long silence. Outside: a woman wheeling a bicycle, two kids arguing about a kite, laundry, weather coming in off the hills." },
+    { "pause": 2.0 },
+    { "who": "COLE", "text": "...I kept waiting for the fireworks. There are no fireworks. It's the street. It's the same street.", "file": "clr_08.mp3" },
+    { "who": "IMANI", "text": "Keep looking. Say what changes.", "file": "clr_09.mp3" },
+    { "who": "COLE", "text": "Nothing changes. That's — no. Something's missing. The... flinch. There's always been a flinch between me and everything, a little brace before each thing, like the world was about to send me a bill. It's gone. The street is exactly what it is, and it's *enormous*. It was always Tuesday out there. I just could never afford to look at Tuesday before.", "file": "clr_10.mp3" },
+    { "who": "IRIS", "text": "That's the outer half. The world without the fear-filter — the Interface Room without the dials. Now the inner half. Gently: turn around and look at the one doing the looking.", "file": "clr_11.mp3" },
+    { "pause": 2.5 },
+    { "who": "COLE", "text": "...There's no one there. I don't mean that in a frightening way — I thought I'd finally meet myself, and instead there's just... seeing. Happening. There's a Cole, but he's something the seeing *does*, not something doing the seeing. He's being generated right now, breath by breath — and I'm not the generated thing, I'm the generating. I've been wearing him like a work uniform and forgetting to take him off.", "file": "clr_12.mp3" },
+    { "who": "IMANI", "text": "Signatures confirm, for what it's worth — though this is the one rung where the arch reads flat calm and the report says everything. That's the convergence, Cole. You went all the way in and came out at the street. The inward path and the outward path are the same path. Awareness at the bottom of both.", "file": "clr_13.mp3" },
+    { "who": "COLE", "text": "So this is it. The ultimate vision everyone whispers about — it's the world with nothing added, seen from the source instead of from the fear. Why does nobody just *say* that downstairs?", "file": "clr_14.mp3" },
+    { "who": "IRIS", "text": "We say it constantly. It's the first thing on the wall in the lobby. Nobody can hear it until the nervous system agrees — that's why the Ladder exists, and why it can't be skipped, bought, or preached. Now. Last rung.", "file": "clr_15.mp3" },
+    { "who": "COLE", "text": "There's another rung? Above this?", "file": "clr_16.mp3" },
+    { "who": "IRIS", "text": "The stairs down. There's an old series of pictures — a herder searches for his lost ox, finds it, tames it, rides it home, forgets the ox, forgets himself... and the final picture, the tenth, the whole point of the set: he returns to the marketplace, with helping hands. Not glowing. Not special. Useful. The vision that stays on the mountain is a souvenir, Cole. The one that comes down and enters somebody's actual Tuesday — that's the Clear.", "file": "clr_17.mp3" },
+    { "who": "IMANI", "text": "Which is convenient, because it's stew night downstairs and there are forty bowls. What surfaced? There's always something on the way down. Say it before it evaporates.", "file": "clr_18.mp3" },
+    { "who": "COLE", "text": "The boat. It's finished — you know it's finished, you were both at the launch. What surfaced is the kid from Delta Row who kept hanging around the boathouse pretending not to watch. I'm going to teach him. Boats, the couch, all of it — the whole ladder, starting from 'nothing is required of you.' That's what came down the mountain with me. That, and I really am strangely keen to wash forty bowls.", "file": "clr_19.mp3" },
+    { "note": "The most advanced practitioner of the most advanced practice in the town spends that evening at a sink, sleeves rolled, laughing at something a neighbour said. In the corner, the old arch reads flat calm all night. Nobody checks it." }
+  ]
+}

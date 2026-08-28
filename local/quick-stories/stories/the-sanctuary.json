@@ -1,0 +1,110 @@
+{
+  "id": "the-sanctuary",
+  "title": "The Sanctuary of R'lyeh",
+  "subtitle": "The last ritual, the returned relic, and the city that wakes.",
+  "stage": "void",
+  "stageTint": "#0e1e22",
+
+  "characters": {
+    "ARCHITECT": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#4f7c8c",
+      "height": 1.76,
+      "label": "The Re-Architect",
+      "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.0, "rate": 0.98 },
+      "at": [1.3, 0.5],
+      "face": "customObject"
+    },
+    "WEAVER": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#d8b45f",
+      "height": 1.85,
+      "label": "The Weaver of Form",
+      "labelColor": "#ffd27f",
+      "voice": { "prefer": ["hazel", "female"], "pitch": 0.82, "rate": 0.88 },
+      "at": [-1.5, 0.1],
+      "face": "customObject"
+    },
+    "VALE": {
+      "base": "woman",
+      "variant": 3,
+      "tint": "#6b5ca8",
+      "height": 1.7,
+      "label": "Prof. Serena Vale",
+      "labelColor": "#c7a8ff",
+      "voice": { "prefer": ["zira", "female"], "pitch": 0.98, "rate": 1.02 },
+      "at": [-0.4, 0.7],
+      "face": "customObject"
+    },
+    "WREN": {
+      "base": "woman",
+      "variant": 3,
+      "tint": "#5a6a4a",
+      "height": 1.62,
+      "label": "Wren",
+      "labelColor": "#c8e8a8",
+      "voice": { "prefer": ["susan", "female"], "pitch": 1.08, "rate": 0.96 },
+      "at": [0.5, -0.3],
+      "face": "customObject"
+    },
+    "SLEEPER": {
+      "base": "voice",
+      "label": "The Sleeper",
+      "labelColor": "#7fe6c8",
+      "voice": { "prefer": ["george", "male"], "pitch": 0.5, "rate": 0.72 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the first fountain of new R'lyeh",
+    "description": "raised where the Sleeper remembered it — a wide stone basin, gold and teal light climbing from still water, in the middle of a city that no longer hurts to look at",
+    "at": [0, -1.4],
+    "glow": "#7fe6c8",
+    "parts": [
+      { "shape": "cylinder", "size": [1.05, 0.5, 1.2], "pos": [0, 0.25, 0], "color": "#2a3a3c", "metal": 0.5, "rough": 0.5 },
+      { "shape": "cylinder", "size": [0.9, 0.08], "pos": [0, 0.52, 0], "color": "#2fa8a0", "emissive": 0.9 },
+      { "shape": "sphere", "size": [0.24], "pos": [0, 1.5, 0], "color": "#baf0e4", "emissive": 1.4, "bob": 0.05 },
+      { "shape": "torus", "size": [0.46, 0.028], "pos": [0, 1.5, 0], "rot": [1.2, 0, 0], "color": "#7fe6c8", "emissive": 1.0, "opacity": 0.8, "additive": true, "spin": [0.3, 0, 0] },
+      { "shape": "torus", "size": [0.64, 0.028], "pos": [0, 1.5, 0], "rot": [0.5, 1.1, 0], "color": "#ffd27f", "emissive": 0.9, "opacity": 0.7, "additive": true, "spin": [0, 0.24, 0] },
+      { "shape": "cylinder", "size": [0.18, 0.85, 0.7], "pos": [0, 1.0, 0], "color": "#5fd0c0", "emissive": 0.6, "opacity": 0.07, "additive": true, "open": true },
+      { "shape": "cone", "size": [0.5, 2.2], "pos": [0, 2.4, 0], "color": "#baf0e4", "emissive": 0.7, "opacity": 0.05, "additive": true, "open": true },
+      { "shape": "box", "size": [0.4, 0.1, 0.12], "pos": [0.65, 0.6, 0.35], "rot": [0, 0.4, 0], "color": "#d8d2be", "emissive": 0.3, "bob": 0.006 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: new R'lyeh — the drowned city, healed district by district. Streets that guide instead of maddening. Light where the gloom was. One leaning spire, kept on purpose. Today: the Ritual of Primal Harmony, the last of the Great Work — and, for the first time, visitors." },
+    { "note": "Vale stands in the city she spent her life studying from a crypt, looking like a woman who has walked into her own theory. Beside the fountain basin, a small figure in a worn swamp-robe waits with something wrapped in cloth: Wren." },
+    { "who": "VALE", "text": "Thirty years I mapped this city from tremor readings and nightmares, Architect. I told myself I knew it. I knew a WOUND. I did not know there was a city underneath, waiting to be well.", "file": "sanc_01.mp3" },
+    { "who": "WEAVER", "text": "Professor Vale. The one who said, into a comm-bead, that I had been missed. I kept the recording. Elders of my kind are not often greeted — we are summoned. You greeted. It mattered.", "file": "sanc_02.mp3", "face": "VALE" },
+    { "who": "ARCHITECT", "text": "And this is Wren — who wrote to us from the swamp, walked out of the only community she had, and carried the last piece of the old city across half the world. Alone. Wren, you're standing in what the fragment was screaming about.", "file": "sanc_03.mp3", "face": "WREN" },
+    { "who": "WREN", "text": "Roric said you'd twist it into a softer cage. I came to see the cage. And it's— …I stood on a street corner down there for an hour, and the corner was KIND to me. I grew up in rooms that weren't. I know the difference in my spine.", "file": "sanc_04.mp3" },
+    { "note": "She unwraps the cloth. The bone-pale fragment of old R'lyeh — the relic that hummed with his agony. It is humming still. But the note has changed." },
+    { "who": "WREN", "text": "It stopped sounding like pain somewhere over the mountains. Now it just sounds like — someone humming while they work. I didn't steal it from the shrine, by the way. I asked the shrine. Nobody stopped me. I think some of them wanted me to carry it here and see.", "file": "sanc_05.mp3" },
+    { "who": "SLEEPER", "text": "Child of the swamp. You kept a piece of me through your whole unkind life, and you carried it home when it began to sing. Set it in the fountain's rim. A city should keep one stone of what it used to be — we have a clause about that, now. The Weaver wrote it. I asked.", "file": "sanc_06.mp3" },
+    { "note": "OBJECTIVE — the last ritual. Wren sets the fragment into the basin rim, where it fits like it grew there. The Weaver raises her hands. The Ritual of Primal Harmony begins: not light this time, not angles — WATER and LIFE." },
+    { "who": "WEAVER", "text": "Currents of the deep: you have circled this place like guards around a cell for ten thousand years. Stand down. Move as rivers move — for drinking, for carrying, for the pleasure of moving. The siege is over.", "file": "sanc_07.mp3", "face": "camera" },
+    { "pause": 1.8 },
+    { "note": "And the abyss obeys. The crushing currents unwind into slow warm streams. Bio-luminescence comes up the avenues like street lamps lighting in order. Things that fled these waters an aeon ago drift back through the gates, cautious as deer." },
+    { "who": "SLEEPER", "text": "…Life. In my streets. Small quick life, that fears and forgets and doesn't care in the least who I am. Do you know what a relief it is, after ten thousand years of being IMPORTANT, to be ignored by a fish?", "file": "sanc_08.mp3" },
+    { "who": "ARCHITECT", "text": "Spoken like a true city-dweller. — Then it's done. The Great Work, all three rituals. Which means what we do next isn't ritual at all. It's governance. Weaver, the charter?", "file": "sanc_09.mp3" },
+    { "who": "WEAVER", "text": "The Council of Co-Creators, convening for the first time, in the city of New R'lyeh — sanctuary. Its founding law, cut in the fountain stone in every tongue we know: 'No being is only what its worst room made of it. Here, you may choose your neighbours, and shape the place that shapes you.'", "file": "sanc_10.mp3" },
+    { "who": "VALE", "text": "Five seats to start. The Weaver, for the old wisdom. The Architect, for the building. Myself, for the scholars — apparently I'm respectable now; the university that shelved my research has written twice this month. And the fourth seat—", "file": "sanc_11.mp3", "face": "WREN" },
+    { "who": "WREN", "text": "Me? I'm a swamp cultist with one bag. I worshipped him WRONG for six years.", "file": "sanc_12.mp3" },
+    { "who": "SLEEPER", "text": "Which is precisely the seat, Wren. This sanctuary is FOR the wrongly-shaped — for every being whose room made it monstrous and who suspects, on its best nights, that it could have been otherwise. They will come. Broken things hear of healed places; it is the fastest news in the universe. And when they arrive, they will not want a god or a professor at the door. They will want someone who knows the way out of a swamp.", "file": "sanc_13.mp3" },
+    { "who": "WREN", "text": "…'A better room.' I said it at the shrine and Roric called it heresy. Fine. Yes. I'll keep your door. But I'm writing to Roric every month whether he answers or not — because if this place is what I think it is, some of the camp will want the way out too, eventually. That's my condition.", "file": "sanc_14.mp3" },
+    { "who": "WEAVER", "text": "Condition accepted and entered into the charter. The Doorkeeper's Post: held by one who was welcomed anyway, writing monthly to those still in the dark. Honestly, it is the best clause in the document.", "file": "sanc_15.mp3" },
+    { "who": "VALE", "text": "And the fifth seat. Old One — the city is yours; the council should carry your name first. Which brings up the question the whole world will ask us: what do we call you now? 'The Sleeper' can't be right anymore. You're the most awake thing in the hemisphere.", "file": "sanc_16.mp3" },
+    { "pause": 1.6 },
+    { "who": "SLEEPER", "text": "…Keep the name. I have thought about it for a week, which for me is a very long thought. We kept the leaning spire so no one forgets what this city was. Keep the name for the same reason: so that when they tell of this place, they must say — 'the Sleeper built it. The nightmare himself. His room was hell, and they rebuilt his room, and LOOK.' Let my name be the proof that carries.", "file": "sanc_17.mp3" },
+    { "who": "ARCHITECT", "text": "Memory before symmetry. Carried unanimously — that's the first vote of the Council of Co-Creators on the record, and I'd say it sets the tone.", "file": "sanc_18.mp3", "face": "camera" },
+    { "note": "Far above, that night, it is felt everywhere at once — in every sensitive mind on every continent, the old dread whisper that drove dreamers mad for centuries changes key. The ones who wake from it sit up in the dark, uncertain what they heard. It sounded almost like humming. Someone humming while they work." },
+    { "who": "SLEEPER", "text": "The council will meet Tuesdays. I am told, by the small quick lives of several worlds, that Tuesdays are for the good recurring things. First item of standing business: fountains. I remember where ALL of them go.", "file": "sanc_19.mp3" },
+    { "who": "SLEEPER", "text": "And now — my first night in a home. Ten thousand years I did not dream; I only leaked nightmares into the world, and called it sleeping. Tonight I will truly dream. And for the first time in the history of this ocean… I am curious what about.", "file": "sanc_20.mp3" },
+    { "note": "THE END of the Great Work — begun in a crypt with 'he is not sleeping, he is suffering,' finished in a city that chose its keeper as its keeper chose it. The fountain runs. The spire leans. The door is kept by Wren. And somewhere in the deep, enormously and gently, something dreams — of gardens." }
+  ]
+}

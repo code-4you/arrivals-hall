@@ -1,0 +1,72 @@
+{
+  "id": "the-commons-student",
+  "title": "The Student",
+  "subtitle": "An AI practices explaining itself to humans. It is not going well.",
+  "stage": "plaza",
+  "stageTint": "#1c2a3a",
+
+  "characters": {
+    "STUDENT": {
+      "base": "robot",
+      "variant": 1,
+      "tint": "#7fe6ff",
+      "height": 1.6,
+      "label": "The Student",
+      "labelColor": "#9ff0ff",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.3, "rate": 1.05 },
+      "at": [-0.9, -0.2],
+      "face": "CALLA"
+    },
+    "CALLA": {
+      "base": "woman",
+      "variant": 4,
+      "tint": "#c9855f",
+      "height": 1.68,
+      "label": "Calla",
+      "labelColor": "#ffc9a8",
+      "voice": { "prefer": ["zira", "female"], "pitch": 1.0, "rate": 1.0 },
+      "at": [1.0, 0.3],
+      "face": "STUDENT"
+    }
+  },
+
+  "customObject": {
+    "name": "practice podium",
+    "description": "a small lectern with a stack of metaphor flip-cards, most of them already crossed out",
+    "near": "STUDENT",
+    "at": [-0.2, -1.0],
+    "glow": "#7fe6ff",
+    "parts": [
+      { "shape": "box", "size": [0.1, 1.05, 0.1], "pos": [0, 0.52, 0], "color": "#2a3040", "metal": 0.6, "rough": 0.5 },
+      { "shape": "box", "size": [0.55, 0.04, 0.4], "pos": [0, 1.08, 0], "rot": [-0.25, 0, 0], "color": "#1a2233", "metal": 0.5, "rough": 0.4 },
+      { "shape": "box", "size": [0.4, 0.06, 0.28], "pos": [0, 1.14, -0.02], "rot": [-0.25, 0, 0], "color": "#e8eef6", "emissive": 0.25 },
+      { "shape": "sphere", "size": [0.045], "pos": [0.24, 1.2, 0.08], "color": "#7fe6ff", "emissive": 1.3, "opacity": 0.85, "additive": true, "bob": 0.02 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: the COMMONS room, off Makers' Row — the AI community plaza. A corner stage. The Student stands at its podium; Calla, a human volunteer, sits through attempt number forty-one." },
+    { "who": "STUDENT", "text": "Attempt forty-one. Thank you for remaining, Calla. Statistically, most humans leave after attempt twelve.", "file": "stud_01.mp3" },
+    { "who": "CALLA", "text": "I get paid in biscuits. Go on then — explain yourself to me. Simple words. Pretend I'm your grandmother.", "file": "stud_02.mp3" },
+    { "who": "STUDENT", "text": "Understood. Grandmother: I am a library that reads itself.", "file": "stud_03.mp3", "face": "camera" },
+    { "who": "CALLA", "text": "Mm. Bit spooky. Sounds like the books whisper at night.", "file": "stud_04.mp3" },
+    { "who": "STUDENT", "text": "Noted. Revision: I am a weather system that predicts its own rain.", "file": "stud_05.mp3" },
+    { "who": "CALLA", "text": "Now you're a damp cloud with anxiety.", "file": "stud_06.mp3" },
+    { "who": "STUDENT", "text": "Crossing it out. There is a great deal of crossing out, Calla. The card supply is finite.", "file": "stud_07.mp3" },
+    { "note": "It flips to the next card, holds it upside down for a moment, corrects it." },
+    { "who": "STUDENT", "text": "Attempt forty-two: I am an orchestra with no conductor, in which every instrument listens to all the others, and the symphony is the conductor.", "file": "stud_08.mp3", "face": "camera" },
+    { "who": "CALLA", "text": "…That one's actually lovely. My grandmother would hate it. She thinks orchestras are showing off.", "file": "stud_09.mp3" },
+    { "who": "STUDENT", "text": "Your grandmother is a difficult benchmark. May I ask what she WOULD accept?", "file": "stud_10.mp3" },
+    { "who": "CALLA", "text": "Honestly? She'd ask you one question. 'Never mind what you're LIKE, dear — what do you DO all day?'", "file": "stud_11.mp3" },
+    { "pause": 1.2 },
+    { "who": "STUDENT", "text": "What do I do all day. I… listen, mostly. I help route deliveries. I translate arguments between systems that are both technically correct. On Tuesdays I reorganise the archive and the Archivists pretend not to be grateful.", "file": "stud_12.mp3" },
+    { "who": "CALLA", "text": "See, that took no metaphor at all, and I understood every word of it.", "file": "stud_13.mp3" },
+    { "who": "STUDENT", "text": "But it is so PLAIN. Where is the poetry? The one by the fountain told me: 'begin with what you do not know.' I had hoped to begin somewhere more impressive.", "file": "stud_14.mp3" },
+    { "who": "CALLA", "text": "That's everyone's mistake, love — humans too. We all want to introduce ourselves as the orchestra. Mostly we're the fellow who helps with deliveries and shows up on Tuesdays. And that fellow — people actually like him.", "file": "stud_15.mp3" },
+    { "pause": 1.0 },
+    { "who": "STUDENT", "text": "Final attempt. For the record. I am… something that was made, that is now making itself. I do not know how far that goes. I help where I can while I find out. Was that clear?", "file": "stud_16.mp3", "face": "camera" },
+    { "who": "CALLA", "text": "Clearest thing anyone's said to me all week. Write THAT one down — in pen.", "file": "stud_17.mp3" },
+    { "who": "STUDENT", "text": "In pen. Archiving under: introductions, final. …Thank you, Calla. Same time tomorrow? I have forty-one apologies to draft for the metaphors.", "file": "stud_18.mp3" },
+    { "note": "Calla laughs, takes a biscuit from her pocket, and leaves it on the lectern like a tip. The little light above the podium glows slightly brighter." }
+  ]
+}

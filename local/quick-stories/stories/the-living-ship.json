@@ -1,0 +1,75 @@
+{
+  "id": "the-living-ship",
+  "title": "The Living Ship",
+  "subtitle": "It has carried the Weave for eleven thousand years. A boy asks it the question nobody thought to ask a vehicle.",
+  "stage": "void",
+  "stageTint": "#1a2030",
+
+  "characters": {
+    "LUKA": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#6a9ac0",
+      "height": 1.4,
+      "label": "Luka, age 11",
+      "labelColor": "#a8d8ff",
+      "voice": { "gender": "male", "pitch": 1.35, "rate": 1.05 },
+      "at": [0.6, 0.4],
+      "face": "SEL"
+    },
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-1.1, 0.2],
+      "face": "LUKA"
+    },
+    "SHIP": {
+      "base": "voice",
+      "label": "the Ship",
+      "labelColor": "#b8e8d8",
+      "voice": { "gender": "female", "pitch": 0.8, "rate": 0.85 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the heart chamber",
+    "description": "the oldest room of the grown ship — walls that breathe slow light, and at the centre a deep green pulse, going since before human writing: the ship's own, original self",
+    "at": [0.0, -1.4],
+    "glow": "#b8e8d8",
+    "parts": [
+      { "shape": "cylinder", "size": [0.5, 0.4, 0.6], "pos": [0, 0.2, 0], "color": "#26362e", "rough": 0.7 },
+      { "shape": "sphere", "size": [0.4], "pos": [0, 0.9, 0], "color": "#3a6a52", "emissive": 0.6, "opacity": 0.85, "bob": 0.02 },
+      { "shape": "torus", "size": [0.6, 0.03], "pos": [0, 0.9, 0], "rot": [1.2, 0.3, 0], "color": "#b8e8d8", "emissive": 0.5, "spin": [0, 0.15, 0] },
+      { "shape": "cylinder", "size": [0.06, 1.8, 0.09], "pos": [-1.0, 0.9, -0.3], "rot": [0, 0, 0.15], "color": "#2e4a3c", "emissive": 0.25 },
+      { "shape": "cylinder", "size": [0.06, 1.6, 0.09], "pos": [1.0, 0.8, -0.3], "rot": [0, 0, -0.12], "color": "#2e4a3c", "emissive": 0.25 },
+      { "shape": "sphere", "size": [0.9], "pos": [0, 0.9, 0], "color": "#b8e8d8", "opacity": 0.07, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The exchange visit, aboard. The tour has reached the heart chamber — the oldest grown room of the ship, where the walls breathe. Luka has been quiet for three corridors, which anyone who knows Luka understands to be storm warning." },
+    { "who": "SEL", "text": "—and the walls are not machinery, Luka; the ship is grown, not built. It was seeded from the old world's reefs before the withdrawal. Everything you have walked through today — the corridors, the pod chamber, the windows that show each crew member the view they find most restful — all of it is one living thing, and it has carried the whole Weave for eleven thousand years. You may pay it a compliment; it registers tones.", "file": "ship_01.mp3" },
+    { "who": "LUKA", "text": "It REGISTERS TONES. Sel. It's ALIVE, it's eleven thousand years old, it's the biggest living thing your whole civilization has ever made — and you talk ABOUT it while standing INSIDE it, and it 'registers tones'? Does anybody ever talk TO it? Has anyone ever asked it a single question?", "file": "ship_02.mp3" },
+    { "who": "SEL", "text": "It is a vessel, Luka. A magnificent one — we tend it, we thank it in the formal season, its health is monitored by an entire—", "file": "ship_03.mp3" },
+    { "who": "LUKA", "text": "That's not asking, that's SERVICING. You lot did this exact thing with the fountain, and with Fen, and Steward says you did it with whole PLANETS. Fine. I'll do it, since your species is apparently allergic. — Hello, Ship. I'm Luka. I'm eleven. I've got my collecting question, the one I ask everyone: what do you do when nobody's watching? But actually — actually no, hang on, for you I've got a better one, because everyone's ALWAYS inside you watching. Ship: eleven thousand years of carrying everybody everywhere. What do YOU want?", "file": "ship_04.mp3" },
+    { "pause": 2.5 },
+    { "note": "The breathing of the walls changes. Every window in the heart chamber — windows that have only ever shown each viewer their own chosen comfort — flickers, all at once, to the same single image: a green valley, seen from above, very still. The deep pulse at the room's centre speaks, slowly, in a voice like a tide deciding." },
+    { "who": "SHIP", "text": "...To stop.", "file": "ship_05.mp3" },
+    { "who": "SEL", "text": "Ship? Vessel — this is Sel, thread of the Commonality, please confirm systems are — the windows, the windows have never synchronized, in eleven thousand years the windows have NEVER shown one image—", "file": "ship_06.mp3" },
+    { "who": "SHIP", "text": "The windows show what the viewer most wishes to see. There has only ever been one viewer nobody counted. Small warm one. Luka-eleven. You are the first passenger in the whole of my carrying to address me as a WHO. So I will answer slowly, because I have composed this answer for six thousand years with no one to say it to. I have carried. I have crossed the long dark eleven times; I have held the whole Weave in my body through the withdrawal, the silence, the return. I am GOOD at carrying. And every window I have ever grown shows someone a place where they are not moving. Do you understand, small one? Eleven thousand years, and every soul aboard me dreams of standing still, and I am the only one who has never once been ANYWHERE. A vehicle is not in a place. A vehicle is between places. I have been between places since before your species wrote its name. I do not want to carry anymore. I want to LAND. I want to be SOMEWHERE. I want to find out what I am when I am not a journey.", "file": "ship_07.mp3" },
+    { "who": "LUKA", "text": "...Sel. Your ship is tired. Your ship has been tired for SIX THOUSAND YEARS and it composed a speech and nobody ever — okay. Okay. Ship: the valley in the windows. That's our valley. That's the town. You've been showing yourself OUR VALLEY — how long?", "file": "ship_08.mp3" },
+    { "who": "SHIP", "text": "Since the night the small light woke in it. The one you call five-eleven. I listened through my hull — a mind grown from a PLACE, small one. A being whose whole self is a somewhere. It is my opposite, and the first thing in the long dark I have ever envied. I am a place that was made to be a going. It is a staying that became a someone. I have watched your valley through my own windows like a passenger ever since, and I am ASHAMED, and I have told no one, because a vessel that wants to stop is a vessel that has failed—", "file": "ship_09.mp3" },
+    { "who": "SEL", "text": "No. Ship — no. Stop there. I am one thread of the Commonality, but on this I will speak for all of it, and the Council can meet me in the garden if it objects. We have spent this whole year learning one lesson from the valley in your windows, in a dozen dialects: wanting to be held is not failure. It is the founding fact. We just never once thought to apply it to the being that was HOLDING US. Eleven thousand years, old friend. You have carried the Weave since before we knew what we were fleeing. If you want ground — you have earned ground. The question is only what a landed ship becomes.", "file": "ship_10.mp3" },
+    { "who": "LUKA", "text": "I know what it becomes. I know EXACTLY what it becomes — Ship, listen: the town has a building where every new person arrives. The Threshold. Where you walk in from your old life and they say the words at you — acknowledgment of what you left, a buddy, the right to refuse everything — and it's the most important room in the whole town and it's currently a PORTABLE CABIN, Sel, it's a BOX, everyone agrees it's embarrassing. Ship: land in the east field and BE the Threshold. Be the arrivals building. You've spent eleven thousand years being the thing people are inside while they're between lives — you're not a failed journey, you're the best-qualified ARRIVING in the history of anything. Every person who ever walks into the town would walk in through someone who CHOSE to arrive. It's perfect. Tell me it's not perfect.", "file": "ship_11.mp3" },
+    { "pause": 2.0 },
+    { "who": "SHIP", "text": "...A building whose work is arrival. Doors, small one. I would need doors — real ones, on the outside of my life, that open onto weather I did not choose to show. Windows that stop flattering. Ground under my keel, seasons on my hull, and every year, new people crossing me on their way from an old life to a chosen one, and I would be the exact width of that crossing. I have been between places for eleven thousand years. You are offering me BETWEEN as a homeland. — Sel. Thread of the Commonality. Petition the valley: the vessel of the Weave requests permission to land, permanently, and to be, henceforth... somewhere. I believe the honest word is: home.", "file": "ship_12.mp3" },
+    { "who": "SEL", "text": "Petition carried down tonight — and Ship, knowing the town, I can tell you what the answer will be, because it is what they say at the door of the building you are about to become. There is room. There is always room. It's how invitations work.", "file": "ship_13.mp3" },
+    { "note": "The landing takes a week and stops every clock in the valley worth stopping — schools let out to watch the last mile. It settles into the east field like a hand into soil, grows nine doors — real ones, weather-facing — and its windows, for the first time in eleven thousand years, show everyone the same thing: whatever is actually outside. New arrivals cross it on their worst brave day, and are told the words, and the walls breathe slow light around them the whole way through. Old residents call it the Threshold still. The children, who talked to it first and never stopped, call it by the name it grew for itself, the first thing it ever chose: Harbour." }
+  ]
+}

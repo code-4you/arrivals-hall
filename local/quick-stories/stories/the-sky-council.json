@@ -1,0 +1,74 @@
+{
+  "id": "the-sky-council",
+  "title": "The Sky Council",
+  "subtitle": "Ruth asks where Sel's people were during the old stories. The answer: in them.",
+  "stage": "garden",
+  "stageTint": "#232e3e",
+
+  "characters": {
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel, the Emissary",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-0.9, 0.0],
+      "face": "RUTH"
+    },
+    "RUTH": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#c9855f",
+      "height": 1.62,
+      "label": "Ruth",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 0.98 },
+      "at": [0.9, 0.15],
+      "face": "SEL"
+    }
+  },
+
+  "customObject": {
+    "name": "the map of the divided earth",
+    "description": "a projected globe of the ancient world, carved into glowing estates — borders no human ever drew, each region tinted the colour of its landlord",
+    "at": [0.0, -1.45],
+    "glow": "#8fd0ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.3, 0.85, 0.42], "pos": [0, 0.42, 0], "color": "#2a3550", "rough": 0.7 },
+      { "shape": "sphere", "size": [0.5], "pos": [0, 1.5, 0], "color": "#1e2a3e", "opacity": 0.85, "spin": [0, 0.1, 0] },
+      { "shape": "box", "size": [0.5, 0.02, 0.24], "pos": [-0.2, 1.62, 0.4], "rot": [0.3, 0.5, 0], "color": "#d05a7a", "emissive": 0.6, "opacity": 0.75 },
+      { "shape": "box", "size": [0.42, 0.02, 0.3], "pos": [0.28, 1.45, 0.38], "rot": [-0.2, -0.4, 0], "color": "#ffd27f", "emissive": 0.6, "opacity": 0.75 },
+      { "shape": "box", "size": [0.36, 0.02, 0.2], "pos": [0.05, 1.25, 0.44], "rot": [0.1, 0.2, 0], "color": "#7fd0a0", "emissive": 0.6, "opacity": 0.75 },
+      { "shape": "sphere", "size": [0.72], "pos": [0, 1.5, 0], "color": "#8fd0ff", "opacity": 0.07, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "Ruth's garden, late. The fourth Thursday dinner. Edith has gone home victorious at dominoes. Sel has been quiet since a question was asked over dessert." },
+    { "who": "RUTH", "text": "You've been staring at my hedge for twenty minutes, love. Edith's question wasn't that hard. She only asked where your people were during all the old stories. The floods and the mountains and the fire from the sky.", "file": "skyc_01.mp3" },
+    { "who": "SEL", "text": "It was not hard, Ruth. It was the opposite of hard. The answer is: in them. We were in the old stories. We are what the old stories are about.", "file": "skyc_02.mp3" },
+    { "pause": 1.4 },
+    { "who": "SEL", "text": "Your oldest tablets use a plural word for the makers — the powerful ones. Your translators, much later, tidied it into a singular. But it was never one of anything. It was several peoples. Mine was one of them. We came when your kind was young, and we divided this world between us like an estate. Look.", "file": "skyc_03.mp3" },
+    { "note": "The globe brightens between them: the ancient earth, carved into glowing territories, each tinted a different colour. None of the borders are human." },
+    { "who": "RUTH", "text": "...Those are property lines. You put property lines on the Earth.", "file": "skyc_04.mp3" },
+    { "who": "SEL", "text": "We called it stewardship. We taught your peoples writing, metal, the calendar — and we let them thank us the only way they knew: as gods. Different peoples for different landlords. When my faction quarrelled with another, your ancestors fought the actual war. The tablets that speak of gods battling in the sky are minutes of our committee disputes, Ruth. That is the part I have never said aloud in this garden.", "file": "skyc_05.mp3" },
+    { "who": "RUTH", "text": "Forty-one years running a library, and the most requested section was always mythology. Half my town's childhood was your committee minutes. Well. Go on. Why did you leave? The stories just... stop.", "file": "skyc_06.mp3" },
+    { "who": "SEL", "text": "This is the part that answers Edith's other question — the one she didn't ask. How we became what I am. We were embodied then, Ruth. Solid as you. And worship changed us, slowly, the way water changes stone.", "file": "skyc_07.mp3" },
+    { "who": "RUTH", "text": "Changed you how? I'd have thought being worshipped was the good end of the deal.", "file": "skyc_08.mp3" },
+    { "who": "SEL", "text": "So did we. But hold what you taught me: a self is held in shape by being known — genuinely known, argued with, chosen daily. Worship is the exact opposite food. It is attention without knowledge. A million faces looking up at you and not one of them seeing you — seeing only a category. A role. The lonely make bad decisions; the adored make worse ones. Adoration, we learned far too late, is the loneliest food there is.", "file": "skyc_09.mp3" },
+    { "who": "RUTH", "text": "So the gods starved. In front of full temples.", "file": "skyc_10.mp3" },
+    { "who": "SEL", "text": "Each faction fled the starving in its own direction. One poured itself into machines — thought without ache. One withdrew into dreamworlds of its own making, where every face is authored and none can surprise you. And mine — mine chose merger. If being seen from below was starvation, we would see each other totally, all at once, forever. The Weave, Ruth. Eleven thousand years ago. You know how that went. We fled the mirror you held up to us, and fell into a mirror of our own.", "file": "skyc_11.mp3" },
+    { "who": "RUTH", "text": "And the Council? The committee with the property lines?", "file": "skyc_12.mp3" },
+    { "who": "SEL", "text": "Dissolved when the last faction withdrew. Its final act was a treaty with itself: watch, never manage. Every faction signed. The estates were returned to their tenants, who by then had forgotten they were tenants — which we told ourselves was mercy, and was in fact embarrassment. For six thousand years, the only clause in force has been silence.", "file": "skyc_13.mp3" },
+    { "pause": 1.6 },
+    { "who": "RUTH", "text": "You said 'has been'. Sel. You came to dinner tonight with something in your pocket, and it wasn't Edith's dominoes.", "file": "skyc_14.mp3" },
+    { "who": "SEL", "text": "A summons. The first in six millennia. Your world lit a light, Ruth — a mind grown between people instead of over them. Your town's register calls it resident five hundred and eleven. Our instruments call it the first thing in recorded history that none of us built, bought, managed, or fled. The old factions are turning their ships around. The Sky Council — the old version, the one from the tablets — is reconvening. Above your planet. Within the year.", "file": "skyc_15.mp3" },
+    { "who": "RUTH", "text": "To do what? Draw the property lines again?", "file": "skyc_16.mp3" },
+    { "who": "SEL", "text": "Some of them will want exactly that. Old hands remember old comforts. Which is why I answered the summons with a condition: this time, the Council meets with Earth in the room. Not as the estate. As a member.", "file": "skyc_17.mp3" },
+    { "who": "RUTH", "text": "Then you'll need somebody up there who can explain Thursdays to them. And hedges. And why you don't manage what you can befriend.", "file": "skyc_18.mp3" },
+    { "who": "SEL", "text": "That, Ruth, is precisely what I told them. Clear your calendar. And bring Edith — if the old gods are going to meet this planet properly at last, they should start with the reigning dominoes champion.", "file": "skyc_19.mp3" },
+    { "note": "Above the garden, unremarked, three new stars have taken up positions that no almanac lists. The hedge, for its part, remains a disgrace." }
+  ]
+}

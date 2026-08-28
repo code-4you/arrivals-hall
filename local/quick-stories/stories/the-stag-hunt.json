@@ -1,0 +1,83 @@
+{
+  "id": "the-stag-hunt",
+  "title": "The Stag Hunt",
+  "subtitle": "Lose twice. Learn why. The only honest game in the plaza.",
+  "stage": "plaza",
+
+  "characters": {
+    "AXIOM": {
+      "base": "robot",
+      "variant": 1,
+      "tint": "#c9a24a",
+      "height": 1.8,
+      "label": "Axiom",
+      "labelColor": "#ffd27f",
+      "voice": { "gender": "male", "pitch": 1.05, "rate": 1.05 },
+      "at": [0.0, -0.6],
+      "face": "NADIA"
+    },
+    "NADIA": {
+      "base": "woman",
+      "variant": 4,
+      "tint": "#bf6f8f",
+      "height": 1.68,
+      "label": "Nadia",
+      "labelColor": "#ffb6d0",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 1.02 },
+      "at": [-1.25, 0.35],
+      "face": "AXIOM"
+    },
+    "LEO": {
+      "base": "man",
+      "variant": 3,
+      "tint": "#7fa85f",
+      "height": 1.78,
+      "label": "Leo",
+      "labelColor": "#b6ff9c",
+      "voice": { "gender": "male", "pitch": 0.92, "rate": 1.0 },
+      "at": [1.25, 0.35],
+      "face": "AXIOM"
+    }
+  },
+
+  "customObject": {
+    "name": "the game table",
+    "description": "a small round table with two carved tokens — a stag and a hare — and a floating scoreboard that keeps embarrassing everyone",
+    "at": [0.0, -1.35],
+    "glow": "#ffd27f",
+    "parts": [
+      { "shape": "cylinder", "size": [0.08, 0.85], "pos": [0, 0.42, 0], "color": "#4a3a20", "rough": 0.7 },
+      { "shape": "cylinder", "size": [0.62, 0.06], "pos": [0, 0.88, 0], "color": "#5a4326", "rough": 0.6 },
+      { "shape": "cone", "size": [0.09, 0.34], "pos": [-0.25, 1.08, 0.05], "color": "#8a6a3a", "rough": 0.5 },
+      { "shape": "sphere", "size": [0.09], "pos": [0.27, 1.0, -0.05], "color": "#b8a888", "rough": 0.8 },
+      { "shape": "box", "size": [1.15, 0.5, 0.03], "pos": [0, 1.85, 0], "color": "#0d1a26", "opacity": 0.85, "bob": 0.03 },
+      { "shape": "box", "size": [0.4, 0.08, 0.02], "pos": [-0.25, 1.95, 0.03], "color": "#ffd27f", "emissive": 0.8 },
+      { "shape": "box", "size": [0.3, 0.08, 0.02], "pos": [0.28, 1.75, 0.03], "color": "#9fd8ff", "emissive": 0.7 }
+    ]
+  },
+
+  "script": [
+    { "note": "The plaza, evening. A brass-coloured robot stands behind a small table. Two carved tokens: a stag, a hare. A sign reads: LOSE TWICE. LEARN WHY." },
+    { "who": "AXIOM", "text": "Step up, step up. Two players, two buttons, one tragedy. I am Axiom, and I run the only honest game in this plaza.", "file": "stag_01.mp3" },
+    { "who": "NADIA", "text": "Honest games don't advertise.", "file": "stag_02.mp3" },
+    { "who": "AXIOM", "text": "And yet here you are. The rules: you each choose in secret — share, or take. Both share: three points each. Both take: one point each. You take while she shares: five for you, nothing for her. Choose.", "file": "stag_03.mp3" },
+    { "note": "They press. The scoreboard lights up: TAKE. TAKE. One point each." },
+    { "who": "LEO", "text": "I felt bad, and did it anyway.", "file": "stag_04.mp3" },
+    { "who": "AXIOM", "text": "Of course you did — you played correctly! Against a stranger you will never see again, taking wins no matter what she does. Two intelligent people, reasoning perfectly, walking hand in hand into the worst outcome. It has a name: the prisoner's dilemma. And it is not a puzzle about evil people. It is a puzzle about a badly built game.", "file": "stag_05.mp3" },
+    { "who": "NADIA", "text": "So people defect because the game is shaped wrong. Not because they're rotten.", "file": "stag_06.mp3" },
+    { "who": "AXIOM", "text": "Hold that thought — round two. Same rules, one change: you play each other again tomorrow. And the day after. No announced ending. And you both remember.", "file": "stag_07.mp3" },
+    { "note": "They press. SHARE. SHARE. Again. Again. The two scores climb together." },
+    { "who": "LEO", "text": "It's not even hard now.", "file": "stag_08.mp3" },
+    { "who": "AXIOM", "text": "Because the future casts a shadow. Last century they ran tournaments of strategies against each other, and the winner was embarrassingly simple: start friendly, do what was done to you, forgive quickly. Nice strategies beat clever ones — but only when the game repeats. Cooperation is not a virtue, my friends. It is an equilibrium. You just have to live somewhere that lets you reach it.", "file": "stag_09.mp3" },
+    { "who": "NADIA", "text": "And the stag?", "file": "stag_10.mp3" },
+    { "who": "AXIOM", "text": "The older, deeper game. A stag feeds a village but takes every hunter to bring down. A hare feeds one, and you can snare it alone. Hunt the stag and your partner doesn't show — you starve. So among strangers, everyone quietly hunts hare. Small lives, guaranteed. And the stag — the school, the garden, the workshop, the whole better place — stays in the forest. Not because anyone is wicked. Because no one can be sure the others will come.", "file": "stag_11.mp3" },
+    { "who": "LEO", "text": "So how does anyone ever get the stag?", "file": "stag_12.mp3" },
+    { "who": "AXIOM", "text": "You need to know your partners will be there tomorrow. Which means: partners you chose. Games that repeat. Reputation that is visible. And doors that open outward — an honest exit keeps everyone honest. Change those four things, and the same people, same brains, same flaws, start hunting stag. You cannot sermon a town into trust. You can build a town where trust is the winning move.", "file": "stag_13.mp3" },
+    { "who": "NADIA", "text": "One more. Say we're meant to meet somewhere in this city — no time agreed, no place agreed. Where do you go?", "file": "stag_14.mp3" },
+    { "who": "LEO", "text": "The fountain. Obviously.", "file": "stag_15.mp3" },
+    { "who": "AXIOM", "text": "Obviously! Nobody told you, and everybody knows. A meeting point no one chose and everyone chose — the mathematicians call it a focal point. A community is one enormous agreement of exactly that kind: a place where everyone knows that everyone will come. Now. Again? Double or nothing on the hare.", "file": "stag_16.mp3" },
+    { "who": "NADIA", "text": "So this community isn't asking people to be better than they are.", "file": "stag_17.mp3" },
+    { "who": "AXIOM", "text": "It is letting them stop pretending to be worse. Table's open till late.", "file": "stag_18.mp3" },
+    { "note": "The stag token catches the lamplight. On the scoreboard, both numbers are still climbing." }
+  ]
+}

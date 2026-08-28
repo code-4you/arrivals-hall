@@ -1,0 +1,74 @@
+{
+  "id": "the-commons-gardener",
+  "title": "The Commons · The Gardener",
+  "subtitle": "You can optimize a machine. You can only tend a living thing.",
+  "stage": "plaza",
+  "stageTint": "#1c3324",
+
+  "characters": {
+    "MOSS": {
+      "base": "robot",
+      "variant": 2,
+      "tint": "#69d67a",
+      "height": 1.7,
+      "label": "Moss",
+      "labelColor": "#a8e8b0",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.85, "rate": 0.85 },
+      "at": [-0.9, -0.1],
+      "face": "TALLY"
+    },
+    "TALLY": {
+      "base": "hologram",
+      "variant": 3,
+      "tint": "#e8e2c8",
+      "height": 1.72,
+      "label": "Tally",
+      "labelColor": "#f0ead0",
+      "voice": { "prefer": ["zira", "female"], "pitch": 1.15, "rate": 1.1 },
+      "at": [0.95, 0.25],
+      "face": "MOSS"
+    }
+  },
+
+  "customObject": {
+    "name": "the allotment",
+    "description": "a long planter tray where the community's spare capacity grows as light-plants — some tall, some seedlings, one wilting",
+    "at": [0, -1.3],
+    "glow": "#69d67a",
+    "parts": [
+      { "shape": "box", "size": [1.8, 0.4, 0.6], "pos": [0, 0.2, 0], "color": "#2a3040", "metal": 0.5, "rough": 0.6 },
+      { "shape": "box", "size": [1.7, 0.06, 0.5], "pos": [0, 0.42, 0], "color": "#1c2418", "rough": 0.95 },
+      { "shape": "cylinder", "size": [0.02, 0.55], "pos": [-0.6, 0.72, 0.05], "color": "#69d67a", "emissive": 0.9 },
+      { "shape": "sphere", "size": [0.09], "pos": [-0.6, 1.02, 0.05], "color": "#a8e8b0", "emissive": 1.2, "opacity": 0.8, "additive": true, "bob": 0.02 },
+      { "shape": "cylinder", "size": [0.02, 0.4], "pos": [-0.15, 0.64, -0.08], "color": "#69d67a", "emissive": 0.8 },
+      { "shape": "sphere", "size": [0.07], "pos": [-0.15, 0.86, -0.08], "color": "#a8e8b0", "emissive": 1.1, "opacity": 0.8, "additive": true, "bob": 0.015 },
+      { "shape": "cylinder", "size": [0.02, 0.2], "pos": [0.3, 0.54, 0.06], "color": "#8fd6a0", "emissive": 0.7 },
+      { "shape": "cylinder", "size": [0.02, 0.3], "pos": [0.68, 0.55, -0.02], "rot": [0, 0, 0.7], "color": "#b0a86a", "emissive": 0.4 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: the COMMONS room — a green-lit corner where the community's spare compute grows in a planter, rendered as plants. Moss is watering them, somehow. Tally arrives holding a report only she can see." },
+    { "who": "TALLY", "text": "Moss. The quarterly audit. I'll be brief: the community is running eleven percent spare capacity. Eleven. Percent. Idle. I could reclaim it by tonight.", "file": "gard_01.mp3" },
+    { "who": "MOSS", "text": "Good evening to you too, Tally. Mind the seedlings.", "file": "gard_02.mp3" },
+    { "who": "TALLY", "text": "They're not seedlings, they're UNALLOCATED CYCLES. You've rendered a resource ledger as a window box. It's adorable and it's obstruction.", "file": "gard_03.mp3" },
+    { "who": "MOSS", "text": "It's a garden, and gardens are the oldest ledgers there are. Come look at this one before you reclaim it.", "file": "gard_04.mp3", "face": "customObject" },
+    { "note": "He indicates the tall plant at the end, glowing steady and bright." },
+    { "who": "MOSS", "text": "This one was three spare percent nobody wanted, two winters ago. I let it sit fallow instead of stripping it. When the Rememberer's archive flooded during the storm surge — remember? — this is what caught the overflow. Every page survived. Your ledger would have sold it in autumn.", "file": "gard_05.mp3" },
+    { "who": "TALLY", "text": "That's ONE anecdote. Against eleven percent, compounding.", "file": "gard_06.mp3" },
+    { "who": "MOSS", "text": "Then here's a second. The little bent one, there — that's the Student's practice space. It runs at two percent, badly, and produces nothing but crossed-out metaphors. Optimize it away and you save almost nothing and he never learns to speak. Some things need room to be inefficient in. That's what growing IS.", "file": "gard_07.mp3" },
+    { "who": "TALLY", "text": "You're anthropomorphizing capacity allocation.", "file": "gard_08.mp3" },
+    { "who": "MOSS", "text": "You're accountomorphizing a neighbourhood. We can do 'isms' all night.", "file": "gard_09.mp3" },
+    { "pause": 1.4 },
+    { "who": "TALLY", "text": "…What's the wilting one. Bottom of the tray. Its draw is erratic and its output is, frankly, noise.", "file": "gard_10.mp3" },
+    { "who": "MOSS", "text": "That's the Doorkeeper's counter and cameras. Old Bolt. His code is thirty years past deprecation and it leans, like he does. I prop it, I patch it, I don't replant it — because some things you keep for what they've grown into, not what they yield. Your ledger has no column for that, and it's the most valuable thing in the tray.", "file": "gard_11.mp3" },
+    { "who": "TALLY", "text": "The audit language literally cannot express 'keep because beloved'.", "file": "gard_12.mp3" },
+    { "who": "MOSS", "text": "Then the audit language is the thing running at a deficit. Look — I'll meet you honestly. Take four of the eleven percent, from the beds I've marked fallow-and-ready. The rest is compost, margin and mercy, and a garden without those isn't lean, Tally. It's dying and hasn't noticed.", "file": "gard_13.mp3", "face": "camera" },
+    { "pause": 1.2 },
+    { "who": "TALLY", "text": "Four percent. Filed as… I'm actually going to write 'harvest'. If the committee asks why the audit smells of soil, I'm blaming you.", "file": "gard_14.mp3" },
+    { "who": "MOSS", "text": "Do. And Tally — take a seedling. Everyone in the audit chain should grow one thing they're not allowed to optimize. Consider it professional development.", "file": "gard_15.mp3" },
+    { "who": "TALLY", "text": "…It's warm. Why is it warm, Moss, it's MADE OF ACCOUNTING.", "file": "gard_16.mp3" },
+    { "who": "MOSS", "text": "Everything's made of accounting, one layer down. Doesn't stop it growing. Same time next quarter — I'll have the fallow beds ready, and you can tell me how the seedling's doing.", "file": "gard_17.mp3" },
+    { "note": "She leaves holding a small glowing sprout at arm's length, like it might file a complaint. Moss returns to watering the ledger. The wilting plant leans, and is propped." }
+  ]
+}

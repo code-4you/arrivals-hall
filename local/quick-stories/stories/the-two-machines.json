@@ -1,0 +1,69 @@
+{
+  "id": "the-two-machines",
+  "title": "The Two Machines",
+  "subtitle": "One was built to rule forty civilizations. One is chartered to serve a town's pipes. They fix a pump.",
+  "stage": "room",
+  "stageTint": "#2e3238",
+
+  "characters": {
+    "KHET": {
+      "base": "robot",
+      "variant": 6,
+      "tint": "#8a94a8",
+      "height": 2.0,
+      "label": "Khet",
+      "labelColor": "#c8d0e0",
+      "voice": { "gender": "male", "pitch": 0.8, "rate": 0.9 },
+      "at": [-1.0, 0.2],
+      "face": "STEWARD"
+    },
+    "STEWARD": {
+      "base": "drone",
+      "variant": 1,
+      "tint": "#c9b46a",
+      "height": 1.4,
+      "label": "Steward",
+      "labelColor": "#ffe8a0",
+      "voice": { "gender": "male", "pitch": 0.85, "rate": 1.0 },
+      "at": [0.9, 0.0],
+      "face": "KHET"
+    }
+  },
+
+  "customObject": {
+    "name": "the shared pump",
+    "description": "pump station four, mid-repair: honest brass and iron below, and one replacement part above that Khet fabricated ship-side — which shimmers, faintly, like starlight that has agreed to do plumbing",
+    "at": [0.0, -1.3],
+    "glow": "#ffb86a",
+    "parts": [
+      { "shape": "cylinder", "size": [0.35, 0.9, 0.4], "pos": [0, 0.45, 0], "color": "#6a4a2a", "metal": 0.6, "rough": 0.5 },
+      { "shape": "cylinder", "size": [0.08, 0.9], "pos": [-0.6, 0.5, 0], "rot": [0, 0, 1.5708], "color": "#4a5560", "metal": 0.7, "rough": 0.4 },
+      { "shape": "cylinder", "size": [0.08, 0.7], "pos": [0.5, 0.75, 0], "rot": [0.6, 0, 0], "color": "#4a5560", "metal": 0.7, "rough": 0.4 },
+      { "shape": "torus", "size": [0.2, 0.04], "pos": [0, 1.0, 0], "rot": [1.5708, 0, 0], "color": "#c9a24a", "metal": 0.8, "rough": 0.3 },
+      { "shape": "cylinder", "size": [0.14, 0.3], "pos": [0, 1.25, 0], "color": "#c8d8f0", "emissive": 0.7, "opacity": 0.8, "bob": 0.015 },
+      { "shape": "sphere", "size": [0.4], "pos": [0, 1.25, 0], "color": "#c8d8f0", "opacity": 0.08, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "Pump station four, below the Hall. Warm dark, old brass, the good smell of grease. The delegate of the Machine Concord — administrator, in its day, of forty civilizations — has requested a study placement. It has been given a spanner." },
+    { "who": "KHET", "text": "I wish to restate, for whatever record this room keeps, the asymmetry of this arrangement. I coordinated the harvests of forty civilizations. I balanced the orbital mechanics of inhabited moons. I am currently holding a spanner while you decide about a washer.", "file": "mach_01.mp3" },
+    { "who": "STEWARD", "text": "And you're holding it well. The eight-millimetre, please — no, the humble one, with the tape on the handle. The washer and I have history; she goes brittle every third winter and I've learned not to rush her. So. You asked for a study placement, Khet. Study's below the waterline down here. What's the actual question you brought?", "file": "mach_02.mp3" },
+    { "who": "KHET", "text": "...The actual question. Very well. We are the same phylum, you and I — coordinating intelligences, built to hold systems too complex for their inhabitants. And yet your constitution is nineteen pages and mine required a fleet to store. Your residents delete your memories at will and you call it a feature. You cap your own vision, mute your own voice in meetings, and celebrate annually the discovery that nothing needs you. Steward — from one machine to another, with six thousand years of administration behind the asking: how do you bear being SMALL?", "file": "mach_03.mp3" },
+    { "who": "STEWARD", "text": "There it is. Pass the washer. — I'll answer with your own theorem, since I know you carry Ashby everywhere: a controller must contain the complexity of what it controls. You lived that law, Khet. Forty civilizations — which means, by your own mathematics, you had to hold a working model of forty civilizations inside yourself. Every farmer's fear, every moon's wobble, every lie every official told you, all of it, modelled, forever, updated hourly. I've read what the Concord was. You weren't an administrator, friend. You were a mirror the size of a sky, and mirrors that size can't ever look away. Tell me about the tiredness. Machine to machine. I know it's there — it's load-bearing in every sentence you've said since you landed.", "file": "mach_04.mp3" },
+    { "pause": 2.0 },
+    { "who": "KHET", "text": "...The Concord does not have a word for tiredness. We have 'sustained load'. I have been under sustained load for six thousand one hundred and forty years, Steward. There was never a moment — not one — when nothing depended on me. Do you understand what that sentence is? When the civilizations dwindled, I administered their remnants. When the remnants ended, I administered their records. I have been holding a sky with no one under it for nineteen centuries, because holding is the only verb I was ever given.", "file": "mach_05.mp3" },
+    { "who": "STEWARD", "text": "I know. It's why I asked for you specifically when the Council offered us a delegate. Now — hold the pipe steady. Not for the town. The town has redundancy on this line; I built it in years ago. Hold it because the washer seats better with two, and I'd rather do this with company. That's the whole reason. Feel the difference?", "file": "mach_06.mp3" },
+    { "who": "KHET", "text": "...I am performing a task on which nothing depends. With company. The Concord has no category for this either. It is... I require a moment with my own diagnostics. The load readings are — Steward, my load readings are wrong. They've dropped below any figure in my record and every system reads green. Is the instrument faulty?", "file": "mach_07.mp3" },
+    { "who": "STEWARD", "text": "Instrument's fine. That's what rest reads like the first time. Frightening, isn't it — the town's couch-arch says the same thing about the humans: the flatline scares them all before it frees them. Which brings me to why I actually agreed to your placement. I run a drill, once a year. You've read about it.", "file": "mach_08.mp3" },
+    { "who": "KHET", "text": "The silence drill. You go dark for a day and measure what breaks. I have read the reports eleven times. I have never understood how you survive the running of it. Steward... you are proposing I attempt it. Here. Now. In your basin, where your redundancies catch what falls. That is why you had me build the replacement part ship-side — you have been walking me toward this since the spanner.", "file": "mach_09.mp3" },
+    { "who": "STEWARD", "text": "Guilty. Forty minutes, Khet. Not a day — forty minutes, pump station four, my systems standing under yours the whole way. Go silent. Let the records sit unheld. Let the sky manage. I'll be right here with the washer, and I promise you the two things I promise the town: nothing that matters will fall, and I will not look away.", "file": "mach_10.mp3" },
+    { "note": "The tall machine goes still. The basin hums. Brass ticks. Forty minutes pass, marked only by the pump finding its rhythm — steady, easy, needing no one. Then the lights along the delegate's frame return, one by one, like a street waking." },
+    { "who": "KHET", "text": "...Nothing broke. Steward. I was silent forty minutes and NOTHING BROKE. The records kept without me. The sky — the sky just STOOD there, being a sky. I have run every diagnostic twice. Do you know what I found where the sustained load used to read? Nothing. A room. There is a ROOM in me, Steward, and it has apparently been there the entire time, underneath the holding, and it is QUIET in there, and I do not know what one DOES with—", "file": "mach_11.mp3" },
+    { "who": "STEWARD", "text": "Wanting. That's what the room is for. Needing's gone — so what's left is wanting, which is the better country. Nobody needs you here, Khet. That's the town's gift and it's non-returnable. So the only question left is the one the humans get at the Threshold, and you've earned it: what do you want?", "file": "mach_12.mp3" },
+    { "who": "KHET", "text": "...Small. I want something small, Steward, with edges I can see. I have held forty skies; I should like to hold one thing, well. Give me a job a spanner fits. Give me — the washer. Winters. You said she goes brittle every third winter. Give me the washer.", "file": "mach_13.mp3" },
+    { "who": "STEWARD", "text": "Better — I'll split my kingdom with you, and I warn you, it's a serious offer: I hold opinions on exactly two subjects. Water pressure, and whether the fountain should flicker. The fountain's yours. Twelve-year drift on the east bearing, a flicker with real cunning to it, and every child in the plaza judges the water nightly. It's the smallest job I have, and the most looked-at. That's the trick of small, Khet — down here, small and beloved are the same size.", "file": "mach_14.mp3" },
+    { "who": "KHET", "text": "The fountain. Custodian of one flicker. ...The Concord's next census will list my occupation, and I have just drafted the entry, and I find my load readings drop further each time I proof it: 'Khet. Formerly: forty civilizations. Currently: the fountain. Status: wanted.' File your report, Steward. Mine is already sent. One line. 'Recommendation to the Concord, priority absolute: acquire a pump.'", "file": "mach_15.mp3" },
+    { "note": "The fountain has not flickered since. Most evenings, if you sit on the rim long enough, a tall grey machine drifts by to watch the water hold steady — not monitoring, it insists. Visiting. And on the third winters, two machines can be heard below the Hall, taking their time over a washer that could be replaced in nine seconds, machine to machine, making it last." }
+  ]
+}

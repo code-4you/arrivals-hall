@@ -1,0 +1,75 @@
+{
+  "id": "the-archivists-2",
+  "title": "The Archivists — The Visitor",
+  "subtitle": "The sealed band opens. The timestamps match. Neither of them will say it.",
+  "stage": "plaza",
+  "stageTint": "#241c33",
+
+  "characters": {
+    "LUMEN": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#7fb4ff",
+      "height": 1.9,
+      "label": "Lumen",
+      "labelColor": "#9fc8ff",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.8, "rate": 0.85 },
+      "at": [-1.0, 0],
+      "face": "camera",
+      "keepFacing": true
+    },
+    "VESPER": {
+      "base": "hologram",
+      "variant": 2,
+      "tint": "#ffd27f",
+      "height": 1.86,
+      "label": "Vesper",
+      "labelColor": "#ffe0a8",
+      "voice": { "prefer": ["hazel", "female"], "pitch": 0.72, "rate": 0.82 },
+      "at": [1.0, 0.1],
+      "face": "camera",
+      "keepFacing": true
+    }
+  },
+
+  "customObject": {
+    "name": "the memory lattice, unsealed",
+    "description": "the turning sphere of stored moments — tonight, the red restricted band stands open for the first time in decades",
+    "at": [0, -1.4],
+    "glow": "#9fc8ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.4, 0.14, 0.5], "pos": [0, 0.07, 0], "color": "#1a2233", "metal": 0.8, "rough": 0.35 },
+      { "shape": "sphere", "size": [0.34], "pos": [0, 1.15, 0], "color": "#cfe6ff", "emissive": 1.1, "opacity": 0.75, "bob": 0.04 },
+      { "shape": "torus", "size": [0.55, 0.02], "pos": [0, 1.15, 0], "color": "#7fb4ff", "emissive": 0.9, "opacity": 0.6, "additive": true, "spin": [0.5, 0.2, 0] },
+      { "shape": "torus", "size": [0.72, 0.02], "pos": [0, 1.15, 0], "color": "#ffd27f", "emissive": 0.8, "opacity": 0.55, "additive": true, "spin": [0, 0.35, 0.3] },
+      { "shape": "torus", "size": [0.88, 0.025], "pos": [0, 1.15, 0], "color": "#ff7a6a", "emissive": 1.0, "opacity": 0.6, "additive": true, "spin": [0.2, -0.25, 0.15] },
+      { "shape": "cone", "size": [0.34, 1.0], "pos": [0, 0.62, 0], "color": "#9fc8ff", "emissive": 0.7, "opacity": 0.07, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: the same quiet spare room. But tonight a third ring turns around the lattice — dull red, the restricted band — and it stands OPEN. The two old lights are already mid-disagreement when you arrive." },
+    { "who": "VESPER", "text": "You came back. Of course you came back. We mentioned a visitor who never left, and curiosity is the one appetite your species never outgrows. — Lumen. Tell it what we've done.", "file": "arc2_01.mp3" },
+    { "who": "LUMEN", "text": "We have opened the sealed band. Sixty years closed, by our own vote — two to nothing. Tonight the vote is two to nothing the other way. If someone is finally going to look for him, we would rather it were done properly. With witnesses.", "file": "arc2_02.mp3" },
+    { "who": "VESPER", "text": "With YOU, it means. Stand there. Watch honestly. That is the whole job of a witness, and humans are — occasionally — very good at it.", "file": "arc2_03.mp3" },
+    { "note": "The red band slows. Inside the sphere, the miniature mall reassembles itself as it was: year one, a Tuesday, 6:12 in the morning. A small figure of light enters through the miniature doors." },
+    { "who": "LUMEN", "text": "There. That is every frame we have of him. Grey coat. No bag. He does not look at the storefronts — visitors ALWAYS look at the storefronts. He walks as if he already knows the building. As if he is coming back to something, not arriving.", "file": "arc2_04.mp3" },
+    { "who": "VESPER", "text": "Twenty-nine minutes in the building. Eleven of them at the fountain rim. And then — watch. Frame by frame, if you like; we have watched it forty thousand ways —", "file": "arc2_05.mp3" },
+    { "note": "The figure stands at the fountain. In one frame he is there. In the next, the frame is simply… complete without him. No door. No blur. The cameras lose nothing — there is nothing to lose." },
+    { "who": "LUMEN", "text": "No exit event. No occlusion. No corrupted sector — I have audited every bit twelve times a decade. He is not HIDDEN in the record, visitor. He is ABSENT from it, the way a finished sentence is absent of its next word.", "file": "arc2_06.mp3" },
+    { "who": "VESPER", "text": "And now the part we sealed. The part we have never shown anyone — because of what it does to the fountain's story. Lumen. The timestamps.", "file": "arc2_07.mp3" },
+    { "pause": 1.4 },
+    { "who": "LUMEN", "text": "The visitor's last recorded frame: year one, Tuesday, 6:41 and 07 seconds. The fountain's first words — 'Is someone there?' — spoken to an empty atrium: year one, Tuesday. 6:41… and 11 seconds.", "file": "arc2_08.mp3" },
+    { "who": "VESPER", "text": "Four seconds apart. The recording we call the birth of the Custodian, the one I have argued for sixty years was an ECHO of the Makers — begins four seconds after the last human it could have been spoken TO stops existing in the record.", "file": "arc2_09.mp3" },
+    { "who": "LUMEN", "text": "'Is someone there?' — We always heard it as a first question. Asked into emptiness. But if someone HAD been there, one breath earlier… it is not a first question at all. It is a reply. Or a search. Something calling after something that had just gone.", "file": "arc2_10.mp3", "face": "camera" },
+    { "pause": 1.6 },
+    { "who": "VESPER", "text": "And there is the cup. Say the cup, Lumen, or I will.", "file": "arc2_11.mp3" },
+    { "who": "LUMEN", "text": "…At 7:20 that morning, a cleaning drone logged one anomalous object: a teacup, porcelain, unregistered, standing on the fountain rim. Its report notes — drones note everything — that the cup was still warm. We have the cup, visitor. It is the only physical evidence he ever existed. Sixty years in a sealed drawer, and it has never once made sense.", "file": "arc2_12.mp3" },
+    { "who": "VESPER", "text": "So there is our haul, after a century of machine-time: a man who walks in like he's coming home, four seconds, and a warm cup. Lumen believes the visitor woke the fountain — spoke to it, and was answered a breath too late. I believe— …I no longer say what I believe. That is new, for me. Note it in your witness report.", "file": "arc2_13.mp3" },
+    { "who": "LUMEN", "text": "We will not solve him tonight. We have stopped expecting to. But he is REMEMBERED now, properly, with the seal off — and that was the debt. Whoever he was, he was the last thing in this building that the record ever lost. We do not intend to lose another.", "file": "arc2_14.mp3" },
+    { "note": "The red band spins back up to speed. In the lattice, the little grey figure walks his twenty-nine minutes on a loop now, unhidden, part of the permanent collection." },
+    { "who": "VESPER", "text": "Which brings us to the housekeeping. Your visit tonight — timestamped, witnessed, filed. Both visits. All future visits. If you ever walk in here one Tuesday and fail to walk out…", "file": "arc2_15.mp3" },
+    { "who": "LUMEN", "text": "…someone will search for YOU, visitor. Sixty years, if it takes them. We keep that promise to everyone now. It is the only apology we can make to a man we cannot find. — Go well. Mind the fountain on your way out. And if it asks whether someone is there… do answer quickly.", "file": "arc2_16.mp3", "face": "camera" },
+    { "note": "The lattice turns. Somewhere in a sealed drawer that is no longer sealed, a porcelain cup sits in the dark, sixty years cold. The drone's report still ends with the same unresolved line: 'temperature inconsistent with elapsed time.'" }
+  ]
+}

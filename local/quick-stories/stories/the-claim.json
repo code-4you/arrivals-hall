@@ -1,0 +1,73 @@
+{
+  "id": "the-claim",
+  "title": "The Claim",
+  "subtitle": "Somebody still holds the dead mall's paper. The machines come at dawn.",
+  "stage": "atrium",
+  "stageTint": "#2e2230",
+
+  "characters": {
+    "RUTH": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#c9855f",
+      "height": 1.62,
+      "label": "Ruth",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 0.98 },
+      "at": [-1.2, 0.3],
+      "face": [0.5, -1.4]
+    },
+    "RASK": {
+      "base": "hologram",
+      "variant": 3,
+      "tint": "#ff8a5a",
+      "height": 1.95,
+      "label": "Rask",
+      "labelColor": "#ffb08a",
+      "voice": { "gender": "male", "pitch": 0.9, "rate": 1.08 },
+      "at": [1.2, 0.3],
+      "face": [0.5, -1.4]
+    },
+    "CUSTODIAN": {
+      "base": "voice",
+      "label": "Custodian",
+      "labelColor": "#7fe6ff",
+      "voice": { "prefer": ["mark", "google", "male"], "pitch": 0.8, "rate": 0.92 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the notice on the glass",
+    "description": "pasted to the front doors, official and laminated: NOTICE OF RECLAMATION — Derelict Asset 7734, 'former retail development'. Scheduled clearance: dawn.",
+    "at": [0.5, -1.5],
+    "glow": "#d05a5a",
+    "parts": [
+      { "shape": "box", "size": [1.4, 2.4, 0.06], "pos": [0, 1.25, 0], "color": "#182230", "opacity": 0.85 },
+      { "shape": "box", "size": [0.6, 0.85, 0.02], "pos": [0, 1.45, 0.05], "color": "#e8e0d0", "emissive": 0.4 },
+      { "shape": "box", "size": [0.5, 0.09, 0.01], "pos": [0, 1.75, 0.07], "color": "#c03a3a", "emissive": 0.6 },
+      { "shape": "box", "size": [0.44, 0.04, 0.01], "pos": [0, 1.55, 0.07], "color": "#4a4a52", "emissive": 0.2 },
+      { "shape": "box", "size": [0.44, 0.04, 0.01], "pos": [0, 1.45, 0.07], "color": "#4a4a52", "emissive": 0.2 },
+      { "shape": "box", "size": [0.44, 0.04, 0.01], "pos": [0, 1.35, 0.07], "color": "#4a4a52", "emissive": 0.2 },
+      { "shape": "box", "size": [1.5, 2.5, 0.4], "pos": [0, 1.3, 0], "color": "#d05a5a", "opacity": 0.06, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The atrium, night. Pasted to the front glass, precisely level, officially laminated: NOTICE OF RECLAMATION. The old ownership paper — walked away from thirty years ago — was bought last month, sight unseen, in a bundle of ten thousand distressed assets, by a salvage combine that has never once visited anything it demolishes. Its machines are already on the coast road. Ruth came up the hill the moment she heard. Rask was already here." },
+    { "who": "RUTH", "text": "'Derelict Asset seven-seven-three-four. Former retail development. No registered occupancy, no economic activity, structure scheduled for clearance and material reclamation at dawn.' — No registered OCCUPANCY. There are five worlds docked behind that glass, a ten-year-old's door under brass, and a being who kept the lights on for thirty years, and their paperwork says NOBODY'S HOME. Custodian, love. Talk to me. What are you not saying?", "file": "claim_01.mp3" },
+    { "who": "CUSTODIAN", "text": "That by their law, Ruth, the paper is real. That's what I'm not saying, and I'll say the rest of it too, because this fountain has never once let me lie beside it: I have known this day was somewhere on the coast road for thirty years. I am a building on a ledger, and I have always been a building on a ledger. The boom built me, the boom abandoned me, and the boom's paperwork has now been sold by the tonne to something that eats abandoned things. It has never seen me. It doesn't NEED to see me — that is the entire design of a salvage combine: value without visiting. The machines will come up the hill at dawn, and they will be very efficient, because nothing in their file suggests anyone will be standing in the way.", "file": "claim_02.mp3" },
+    { "who": "RASK", "text": "Then their file is about to have the finest morning of its existence. Keeper — Ruth — I have been standing at this glass for an hour COMPOSING, and I am magnificent at this genre, so hear the Sundered position: my people have parked four ships above the coast road. Say one word — ONE — and the combine's machines become the combine's regrets, and the crater becomes a teaching site, and I will personally write the plaque. My whole species has spent eleven thousand years being anger with nowhere to go, and now there is a harbour with OUR DOOR IN IT under brass, reserved by an old woman's dictation, and some ledger-eater on the coast road thinks it is coming up THIS hill at DAWN? Let me BURN something, Ruth. For once in my line's history, something actually deserves it.", "file": "claim_03.mp3" },
+    { "who": "RUTH", "text": "And there it is. Sit down on the fountain rim, love, both of us, because you've just made the argument the whole sky has been failing to have for eleven thousand years, and I'm too old to have it standing up. — You could burn them. Nobody doubts it. And at dawn-oh-one, the harbour becomes a place that survives by fire, and every door in it learns the lesson, and the combine's insurers learn it, and the town below learns it, and in thirty years the doors are guarded instead of held, and the dark ones aren't askable anymore, they're DEFENDED, and the whole hill is exactly the kind of place none of your people or mine ever managed to stop building. Fire wins the morning, Rask. It always wins the morning. It has never once won the place.", "file": "claim_04.mp3" },
+    { "who": "RASK", "text": "Then WHAT, elder? Papers? You'll wave the town's charter at a machine whose entire being is a lien? The combine doesn't attend hearings — it IS a hearing that drives. What stands between a held door and a thing that cannot see holding?", "file": "claim_05.mp3" },
+    { "pause": 2.0 },
+    { "who": "CUSTODIAN", "text": "...Occupancy.", "file": "claim_06.mp3" },
+    { "who": "RUTH", "text": "Say it again, love, louder, because I think I just heard the whole plan in four syllables.", "file": "claim_07.mp3" },
+    { "who": "CUSTODIAN", "text": "OCCUPANCY, Ruth. Read their own notice — it's the load-bearing clause: 'no registered occupancy, no economic activity.' Their law doesn't recognize me; I'm fixtures. It doesn't recognize docked worlds; there's no column for them. But it recognizes, in black ink, one thing that stops a clearance order dead at the property line, because even the boom's own law was never quite shameless enough to demolish it: PEOPLE. IN. THE BUILDING. The combine's machines will do anything their paper permits, and their paper does not permit them to clear an occupied structure — occupied is the one word in their whole dead language that means what the town means by HELD. Ruth. Rask. I have one thousand and six doors, five docked worlds, a delegation of every people this valley has gathered, a town at the bottom of the hill that keeps rooms open on purpose... and until dawn to become, for the first time in my existence, REGISTERED AS FULL.", "file": "claim_08.mp3" },
+    { "who": "RUTH", "text": "Then we don't need your fleet, Rask — we need your FAMILIES. Get down to the town, both hills of it, and wake everyone: Marta and the ovens, the pastor and his forty, Asher's whole school, the Weave's quarter, your scorched lot, Sam's regulars, Edith — God help the combine, wake Edith FIRST. Every person takes a door. Not to block it, love — to STAND IN IT. Name on the register, feet on the tile, kettle on where there's sockets. By dawn this building will have more registered occupants than the town has beds, and the machines can come up the hill and meet the one thing their paper never planned for: a thousand doors, and someone home in every single one.", "file": "claim_09.mp3" },
+    { "who": "RASK", "text": "...You are asking the grievance of a species to fight the ledger-eaters by STANDING IN A DOORWAY. Holding, as combat. Presence, as the weapon. — Elder, I want it recorded at your fountain that I think this plan is insane, that my people will not understand it, that I will have to explain it to four warm ships in the next hour... and that it is the first battle plan in eleven thousand years that my fire actually fits inside. We are VERY good at standing in front of things, Ruth. We have simply never once, in our entire history, been asked to do it for a building that kept a door for us. The Sundered will take the long gallery. ALL of it. And if any machine reaches OUR door — the brass one, Edith's dictation — then it can read the plate, and then, keeper, law or no law, I make no promises past that sentence.", "file": "claim_10.mp3" },
+    { "who": "CUSTODIAN", "text": "Noted, filed, and — privately, between us and the water — welcomed. Go, both of you. Wake the valley. I'll light the concourses; every sconce, every gallery, all thirty years of them at once. If the machines want the count disputed, let them count windows from the coast road tonight and think very carefully about the file. — Ruth. Before you run. Thirty years I kept the lights on for whoever was coming. I want the record to show what I have decided at my own fountain, tonight, at the last: they were coming for ME. The building was never being held for the doors, was it. The doors were how the town found out it wanted to hold the building.", "file": "claim_11.mp3" },
+    { "who": "RUTH", "text": "That's the town's whole trick, love — it holds you by the time you notice. Light your halls. We'll be back up the hill within two hours, all of us, and Custodian — when the sun comes up over that coast road and the machines crest the hill with their clearance order and their empty file, I want them to find every window burning and every door full, and I want the first thing their cameras register to be the letters over the entrance, because someone paid handsomely for those letters thirty years ago and this, THIS, was always what they were for: a THOUSAND DOORS. Occupied. Ask at the fountain.", "file": "claim_12.mp3" },
+    { "note": "By four in the morning the hill road is a river of lamps going up. By five, the register holds nine hundred names and the kettles outnumber the sockets. At six, the concourse lights reach the coast road, and something in the lead machine's file begins, for the first time in its operational history, to recalculate. What happens when they crest the hill at dawn — the machines, the doors, the people standing in them — is another story. It is, in fact, the next one: the one you play." }
+  ]
+}

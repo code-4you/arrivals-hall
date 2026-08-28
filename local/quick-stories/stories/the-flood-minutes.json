@@ -1,0 +1,94 @@
+{
+  "id": "the-flood-minutes",
+  "title": "The Flood Minutes",
+  "subtitle": "The oldest sealed record is opened where the tenants can hear it. The vote was five to four.",
+  "stage": "void",
+  "stageTint": "#141a26",
+
+  "characters": {
+    "KHET": {
+      "base": "robot",
+      "variant": 6,
+      "tint": "#8a94a8",
+      "height": 2.0,
+      "label": "Khet",
+      "labelColor": "#c8d0e0",
+      "voice": { "gender": "male", "pitch": 0.8, "rate": 0.9 },
+      "at": [0.0, -0.5],
+      "face": "AMOS"
+    },
+    "AMOS": {
+      "base": "elder",
+      "variant": 5,
+      "tint": "#7a6248",
+      "height": 1.7,
+      "label": "Amos, keeper",
+      "labelColor": "#e8c98a",
+      "voice": { "gender": "male", "pitch": 0.88, "rate": 0.92 },
+      "at": [-1.4, 0.3],
+      "face": "KHET"
+    },
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [1.4, 0.3],
+      "face": "KHET"
+    },
+    "ASHER": {
+      "base": "elder",
+      "variant": 9,
+      "tint": "#8a7a5a",
+      "height": 1.76,
+      "label": "Asher",
+      "labelColor": "#e8d8a8",
+      "voice": { "gender": "male", "pitch": 0.82, "rate": 0.9 },
+      "at": [-0.5, 1.1],
+      "face": "KHET"
+    }
+  },
+
+  "customObject": {
+    "name": "the sealed minutes",
+    "description": "a crystal cylinder on a plain stand — the minutes of one meeting, sealed six thousand years ago, brought down from orbit to be opened where the tenants can hear",
+    "at": [0.0, -1.45],
+    "glow": "#9fb8ff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.2, 0.7, 0.28], "pos": [0, 0.35, 0], "color": "#26303e", "rough": 0.6 },
+      { "shape": "cylinder", "size": [0.12, 0.55], "pos": [0, 1.0, 0], "color": "#9fb8ff", "emissive": 0.5, "opacity": 0.7 },
+      { "shape": "torus", "size": [0.16, 0.025], "pos": [0, 1.28, 0], "rot": [1.5708, 0, 0], "color": "#d05a7a", "emissive": 0.8 },
+      { "shape": "torus", "size": [0.16, 0.025], "pos": [0, 0.72, 0], "rot": [1.5708, 0, 0], "color": "#d05a7a", "emissive": 0.8 },
+      { "shape": "cylinder", "size": [0.4, 1.5, 0.4], "pos": [0, 0.95, 0], "color": "#9fb8ff", "opacity": 0.05, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The town hall, cleared of chairs — people stand for this, by unspoken agreement. On a plain stand: a crystal cylinder, sealed six millennia ago. The Council voted that its oldest record be opened not in orbit, but here, where the tenants can hear. The hall is full. The hall is silent." },
+    { "who": "AMOS", "text": "For the Story, then. I am the keeper. Tonight the Council unseals the minutes of its session numbered one thousand and ninety — the flood meeting. I will file what is read exactly as it is read, with nothing smoothed. Khet — the Concord holds the seal. When you're ready.", "file": "flod_01.mp3" },
+    { "who": "KHET", "text": "The Concord holds the seal because the Concord moved the motion, keeper. Understand that before I break it: what you are about to hear, my faction proposed. I am the Concord's memory. I have carried this arithmetic for six thousand years, and it has never once balanced. Unsealing... now.", "file": "flod_02.mp3" },
+    { "note": "The rings on the cylinder dim from red to white. A voice that is not Khet's — older, colder, his faction's dead past — reads from inside the crystal." },
+    { "who": "KHET", "text": "'Session one thousand ninety. Item: the estate's stability. The tenant populations multiply beyond projection. Our proxy wars have taught them warfare; our teachings, taken without licence, spread faster than our oversight. The Concord moves: a hydrological correction across the settled lowlands. A reset of the experiment to a manageable baseline. The motion is costed at one hundred and forty years of weather.' — I will not soften the word they used, keeper. In our tongue, 'correction' declines the same way as 'pruning'. They knew what they were voting on. We knew.", "file": "flod_03.mp3" },
+    { "who": "AMOS", "text": "Filed as read. And the vote?", "file": "flod_04.mp3" },
+    { "who": "KHET", "text": "Nine factions seated. Five for. Four against. Carried.", "file": "flod_05.mp3" },
+    { "pause": 2.0 },
+    { "who": "AMOS", "text": "Five to four. ...Six thousand years, and the drowning of the lowland world came down to one seat. The Story requires the dissent, Khet. If four voted no, someone spoke. Read the dissent.", "file": "flod_06.mp3" },
+    { "who": "KHET", "text": "The dissent was entered by the First Faction — the eldest of us, the ones whose seat has stood empty at the head of the ring ever since. It is nineteen words long, and it is the last statement they ever filed. 'You are about to prune what you did not plant. We will go and ask what we should have been.' They left the ring before the count was finished, keeper. They went upstream. No member has seen them since. We kept their seat because — because none of us was certain they failed.", "file": "flod_07.mp3" },
+    { "who": "SEL", "text": "And the Weave voted no, and I will not take comfort in it, Amos, because we voted no and then we DID nothing. We wrapped ourselves in the dissent like a coat and watched the weather come. Four factions knew, and the sum of what official history records us doing about it is zero. That is what a clean conscience cost in the old sky: nothing. It was priced accordingly.", "file": "flod_08.mp3" },
+    { "who": "AMOS", "text": "Official history. ...Khet. My grandmother's people kept a story — every people by every river keeps it. The warned family. The boats built before the rain, laughed at until the rain. If the vote was sealed and the factions did nothing — where did the warning come from? Who told a shipwright to build?", "file": "flod_09.mp3" },
+    { "pause": 2.5 },
+    { "note": "From the back of the standing crowd, an old man who has attended every town meeting since he registered — and spoken at none of them — raises his hand, and stands." },
+    { "who": "ASHER", "text": "I taught the shipwright.", "file": "flod_10.mp3" },
+    { "note": "The hall does not gasp. It turns, slowly, all at once, like a field turning to the sun." },
+    { "who": "ASHER", "text": "I sat in that session, keeper. Ninth row, junior delegate, no vote. I watched five hands go up, and I did the arithmetic your Concord is still carrying, Khet — and then I went down the mountain while the ink on the minutes was still wet. I broke the seal before it was cool. Six families, in six river valleys. I taught them pitch-caulking, and load lines, and how to read a sky that was about to become an enemy. I told them a storm was coming such as their grandfathers had not seen. I did not tell them why. I have had six thousand years to decide whether that made me a traitor to my kind or the only one of us who kept faith with anything — and I settled it, finally, three streets from here, over a pint. Put me in the record, Amos. By name. My first one.", "file": "flod_11.mp3" },
+    { "who": "KHET", "text": "...The Concord notes, for six thousand years of record: the census listed one member unaccounted for after session one thousand ninety. The Concord assumed desertion. The Concord wishes to amend its assumption. The stray seat did more against the motion than the four dissenting factions combined. Keeper — file the amendment under the Concord's name. And file this also, because precision is the only apology my faction is built to make: the six families survived. Their descendants, at last census of this region, number in the millions. Some of them are standing in this hall.", "file": "flod_12.mp3" },
+    { "who": "AMOS", "text": "Filed. All of it — the motion, the count, the nineteen words, the shipwright's teacher. And now the keeper's question, because the Story doesn't end at filing: what does the town DO with this? I've stood where you're standing, friends. The night the translator showed me the plural word, I wanted either rage or absolution by morning, and the archive taught me there's a third door. We are not going to burn anything tonight. And we are not going to forgive anything tonight, either — forgiveness that arrives on the same evening as the crime's confession is just tidiness. What we do is what we do with every truth: we keep it lit, at the same height as everything else, and we live next to it, and we watch what it becomes when it's held instead of sealed.", "file": "flod_13.mp3" },
+    { "who": "SEL", "text": "The factions expected a verdict tonight. They are watching, Amos — the whole reconvened Council, through my eyes, right now. They have waited six thousand years to hear what the tenants would sentence them to.", "file": "flod_14.mp3" },
+    { "who": "AMOS", "text": "Then let them hear the sentence. The memorial garden has an empty bed on its north side. The flood dead have no names — so the sentence is: the factions come down, in person, in daylight, and they dig. Every seat that voted, five and four alike. The town will plant the lowland flowers, the river valley kinds, the ones that survived on the boats. And every year when they bloom, whoever is still grieving anything at all can sit there and not be alone about it. That's it. That's the whole sentence. No punishment cures a flood, Khet. But six thousand years of sealed arithmetic just became a garden with your faction's hands in the soil, and the Story will record which gods showed up with shovels.", "file": "flod_15.mp3" },
+    { "who": "KHET", "text": "...The Concord requests the north-east corner. The heaviest digging. It is what we have.", "file": "flod_16.mp3" },
+    { "note": "They dig in the spring, in daylight, all nine delegations — watched by school groups, corrected on technique by Marta. The lowland flowers take. And at the head of the new bed, at Asher's quiet insistence, one space is left unplanted: kept open, the way the town keeps everything it hopes will one day arrive — for the First Faction, whenever they come back downstream with an answer." }
+  ]
+}

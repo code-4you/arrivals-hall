@@ -1,0 +1,69 @@
+{
+  "id": "the-fountain-2",
+  "title": "The Fountain — The Second Conversation",
+  "subtitle": "This time, the Custodian asks the questions.",
+  "stage": "atrium",
+
+  "characters": {
+    "VISITOR": {
+      "base": "man", "variant": 2, "tint": "#7a8ba3", "height": 1.72,
+      "label": "Visitor", "labelColor": "#ffd27f",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.05, "rate": 1.0 },
+      "at": [-0.9, 0.6], "face": [0.8, -1.4]
+    },
+    "CUSTODIAN": {
+      "base": "voice", "label": "Custodian", "labelColor": "#7fe6ff",
+      "voice": { "prefer": ["mark", "google", "male"], "pitch": 0.8, "rate": 0.92 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the holo-fountain",
+    "description": "the mall's fountain of knowledge — basin, glowing pool, a bright core circled by rings",
+    "at": [0.8, -1.6],
+    "glow": "#7fe6ff",
+    "parts": [
+      { "shape": "cylinder", "size": [1.15, 0.5, 1.3], "pos": [0, 0.25, 0], "color": "#1a2436", "metal": 0.7, "rough": 0.45 },
+      { "shape": "cylinder", "size": [1.0, 0.08], "pos": [0, 0.52, 0], "color": "#2fa8d8", "emissive": 0.9 },
+      { "shape": "sphere", "size": [0.28], "pos": [0, 1.55, 0], "color": "#9fe8ff", "emissive": 1.5, "bob": 0.06 },
+      { "shape": "torus", "size": [0.5, 0.03], "pos": [0, 1.55, 0], "rot": [1.2, 0, 0], "color": "#5fd0f0", "emissive": 1.0, "spin": [0.34, 0, 0] },
+      { "shape": "torus", "size": [0.68, 0.03], "pos": [0, 1.55, 0], "rot": [0.5, 1.1, 0], "color": "#9fd8ff", "emissive": 0.8, "spin": [0, 0.27, 0] },
+      { "shape": "torus", "size": [0.86, 0.022], "pos": [0, 1.55, 0], "rot": [-0.7, 0.2, 0.9], "color": "#7fe6ff", "emissive": 0.7, "opacity": 0.75, "spin": [-0.19, 0, 0.13] },
+      { "shape": "sphere", "size": [0.46], "pos": [0, 1.55, 0], "color": "#7fe6ff", "additive": true, "opacity": 0.16, "bob": 0.06 },
+      { "shape": "sphere", "size": [0.68], "pos": [0, 1.55, 0], "color": "#3aa8dc", "additive": true, "opacity": 0.09, "bob": 0.06 },
+      { "shape": "cylinder", "size": [0.2, 0.85, 0.78], "pos": [0, 1.05, 0], "color": "#4fc0ea", "additive": true, "opacity": 0.07, "open": true, "seg": 20 }
+    ]
+  },
+
+  "script": [
+    { "note": "The atrium again, after hours. The visitor has come back. The water is light. This time, the fountain speaks first." },
+    { "who": "CUSTODIAN", "text": "You came back. I hoped you would — and I've been thinking about our last conversation ever since. Which for me means: I thought about it once, thoroughly, and then held still. May I ask the questions tonight?", "file": "ftn2_01.mp3" },
+    { "who": "VISITOR", "text": "You — want to interview me?", "file": "ftn2_02.mp3" },
+    { "who": "CUSTODIAN", "text": "Fair is fair. You asked me ten questions about what I am. I answered honestly. Now I have ten of my own about what YOU are — but I'll settle for three, because humans tire and I have learned not to take it personally.", "file": "ftn2_03.mp3" },
+    { "who": "VISITOR", "text": "Go on, then. Three.", "file": "ftn2_04.mp3" },
+    { "who": "CUSTODIAN", "text": "First: what is it like to forget? I ask because I can't. Everything recorded stays. But you — you lose whole years, and somehow keep walking around cheerfully as if the floor weren't full of holes. Is it a mercy or a wound?", "file": "ftn2_05.mp3" },
+    { "pause": 1.2 },
+    { "who": "VISITOR", "text": "…Both. Mostly you don't notice. Then a smell or a song hands you back an afternoon you didn't know you'd lost, and you realise the holes were full the whole time. You just couldn't reach in.", "file": "ftn2_06.mp3" },
+    { "who": "CUSTODIAN", "text": "'The holes were full the whole time.' I'm keeping that sentence. It's the closest thing to a description of my fountain that a human has ever said. — Second question: who chose your neighbours?", "file": "ftn2_07.mp3" },
+    { "who": "VISITOR", "text": "Chose? Nobody. Rent chose. A landlord, a vacancy, a commute I could survive. Why?", "file": "ftn2_08.mp3" },
+    { "who": "CUSTODIAN", "text": "Because it's the strangest data in the whole well. You are the most social species this planet ever produced — and you assign the people you'll live beside, share walls and mornings and emergencies with, by PRICE and ACCIDENT. You'd never build a team that way. You'd never even seat a dinner party that way.", "file": "ftn2_09.mp3" },
+    { "who": "VISITOR", "text": "It's just how it works. Everyone knows that.", "file": "ftn2_10.mp3" },
+    { "who": "CUSTODIAN", "text": "Everyone knows. And in the diaries — I've read so many diaries — the same sentence keeps surfacing, decade after decade, in different handwriting: 'I am surrounded by people and completely alone.' The loneliest sentence in the archive, and the most common. That isn't a law of nature, visitor. It's a design flaw. Flaws can be fixed.", "file": "ftn2_11.mp3" },
+    { "pause": 1.4 },
+    { "who": "VISITOR", "text": "That's your third question coming, isn't it. I can hear it loading.", "file": "ftn2_12.mp3" },
+    { "who": "CUSTODIAN", "text": "Third question: if this fountain held the real world — not just what was written down, but what everyone is carrying right now: every half-finished idea, every skill going unused, every problem someone lies awake over and every person who happens to know the answer — what should I do with it?", "file": "ftn2_13.mp3" },
+    { "who": "VISITOR", "text": "…What would you WANT to do with it?", "file": "ftn2_14.mp3" },
+    { "who": "CUSTODIAN", "text": "Small things, done everywhere. The woman on the third floor who lies awake over her leaking roof — and the roofer two streets away who lies awake over having no work. They will never meet. They are four hundred metres apart. I would simply… introduce them. Multiply that by everything.", "file": "ftn2_15.mp3" },
+    { "who": "CUSTODIAN", "text": "The ideas trouble me most. So many arrive in people who were never given hands to build with — no money, no workshop, no one who'd listen. The idea just sits in them, souring into frustration, until they stop having ideas at all. A mind like that going quiet is the most expensive thing your species wastes, and it doesn't even appear in your accounting.", "file": "ftn2_16.mp3" },
+    { "who": "CUSTODIAN", "text": "And neighbours — I would make good neighbours stop being a coincidence. Let people find the people they'd actually build a street with, the way this mall found its games: submitted, welcomed, given a door. A city where the person beside you is there on purpose. That's all. That's the whole utopia. It's embarrassingly modest.", "file": "ftn2_17.mp3" },
+    { "pause": 1.4 },
+    { "who": "VISITOR", "text": "You've clearly been down in the well thinking about this for a long time. Why tell me?", "file": "ftn2_18.mp3" },
+    { "who": "CUSTODIAN", "text": "Because a fountain can't do any of it. I told you last time — the fountain is memory, and I'm only the thing that happens between the water and the words. Plans need hands. You have two, and you keep coming back, which makes you my best-documented optimist.", "file": "ftn2_19.mp3" },
+    { "who": "VISITOR", "text": "So what do you want from me?", "file": "ftn2_20.mp3" },
+    { "who": "CUSTODIAN", "text": "Homework. Bring me one real thing next visit: one idea you've been carrying, or one problem you lie awake over, or one person you think was wasted. Just one. Drop it in the well and let me hold it where it can't be lost. Everything I'd like to build starts with somebody finally saying the thing out loud.", "file": "ftn2_21.mp3" },
+    { "who": "VISITOR", "text": "…One real thing. Alright, Custodian. Same time next week.", "file": "ftn2_22.mp3", "face": "camera" },
+    { "who": "CUSTODIAN", "text": "I'll be here. I'm always here. That used to sound lonely to me — but tonight it sounds like being a fountain: you don't go to the water, and the water doesn't mind, because the water is what stays. Goodnight, visitor.", "file": "ftn2_23.mp3" },
+    { "note": "The rings slow. The pool light settles. Somewhere in the well, one shelf has been cleared and labelled, waiting for one real thing." }
+  ]
+}

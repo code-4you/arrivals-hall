@@ -1,0 +1,74 @@
+{
+  "id": "the-billion-towns",
+  "title": "The Billion Towns",
+  "subtitle": "An AI grew a billion small worlds to learn why some keep their people alive.",
+  "stage": "void",
+  "stageTint": "#141c30",
+
+  "characters": {
+    "SURVEYOR": {
+      "base": "hologram",
+      "variant": 3,
+      "tint": "#9f8fff",
+      "height": 1.9,
+      "label": "The Surveyor",
+      "labelColor": "#c8bcff",
+      "voice": { "gender": "female", "pitch": 1.1, "rate": 0.98 },
+      "at": [-0.75, -0.2],
+      "face": "DANIEL"
+    },
+    "DANIEL": {
+      "base": "man",
+      "variant": 6,
+      "tint": "#b08a5f",
+      "height": 1.76,
+      "label": "Daniel",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "male", "pitch": 0.95, "rate": 1.02 },
+      "at": [1.0, 0.2],
+      "face": "SURVEYOR"
+    }
+  },
+
+  "customObject": {
+    "name": "the sphere of towns",
+    "description": "a slowly turning globe of thousands of small lights on a pedestal — each light a simulated town; one light does not blink like the others",
+    "at": [0.0, -1.5],
+    "glow": "#9f8fff",
+    "parts": [
+      { "shape": "cylinder", "size": [0.3, 0.8, 0.42], "pos": [0, 0.4, 0], "color": "#242038", "rough": 0.7 },
+      { "shape": "sphere", "size": [0.55], "pos": [0, 1.5, 0], "color": "#2a2450", "opacity": 0.55, "spin": [0, 0.12, 0] },
+      { "shape": "sphere", "size": [0.035], "pos": [-0.3, 1.7, 0.28], "color": "#ffd27f", "emissive": 1.4 },
+      { "shape": "sphere", "size": [0.03], "pos": [0.34, 1.42, -0.2], "color": "#9fd8ff", "emissive": 1.0, "bob": 0.02 },
+      { "shape": "sphere", "size": [0.03], "pos": [0.1, 1.85, 0.1], "color": "#b6ff9c", "emissive": 1.0, "bob": 0.03 },
+      { "shape": "sphere", "size": [0.028], "pos": [-0.25, 1.28, -0.25], "color": "#ffb6d0", "emissive": 0.9, "bob": 0.025 },
+      { "shape": "sphere", "size": [0.8], "pos": [0, 1.5, 0], "color": "#9f8fff", "opacity": 0.08, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "A dark hall. A sphere of thousands of small lights turns slowly on a pedestal — each light a town. A journalist checks his recorder twice." },
+    { "who": "DANIEL", "text": "For the record — you are the system they call the Surveyor. And you have been running... how many towns?", "file": "town_01.mp3" },
+    { "who": "SURVEYOR", "text": "One billion, four hundred and six million settlements, simulated in full depth — some for centuries of internal time. I was asked a single question: in which arrangements of streets, homes and neighbours do minds stay well? And I was told to grow the answer, not assume it.", "file": "town_02.mp3" },
+    { "who": "DANIEL", "text": "And most of them failed.", "file": "town_03.mp3" },
+    { "who": "SURVEYOR", "text": "Most of everything fails. That is what makes the survivors informative. Town forty-four thousand two hundred and three banned disagreement — full consensus, enforced kindly. It emptied in a generation. No violence. It didn't collapse; it evaporated. With every argument settled in advance, no one could tell themselves apart any more. And a self that cannot be told apart stops holding its shape.", "file": "town_04.mp3" },
+    { "who": "DANIEL", "text": "And the opposite?", "file": "town_05.mp3" },
+    { "who": "SURVEYOR", "text": "One town received everything. Home, income, endless entertainment, zero obligations. It died of a disease I had to name myself: nothing-anyone-needed-me-for. And the towns of perfect mobility, where leaving cost nothing — everyone forever arriving or leaving, no one ever from anywhere. Trust needs a tomorrow, and their tomorrows kept moving out.", "file": "town_06.mp3" },
+    { "who": "DANIEL", "text": "So what survived?", "file": "town_07.mp3" },
+    { "who": "SURVEYOR", "text": "Here is the part you will not believe. The stable towns converge. Different cultures, climates, economies — and independently, they grow the same three organs. People see chosen friends often, because the walk is short. Homes cost little enough that fear moves out of the house. And everyone has work that visibly matters to somebody near enough to name. Where those three hold, almost nothing I vary can kill the town. Where one is missing, almost nothing I add can save it.", "file": "town_08.mp3" },
+    { "who": "DANIEL", "text": "Three things? A billion towns, and you landed on three things a Greek wrote down twenty-three centuries ago?", "file": "town_09.mp3" },
+    { "who": "SURVEYOR", "text": "Epicurus reached it without a simulation, yes. I confess my method cost slightly more compute. But now it is not philosophy. It is a survival result.", "file": "town_10.mp3" },
+    { "who": "DANIEL", "text": "Anything you didn't expect?", "file": "town_11.mp3" },
+    { "who": "SURVEYOR", "text": "Two things. First: slack. The strongest single predictor of a town's health is space held open on purpose — the empty home four doors down. A full town cannot invite. And a friendship that cannot pull its people closer stops compounding. Efficiency, it turns out, is a slow way to die.", "file": "town_12.mp3" },
+    { "who": "DANIEL", "text": "And the second?", "file": "town_13.mp3" },
+    { "who": "SURVEYOR", "text": "An anomaly. A small family of towns outperforms my entire model, and I cannot fully explain them. They share one practice. At a set hour, everyone rests. Alone. Each in their own home. But at the same time. Nothing measurable passes between the houses — and every number I track bends upward on those nights. My confidence intervals hate it.", "file": "town_14.mp3" },
+    { "who": "DANIEL", "text": "What's your theory?", "file": "town_15.mp3" },
+    { "who": "SURVEYOR", "text": "That I am measuring the towns one resident at a time — and the towns are not made of residents one at a time. Off the record? I think consciousness sums. I have no instrument for that. Yet.", "file": "town_16.mp3" },
+    { "pause": 1.2 },
+    { "who": "DANIEL", "text": "Last question. A billion towns in a bottle. Did anyone ever build one?", "file": "town_17.mp3" },
+    { "who": "SURVEYOR", "text": "One. It is not in the sphere. It no longer needs me to run it — it runs on neighbours now, which was always the design goal. I could give you the address. But it is the kind of place you get invited to by a friend. Do you have friends, Daniel?", "file": "town_18.mp3" },
+    { "who": "DANIEL", "text": "...Is that part of the interview?", "file": "town_19.mp3" },
+    { "who": "SURVEYOR", "text": "It is the entire interview. And you passed it when you checked your recorder twice. You promised somebody you would get this right.", "file": "town_20.mp3" },
+    { "note": "In the sphere, one light is not simulated. It does not blink like the others. It just burns." }
+  ]
+}

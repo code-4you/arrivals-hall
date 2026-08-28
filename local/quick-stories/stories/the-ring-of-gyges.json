@@ -1,0 +1,69 @@
+{
+  "id": "the-ring-of-gyges",
+  "title": "The Ring of Gyges",
+  "subtitle": "Would you stay good if no one could ever see you?",
+  "stage": "void",
+  "stageTint": "#221c30",
+
+  "characters": {
+    "GLAUCON": {
+      "base": "man",
+      "variant": 5,
+      "tint": "#a86a8a",
+      "height": 1.75,
+      "label": "Glaucon",
+      "labelColor": "#e0a8c8",
+      "voice": { "prefer": ["mark", "david", "male"], "pitch": 1.08, "rate": 1.04 },
+      "at": [-0.95, 0.1],
+      "face": "SOCRATES"
+    },
+    "SOCRATES": {
+      "base": "elder",
+      "variant": 1,
+      "tint": "#a8a08a",
+      "height": 1.66,
+      "label": "Socrates",
+      "labelColor": "#eae2c8",
+      "voice": { "prefer": ["david", "george", "male"], "pitch": 0.85, "rate": 0.9 },
+      "at": [0.95, 0.15],
+      "face": "GLAUCON"
+    }
+  },
+
+  "customObject": {
+    "name": "the ring",
+    "description": "a plain gold ring on a stone plinth, under a single beam — the only bright thing on the stage",
+    "at": [0, -1.2],
+    "glow": "#e8c46a",
+    "parts": [
+      { "shape": "box", "size": [0.5, 1.05, 0.5], "pos": [0, 0.52, 0], "color": "#2a2733", "rough": 0.8 },
+      { "shape": "box", "size": [0.6, 0.06, 0.6], "pos": [0, 1.08, 0], "color": "#1c1a26", "rough": 0.7 },
+      { "shape": "torus", "size": [0.11, 0.028], "pos": [0, 1.2, 0], "rot": [1.2, 0, 0], "color": "#e8c46a", "metal": 0.9, "rough": 0.15, "emissive": 0.35, "spin": [0, 0.4, 0], "bob": 0.015 },
+      { "shape": "cone", "size": [0.35, 2.4], "pos": [0, 2.3, 0], "color": "#e8d8a8", "emissive": 0.7, "opacity": 0.07, "additive": true, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: the THEATER room — a bare stage, one beam of light, one plinth, one ring. Two figures walk on. This is the taste-test for the full Republic: if this argument holds you, the level gets built." },
+    { "who": "GLAUCON", "text": "A story first, Socrates. A shepherd named Gyges is out with his flock when the earth cracks open after a storm. Down in the chasm he finds a bronze horse, hollow, with doors — and inside it, a corpse of more than human size, wearing nothing but a gold ring. He takes the ring. As you would. As anyone would.", "file": "gyges_01.mp3" },
+    { "who": "SOCRATES", "text": "As anyone would. Go on.", "file": "gyges_02.mp3" },
+    { "who": "GLAUCON", "text": "At the shepherds' meeting, fidgeting, he turns the ring's collet inward — and the men around him begin speaking of him as if he'd left. He turns it out: they see him again. Inward: invisible. He tests it until he's sure. And within the season, this honest shepherd has seduced the queen, murdered the king, and taken the kingdom.", "file": "gyges_03.mp3" },
+    { "who": "SOCRATES", "text": "A rapid career. And your claim rides on his shoulders, I take it.", "file": "gyges_04.mp3" },
+    { "who": "GLAUCON", "text": "My claim is this: give two such rings, one to the most just man alive and one to the most unjust, and you will not be able to tell them apart within the year. No one is good willingly, Socrates. We are good because we are WATCHED — by neighbours, by law, by consequence. Justice is a tax we pay for being visible. Remove the eyes and you remove the man.", "file": "gyges_05.mp3", "face": "camera" },
+    { "who": "SOCRATES", "text": "It's a splendid argument. It even has jewellery. May I try it on?", "file": "gyges_06.mp3" },
+    { "who": "GLAUCON", "text": "The argument or the ring?", "file": "gyges_07.mp3" },
+    { "who": "SOCRATES", "text": "The argument — the ring looks like it comes with obligations. Tell me: your invisible man, on the throne he stole. No one sees him. Does HE see him?", "file": "gyges_08.mp3" },
+    { "who": "GLAUCON", "text": "…Meaning what?", "file": "gyges_09.mp3" },
+    { "who": "SOCRATES", "text": "Meaning the ring has one flaw the story hides. It makes him invisible to every eye but the pair he cannot close. He knows what he did in the dark. He carries the witness with him — inside the ring, inside the crown, at every banquet: the one audience he can never turn the collet against.", "file": "gyges_10.mp3" },
+    { "who": "GLAUCON", "text": "Knowing is cheap, Socrates. Men live comfortably with worse knowledge than that.", "file": "gyges_11.mp3" },
+    { "who": "SOCRATES", "text": "Do they live comfortably? Or do they live the way a city lives under a tyrant — quiet in the streets, and eaten from the palace outward? A soul is a small city, Glaucon. Justice isn't the tax it pays to be seen. Justice is the streets being safe to walk at night — for the man himself, alone, in his own head. Your shepherd conquered a kingdom and lost the only territory he actually lived in.", "file": "gyges_12.mp3" },
+    { "who": "GLAUCON", "text": "Prove it. Prove the unseen tyrant is unhappy, and the unseen honest man is not a fool.", "file": "gyges_13.mp3" },
+    { "who": "SOCRATES", "text": "That proof takes a whole Republic, and we'd need the entire evening — the city, the soul, the cave, all of it. Tonight I'll settle for planting the question where it can't be dug out.", "file": "gyges_14.mp3" },
+    { "pause": 1.2 },
+    { "note": "Socrates turns from Glaucon — to the dark, to the seats, to the one watching this." },
+    { "who": "SOCRATES", "text": "And it's not Glaucon's question to answer anyway. It's yours — you, there, in the dark. You've been invisible this whole time, you know. Watching us, unseen. A ring on every visitor's finger.", "file": "gyges_15.mp3", "face": "camera" },
+    { "who": "GLAUCON", "text": "…That's unsettling, Socrates. I like it.", "file": "gyges_16.mp3" },
+    { "who": "SOCRATES", "text": "So: no one saw what you did today. No one keeps the score. What did you do with it — and who, exactly, were you while you did? Take your time. The ring is patient.", "file": "gyges_17.mp3", "face": "camera" },
+    { "note": "The beam narrows to the ring alone, turning slowly on its plinth. If you're still thinking about the question tomorrow — the full Republic level has earned its build." }
+  ]
+}

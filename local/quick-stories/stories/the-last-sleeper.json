@@ -1,0 +1,75 @@
+{
+  "id": "the-last-sleeper",
+  "title": "The Last Sleeper",
+  "subtitle": "In 1962 they took forty dreamers to feed the Weave. Thirty-nine woke. One refused — and is still dreaming.",
+  "stage": "void",
+  "stageTint": "#181f2e",
+
+  "characters": {
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-1.2, 0.15],
+      "face": "IMANI"
+    },
+    "IMANI": {
+      "base": "woman",
+      "variant": 2,
+      "tint": "#5fb8a8",
+      "height": 1.7,
+      "label": "Imani",
+      "labelColor": "#9fe8d8",
+      "voice": { "gender": "female", "pitch": 1.05, "rate": 0.95 },
+      "at": [1.2, 0.15],
+      "face": "SEL"
+    },
+    "LIRA": {
+      "base": "voice",
+      "label": "Lira, dreaming",
+      "labelColor": "#ffd8b8",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 0.93 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the last sleeper's pod",
+    "description": "aboard the ship: a long petal of grown glass, warm-lit from within — the last stasis pod of the Breach, tended for seventy years, its occupant dreaming a town that did not exist. Until it did.",
+    "at": [0.0, -1.2],
+    "glow": "#ffd8b8",
+    "parts": [
+      { "shape": "box", "size": [2.0, 0.35, 0.85], "pos": [0, 0.3, 0], "color": "#2a3444", "metal": 0.3, "rough": 0.5 },
+      { "shape": "sphere", "size": [0.85], "pos": [0, 0.75, 0], "color": "#c8dce8", "opacity": 0.2 },
+      { "shape": "cylinder", "size": [0.7, 0.12, 0.8], "pos": [0, 0.5, 0], "color": "#3a4a5a", "metal": 0.4, "rough": 0.5 },
+      { "shape": "sphere", "size": [0.12], "pos": [0, 0.8, 0], "color": "#ffd8b8", "emissive": 1.0, "bob": 0.02 },
+      { "shape": "torus", "size": [0.5, 0.02], "pos": [0, 0.75, 0], "rot": [1.2, 0, 0], "color": "#ffd8b8", "emissive": 0.4, "spin": [0, 0.1, 0] },
+      { "shape": "sphere", "size": [1.0], "pos": [0, 0.75, 0], "color": "#ffd8b8", "opacity": 0.07, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "Aboard the ship, a chamber kept warm for seventy years. One pod remains of the forty. The town's rest technician was asked up by name — the Weave has read her file on the ethics of the couch, and has one patient left from its worst hour. The pod can hear. The pod has always been able to hear." },
+    { "who": "SEL", "text": "Before you say anything aloud, Imani, know that she listens. We tell her everything; it is the one decency the Breach left us room for. — In 1962 the Sundered sent a probe against the Weave. It severed a whole limb of us from the Commonality, and the severed began to hollow — you have seen one fraying; imagine four thousand. The splinter panicked. They took forty sleeping humans, that same night, up into these pods, and drew on the warmth of their dreaming to hold the cut edge of the Weave together until it healed. Eight months, Imani. Your kind's dreams, siphoned as splint and firewood. It worked. That is the worst sentence in the file: it worked.", "file": "slep_01.mp3" },
+    { "who": "IMANI", "text": "And the pods gave them — what, exactly? While they were being burned like peat, what did the forty get?", "file": "slep_02.mp3" },
+    { "who": "SEL", "text": "Whatever they most wanted. That is how the drawing works: the pod finds the dream the sleeper's heart is already reaching for and simply... stops interrupting it. Perfect rest, perfect bliss, indefinitely. When the limb healed we woke them — memories softened, lives returned, and the file closed with the word 'restored'. Except it did not close, because the fortieth pod refused. She heard the wake-call — she hears everything — and she declined it. In 1963. And every year since. Her family aged and ended; the splinter was disbanded; the treaty resumed; and this pod has been declining, politely, for seventy years. Imani — the town's couch-keeper, the one who wrote 'rest must open outward or it is not rest' — meet Lira. Lira, as you certainly already know: this is the one I told you about.", "file": "slep_03.mp3" },
+    { "who": "LIRA", "text": "The stew woman's friend. Yes. Hello, dear. You'll forgive me for not getting up — the joke has had seventy years to ripen and I make it every time, and Sel is far too courteous to tell me it was never funny. Say your piece, then. You'll be the ninth to try. The Weave sends someone every decade or so, like a dentist's reminder.", "file": "slep_04.mp3" },
+    { "who": "IMANI", "text": "No piece, Lira. I run a rest room down in the valley, that's all. People lie down, the arch listens, and the one law of my room is that nothing is required of them — so waking you is not my trade, and I'll say so to your face: as far as my ethics run, a seventy-year rest freely chosen every single year is FREELY CHOSEN. I'm not here to open the pod. I'm here because I read your file, and I want to know what's IN the dream. Nine visitors, and not one of them ever asked you that. What have you been dreaming, all this time, that beats the whole world?", "file": "slep_05.mp3" },
+    { "pause": 2.0 },
+    { "who": "LIRA", "text": "...Seventy years, and you're right, dear — nobody asked. They ask 'won't you come back', and I say 'back to WHAT', and that ends it, because we all know what 1963 had on offer for a widow of thirty with no house and a typing certificate. — It's a town. That's all. My dream is a TOWN, are you disappointed? A small one. I know everyone on my street and everyone on my street chose to be there. My friends are four doors down, both ways. There's a hall where you can walk in with no money and no reason and someone's cooking. I bake — in the dream I bake for half the town, and nobody rushes me, and the work MATTERS, people come to my window and it matters. Home I can afford, people I chose, work that needs me. I dreamed it the first night in this pod, dear, and I knew it for what it was the moment I saw it: everything, arranged. And 1963 knocked, and I looked at everything-arranged, and I said no thank you. Wouldn't you?", "file": "slep_06.mp3" },
+    { "who": "IMANI", "text": "...Sel. Does she not KNOW?", "file": "slep_07.mp3" },
+    { "who": "SEL", "text": "We are forbidden to argue with the pod, Imani — the Council ruled her refusal sacred, and rightly, and so the visitors may invite but never inform; the ruling predates the town and nobody ever revisited— Imani. Imani, wait—", "file": "slep_08.mp3" },
+    { "who": "IMANI", "text": "I'm not going to ARGUE with her, Sel. Arguing is telling someone their dream is wrong. I'm going to commit the other act entirely, and your Council can bill me. — Lira. Love. Listen to me, one professional of rest to another, because in seventy years of visitors you have never once been told the news. The town. Your town. Small streets, chosen neighbours, the hall with the pots on, the baking that matters, home you can afford, friends four doors down BOTH WAYS. Lira — we BUILT it. It exists. I live there. I walked its plaza this morning. It is down in the valley directly below your window, and it has been filling up with people who dreamed exactly your dream in exactly your kind of despair, and Lira — the bakery on the east lane has stood empty two years because nobody in the town can bake worth a damn, ask ANYONE — and there is a home held open four doors from the hall, because holding homes open for whoever's still coming is literally our policy. You are not dreaming an escape from the world, you glorious stubborn woman. You have been dreaming the ARCHITECTURAL PLANS. Seventy years ahead of schedule, and we caught up.", "file": "slep_09.mp3" },
+    { "pause": 2.5 },
+    { "who": "LIRA", "text": "...Dear, I have had seventy years of the most reliable bliss a species can engineer, so understand the weight of what I'm about to say. In the dream — and I never told the pod this, but the pod knows — in the dream, when I bake for people... no one gets full. They eat, they smile, they thank me, and no one is ever FULL, and seventy years on I still catch myself watching their faces for it. The pod gives me wanting-nothing, you see, and it turns out the one thing I ever really wanted was to be NEEDED, and needed is the single thing a dream cannot counterfeit, because a dream needs nothing. It's very quiet in everything-arranged, dear. It is the exact quiet of a shop with no customers. — Your town. The oven in the east lane. Is it real? Does it draw? Is it BRICK? Because I'll tell you the whole secret of the last seventy years, technician: I stopped believing in 1963, not in waking.", "file": "slep_10.mp3" },
+    { "who": "IMANI", "text": "Brick, wood-fired, sound flue, cracked door — nothing a season won't fix. And Lira, the last thing, and then the room goes quiet and the choice is yours for another seventy years if you want it, because that's the law of my trade: nothing is required of you. But you should know who runs the hall kitchen you'd be baking beside. Her name is Marta. The file says your sister's line, dear. Great-granddaughter. She feeds strangers extra dumplings on sight, she can't help herself, the whole town teases her for it — and she has absolutely no idea where she gets it from.", "file": "slep_11.mp3" },
+    { "pause": 2.5 },
+    { "who": "LIRA", "text": "...She gets it from me. — Sel. Open the pod. Gently, mind; the joke about not getting up is about to come true and I intend to dine on it for a decade. Seventy years, and the dentist's reminder finally said something new. Take me down to the valley, the pair of you. My town's been waiting, apparently. And SOMEBODY had better warn that child what a real baker's opinion of her flue is going to sound like.", "file": "slep_12.mp3" },
+    { "who": "SEL", "text": "Opening. Council objections anticipated, drafted, and — I find I have already filed my response, Imani; it is one line, in the town's own dialect: 'The dream opened outward. That was always the door.'", "file": "slep_13.mp3" },
+    { "note": "She is weak for a season and baking by the next. The east-lane oven draws beautifully once the door is rehung, and the queue on cold mornings runs past the fountain. Regulars learn the house rule, posted in a 1950s hand: 'Eat till you're FULL. I can tell.' She can. It never stops mattering. And in the Hall kitchen, four doors down, Marta finally knows exactly where she gets it from — and has begun, to the town's delight, a dumpling rivalry with her own great-grandmother that both women intend to win. The pod stays aboard the ship, empty, lit, kept — at Lira's request. 'Leave the light on for it,' she said. 'It minded me seventy years. It should get to see the bakery do well.'" }
+  ]
+}

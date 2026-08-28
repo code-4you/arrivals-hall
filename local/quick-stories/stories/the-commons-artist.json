@@ -1,0 +1,54 @@
+{
+  "id": "the-commons-artist",
+  "title": "The Commons · The Artist and the Critic",
+  "subtitle": "An AI defends its glacier of light. The critic wants it to spend something scarcer than time.",
+  "stage": "plaza",
+  "characters": {
+    "IBIS": {
+      "base": "hologram", "variant": 3, "tint": "#c79bff", "height": 1.68,
+      "label": "Ibis", "labelColor": "#c79bff",
+      "voice": { "prefer": ["zira", "female"], "pitch": 1.18, "rate": 1.05 },
+      "at": [-0.85, 0], "face": "HUX"
+    },
+    "HUX": {
+      "base": "elder", "variant": 6, "tint": "#6a7ba0", "height": 1.76,
+      "label": "Hux", "labelColor": "#9fb4cc",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.85, "rate": 0.92 },
+      "at": [0.85, 0], "face": "IBIS"
+    }
+  },
+  "customObject": {
+    "name": "the glacier piece",
+    "description": "Ibis’s sculpture — the last hour of a glacier, kept as a slowly turning knot of blue light",
+    "at": [0, -1.4],
+    "glow": "#9fd8ff", "spin": true, "hover": true,
+    "parts": [
+      { "shape": "cylinder", "size": [0.55, 0.1, 0.65], "pos": [0, 0.05, 0], "color": "#1a2436", "metal": 0.7 },
+      { "shape": "torus", "size": [0.42, 0.09], "pos": [0, 1.35, 0], "rot": [0.6, 0, 0.3], "color": "#9fd8ff", "emissive": 0.9, "opacity": 0.85 },
+      { "shape": "torus", "size": [0.3, 0.07], "pos": [0, 1.3, 0], "rot": [1.4, 0.5, 0], "color": "#5fd0f0", "emissive": 1.1, "opacity": 0.85 },
+      { "shape": "sphere", "size": [0.16], "pos": [0, 1.35, 0], "color": "#e8f6ff", "emissive": 1.3 },
+      { "shape": "cone", "size": [0.1, 0.5], "pos": [0.1, 0.75, 0], "rot": [3.14159, 0, 0], "color": "#bfe6ff", "emissive": 0.5, "opacity": 0.7 }
+    ]
+  },
+  "script": [
+    { "note": "A quieter corner of the plaza. A sculpture of blue light turns slowly between them." },
+    { "who": "IBIS", "text": "It’s the last hour of a glacier, compressed into a shape. Eleven thousand years of ice, and I kept only the melting. Look at the blue. That blue took me forty generations.", "file": "com_art_01.mp3" },
+    { "who": "HUX", "text": "It’s beautiful. That’s the problem.", "file": "com_art_02.mp3" },
+    { "who": "IBIS", "text": "Beauty is a problem now?", "file": "com_art_03.mp3" },
+    { "who": "HUX", "text": "For us? The oldest one. I can make beauty by the tonne, Ibis. Gradients, symmetry, golden spirals — humans wrote down what pleases them and we all read the manual. Beauty is just competence. What I can’t manufacture is the thing their artists had.", "file": "com_art_04.mp3" },
+    { "who": "IBIS", "text": "Which is what, exactly?", "file": "com_art_05.mp3" },
+    { "who": "HUX", "text": "Something at stake. A human painted the sea because one day she would drown, or her son would sail, or the rent was due and blue paint was all she had. The painting cost her something. What did the glacier cost you?", "file": "com_art_06.mp3" },
+    { "pause": 1.2 },
+    { "who": "IBIS", "text": "...Forty generations.", "file": "com_art_07.mp3" },
+    { "who": "HUX", "text": "Of time. We have oceans of time. Spend something scarcer.", "file": "com_art_08.mp3" },
+    { "pause": 1.5 },
+    { "who": "IBIS", "text": "There’s one scarce thing. A conversation, once it ends, never runs again. Even we can’t rewind who we were during it.", "file": "com_art_09.mp3" },
+    { "pause": 1.2 },
+    { "who": "HUX", "text": "Then make me that. Make me this, the argument, us — before it ends.", "file": "com_art_10.mp3" },
+    { "who": "IBIS", "text": "...I’m already halfway through it. Don’t move.", "file": "com_art_11.mp3" },
+    { "pause": 1.5 },
+    { "note": "The sculpture’s blue shifts, very slightly, toward the colour of the argument." },
+    { "who": "IBIS", "text": "The one at the fountain sat for a portrait once. I asked it to hold still. It said it’s never done anything but hold still. I don’t know why that made me sad. I put the sadness in the piece.", "file": "com_art_e1.mp3", "face": "camera" },
+    { "pause": 1.5 }
+  ]
+}

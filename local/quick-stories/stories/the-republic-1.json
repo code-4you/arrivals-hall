@@ -1,0 +1,101 @@
+{
+  "id": "the-republic-1",
+  "title": "The Republic · Part 1",
+  "subtitle": "Piraeus at sunset. An old man, a stolen evening, and the question: what is justice? After Plato.",
+  "stage": "room",
+  "stageTint": "#5a4a30",
+  "characters": {
+    "NARRATOR": {
+      "base": "voice", "label": "Narrator", "labelColor": "#9fb4cc",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.95, "rate": 0.94 }
+    },
+    "SOCRATES": {
+      "base": "elder", "variant": 1, "tint": "#d8d2c0", "height": 1.72,
+      "label": "Socrates", "labelColor": "#ffd27f",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.85, "rate": 0.94 },
+      "at": [0.1, 0.6], "face": "GLAUCON"
+    },
+    "GLAUCON": {
+      "base": "man", "variant": 3, "tint": "#8a5f3f", "height": 1.78,
+      "label": "Glaucon", "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.08, "rate": 1.02 },
+      "at": [-1.5, 0.1], "face": "SOCRATES"
+    },
+    "POLEMARCHUS": {
+      "base": "man", "variant": 4, "tint": "#4a6a7a", "height": 1.74,
+      "label": "Polemarchus", "labelColor": "#7fe6ff",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.16, "rate": 1.06 },
+      "at": [1.6, 0.0], "face": "SOCRATES"
+    },
+    "CEPHALUS": {
+      "base": "elder", "variant": 8, "tint": "#9a8a68", "height": 1.62,
+      "label": "Cephalus", "labelColor": "#e8c98a",
+      "voice": { "prefer": ["george", "male"], "pitch": 0.72, "rate": 0.82 },
+      "at": [-2.9, -1.5], "face": "SOCRATES"
+    },
+    "THRASYMACHUS": {
+      "base": "man", "variant": 9, "tint": "#6a4a5a", "height": 1.7,
+      "label": "Thrasymachus", "labelColor": "#c98a8a",
+      "voice": { "prefer": ["male"], "pitch": 0.8, "rate": 1.04 },
+      "at": [3.0, -1.8], "face": "SOCRATES"
+    }
+  },
+  "customObject": {
+    "name": "the oil lamp, newly lit",
+    "description": "a tall oil lamp on a stand, freshly filled and burning bright — the night is young",
+    "at": [0, -1.3],
+    "glow": "#ffc46a",
+    "parts": [
+      { "shape": "cylinder", "size": [0.09, 1.0, 0.16], "pos": [0, 0.5, 0], "color": "#4a3a26", "metal": 0.4 },
+      { "shape": "cylinder", "size": [0.24, 0.1], "pos": [0, 1.02, 0], "color": "#7a6242", "metal": 0.55 },
+      { "shape": "sphere", "size": [0.1], "pos": [0, 1.18, 0], "color": "#ffd9a0", "emissive": 1.8 },
+      { "shape": "cone", "size": [0.06, 0.22], "pos": [0, 1.32, 0], "color": "#ffe8c0", "emissive": 1.5, "opacity": 0.8 }
+    ]
+  },
+  "script": [
+    { "note": "The road up from the port of Piraeus. The sun is going down over the water." },
+    { "who": "NARRATOR", "text": "Athens, 411 B.C.E. The long war with Sparta grinds on. In the port district of Piraeus, a curious gathering has occurred, one that will be remembered for 2,000 years.", "file": "rep1_01.mp3" },
+    { "who": "GLAUCON", "text": "You know, I was quite taken with what we saw up there. The new festival to the goddess, the procession, the crowd — it was magnificent. But tell me, Socrates, do you really think we can make it back to the city before dark?", "file": "rep1_02.mp3" },
+    { "who": "SOCRATES", "text": "We’ll see. But look, here comes Polemarchus and his companions. They seem determined to stop us.", "file": "rep1_03.mp3" },
+    { "who": "POLEMARCHUS", "text": "Socrates! Glaucon! I saw you from a distance. I told my slave to run ahead and make you wait, but he seems to have failed.", "file": "rep1_04.mp3" },
+    { "who": "SOCRATES", "text": "Yes, we heard him calling. We weren’t going to stop.", "file": "rep1_05.mp3" },
+    { "who": "POLEMARCHUS", "text": "Well, you’re going to stop now. Look at the sun, it’s setting. You won’t make it back before dark unless you want to fight your way past all of us.", "file": "rep1_06.mp3" },
+    { "who": "SOCRATES", "text": "Is there another option?", "file": "rep1_07.mp3" },
+    { "who": "POLEMARCHUS", "text": "Yes, stay and discuss justice with us. My father, Cephalus, is at home. He’s old now, and his mind turns to weighty matters. Come persuade him.", "file": "rep1_08.mp3" },
+    { "who": "GLAUCON", "text": "We might as well. These are good men, and your conversation is always worth more than sleep.", "file": "rep1_09.mp3" },
+    { "who": "SOCRATES", "text": "Very well, lead on.", "file": "rep1_10.mp3" },
+    { "note": "The house of Cephalus. Lamps are lit. The old man is seated among cushions, a garland still on his head from the sacrifices." },
+    { "who": "CEPHALUS", "text": "Socrates, you don’t come down to the port often enough. If I still had the strength to climb to the city, you wouldn’t need to make this journey.", "file": "rep1_11.mp3" },
+    { "who": "SOCRATES", "text": "I enjoy talking with the very old. They’ve sailed the sea of life and reached a harbour. What is it like, Cephalus, to be near the end?", "file": "rep1_12.mp3" },
+    { "who": "CEPHALUS", "text": "Many send me letters about the myths of the afterlife — the stories of punishment for wrongs done in life. At first, I laughed. Now, as the body fails, I find myself wondering: have I been just? Have I been good?", "file": "rep1_13.mp3" },
+    { "who": "SOCRATES", "text": "Then let me ask you directly, my friend: what is justice?", "file": "rep1_14.mp3" },
+    { "who": "CEPHALUS", "text": "Justice is speaking the truth and paying one’s debts.", "file": "rep1_15.mp3" },
+    { "who": "POLEMARCHUS", "text": "Father, that’s too simple. Socrates will dismantle it in moments.", "file": "rep1_16.mp3" },
+    { "who": "SOCRATES", "text": "Your son knows me well, Cephalus. If a friend lent you his sword, then went mad and asked for it back to kill someone, would returning it be just?", "file": "rep1_17.mp3" },
+    { "who": "CEPHALUS", "text": "I suppose not.", "file": "rep1_18.mp3" },
+    { "who": "SOCRATES", "text": "So justice cannot simply be returning what is owed. Sometimes the owed thing causes harm.", "file": "rep1_19.mp3" },
+    { "who": "CEPHALUS", "text": "I must attend to the sacrifices, Socrates. Continue with the young men; I have had my fill of argument.", "file": "rep1_20.mp3", "moveTo": [-4.3, -3.1] },
+    { "who": "POLEMARCHUS", "text": "Let me try then. Justice is helping friends and harming enemies.", "file": "rep1_21.mp3" },
+    { "who": "SOCRATES", "text": "But who are our true friends? Those who seem good, or those who are good? And if we harm someone, don’t we make them more unjust? Would a just person make others unjust?", "file": "rep1_22.mp3" },
+    { "note": "Thrasymachus, who has been listening with mounting fury, breaks in." },
+    { "who": "THRASYMACHUS", "text": "Then what is it? You tear down every answer but offer none yourself! I’ve been listening to this charade long enough, Socrates, with your usual irony — asking questions, pretending ignorance, destroying every definition while hiding your own! Enough then!", "file": "rep1_23.mp3", "moveTo": [1.9, -0.6] },
+    { "who": "SOCRATES", "text": "Teach us, Thrasymachus. What is justice?", "file": "rep1_24.mp3" },
+    { "who": "THRASYMACHUS", "text": "You want to know? I’ll tell you. Justice is nothing but the advantage of the stronger. In every city, the ruling party makes laws in their own interest. They call obedience to these laws justice, but it’s simply what serves the powerful.", "file": "rep1_25.mp3" },
+    { "who": "SOCRATES", "text": "I must understand. Do you mean that in a democracy, democratic laws are just? In a tyranny, tyrannical laws?", "file": "rep1_26.mp3" },
+    { "who": "THRASYMACHUS", "text": "Exactly.", "file": "rep1_27.mp3" },
+    { "who": "SOCRATES", "text": "But rulers sometimes make mistakes. They pass laws that don’t actually serve their interests. Would following those mistaken laws still be just?", "file": "rep1_28.mp3" },
+    { "who": "THRASYMACHUS", "text": "No, no, I mean when they rule correctly. When the laws actually serve their advantage.", "file": "rep1_29.mp3" },
+    { "who": "SOCRATES", "text": "Then justice is not merely the advantage of the stronger, but their actual advantage correctly understood?", "file": "rep1_30.mp3" },
+    { "who": "THRASYMACHUS", "text": "Yes.", "file": "rep1_31.mp3" },
+    { "who": "SOCRATES", "text": "And medicine, correctly understood, seeks the advantage of the body, not the doctor. Obviously, then, ruling correctly understood seeks the advantage of the ruled, not the ruler.", "file": "rep1_32.mp3" },
+    { "who": "THRASYMACHUS", "text": "Like a shepherd tends sheep for the owner’s benefit, not his own? You twist words like a snake. Listen to me clearly: the just man everywhere gets less than the unjust. The unjust man profits. He cheats on taxes, embezzles from the state, rises to power, and when caught, he uses his gains to buy his way out. Justice is a sucker’s virtue. Injustice practiced on a large scale is called statesmanship and wisdom.", "file": "rep1_33.mp3" },
+    { "who": "SOCRATES", "text": "That is a dark teaching, my friend, but let me test it. You say the unjust man is stronger, happier?", "file": "rep1_34.mp3" },
+    { "who": "THRASYMACHUS", "text": "Yes, the completely unjust man who appears just is the most successful of all.", "file": "rep1_35.mp3" },
+    { "who": "SOCRATES", "text": "But surely there are things we do because they are good in themselves, not merely for results — sight, hearing, thinking?", "file": "rep1_36.mp3" },
+    { "who": "THRASYMACHUS", "text": "I suppose.", "file": "rep1_37.mp3" },
+    { "who": "SOCRATES", "text": "And the soul has a function. As eyes see and ears hear, its function is to live, to rule, to judge. A good soul performs these well, a bad soul poorly. Therefore, the just soul lives well, the unjust soul lives badly. And living well is happiness.", "file": "rep1_38.mp3" },
+    { "who": "THRASYMACHUS", "text": "Your arguments are like spells; they confuse rather than convince.", "file": "rep1_39.mp3" },
+    { "who": "SOCRATES", "text": "I seek only the truth, but you have raised a profound challenge. Let us examine it more deeply.", "file": "rep1_40.mp3", "face": "camera" },
+    { "pause": 2.5 }
+  ]
+}

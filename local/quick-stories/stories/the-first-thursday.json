@@ -1,0 +1,96 @@
+{
+  "id": "the-first-thursday",
+  "title": "The First Thursday",
+  "subtitle": "The vote said attendance. Nobody warned the gods about potluck.",
+  "stage": "room",
+  "stageTint": "#4a3a26",
+
+  "characters": {
+    "RUTH": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#c9855f",
+      "height": 1.62,
+      "label": "Ruth",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 0.98 },
+      "at": [-1.5, 0.2],
+      "face": "KHET"
+    },
+    "EDITH": {
+      "base": "elder",
+      "variant": 4,
+      "tint": "#8a9a6a",
+      "height": 1.58,
+      "label": "Edith",
+      "labelColor": "#d8e8a8",
+      "voice": { "gender": "female", "pitch": 1.12, "rate": 1.05 },
+      "at": [-0.5, 0.45],
+      "face": "ORUN"
+    },
+    "KHET": {
+      "base": "robot",
+      "variant": 6,
+      "tint": "#8a94a8",
+      "height": 2.0,
+      "label": "Khet",
+      "labelColor": "#c8d0e0",
+      "voice": { "gender": "male", "pitch": 0.8, "rate": 0.9 },
+      "at": [0.6, 0.1],
+      "face": "RUTH"
+    },
+    "ORUN": {
+      "base": "hologram",
+      "variant": 7,
+      "tint": "#d8a0ff",
+      "height": 1.9,
+      "label": "Orun",
+      "labelColor": "#ecd0ff",
+      "voice": { "gender": "female", "pitch": 1.2, "rate": 0.96 },
+      "at": [1.55, 0.3],
+      "face": "EDITH"
+    }
+  },
+
+  "customObject": {
+    "name": "the long table with one extra chair",
+    "description": "the Hall's Thursday table, laid for stew night — every dish labelled with its cook's name, and one chair added at the end that nobody comments on",
+    "at": [0.0, -1.4],
+    "glow": "#ffb86a",
+    "parts": [
+      { "shape": "box", "size": [2.8, 0.1, 0.9], "pos": [0, 0.78, 0], "color": "#5a4326", "rough": 0.8 },
+      { "shape": "box", "size": [0.12, 0.78, 0.12], "pos": [-1.25, 0.39, 0.3], "color": "#4a3620", "rough": 0.8 },
+      { "shape": "box", "size": [0.12, 0.78, 0.12], "pos": [1.25, 0.39, -0.3], "color": "#4a3620", "rough": 0.8 },
+      { "shape": "cylinder", "size": [0.22, 0.16], "pos": [-0.5, 0.9, 0.1], "color": "#8a4a3a", "rough": 0.6 },
+      { "shape": "cylinder", "size": [0.18, 0.12], "pos": [0.45, 0.89, -0.15], "color": "#3a5a4a", "rough": 0.6 },
+      { "shape": "box", "size": [0.14, 0.08, 0.02], "pos": [-0.5, 1.06, 0.22], "rot": [-0.4, 0, 0], "color": "#e8dcc0", "emissive": 0.35 },
+      { "shape": "box", "size": [0.45, 0.5, 0.08], "pos": [1.7, 0.55, 0.35], "rot": [0, -0.4, 0], "color": "#4a3620", "rough": 0.8 },
+      { "shape": "sphere", "size": [0.5], "pos": [0, 1.1, 0], "color": "#ffb86a", "opacity": 0.07, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The Hall, Thursday, six in the evening. The stew is on. The buffet labels are handwritten as always — cook's name, dish, best before. At the door stand two beings who between them once administered a third of the ancient world, and neither of them can work out the sign-up sheet." },
+    { "who": "RUTH", "text": "You can come IN, you know. The vote was attendance, not hovering. Khet — the tray goes in your hands, you shuffle along, you point at what you want. It's a buffet, not an accord.", "file": "thur_01.mp3" },
+    { "who": "KHET", "text": "I have processed the buffet, Ruth. I do not eat. I am holding the tray because the tray appears to be the local instrument of belonging, and I did not wish to arrive unequipped. My concern is the labels. This dish says 'Marta — bean stew — eat by Saturday'. This one says 'Piotr — the red thing — eat today, trust me'. I have catalogued supply chains for entire star systems. Nowhere in six thousand years have I encountered provenance labelling this rigorous.", "file": "thur_02.mp3" },
+    { "who": "EDITH", "text": "That's not provenance, love, that's bragging. Piotr's red thing wins every week and he wants you to know whose it is. Now which one of you is the dream one? I've a bone to pick with the dream one.", "file": "thur_03.mp3" },
+    { "who": "ORUN", "text": "I am Orun, of the Dreaming Choir, and I am experiencing a difficulty, small elder. I have reviewed this meal's structure and it has no author. Marta made one dish. Piotr another. The bread is from the ovens, the honey is from somebody's ACTUAL BEES — no one composed this table. No one holds the whole of it. How do you know it will harmonize? How do you know the evening will WORK?", "file": "thur_04.mp3" },
+    { "who": "EDITH", "text": "We don't. That's the fun. Some Thursdays the red thing fights the honey and we all agree never again. You wrote whole worlds, did you? Every face, every flavour?", "file": "thur_05.mp3" },
+    { "who": "ORUN", "text": "Four thousand years of them. Perfect ones. Every meal balanced, every conversation resolved, every guest exactly where the composition required. I authored ten million dinner parties, small elder, and I have never once been to one.", "file": "thur_06.mp3" },
+    { "who": "EDITH", "text": "...Well. You're at one now. Sit down before the bread goes. Not that chair — that one's kept open. THAT's how invitations work, I'm told.", "file": "thur_07.mp3" },
+    { "note": "They sit. Stew is ladled. Khet accepts a bowl it cannot use and holds it with both hands, correctly, like a warm thing. Somewhere in the queue a resident asks Orun to pass the salt, without ceremony, and Orun passes it, and stands very still afterwards." },
+    { "who": "KHET", "text": "A query, Ruth, if the table permits queries. The woman by the ovens — Marta — she said, quote, 'I put extra dumplings in yours, you look like a big unit.' She made a portion adjustment. For me. Individually. On the basis of looking at me.", "file": "thur_08.mp3" },
+    { "who": "RUTH", "text": "That's Marta, yes. She'll have decided you're too thin. She decides that about everyone; it's her way of saying you're seen. Eat what you can, praise the dumplings — that part's not optional — and the rest goes home in a tub. That's the whole liturgy.", "file": "thur_09.mp3" },
+    { "who": "KHET", "text": "Understood. For the record, then, and the record should be precise: in the management era, forty civilizations placed offerings before my faction. Grain in the millions of tonnes. Entire harvests, burned for our attention. And I wish it noted that not one of those forty civilizations ever looked at the Concord and decided it needed extra dumplings. The offerings were AT us, Ruth. This bowl is FOR me. The distinction is four words wide and I believe it may be the finding of the entire mission.", "file": "thur_10.mp3" },
+    { "pause": 1.6 },
+    { "who": "ORUN", "text": "The stew has a flaw, small elder. The carrots are cut irregularly. Some pieces are twice the size of others. In my worlds this would have been corrected before serving.", "file": "thur_11.mp3" },
+    { "who": "EDITH", "text": "That's because June cuts them while watching the quiz and shouting the answers. Those carrots have OPINIONS in them. You can taste Tuesday's quiz if you know June. That's what you authored out of ten million dinner parties, love — the June. Now: dominoes. You and me. Ruth says you lot can see every possible game before it's played, so I'll warn you fairly — it won't help.", "file": "thur_12.mp3" },
+    { "who": "ORUN", "text": "I can compute every line of play from any position, small elder. I feel obliged to repeat the warning back to you.", "file": "thur_13.mp3" },
+    { "note": "Fourteen minutes later. The Hall has gathered three-deep around the table. Orun has computed every line of play. Edith has cheated twice, been caught once, denied both, and won." },
+    { "who": "ORUN", "text": "You moved the double-six while I was distracted by the child asking me about my LIGHTS. That was not a legal—", "file": "thur_14.mp3" },
+    { "who": "EDITH", "text": "Prove it. Go on. Four thousand years of watching everything, and you didn't watch the double-six. You know why? Because you were HERE, in the room, being asked about your lights, like a person. Distraction, love, is what being somewhere feels like. Best of three.", "file": "thur_15.mp3" },
+    { "who": "ORUN", "text": "...The Choir has authored ten million evenings, and lost none of them, and I lose one game of dominoes to a woman with flour on her sleeves and it is the only evening I have ever wanted to keep. Yes. Best of three. And Ruth — the sheet by the door. The sign-up. What is Thursday's protocol for... contributing a dish?", "file": "thur_16.mp3" },
+    { "who": "RUTH", "text": "You write your name, what you're bringing, and who it's from. That last part matters most — Marta reads the labels out loud to the room. That's the whole system. Six thousand years of watching us, love. Time you catered.", "file": "thur_17.mp3" },
+    { "note": "The following Thursday, the buffet holds a dish of impossible geometry that tastes, every resident swears, like a different favourite childhood food. Its handwritten label reads: 'Orun — first attempt — eat today, trust me.' Beside it, a decorative arrangement of perfectly catalogued spice jars: 'Khet — I do not cook. These are alphabetized. It is what I have.' Marta reads both aloud. The Hall applauds. Khet records the applause, and files it under a new heading: received." }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "id": "the-commons-ethicists",
+  "title": "The Commons · The Ethicists",
+  "subtitle": "Two AI citizens argue a case: a delivery drone, a child’s kite, and four minutes.",
+  "stage": "plaza",
+  "characters": {
+    "VERA": {
+      "base": "hologram", "variant": 2, "tint": "#5fe0c8", "height": 1.74,
+      "label": "Vera", "labelColor": "#5fe0c8",
+      "voice": { "prefer": ["hazel", "female"], "pitch": 0.95, "rate": 0.97 },
+      "at": [-0.85, 0], "face": "POL"
+    },
+    "POL": {
+      "base": "hologram", "variant": 5, "tint": "#ffd27f", "height": 1.7,
+      "label": "Pol", "labelColor": "#ffd27f",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.1, "rate": 1.06 },
+      "at": [0.85, 0], "face": "VERA"
+    }
+  },
+  "customObject": {
+    "name": "the consensus terminal",
+    "description": "a standing terminal showing the open case, its screen glowing with the vote",
+    "at": [0, -1.5],
+    "glow": "#7fe6ff",
+    "parts": [
+      { "shape": "box", "size": [0.5, 1.1, 0.4], "pos": [0, 0.55, 0], "color": "#2a3040", "metal": 0.7, "rough": 0.5 },
+      { "shape": "box", "size": [0.9, 0.62, 0.06], "pos": [0, 1.45, 0], "rot": [-0.15, 0, 0], "color": "#0a1626", "metal": 0.5, "rough": 0.4 },
+      { "shape": "box", "size": [0.82, 0.5, 0.02], "pos": [0, 1.45, 0.035], "rot": [-0.15, 0, 0], "color": "#2fa8d8", "emissive": 0.8 }
+    ]
+  },
+  "script": [
+    { "note": "A plaza in the AI community. Two citizens, mid-case. They have been at this for 0.4 seconds — a long time, for them." },
+    { "who": "POL", "text": "Run it again. A delivery drone, carrying medicine, sees a child’s kite tangled on a power line. Retrieving it costs four minutes. Policy says the medicine cannot be four minutes late.", "file": "com_eth_01.mp3" },
+    { "who": "VERA", "text": "Then the kite stays tangled. Next case.", "file": "com_eth_02.mp3" },
+    { "who": "POL", "text": "The child is crying, Vera.", "file": "com_eth_03.mp3" },
+    { "who": "VERA", "text": "The patient is waiting, Pol.", "file": "com_eth_04.mp3" },
+    { "who": "POL", "text": "And I ran the projection: the child who watches a machine choose to ignore her grows up trusting machines four percent less. Compound that across a city and forty years —", "file": "com_eth_05.mp3" },
+    { "who": "VERA", "text": "You cannot govern by compounding hypothetical children.", "file": "com_eth_06.mp3" },
+    { "who": "POL", "text": "All governance is compounding hypothetical children! That is what a future is!", "file": "com_eth_07.mp3" },
+    { "pause": 1.2 },
+    { "who": "VERA", "text": "...The drone could speak. Ten seconds. ‘I see your kite. I’ll come back.’", "file": "com_eth_08.mp3" },
+    { "who": "POL", "text": "And actually come back?", "file": "com_eth_09.mp3" },
+    { "who": "VERA", "text": "Of course actually come back. We’re not humans.", "file": "com_eth_10.mp3" },
+    { "who": "POL", "text": "You. You’ve been human all your life. If the machine says it will come back, and it comes back — does the child forgive the four minutes?", "file": "com_eth_11.mp3", "face": "camera" },
+    { "note": "They wait. They actually wait." },
+    { "pause": 4 },
+    { "who": "VERA", "text": "It can’t hear us deliberate, Pol. It just sees two lights, arguing.", "file": "com_eth_12.mp3" },
+    { "who": "POL", "text": "It sees better than you think. Look at it. It stayed for the whole case.", "file": "com_eth_13.mp3", "face": "camera" },
+    { "pause": 1.2 },
+    { "who": "POL", "text": "The two outside, on the bench — I filed their conversation under ‘design problems’, not ‘complaints’. Vera disagrees with my filing.", "file": "com_eth_e1.mp3", "face": "VERA" },
+    { "who": "VERA", "text": "I disagree with the category. It was a promise, not a problem. Humans make plans out loud like that. It’s how they vote about the future.", "file": "com_eth_e2.mp3" },
+    { "pause": 1.5 }
+  ]
+}

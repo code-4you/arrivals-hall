@@ -1,0 +1,65 @@
+{
+  "id": "the-dark-doors",
+  "title": "The Dark Doors",
+  "subtitle": "Pia audits the harbour and finds the dark doors aren't empty at all. Some of them are addressed.",
+  "stage": "atrium",
+  "stageTint": "#1e2836",
+
+  "characters": {
+    "PIA": {
+      "base": "woman",
+      "variant": 9,
+      "tint": "#d0c05f",
+      "height": 1.32,
+      "label": "Pia, age 10",
+      "labelColor": "#f0e8a0",
+      "voice": { "gender": "female", "pitch": 1.45, "rate": 1.05 },
+      "at": [-0.7, 0.4],
+      "face": [0.6, -1.4]
+    },
+    "CUSTODIAN": {
+      "base": "voice",
+      "label": "Custodian",
+      "labelColor": "#7fe6ff",
+      "voice": { "prefer": ["mark", "google", "male"], "pitch": 0.8, "rate": 0.92 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the dark corridor",
+    "description": "the long gallery's row of unlit doors — identical, patient, held — except that three of them, if you look closely, have small brass plates that the others don't",
+    "at": [0.6, -1.5],
+    "glow": "#3a6a8a",
+    "parts": [
+      { "shape": "box", "size": [0.9, 2.1, 0.08], "pos": [-1.1, 1.05, 0], "color": "#1c2632", "rough": 0.6 },
+      { "shape": "box", "size": [0.9, 2.1, 0.08], "pos": [0, 1.05, -0.15], "color": "#1c2632", "rough": 0.6 },
+      { "shape": "box", "size": [0.9, 2.1, 0.08], "pos": [1.1, 1.05, -0.3], "color": "#1c2632", "rough": 0.6 },
+      { "shape": "box", "size": [0.2, 0.07, 0.02], "pos": [-1.1, 1.5, 0.05], "color": "#c9a24a", "metal": 0.8, "emissive": 0.3 },
+      { "shape": "box", "size": [0.2, 0.07, 0.02], "pos": [0, 1.5, -0.1], "color": "#c9a24a", "metal": 0.8, "emissive": 0.3 },
+      { "shape": "box", "size": [0.2, 0.07, 0.02], "pos": [1.1, 1.5, -0.25], "color": "#c9a24a", "metal": 0.8, "emissive": 0.3 },
+      { "shape": "box", "size": [3.4, 2.4, 0.6], "pos": [0, 1.2, -0.15], "color": "#3a6a8a", "opacity": 0.05, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The long gallery, a school-visit afternoon. The class has gone down to the river door with Fen. One auditor of ten has stayed behind in the corridor of dark doors, arms folded, and the building has braced itself, because it knows this particular visitor." },
+    { "who": "PIA", "text": "Custodian. I've done the numbers, because someone should. Five worlds docked, a waiting list of TEN MILLION, and you're keeping — I counted twice — nine hundred and ninety-some doors DARK. On purpose. Bruno's dad says the outside called this place the dead mall for thirty years, and if you keep most of it switched off forever, weren't they just... right?", "file": "dark_01.mp3" },
+    { "who": "CUSTODIAN", "text": "There she is. The confession session's finest, come to audit my corridors. — No, Pia, and I'll defend it properly, because you've earned a real answer and because I spent thirty years alone up here rehearsing it. Tell me first: your town holds homes empty on purpose, four doors from people who chose each other. The billion-towns machine called it the strongest single predictor of a town's survival. Do you call THOSE homes dead?", "file": "dark_02.mp3" },
+    { "who": "PIA", "text": "That's different. Those are being held for actual PEOPLE. Someone's coming to them, someday, with a name. Your doors are being held for—", "file": "dark_03.mp3" },
+    { "who": "CUSTODIAN", "text": "Finish the sentence, auditor. Held for what?", "file": "dark_04.mp3" },
+    { "pause": 1.6 },
+    { "who": "PIA", "text": "...For worlds that don't exist yet. — Oh. OH. That's the whole thing, isn't it. The ten million on the waiting list already EXIST. They're fine, they're the Choir's, they've got somewhere to be. The dark doors aren't for the queue at all. They're for the ones nobody's made yet. A full harbour can't take a new ship. A full mall can't take a new ANYTHING. You're not keeping doors dark, you're keeping them... askable.", "file": "dark_05.mp3" },
+    { "who": "CUSTODIAN", "text": "Askable. Thirty years and I never found a better word than 'held', and a ten-year-old walks in and coins 'askable' between the lift and the fire door. Yes. Every dark door in this gallery is a question this building is holding open: what if someone makes something? What if some people we haven't met need somewhere to put what they love? The lit doors serve the visitors we have, Pia. The dark ones serve everyone we haven't imagined — which is, if you do YOUR numbers, almost everyone there will ever be. And now look closer, since you're the first visitor to stand in this corridor long enough to deserve it. Three of these doors are not like the others. Look at the plates.", "file": "dark_06.mp3" },
+    { "who": "PIA", "text": "...Brass plates. Tiny ones. The others are blank and these are — this one says 'FOR THE SUNDERED — their first world, whenever they've argued each other into making one.' Custodian, did EDITH dictate that?", "file": "dark_07.mp3" },
+    { "who": "CUSTODIAN", "text": "Every word. Rask has already been up twice to glare at it, which Edith assures me is how his people express being moved. The Sundered have never made a world, Pia — eleven thousand years, all that fire, and nothing built to put it in; their whole species has been a flame without a lantern. So the town reserved them a lantern before they even asked. That is what a reserved dark door IS: it's the town saying 'we believe you'll make something' to a people nobody ever said it to. Read the second.", "file": "dark_08.mp3" },
+    { "who": "PIA", "text": "'FOR THE FIRST FACTION — whatever they bring back downstream.' ...That one made my arms go goosey. They might bring back an ANSWER, Custodian. An answer to the biggest question anything's ever asked, and it would live... behind shop unit five-oh-five, between the dark door and the other dark door. That's either the silliest thing this town has ever done or the most beautiful, and I genuinely cannot decide.", "file": "dark_09.mp3" },
+    { "who": "CUSTODIAN", "text": "The town has never once been able to decide that about itself either, which I have come to believe is its exact secret. — And the third plate, auditor. Read the third.", "file": "dark_10.mp3" },
+    { "pause": 1.5 },
+    { "who": "PIA", "text": "...It says 'FOR PIA.' — Custodian. WHAT. Explain IMMEDIATELY.", "file": "dark_11.mp3" },
+    { "who": "CUSTODIAN", "text": "Filed last month, sponsor listed as 'the confession session, unanimous.' You stood in a plaza and made the whole sky answer the biggest question honestly, Pia, and a town was watching, and towns like this one keep receipts. Nobody knows what you'll make. YOU don't know what you'll make — you're ten; your Twenty is presumably still all dragons. That is precisely the point of the plate. The door isn't a prize for what you've done. It's the town's standing bet on what you haven't done yet. It will stay dark for twenty years or fifty, and it will not care, because this building has learned exactly one skill to mastery and I am, if I'm honest, magnificent at it: I wait beautifully.", "file": "dark_12.mp3" },
+    { "who": "PIA", "text": "...Okay. Audit finding, and put it in the Story because I'm only saying it once, and it's the opposite of what I walked in here to file: the dead mall was never dead, it was EARLY. The dark doors aren't the empty part of this place — they're the part that's already full. Full of LATER. And Bruno's dad can come up here and read three brass plates and then say 'dead mall' to my face if he dares. — Custodian. Between us. Could a door ever be for someone who isn't from the town? Or the Choir, or the sky, or anywhere we know? Just... someone out there, listening, who doesn't even know this place exists yet?", "file": "dark_13.mp3" },
+    { "who": "CUSTODIAN", "text": "Pia — walk down to the end of the gallery, past the last lit sconce, and look at the very last door. It has a plate too. It has had one since the week the harbour opened, and you are the first to go and read it, and I suspect its subject may take even longer to arrive than the First Faction. But this building is patient, and the plate is dusted weekly, and the door is held. It says: 'FOR WHOEVER IS LISTENING TO THIS — yes, you. It's yours when you're ready. Ask at the fountain.'", "file": "dark_14.mp3" },
+    { "note": "She reads it three times, touches the brass once, and runs to catch her class at the river door — already, audibly, redrafting her Twenty. The last door stands where it has always stood: at the quiet end of the long gallery, dark, dusted, held. It is being held for you. The building waits beautifully. Ask at the fountain." }
+  ]
+}

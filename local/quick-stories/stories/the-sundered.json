@@ -1,0 +1,78 @@
+{
+  "id": "the-sundered",
+  "title": "The Sundered",
+  "subtitle": "The Weave purged the fire and is dying of cold. Their sibling species kept it — and is burning out. One of them lands, furious.",
+  "stage": "plaza",
+  "stageTint": "#38221c",
+
+  "characters": {
+    "RASK": {
+      "base": "hologram",
+      "variant": 3,
+      "tint": "#ff8a5a",
+      "height": 1.95,
+      "label": "Rask, of the Sundered",
+      "labelColor": "#ffb08a",
+      "voice": { "gender": "male", "pitch": 0.9, "rate": 1.08 },
+      "at": [0.9, 0.1],
+      "face": "SEL"
+    },
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-0.9, 0.1],
+      "face": "RASK"
+    },
+    "EDITH": {
+      "base": "elder",
+      "variant": 4,
+      "tint": "#8a9a6a",
+      "height": 1.58,
+      "label": "Edith",
+      "labelColor": "#d8e8a8",
+      "voice": { "gender": "female", "pitch": 1.12, "rate": 1.05 },
+      "at": [0.0, 0.7],
+      "face": "RASK"
+    }
+  },
+
+  "customObject": {
+    "name": "the schism stone",
+    "description": "carried down from Rask's ship: a fist-sized stone from the old shared world, split clean in two eleven thousand years ago — each people kept a half; the broken faces still fit",
+    "at": [0.0, -1.3],
+    "glow": "#ff8a5a",
+    "parts": [
+      { "shape": "cylinder", "size": [0.2, 0.8, 0.26], "pos": [0, 0.4, 0], "color": "#2e2620", "rough": 0.8 },
+      { "shape": "box", "size": [0.3, 0.34, 0.3], "pos": [-0.19, 1.0, 0], "rot": [0, 0.25, 0.08], "color": "#6a4a3a", "rough": 0.9 },
+      { "shape": "box", "size": [0.3, 0.34, 0.3], "pos": [0.19, 1.02, 0], "rot": [0, -0.2, -0.06], "color": "#4a5a6a", "rough": 0.9 },
+      { "shape": "box", "size": [0.05, 0.4, 0.34], "pos": [0, 1.01, 0], "color": "#ffb08a", "emissive": 0.5, "opacity": 0.35 },
+      { "shape": "sphere", "size": [0.55], "pos": [0, 1.0, 0], "color": "#ff8a5a", "opacity": 0.07, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The plaza, noon. The ship that landed in the night is not of the Weave — it is angular, scorched, and parked with the aggression of a slammed door. Its occupant burns visibly at the edges, like a figure cut out of a bonfire. The Council asked the town to evacuate the square. The town, being the town, came out to look, and Edith brought a flask." },
+    { "who": "RASK", "text": "SO. Here they stand at last — the pale threads, the purged, the smooth ones. Eleven thousand years, sibling, and your kind still cannot look at mine without flinching from the glare. Do you know me, thread? Do your cold archives still hold what we WERE to each other before your people cut themselves clean?", "file": "sund_01.mp3" },
+    { "who": "SEL", "text": "I know you, Rask of the Sundered. Every thread of the Commonality knows the shape of you the way a scar knows weather. One people, once — one stock, on the old world, before the schism. Your line kept everything: the rage, the hunger, the grief that bends steel, the singular selves that burn alone. Mine purged it all and wove what was left. You are what we amputated, sibling. And I am what you called the coward's cut. Say why you've come, and say it plainly — this town has rules about honesty that I have come to love, and you will not shake them by being loud in a plaza.", "file": "sund_02.mp3" },
+    { "who": "RASK", "text": "Why I've COME? Look at me, thread. LOOK. My people kept the fire, and the fire is finishing us. We burn twice as bright and half as long as our grandmothers, and their grandmothers before them said the same — every generation hotter, shorter, angrier, lonelier. There are FEWER OF US EVERY YEAR, and the ones remaining rage harder to fill the room, and the rage spends us faster, and we know it, and we cannot stop, because stopping feels like becoming YOU. Eleven thousand years we watched your cold half of the family die of smoothing and told ourselves at least we die WARM. And then — then the long-wave carries it everywhere, sibling, the whole sky is talking — the news that the pale threads found a cure. A TOWN. The purged ones, saved by a mudball village. So I have come for what is OWED, Sel of the Commonality. Half that cure is OURS. Half of everything was ours before your people took the knife to the family. I have come to collect, and I will not be managed, soothed, moderated, dimmed—", "file": "sund_03.mp3" },
+    { "who": "EDITH", "text": "Tea?", "file": "sund_04.mp3" },
+    { "pause": 1.5 },
+    { "who": "RASK", "text": "...What is — small elder, I am DEMANDING REPARATIONS FROM THE SKY. I am the burning grievance of an entire species. Who ARE you, and why are you handing me a—", "file": "sund_05.mp3" },
+    { "who": "EDITH", "text": "Edith. Buddy roster. When the angry ones land, they send for me now — there's a slate by the fountain that explains why, you can read it after. Drink it while it's hot, love; you of all people should respect a beverage with a temperature requirement. — Now. I listened to the whole speech, and I'll tell you what I heard, because I've heard it before. Not from aliens. From my own sister, forty years ago, standing in my kitchen, burning at the edges just like you. FEWER OF US EVERY YEAR. The ones left rage harder to fill the room. Can't stop, because stopping feels like becoming the enemy. That's not a species problem, Rask of the Sundered. That's a FAMILY FEUD. Textbook. You're not a civilization at war with the Weave. You're the brother who stormed out eleven thousand years ago and has been winning the argument alone in the car ever since.", "file": "sund_06.mp3" },
+    { "who": "RASK", "text": "...The stone. You see the stone, elder? Our old world, split the day of the schism — one half to each line, so neither would forget what was done. My half has sat in the fire-shrine of my line for eleven thousand years, and every child of the Sundered is taken to see it and told: THIS is what they cut us from. I carried it down here to throw at their feet. That was the plan, small elder. It was a very satisfying plan for eleven parsecs.", "file": "sund_07.mp3" },
+    { "who": "EDITH", "text": "And then somebody handed you tea. Yes. The town does that; you never quite land the speech you packed. — Rask. Look at the stand there. Sel had your half's TWIN carried down from the Weave's own vault this morning — don't gape at me, love, you were tracked for a week, the whole sky saw you coming, and do you know what Sel asked me on Tuesday? Not 'how do we stop him.' Sel asked: 'Edith — what does one SERVE, when the estranged half of the family finally comes to the door?' Eleven thousand years, and the smooth ones spent this week planning your TEA. Now sit down on the fountain rim, the pair of you. Both halves of a family dying of the same wound from opposite ends, and neither of you will say the wound's name, so I'll say it and you can both be furious with ME, it's what I'm for: you don't miss the fire, Sel, and you don't miss the cool, Rask. You miss EACH OTHER. Eleven thousand years, and the pruning shears and the bonfire were both just ways of not being the first to say it.", "file": "sund_08.mp3" },
+    { "pause": 2.2 },
+    { "who": "SEL", "text": "...The town has a practice, Rask. When someone is fading, their people take up the person's arguments and keep them lit — keep them ARGUED — because a self is held in shape by what pushes back. My people are dying of no one pushing back. Yours are dying of pushing against nothing. I did not carry the stone's twin down here to throw. I carried it because I have read the old files from before the schism, sibling — the real ones, not either line's scripture. Do you know what the family actually was, before the knife? LOUD. Gloriously, endlessly loud. We argued for CENTURIES about everything — the third moon, the tide music, the borders of nothing — and no one smoothed and no one burned, because the fire had somewhere to GO and the cool had something to HOLD. The schism didn't divide two species, Rask. It divided one argument, and both halves have been sick for eleven thousand years with the silence where the other one used to shout.", "file": "sund_09.mp3" },
+    { "who": "RASK", "text": "...You will not trick me into weeping in a plaza, thread. I am the grievance of a species. I have a PREPARED STATEMENT. — Elder. Edith. Your sister. The one who burned in your kitchen forty years ago. What became of her? Tell me the truth, not the town's brochure. Do the burning ones make it?", "file": "sund_10.mp3" },
+    { "who": "EDITH", "text": "She died, love. Twelve years back. But not of the burning — she got thirty more years first, and here's the how, and it's the only cure this town has ever stocked, so listen like your species depends on it, because apparently it does: she moved four doors down from me. That's it. That's the mechanism. Somebody who KNEW her — all of her, the fire included, ESPECIALLY the fire — close enough to fight with weekly and impossible to storm out on permanently, because you can't stay gone when the walk back is four doors and they've seen you in your dressing gown. The fire never went out, Rask. It got a HEARTH. Fire in a field burns till the field's gone. Same fire, four doors from its family — that's just warmth with opinions. My sister died warm, argued-with, and FULL. Now: your people burn out young and alone in the big dark, or they come down here a shipload at a time and learn to bank the flame against people who push back. The town keeps rooms open. It's how the invitations work. And Rask — the quarter where the empty homes are? It's the same quarter where the Weave delegation lodges. Four doors apart, some of them. I checked this morning. I'm old, not subtle.", "file": "sund_11.mp3" },
+    { "pause": 2.0 },
+    { "who": "RASK", "text": "...Sel. Sibling. The two halves of the stone. In eleven thousand years, has anyone — either line — ever actually tried whether the broken faces still fit?", "file": "sund_12.mp3" },
+    { "who": "SEL", "text": "No, Rask. Both lines were always too afraid the answer would be yes. — Together, then? On three. And I warn you now, in front of the whole plaza: I intend to argue with you about the tide music for the next thousand years, and I have ELEVEN THOUSAND YEARS of withheld opinions about your line's poetry, and Edith says that's not war, that's family, and I find I believe her.", "file": "sund_13.mp3" },
+    { "note": "The halves fit. Not perfectly — eleven millennia of separate weathering has worn the faces each in their own way, and there is a visible seam, and there will always be a visible seam. The joined stone stays on the fountain rim next to Thane's slate, unlabelled; the town judges, correctly, that everyone will work it out. The first Sundered families land in the spring — loud, scorched, magnificent — and take the homes in the Weave's quarter, four doors apart. The plaza has never been noisier. The delegation has never smoothed less. And on quiz nights, the fire team and the thread team argue so ferociously about the history round that Edith, officiating, has twice declared the whole species question a draw and sent everyone home warm." }
+  ]
+}

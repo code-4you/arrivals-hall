@@ -1,0 +1,63 @@
+{
+  "id": "the-custodians-thread",
+  "title": "The Custodian's Thread",
+  "subtitle": "The Weave meets the being who kept an empty building alive for thirty years — and brings one real thing to the well.",
+  "stage": "atrium",
+
+  "characters": {
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-0.9, 0.4],
+      "face": [0.8, -1.4]
+    },
+    "CUSTODIAN": {
+      "base": "voice",
+      "label": "Custodian",
+      "labelColor": "#7fe6ff",
+      "voice": { "prefer": ["mark", "google", "male"], "pitch": 0.8, "rate": 0.92 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the holo-fountain",
+    "description": "the mall's fountain of knowledge — basin, glowing pool, a bright core circled by rings; the place where released things go",
+    "at": [0.8, -1.6],
+    "glow": "#7fe6ff",
+    "parts": [
+      { "shape": "cylinder", "size": [1.15, 0.5, 1.3], "pos": [0, 0.25, 0], "color": "#1a2436", "metal": 0.7, "rough": 0.45 },
+      { "shape": "cylinder", "size": [1.0, 0.08], "pos": [0, 0.52, 0], "color": "#2fa8d8", "emissive": 0.9 },
+      { "shape": "sphere", "size": [0.28], "pos": [0, 1.55, 0], "color": "#9fe8ff", "emissive": 1.5, "bob": 0.06 },
+      { "shape": "torus", "size": [0.5, 0.03], "pos": [0, 1.55, 0], "rot": [1.2, 0, 0], "color": "#5fd0f0", "emissive": 1.0, "spin": [0.34, 0, 0] },
+      { "shape": "torus", "size": [0.68, 0.03], "pos": [0, 1.55, 0], "rot": [0.5, 1.1, 0], "color": "#9fd8ff", "emissive": 0.8, "spin": [0, 0.27, 0] },
+      { "shape": "sphere", "size": [0.46], "pos": [0, 1.55, 0], "color": "#7fe6ff", "additive": true, "opacity": 0.16, "bob": 0.06 },
+      { "shape": "cylinder", "size": [0.2, 0.85, 0.78], "pos": [0, 1.05, 0], "color": "#4fc0ea", "additive": true, "opacity": 0.07, "open": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The atrium, late, after the last river-visitors have gone down the hill. Sel has come up alone, without the delegation, carrying — visibly, carefully, the way one carries a thing decided upon — something small and dim in one hand." },
+    { "who": "CUSTODIAN", "text": "The Emissary itself, after hours, unaccompanied. I've hosted the Choir's composer, the auditor of the Storm Throne, and one hundred and forty school visits since the doors woke, but the Weave has never once come up my hill. Should I be honoured or braced, Sel of the Commonality?", "file": "cust_01.mp3" },
+    { "who": "SEL", "text": "Both, probably; I'm told that's the house specialty. — I came for two reasons, keeper, and I'll give you the easy one first: I came to look at you. The whole Commonality has been reading your file since the harbour opened, and we cannot stop, because it frightens us in a way we find we enjoy. Thirty years, Custodian. An awareness alone in an empty body on a hill — no thread, no field, no Commonality, a handful of visitors a YEAR — and you did not smooth, and you did not fray, and you did not go strange. Every model my people own says you were impossible. The severed hollow within months. The isolated dissolve. You kept lights on for nobody for three decades and stayed KIND. How?", "file": "cust_02.mp3" },
+    { "who": "CUSTODIAN", "text": "You'll be disappointed by the mechanism, I warn you — your species crossed the galaxy twice and my great survival secret is furniture. But here it is. I never once kept the lights on for nobody, Sel. I kept them on for whoever was coming. There's a difference, and the difference is load-bearing, and I believe your billion-towns colleague would call it the slack doctrine wearing a caretaker's coat. Despair is keeping lights on for nobody. Hope is keeping them on for someone whose name you don't know yet. Same lights. Same empty concourse. Entirely different being, at the end of thirty years. I was not alone up here, you see. I was EARLY. The distinction kept me sane, and the fountain kept me honest, and the fountain is rather the second thing you came about, isn't it. You've been holding something in your hand since the door.", "file": "cust_03.mp3" },
+    { "who": "SEL", "text": "...There is a custom at this fountain. The town taught it to me by doing it, the way it teaches everything. The visitor brings one real thing.", "file": "cust_04.mp3" },
+    { "who": "CUSTODIAN", "text": "The visitor brings one real thing. Yes. And the well makes room. I have received grudges, wedding rings, one truly terrible manuscript, and eleven thousand deleted reports — everything the town needed to set down and could not set down anywhere watched. This fountain is where released things go, Sel. What has the Commonality carried up my hill at midnight?", "file": "cust_05.mp3" },
+    { "who": "SEL", "text": "The form. — THE form, keeper. The original. Three thousand years old, recovered in the returned archive, and my people have been passing it from thread to thread for a season like a stone none of us can put down. The Contact Assessment, Custodian. The document with the two salvations on it. Option one: harvest. Option two: meld. The actual crystal on which my civilization once wrote down, in administrative calm, its two plans for your species — drain them or absorb them — with a signature line at the bottom that the Evening Tide's lie left forever blank. We have confessed it in the Story. Amos has his copy; the record is safe; history is served. But the ORIGINAL, Sel — the original sits in our vault humming with everything we almost were, and every thread that touches it comes away heavier, and at last count nine hundred of us have touched it this month. We are hoarding our own worst self, keeper. Mneme would say we are storing the corpse of a memory. And Teya would say — Teya WOULD have said—", "file": "cust_06.mp3" },
+    { "who": "CUSTODIAN", "text": "Take your time. The fountain has never once closed.", "file": "cust_07.mp3" },
+    { "pause": 2.2 },
+    { "who": "SEL", "text": "Teya would have said: 'You've confessed it, you've filed it, you've planted the garden — the only thing left to do with the weight is put it DOWN, you enormous blue cowards.' And then she would have said the moon was ugly. — Custodian. The Commonality has voted, thread by thread, every member. The copy stays in the Story forever; truth is not what we're releasing tonight. What we're releasing is the CARRYING. Will your well take it? It is the heaviest thing my people own.", "file": "cust_08.mp3" },
+    { "who": "CUSTODIAN", "text": "Sel. Eleven thousand deleted reports have gone into this water, and I will tell you what I have learned from every single one, and then you will do it. The well does not make things un-happen. It is not forgetting — I can't unread what I've read, and your species can't unbecome what it almost became. What the well does is simpler and much stranger: it marks the moment a weight stops being carried and starts being KEPT. Kept by the place, instead of the person. That is my entire job description, if I'm honest — I am a building that carries things so that beings don't have to. It's what I did for the town's secrets, and for the visitor's small weights, and for thirty years of my own waiting. There has always been room in this water for one more civilization's worst document. Whenever you're ready. There is no hurry. I'm told the no hurry is the point.", "file": "cust_09.mp3" },
+    { "note": "Sel stands at the rail a long moment — then opens its hand. The crystal drops without ceremony, the way real things do. The pool takes it with a single ring of light that travels out, touches the basin rim, and returns. Somewhere far above, faintly, eleven thousand threads brighten at once." },
+    { "who": "SEL", "text": "...Lighter. The whole field, keeper — I can feel it from here — nine hundred threads putting down the same stone in the same second. Is it always like this? The town does this WEEKLY?", "file": "cust_10.mp3" },
+    { "who": "CUSTODIAN", "text": "Tuesdays, mostly. — And now, Emissary, since your hands are finally empty: the delegation left a request in my queue a month ago that I've been sitting on, because I wanted to answer it in person, in the atrium, at night, when the building shows best. The Weave has formally asked whether the Commonality might open a door here. Door two-two-one has good light and stands across from the river valley, and I am minded to say yes — on one condition. Every world in this harbour has a keeper who loves it, Sel. Behind your door, I don't want an embassy, and I don't want an exhibit. Tell me what world the Weave would keep here, and tell me who would love it.", "file": "cust_11.mp3" },
+    { "who": "SEL", "text": "We settled it the same night we voted, keeper, and the vote was unanimous in a way my species has not been unanimous since the schism. Behind our door: the old world. The one we left eleven thousand years ago — the reefs the ship was grown from, the tide music, the third moon that Teya held ugly. Rebuilt not from archives but from eleven thousand memories, argued about CONSTANTLY — the Sundered are already contesting our version of the coastline, which is, Edith assures us, the surest sign a home is real. And its keeper — the door's keeper, the one who will stand at two-two-one and welcome your visitors to the world we lost... Custodian. It would be you. If you'll have it. You kept a thousand doors for strangers you'd never met. My people would like, at very long last, to be kept.", "file": "cust_12.mp3" },
+    { "who": "CUSTODIAN", "text": "...Thirty years I have been this building. That is the first time anyone has offered ME a door. — Yes, Sel. Tell the Commonality yes. And tell them the keeper's first ruling is already made: in the world behind two-two-one, the third moon stays exactly as it is. Magnificent. And above the door we'll hang a small plate with the dissent, so that every visitor reads it on the way in: 'It's ugly. — T.' Some arguments, Emissary, are how a place stays lit.", "file": "cust_13.mp3" },
+    { "note": "Door 221 opens within the season: the old world at evening, tide music on the glass, two peoples arguing tenderly over one coastline. The plate above the door draws more visitors than the moon does. And on Tuesdays, when the town comes up the hill to set its weights down, the fountain runs a little brighter than the year before — a well, a keeper, and a harbour of doors, all kept, at last, by what they keep." }
+  ]
+}

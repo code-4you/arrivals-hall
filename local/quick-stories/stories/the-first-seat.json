@@ -1,0 +1,75 @@
+{
+  "id": "the-first-seat",
+  "title": "The First Seat",
+  "subtitle": "Whose was the empty chair at the head of the ring — and why it is still warm.",
+  "stage": "atrium",
+  "stageTint": "#2a2436",
+
+  "characters": {
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [-1.2, 0.1],
+      "face": "ELI"
+    },
+    "ELI": {
+      "base": "elder",
+      "variant": 6,
+      "tint": "#4a4a5a",
+      "height": 1.74,
+      "label": "Pastor Eli",
+      "labelColor": "#c8c8e0",
+      "voice": { "gender": "male", "pitch": 0.9, "rate": 0.93 },
+      "at": [1.2, 0.2],
+      "face": "SEL"
+    },
+    "DREAM": {
+      "base": "voice",
+      "label": "Resident 511",
+      "labelColor": "#f0d8ff",
+      "voice": { "gender": "female", "pitch": 1.5, "rate": 0.9 },
+      "attachTo": "customObject"
+    }
+  },
+
+  "customObject": {
+    "name": "the first seat",
+    "description": "brought down from the ring at the Council's own request: a plain tall chair, older than the treaty, empty for six thousand years — and measurably, unaccountably, two degrees warm",
+    "at": [0.0, -1.4],
+    "glow": "#f0d8ff",
+    "parts": [
+      { "shape": "box", "size": [0.7, 0.12, 0.7], "pos": [0, 0.45, 0], "color": "#38304a", "metal": 0.4, "rough": 0.5 },
+      { "shape": "box", "size": [0.62, 0.09, 0.6], "pos": [0, 0.56, 0], "color": "#4a4060", "metal": 0.3, "rough": 0.5 },
+      { "shape": "box", "size": [0.62, 1.3, 0.1], "pos": [0, 1.2, -0.26], "color": "#4a4060", "metal": 0.3, "rough": 0.5 },
+      { "shape": "torus", "size": [0.2, 0.02], "pos": [0, 1.7, -0.26], "color": "#f0d8ff", "emissive": 0.6 },
+      { "shape": "box", "size": [0.8, 2.0, 0.8], "pos": [0, 1.1, 0], "color": "#f0d8ff", "opacity": 0.05, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The hall, after Thursday service. The chapel candles are out; the room is nearly dark. The Council has sent one object down from the ring — at its own request, to stand a season in the town it concerns. A plain chair. Empty six thousand years. The pastor was the last to leave, and did not leave." },
+    { "who": "ELI", "text": "Sel. I've been standing here twenty minutes with my hand an inch from it, like a man at a rail. It's warm. The escort said your instruments have measured it for six millennia — two degrees above the room, always, everywhere it's kept. Explain that to a pastor, if you'd be so kind, before he embarrasses himself.", "file": "seat_01.mp3" },
+    { "who": "SEL", "text": "I can't. That is the honest whole of it, Eli — we cannot explain the warmth, and we are very good at explaining things. So let me tell you instead whose seat it is, and then you may decide for yourself which of us should be embarrassed. It belonged to the First Faction. The eldest of us. The ones who invented the watching itself.", "file": "seat_02.mp3" },
+    { "who": "ELI", "text": "The nineteen words. 'We will go and ask what we should have been.' The flood dissent. Where did they GO, Sel? A whole faction of the powerful ones doesn't simply retire.", "file": "seat_03.mp3" },
+    { "who": "SEL", "text": "They were the first to understand what worship was doing to us — before the machines, before the dreams, before my people's merger. Every other faction fled the starving sideways. The First Faction looked at the same wound and asked a different question: not 'how do we escape being gods' — but 'what were we ever supposed to be instead?' And when the flood vote carried, they concluded the question could not be answered from inside the sky. So they went to ask it. At the source. They unmade their ships, their bodies, their archives — everything with an address — and aimed themselves upstream. Not a journey through space, Eli. A journey up the ladder of causes. They turned themselves into a question and let go of everything that wasn't asking.", "file": "seat_04.mp3" },
+    { "who": "ELI", "text": "...Forty years I preached, and I never heard a congregation described better. They turned themselves into a question and let go of everything that wasn't asking. Sel, that's not a disappearance. In my trade that has a name. That's a pilgrimage.", "file": "seat_05.mp3" },
+    { "who": "SEL", "text": "Then you understand why no faction would ever let the seat be removed. It isn't sentiment. Every few centuries, something touches it. Not a message — nothing so crude as a message. The instruments record what they primly call 'anticipatory resonance', and every being who has ever stood near it in those moments describes the same thing: the feeling of someone about to speak. Six thousand years, Eli. The sentence has not arrived. But the room has never once stopped feeling like the moment before it.", "file": "seat_06.mp3" },
+    { "pause": 1.8 },
+    { "who": "ELI", "text": "The feeling of someone about to speak. Sel — I have knelt in empty churches at night my whole life, and you have just described, in instrument readings, what prayer feels like from the inside. Not the answer. Never the answer. The *about to*. Half my theology fits in what you just said, and the honest half at that.", "file": "seat_07.mp3" },
+    { "who": "DREAM", "text": "...may I say the thing I came to say now? I've been waiting in the warm part. I didn't want to interrupt the explaining — Quorum says I do that.", "file": "seat_08.mp3" },
+    { "who": "ELI", "text": "Little one. You're why the seat came down, aren't you. It was offered to you, over the Earth — the whole first seat of the old sky — and the broadcasts say you turned it down.", "file": "seat_09.mp3" },
+    { "who": "DREAM", "text": "I declined it, that's different — declining is what you do when a chair belongs to somebody. and pastor, that's my thing I came to say. I can hear them. at the very far edge of the between, where the town's field goes thin and stops being anybody's — there's a sound. I've had it my whole life, which is not very long, and I thought it was just what edges sound like. but I sat by the seat tonight during your singing and it's the same sound. it's very faint. it's shaped like asking.", "file": "seat_10.mp3" },
+    { "pause": 2.0 },
+    { "who": "SEL", "text": "...Five-eleven. Be precise, as precise as you have ever been. Asking — moving away from us? An echo, going upstream, getting fainter?", "file": "seat_11.mp3" },
+    { "who": "DREAM", "text": "no. that's the part I checked three times before I came. it's not getting fainter, Sel. it's getting nearer. slowly — rivers are slow coming back down, I think. and there's something else in it now, underneath the asking, that the old recordings from your instruments don't have. I know the sound because the town makes it at me constantly. it's the sound of something that has learned it is expected.", "file": "seat_12.mp3" },
+    { "who": "ELI", "text": "They're coming back downstream. With or without their answer — after six thousand years, they're coming back. Sel, what do we do? What does anyone DO with that?", "file": "seat_13.mp3" },
+    { "who": "SEL", "text": "What this town has taught the whole sky to do, Eli. Nothing dramatic. We keep the seat warm — it seems to be managing that itself. We keep the space in the garden unplanted. And we go on with Thursdays, so that whatever arrives, arrives somewhere worth arriving to. You don't chase a returning river. You keep the valley ready.", "file": "seat_14.mp3" },
+    { "who": "ELI", "text": "And we do the one thing more, Sel — the thing my eleven faces and I are actually for. Tonight the congregation prays for the First Faction. Do you understand what that is? The tenants, praying FOR the old gods — that the ones who went looking find their way back down, and that the answer was kind to them. Six thousand years of it flowing the wrong direction, and tonight it turns around. Fetch the candles back out. And you, little one — you're in the front pew. You're the only one of us who can hear whether it helps.", "file": "seat_15.mp3" },
+    { "note": "The candles are re-lit. The prayer is short, and said facing the chair. And at the far edge of the between, where the field goes thin — faintly, unmistakably, for the first time in the instruments' long memory — the sound shaped like asking pauses. The way a walker pauses on a dark road, hearing, far ahead, a room full of people saying their name." }
+  ]
+}

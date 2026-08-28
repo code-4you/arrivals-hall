@@ -1,0 +1,72 @@
+{
+  "id": "the-republic-3",
+  "title": "The Republic · Part 3",
+  "subtitle": "Guardians, stories, music and the four virtues — the city finds justice. After Plato.",
+  "stage": "room",
+  "characters": {
+    "SOCRATES": {
+      "base": "elder", "variant": 1, "tint": "#d8d2c0", "height": 1.72,
+      "label": "Socrates", "labelColor": "#ffd27f",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.85, "rate": 0.94 },
+      "at": [0, 0.4], "face": "GLAUCON"
+    },
+    "GLAUCON": {
+      "base": "man", "variant": 3, "tint": "#8a5f3f", "height": 1.78,
+      "label": "Glaucon", "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.08, "rate": 1.02 },
+      "at": [-1.3, -0.3], "face": "SOCRATES"
+    },
+    "ADEIMANTUS": {
+      "base": "man", "variant": 6, "tint": "#5f7350", "height": 1.75,
+      "label": "Adeimantus", "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.95, "rate": 0.98 },
+      "at": [1.3, -0.3], "face": "SOCRATES"
+    },
+    "THRASYMACHUS": {
+      "base": "man", "variant": 9, "tint": "#6a4a5a", "height": 1.7,
+      "label": "Thrasymachus", "labelColor": "#c98a8a",
+      "voice": { "prefer": ["male"], "pitch": 0.8, "rate": 0.9 },
+      "at": [2.4, -1.1], "face": [3, -2], "keepFacing": true
+    }
+  },
+  "customObject": {
+    "name": "the oil lamp",
+    "description": "a low-burning oil lamp on a stand — the night is deep, the flame small",
+    "at": [0, -1.3],
+    "glow": "#ffb45e",
+    "parts": [
+      { "shape": "cylinder", "size": [0.09, 1.0, 0.16], "pos": [0, 0.5, 0], "color": "#4a3a26", "metal": 0.4 },
+      { "shape": "cylinder", "size": [0.22, 0.1], "pos": [0, 1.02, 0], "color": "#6a5236", "metal": 0.5 },
+      { "shape": "sphere", "size": [0.07], "pos": [0, 1.16, 0], "color": "#ffcf7f", "emissive": 1.6 }
+    ]
+  },
+  "script": [
+    { "note": "Cephalus’s house, deep in the night. The lamps have burned low. Thrasymachus slumps in the corner, defeated and drowsy." },
+    { "who": "SOCRATES", "text": "So, our guardians. They must be spirited, courageous, strong, swift. But also philosophical, lovers of wisdom, gentle to their own. A difficult combination, wouldn’t you agree? How do we cultivate such a nature?", "file": "rep3_01.mp3" },
+    { "who": "GLAUCON", "text": "Through education, surely. What sort of education would best shape such souls?", "file": "rep3_02.mp3" },
+    { "who": "SOCRATES", "text": "We must begin, as always, with stories. With music and poetry, for these enter most deeply into the soul. But not all stories are suitable. What tales do our poets tell? Stories of gods warring, of heroes consumed by vice, of injustice prevailing. These are not fit for the ears of future guardians.", "file": "rep3_03.mp3" },
+    { "who": "ADEIMANTUS", "text": "Are we to censor the poets, Socrates?", "file": "rep3_04.mp3" },
+    { "who": "SOCRATES", "text": "We are to ensure that the stories they tell foster virtue. Gods must be depicted as perfectly good, the cause only of good things, never of evil. Heroes must be shown as brave, temperate, just. We must banish tales that portray the afterlife as terrifying, lest our guardians fear death more than dishonor.", "file": "rep3_05.mp3" },
+    { "who": "GLAUCON", "text": "And music?", "file": "rep3_06.mp3" },
+    { "who": "SOCRATES", "text": "Only harmonies that inspire courage and temperance. The mournful modes and the soft, convivial tunes must be excluded. Only those which imitate the sounds of a courageous warrior or a temperate citizen will do. And instruments too complex for that purpose — the flute, for instance — must be forbidden. Only the lyre and cithara.", "file": "rep3_07.mp3" },
+    { "note": "Thrasymachus snorts, half-asleep." },
+    { "who": "ADEIMANTUS", "text": "This is a rigorous education, Socrates. For their bodies, too, they will need training.", "file": "rep3_08.mp3" },
+    { "who": "SOCRATES", "text": "Indeed. Gymnastics, of course. But not for athletes who merely bulk up and sleep their lives away. Our guardians will train for war, for endurance, for health. And their diet must be simple, like their music. No rich sauces, no sweets, no endless varieties of food.", "file": "rep3_09.mp3" },
+    { "who": "GLAUCON", "text": "You are stripping our luxurious city bare, Socrates! No feasts, no grand spectacles for our guardians?", "file": "rep3_10.mp3" },
+    { "who": "SOCRATES", "text": "A city where the guardians live simply, Glaucon, will be stronger. They will be less prone to disease, less in need of doctors and lawyers. And they will be fierce in battle, for they will not be softened by luxury.", "file": "rep3_11.mp3" },
+    { "who": "ADEIMANTUS", "text": "But what about the wealth of the city? If the guardians have no private property, no gold or silver, how will the city be rich?", "file": "rep3_12.mp3" },
+    { "who": "SOCRATES", "text": "The city will be rich in justice, Adeimantus. The guardians’ reward is not gold, but the well-being of the city. We must ensure that neither poverty nor excessive wealth corrupts the citizens. A city with too much wealth becomes soft and lazy; a city with too much poverty becomes base and rebellious.", "file": "rep3_13.mp3" },
+    { "who": "GLAUCON", "text": "But if our city is so simple, so lacking in luxury, will it not be a target for wealthier, more extravagant cities?", "file": "rep3_14.mp3" },
+    { "who": "SOCRATES", "text": "On the contrary. A city where the guardians are not obsessed with wealth can wage war more effectively. They will have no gold to lose, and they will be united. Other cities, torn by internal strife and the pursuit of riches, will be weaker.", "file": "rep3_15.mp3" },
+    { "who": "ADEIMANTUS", "text": "This city seems to be built on four virtues, Socrates: wisdom, courage, temperance, and justice. Where do we find them?", "file": "rep3_16.mp3" },
+    { "who": "SOCRATES", "text": "Ah, now we are truly looking for justice, my friends! If we have founded a city that is truly good, it must possess all four. Wisdom resides in the guardians, who rule with knowledge and good counsel. Courage is found in the warriors, who defend the city without fear.", "file": "rep3_17.mp3" },
+    { "who": "GLAUCON", "text": "And temperance?", "file": "rep3_18.mp3" },
+    { "who": "SOCRATES", "text": "Temperance is not confined to one class, but spreads throughout the entire city. It is a harmony, a self-mastery, where the better part rules the worse. It means agreement among all citizens as to who should rule and who should be ruled.", "file": "rep3_19.mp3" },
+    { "who": "ADEIMANTUS", "text": "So, if we find these three, what is left must be justice?", "file": "rep3_20.mp3" },
+    { "who": "SOCRATES", "text": "Precisely. Justice, then, in our city, is this: that each person does their own work and does not meddle with that of others. The farmer farms, the builder builds, the guardian guards. Each performing their proper function, and not attempting to do the work of another.", "file": "rep3_21.mp3" },
+    { "note": "Glaucon and Adeimantus exchange a look of dawning comprehension." },
+    { "who": "GLAUCON", "text": "So, justice is about doing one’s own business, Socrates?", "file": "rep3_22.mp3" },
+    { "who": "SOCRATES", "text": "Yes. And now that we have seen it writ large in the city, perhaps we can discern it within the individual soul. For surely, if the city is just when its parts perform their proper functions, the soul, too, must be just when its parts are in harmony.", "file": "rep3_23.mp3", "face": "camera" },
+    { "pause": 2 }
+  ]
+}

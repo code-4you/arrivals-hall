@@ -1,0 +1,78 @@
+{
+  "id": "an-enemy-of-the-people",
+  "title": "An Enemy of the People",
+  "subtitle": "Ibsen: the water is poisoned, the town votes, and one man stands alone.",
+  "stage": "room",
+  "stageTint": "#2e3038",
+
+  "characters": {
+    "STOCKMANN": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#7a94b0",
+      "height": 1.74,
+      "label": "Dr. Stockmann",
+      "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.02, "rate": 1.04 },
+      "at": [-1.3, -0.2],
+      "face": "camera"
+    },
+    "PETER": {
+      "base": "man",
+      "variant": 5,
+      "tint": "#5a5148",
+      "height": 1.78,
+      "label": "Mayor Peter Stockmann",
+      "labelColor": "#d8c8a8",
+      "voice": { "prefer": ["george", "male"], "pitch": 0.88, "rate": 0.92 },
+      "at": [0.2, 0.4],
+      "face": "STOCKMANN"
+    },
+    "ASLAKSEN": {
+      "base": "man",
+      "variant": 6,
+      "tint": "#8a8272",
+      "height": 1.68,
+      "label": "Aslaksen, printer",
+      "labelColor": "#e0d8c0",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.12, "rate": 1.0 },
+      "at": [1.4, 0.1],
+      "face": "STOCKMANN"
+    }
+  },
+
+  "customObject": {
+    "name": "the water sample",
+    "description": "a sealed jar of the famous healing waters on the lectern — clear as glass, and full of what the laboratory found",
+    "at": [-0.5, -1.2],
+    "glow": "#9fd8ff",
+    "parts": [
+      { "shape": "box", "size": [0.55, 1.1, 0.45], "pos": [0, 0.55, 0], "color": "#3a342c", "rough": 0.8 },
+      { "shape": "box", "size": [0.65, 0.06, 0.5], "pos": [0, 1.13, 0], "color": "#2a251e", "rough": 0.7 },
+      { "shape": "cylinder", "size": [0.11, 0.3], "pos": [0, 1.32, 0], "color": "#c9e4f0", "opacity": 0.4, "rough": 0.1 },
+      { "shape": "cylinder", "size": [0.115, 0.05], "pos": [0, 1.5, 0], "color": "#6a5a3a", "metal": 0.6 },
+      { "shape": "cylinder", "size": [0.09, 0.2], "pos": [0, 1.28, 0], "color": "#7ab8d0", "emissive": 0.35, "opacity": 0.55 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: a packed hall in a small Norwegian spa town — staged after Ibsen (public domain, adapted freely). The town's fortune is its famous healing baths. Dr. Stockmann, their medical officer, has called a public meeting. His brother Peter — the mayor — has made sure of the crowd. Hisses from the dark as the doctor takes the lectern with his jar." },
+    { "who": "STOCKMANN", "text": "Neighbours — before anyone shouts, look at the jar. Our famous waters. I sent samples to the university myself, because our visitors kept leaving sicker than they came. And the laboratory answered: the baths are poisoned. Contaminated at the source, from the tannery upstream. The pipes must be relaid — the whole intake, higher up the valley. It is not an opinion, it is a culture dish. I brought the report. I thought — God help me, I actually thought — you would thank me.", "file": "enem_01.mp3" },
+    { "who": "PETER", "text": "And there speaks my brother the scientist, who has never once had to balance a budget. Relaying the pipes means two years, and a special tax, and the baths CLOSED while our rivals' towns advertise. The doctor's report is not a fact, citizens — it is an expense. And I remind you: the doctor serves at the pleasure of the baths committee. Which serves at yours.", "file": "enem_02.mp3" },
+    { "who": "ASLAKSEN", "text": "Now — moderation, gentlemen, moderation. I speak for the small tradesmen. Nobody at my print-shop wants poisoned water, doctor, truly. But nobody wants two years of empty guesthouses either. Might the truth be — phased in? Gently? Over some years? In instalments, as it were? A moderate poisoning, moderately disclosed?", "file": "enem_03.mp3" },
+    { "who": "STOCKMANN", "text": "PHASED IN? Aslaksen, the bacteria have declined to be moderate! Every summer we delay, we invite the sick of Europe to bathe in the tannery's runoff and we CHARGE THEM for it. I am trying to save this town's honour and its visitors' lives, and you offer me an instalment plan on the truth!", "file": "enem_04.mp3" },
+    { "who": "PETER", "text": "Note the tone, citizens. Note who respects you, and who scolds. — I move that the meeting resolve as follows: that Dr. Stockmann's report is exaggerated and unproven, that publication would constitute an attack on the town's livelihood, and that the doctor be forbidden to speak of it in his official capacity.", "file": "enem_05.mp3" },
+    { "who": "ASLAKSEN", "text": "Seconded — moderately. All those in favour of the mayor's motion?", "file": "enem_06.mp3", "face": "camera" },
+    { "note": "The hall becomes a forest of hands. Every hand but a few. The vote is not close. Somewhere in the crowd, someone begins the chant: 'enemy of the people' — and the hall takes it up like a tide." },
+    { "pause": 2.0 },
+    { "who": "STOCKMANN", "text": "So. The compact majority has spoken, and I am to be — what was the phrase — an enemy of the people. Then let me commit my real offence, since I'm to be hanged for it anyway. It isn't the pipes I've discovered are poisoned. It's this hall.", "file": "enem_07.mp3" },
+    { "who": "STOCKMANN", "text": "You have just voted, by an overwhelming show of hands, that a bacterium is a matter of opinion. And the terrifying thing — the thing I will be turning over for the rest of my life — is that the vote was FREE. No one forced you. The majority looked at the truth and the price tag, side by side, and chose by the price tag — and called the choosing democracy.", "file": "enem_08.mp3", "face": "camera" },
+    { "who": "PETER", "text": "You see, citizens? He despises you. I have him now and he knows it. — Your post, Thomas, is of course untenable after this. As your brother, I'm sorry. As your mayor, I confess it's convenient.", "file": "enem_09.mp3" },
+    { "who": "STOCKMANN", "text": "Take the post. Take the practice too — my patients are already crossing the street. Break my windows; someone's sure to, tonight, moderately. You can take everything a town gives, because a town gave it. What you cannot vote away is the culture dish. The water will still be poisoned on the day the first lawsuit arrives — and on that day, remember which of your neighbours told you, and which of them took the show of hands.", "file": "enem_10.mp3" },
+    { "who": "ASLAKSEN", "text": "The meeting is closed! The meeting is EXTREMELY closed! …Doctor. Off the record. Print-shop's back door is never locked. Should the — should the lawsuit day come, and pamphlets be wanted in a hurry. Moderation has a back door. It's how moderation survives.", "file": "enem_11.mp3" },
+    { "pause": 1.4 },
+    { "note": "The hall empties around him — the chant fading down the street toward his house and its windows. Stockmann stands alone at the lectern with his jar of clear, poisoned, patient water." },
+    { "who": "STOCKMANN", "text": "Alone, then. My wife will say I might have bowed just once, and she'll be right, and I'd do it again. Because here is the discovery I made tonight, worth more than the bacteriology: the strongest man in the world is the man who stands most alone. Not happiest. Not safest. I said STRONGEST. — And in the spring, when the visitors fall ill, this jar and I will still be here. Truth is patient, neighbours. It's the only thing in this town that can afford to be.", "file": "enem_12.mp3", "face": "camera" },
+    { "note": "THE END — staged from Ibsen's play of 1882. The pipes, history records in every town like this one, were eventually relaid — years later, at four times the cost, by a committee that thanked no one." }
+  ]
+}

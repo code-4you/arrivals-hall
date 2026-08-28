@@ -1,0 +1,96 @@
+{
+  "id": "the-symposium-3",
+  "title": "The Symposium — Part Three",
+  "subtitle": "The doctor finds Love in everything. Aristophanes finds our missing halves.",
+  "stage": "room",
+  "stageTint": "#3d3222",
+
+  "characters": {
+    "ERYXIMACHUS": {
+      "base": "man",
+      "variant": 1,
+      "tint": "#7fa8a0",
+      "height": 1.74,
+      "label": "Eryximachus",
+      "labelColor": "#9fe8d8",
+      "voice": { "prefer": ["david", "male"], "pitch": 0.95, "rate": 0.96 },
+      "at": [-1.5, 0],
+      "face": "camera"
+    },
+    "ARISTOPHANES": {
+      "base": "man",
+      "variant": 6,
+      "tint": "#b06a4a",
+      "height": 1.66,
+      "label": "Aristophanes",
+      "labelColor": "#ffb87a",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.1, "rate": 1.02 },
+      "at": [-0.3, 0.5],
+      "face": "ERYXIMACHUS"
+    },
+    "AGATHON": {
+      "base": "man",
+      "variant": 3,
+      "tint": "#c9a85f",
+      "height": 1.76,
+      "label": "Agathon",
+      "labelColor": "#ffd27f",
+      "voice": { "prefer": ["george", "male"], "pitch": 1.05, "rate": 1.0 },
+      "at": [0.8, -0.3],
+      "face": "ERYXIMACHUS"
+    },
+    "SOCRATES": {
+      "base": "elder",
+      "variant": 1,
+      "tint": "#a8a08a",
+      "height": 1.66,
+      "label": "Socrates",
+      "labelColor": "#eae2c8",
+      "voice": { "prefer": ["david", "george", "male"], "pitch": 0.85, "rate": 0.9 },
+      "at": [1.9, 0.5],
+      "face": "ERYXIMACHUS",
+      "keepFacing": false
+    }
+  },
+
+  "customObject": {
+    "name": "the krater",
+    "description": "the great wine-mixing bowl at the centre of the couches — witness, by now, to three speeches and one medical emergency",
+    "at": [0, -1.3],
+    "glow": "#c9855f",
+    "parts": [
+      { "shape": "cylinder", "size": [0.22, 0.18], "pos": [0, 0.09, 0], "color": "#4a3828", "metal": 0.2, "rough": 0.6 },
+      { "shape": "cylinder", "size": [0.5, 0.42, 0.26], "pos": [0, 0.48, 0], "color": "#8a5c30", "metal": 0.45, "rough": 0.4 },
+      { "shape": "torus", "size": [0.5, 0.035], "pos": [0, 0.7, 0], "rot": [1.5708, 0, 0], "color": "#c9915a", "metal": 0.6, "rough": 0.3 },
+      { "shape": "torus", "size": [0.09, 0.025], "pos": [-0.56, 0.55, 0], "rot": [0, 0, 0.5], "color": "#c9915a", "metal": 0.6, "rough": 0.3 },
+      { "shape": "torus", "size": [0.09, 0.025], "pos": [0.56, 0.55, 0], "rot": [0, 0, -0.5], "color": "#c9915a", "metal": 0.6, "rough": 0.3 },
+      { "shape": "cylinder", "size": [0.42, 0.03], "pos": [0, 0.68, 0], "color": "#5c2430", "emissive": 0.15, "rough": 0.25 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: the_hallwyl_museum_1st_floor_combined — Agathon's dining room, deep into the night now. Aristophanes sits with a feather at the ready, mid-treatment. Eryximachus, standing in for him, has the floor." },
+    { "who": "ERYXIMACHUS", "text": "Since comedy is indisposed, medicine will speak — and medicine says this: Pausanias began well, but stopped small. Two loves, yes. But why stop at people? I find the same two loves in EVERYTHING.", "file": "sym3_01.mp3" },
+    { "who": "ERYXIMACHUS", "text": "In the body: health is the loves of hot and cold, wet and dry, agreeing with one another — and disease is those same elements loving badly. A doctor is nothing grander than a matchmaker for the humours. I reconcile quarrelling elements for a living.", "file": "sym3_02.mp3" },
+    { "who": "ERYXIMACHUS", "text": "In music: what is harmony but high and low notes, once at war, brought to love one another? In the seasons: when the elements love in good order, you get harvest. When they love greedily — frost, blight, plague. The whole world, gentlemen, is one long medical case of Love well or badly managed.", "file": "sym3_03.mp3", "face": "camera" },
+    { "who": "AGATHON", "text": "Only a doctor could turn the god of desire into a colleague.", "file": "sym3_04.mp3" },
+    { "who": "ERYXIMACHUS", "text": "And only poets are surprised that the universe has a working diet. I'm done — modest, orderly, and correct, which is more than the next speech will be. Aristophanes? How goes the treatment?", "file": "sym3_05.mp3", "face": "ARISTOPHANES" },
+    { "note": "Aristophanes applies the feather. A tremendous sneeze rings off the krater. Silence. He straightens, entirely cured and entirely delighted." },
+    { "who": "ARISTOPHANES", "text": "Cured! And note the medicine, friends: the hiccups yielded neither to breath nor to water, but to a SNEEZE — proof that the body only respects arguments more ridiculous than itself. Remember that; it's the last sensible thing I'll say tonight.", "file": "sym3_06.mp3" },
+    { "who": "ARISTOPHANES", "text": "Because my speech is not like the others. I'm not going to praise Love. I'm going to tell you what Love IS, and why we ache the way we ache — and you'll laugh, and then you'll go strangely quiet, in that order.", "file": "sym3_07.mp3", "face": "camera" },
+    { "who": "ARISTOPHANES", "text": "In the beginning, humans were round. Truly round — a wheel of flesh: four arms, four legs, two faces on one proud head, everything doubled. They didn't walk, they CARTWHEELED, spinning on eight limbs. They were magnificent and they knew it — and being magnificent, of course, they attacked the gods.", "file": "sym3_08.mp3" },
+    { "who": "ARISTOPHANES", "text": "Zeus faced a dilemma: destroy them and lose all future sacrifices — the gods do keep accounts — or endure their insolence. Then, the cruellest stroke of genius in all mythology: 'I shall cut them in half,' he said. 'They will be weaker, humbler… and there will be twice as many of them to worship us.' Divine economics, gentlemen.", "file": "sym3_09.mp3" },
+    { "who": "ARISTOPHANES", "text": "And so it was done — each round one split like an apple, and Apollo sent to tidy the wound, drawing the skin together and tying it off at the navel. Look down tonight, all of you, at that little knot in your middle. That is the SCAR. You wear the receipt of the surgery to this day.", "file": "sym3_10.mp3" },
+    { "note": "Around the couches, several grown men of Athens are discreetly aware of their navels." },
+    { "who": "ARISTOPHANES", "text": "But here is the part that stops the laughter. The halves woke — and each one, not knowing why, began to search. Whole lifetimes, wandering, hollow on one side. And when a half meets its own other half — friends, something happens that no one has ever had the decency to explain until now.", "file": "sym3_11.mp3" },
+    { "who": "ARISTOPHANES", "text": "They are struck out of themselves. It isn't lust — lust is common and this is not. It's RECOGNITION. The two of them refuse to be parted again, even for a night, though neither could tell you what they want from the other. The soul knows. It simply can't pronounce it.", "file": "sym3_12.mp3", "face": "camera" },
+    { "who": "ARISTOPHANES", "text": "Imagine Hephaestus standing over such a pair with his tools: 'Shall I weld you? Melt you into one, so that even in death you go down together as a single being?' — Not one couple in the world would refuse. Not one. And THAT wish, which none of us can name and all of us have felt, has a name after all. Its name is Love: the pursuit of the whole.", "file": "sym3_13.mp3" },
+    { "who": "ARISTOPHANES", "text": "So be reverent, friends — and be kind to each other. Every person you pass is walking around cut in half, holding their edge together, scanning every room they enter. Laugh at my round cartwheeling ancestors all you like. Then go home and notice what you're missing.", "file": "sym3_14.mp3" },
+    { "pause": 1.6 },
+    { "note": "No one laughs. Agathon has a hand somewhere near his sternum. Even Eryximachus has put down his cup." },
+    { "who": "SOCRATES", "text": "…There it is. The comedian tells the room a joke, and the room comes out the other side wounded and grateful. Aristophanes, that was the truest thing said tonight — which is going to make my job very hard indeed.", "file": "sym3_15.mp3" },
+    { "who": "AGATHON", "text": "Your job, and mine before yours — I'm the host, I speak next, and I have to follow THE MISSING HALF OF THE HUMAN SOUL with whatever I scribbled this afternoon.", "file": "sym3_16.mp3" },
+    { "who": "SOCRATES", "text": "Courage, Agathon. Speak beautifully — you always do. And when you're finished, I'll tell you all about a woman named Diotima, who taught me everything I know about Love… and dismantled every speech given at this table before any of you were born.", "file": "sym3_17.mp3", "face": "camera" },
+    { "note": "TO BE CONTINUED — Part Four: Agathon's dazzling speech, and Socrates' ladder of Love, taught to him by Diotima of Mantinea." }
+  ]
+}

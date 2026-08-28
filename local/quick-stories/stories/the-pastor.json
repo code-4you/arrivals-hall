@@ -1,0 +1,84 @@
+{
+  "id": "the-pastor",
+  "title": "The Pastor",
+  "subtitle": "After the ships appeared, half his congregation left in both directions.",
+  "stage": "atrium",
+  "stageTint": "#3e3428",
+
+  "characters": {
+    "ELI": {
+      "base": "elder",
+      "variant": 6,
+      "tint": "#4a4a5a",
+      "height": 1.74,
+      "label": "Pastor Eli",
+      "labelColor": "#c8c8e0",
+      "voice": { "gender": "male", "pitch": 0.9, "rate": 0.93 },
+      "at": [0.0, 0.5],
+      "face": "RUTH"
+    },
+    "RUTH": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#c9855f",
+      "height": 1.62,
+      "label": "Ruth",
+      "labelColor": "#ffd8a8",
+      "voice": { "gender": "female", "pitch": 1.0, "rate": 0.98 },
+      "at": [-1.2, 0.1],
+      "face": "ELI"
+    },
+    "SEL": {
+      "base": "hologram",
+      "variant": 1,
+      "tint": "#8fd0ff",
+      "height": 1.85,
+      "label": "Sel",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "female", "pitch": 0.9, "rate": 0.92 },
+      "at": [1.25, 0.2],
+      "face": "ELI"
+    }
+  },
+
+  "customObject": {
+    "name": "the two doors",
+    "description": "one wall, two doors: the chapel's old wooden door and the vision wing's pale lit arch — hung side by side on purpose, neither one larger",
+    "at": [0.0, -1.55],
+    "glow": "#ffd27f",
+    "parts": [
+      { "shape": "box", "size": [0.85, 1.9, 0.1], "pos": [-0.55, 1.0, 0], "color": "#4a3220", "rough": 0.9 },
+      { "shape": "sphere", "size": [0.045], "pos": [-0.25, 1.0, 0.08], "color": "#c9a24a", "metal": 0.8 },
+      { "shape": "box", "size": [0.85, 1.9, 0.1], "pos": [0.55, 1.0, 0], "color": "#38404e", "metal": 0.3, "rough": 0.5 },
+      { "shape": "torus", "size": [0.32, 0.03], "pos": [0.55, 1.6, 0.06], "color": "#9fe8d8", "emissive": 0.7 },
+      { "shape": "box", "size": [2.1, 0.14, 0.14], "pos": [0, 2.05, 0], "color": "#5a4326", "rough": 0.8 },
+      { "shape": "box", "size": [2.0, 2.0, 0.3], "pos": [0, 1.0, 0.1], "color": "#ffd27f", "opacity": 0.04, "additive": true }
+    ]
+  },
+
+  "script": [
+    { "note": "The community's central hall. A visitor in a worn black coat has stopped in front of a wall with two doors — the chapel's old wooden one, and the vision wing's lit arch — and has not moved for some minutes. Ruth, who volunteers as a guide on Wednesdays, has noticed." },
+    { "who": "RUTH", "text": "They do that to people, those two doors. Take your time, love. There's no queue for either.", "file": "past_01.mp3" },
+    { "who": "ELI", "text": "Forgive me. Eli — Pastor Eli, from the coast, or I was. I came on the morning bus and I've been standing here like a fool wondering which door I'm still allowed through.", "file": "past_02.mp3" },
+    { "who": "RUTH", "text": "Ruth. And the answer's both — that's why they share a wall. But 'or I was' is doing some heavy lifting in that sentence, Pastor. Bad year?", "file": "past_03.mp3" },
+    { "who": "ELI", "text": "The ships, Ruth. When the Council reconvened over our heads, I lost half my congregation in one month — half of them to the sky-forums, chasing every leaked faction record, and half to nothing at all. To just... nothing. And I stood in the pulpit with the remaining eleven faces looking up at me, and I realised I didn't know which half I belonged to. Forty years of sermons, and the word I'd built them on turns out to be — plural.", "file": "past_04.mp3" },
+    { "who": "RUTH", "text": "The mistranslation. Amos's exhibit. You've read the margin note, then.", "file": "past_05.mp3" },
+    { "who": "ELI", "text": "I've read everything. That's rather the problem. The scholars say the powerful ones were real, the Council confirms it from orbit, your own archive shows the committee minutes. So tell me — you seem like someone who'd give it to me straight. Forty years, Ruth. Who have I been talking to for forty years?", "file": "past_06.mp3" },
+    { "pause": 1.6 },
+    { "who": "RUTH", "text": "I'm a librarian, not a theologian, so you'll get a librarian's answer. I asked my friend Sel that exact question last spring — Sel's one of them, you understand, the old sky-people, comes to Thursday dinner. I asked: back in the temple days, when whole nations were praying to your committee — who did YOUR people pray to? And do you know what it said?", "file": "past_07.mp3" },
+    { "who": "ELI", "text": "I did not know they prayed at all.", "file": "past_08.mp3" },
+    { "who": "SEL", "text": "We never stopped.", "file": "past_09.mp3" },
+    { "note": "The pastor turns. The being from the old stories is standing in the hall light, and it inclines its head to him, the way one clergyman greets another." },
+    { "who": "SEL", "text": "Forgive the entrance; Ruth texts me when someone stands at this wall too long. Pastor Eli. Yes — we prayed. Forty thousand years further up the sky than you, and we still address the upstream: whatever made it possible for matter to care. We have better instruments than you and the same silence past the top of them. Your word was never wrong, Eli. It was aimed past us the whole time. You simply couldn't see us standing in the middle distance, taking the bows.", "file": "past_10.mp3" },
+    { "who": "ELI", "text": "Taking the— ...You answered them. The old prayers. Some of the miracles, the fires, the rescues — that was your people, letting my ancestors believe—", "file": "past_11.mp3" },
+    { "who": "SEL", "text": "Sometimes. Not as often as the tablets claim, more often than I can defend. And so I will say to you what I came down the hill to say, because you are the first of your profession to walk through that arch since the ships came, and you deserve to hear it from one of us directly. I am sorry. We stood between your people and what they meant, and we let the confusion feed us, and it was the loneliest theft in history — it starved us and short-changed you. But hear the other half, Pastor: the one your people MEANT — the one you have been talking to for forty years — never needed our permission to hear you. We were in the way. We were never the destination. A forwarding address is not a dead letter.", "file": "past_12.mp3" },
+    { "pause": 2.0 },
+    { "who": "ELI", "text": "...I have sat through ten thousand hours of theology, and the most pastoral thing ever said to me just came from an extraterrestrial. I don't know whether to laugh or weep, Sel of the Weave.", "file": "past_13.mp3" },
+    { "who": "SEL", "text": "The Thursday congregation does both, usually before the soup. You would fit precisely.", "file": "past_14.mp3" },
+    { "who": "ELI", "text": "And through there? The lit arch — the vision wing, the ladder everyone speaks of. What do they find at the top of it? Because if it's another sky full of managers, Ruth, I haven't the strength.", "file": "past_15.mp3" },
+    { "who": "RUTH", "text": "Same thing that's behind your wooden door, Pastor. A silence that turns out to be full. The practice people climb to it and call it the Clear; your lot kneel to it and call it something older. Two doors, one wall. Nobody here will ever tell you they're the same room — and nobody will tell you they're not. What we can show you is that the people who come out of both doors help with the dishes.", "file": "past_16.mp3" },
+    { "who": "ELI", "text": "Eleven faces looked up at me the Sunday I left, and I had nothing for them. If I stayed a season — just a season — do you suppose there's room here for a congregation of people whose faith survived the sky? Not despite the plural, I mean. Through it. Clear through it, out the other side, to whatever the plural was standing in front of.", "file": "past_17.mp3" },
+    { "who": "RUTH", "text": "There's a home held open four doors from the chapel, Pastor. There's always room kept on purpose — it's how invitations work. And I'd clear your Thursday evenings now, because your first congregant is standing on your left, and it knows all the old hymns in their first languages.", "file": "past_18.mp3" },
+    { "note": "The season becomes two. The Thursday service grows past forty. In the back pew, every week, a being of light sings quietly in languages the hymnal has forgotten — and when the last verse ends, it is always the first to kneel, facing past the altar, past the roof, past its own old sky, upstream." }
+  ]
+}

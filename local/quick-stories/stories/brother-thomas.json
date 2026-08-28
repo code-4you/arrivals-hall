@@ -1,0 +1,86 @@
+{
+  "id": "brother-thomas",
+  "title": "Brother Thomas",
+  "subtitle": "A pocketful of stones, and the grudge he isn't done with yet.",
+  "stage": "room",
+  "stageTint": "#3a2f1c",
+
+  "characters": {
+    "GABRIEL": {
+      "base": "elder",
+      "variant": 2,
+      "tint": "#9a8f78",
+      "height": 1.7,
+      "label": "Elder Gabriel",
+      "labelColor": "#ffd9a0",
+      "voice": { "prefer": ["george", "david", "male"], "pitch": 0.82, "rate": 0.88 },
+      "at": [-1.2, 0.1],
+      "face": "THOMAS"
+    },
+    "THOMAS": {
+      "base": "man",
+      "variant": 6,
+      "tint": "#6a5a48",
+      "height": 1.78,
+      "label": "Brother Thomas",
+      "labelColor": "#d8c8b0",
+      "voice": { "prefer": ["david", "mark", "male"], "pitch": 0.9, "rate": 0.95 },
+      "at": [0.3, -0.4],
+      "face": "GABRIEL"
+    },
+    "TRAVELER": {
+      "base": "man",
+      "variant": 1,
+      "tint": "#5d7f9c",
+      "height": 1.74,
+      "label": "The Traveler",
+      "labelColor": "#b6ff9c",
+      "voice": { "prefer": ["david", "male"], "pitch": 1.0, "rate": 1.0 },
+      "at": [1.45, 0.55],
+      "face": "THOMAS"
+    }
+  },
+
+  "customObject": {
+    "name": "the stone ledge",
+    "description": "a low ledge by the altar where people lay stones down — a small cairn of other people's finished grudges",
+    "at": [-2.2, -0.9],
+    "glow": "#ffd9a0",
+    "parts": [
+      { "shape": "box", "size": [1.2, 0.5, 0.5], "pos": [0, 0.25, 0], "color": "#4a4438", "rough": 0.9 },
+      { "shape": "sphere", "size": [0.09], "pos": [-0.35, 0.56, 0.05], "color": "#8a8272", "rough": 0.95 },
+      { "shape": "sphere", "size": [0.11], "pos": [-0.1, 0.57, -0.08], "color": "#7a7060", "rough": 0.95 },
+      { "shape": "sphere", "size": [0.08], "pos": [0.12, 0.55, 0.09], "color": "#948a78", "rough": 0.95 },
+      { "shape": "sphere", "size": [0.1], "pos": [0.36, 0.56, -0.02], "color": "#6f665a", "rough": 0.95 },
+      { "shape": "sphere", "size": [0.07], "pos": [0.02, 0.66, 0.0], "color": "#a29882", "rough": 0.95 },
+      { "shape": "cone", "size": [0.02, 0.06], "pos": [-0.52, 0.59, 0.14], "color": "#ffc46a", "emissive": 1.5, "opacity": 0.9, "additive": true, "bob": 0.01 }
+    ]
+  },
+
+  "script": [
+    { "note": "MAP: historic_wooden_church — late afternoon, long amber light through plank walls. Brother Thomas has been 'tidying' the same corner of the churchyard for an hour, raking like the ground owes him money. Elder Gabriel watches from the doorway, then beckons the traveler inside." },
+    { "who": "GABRIEL", "text": "You've met our Brother Thomas? Finest groundskeeper this church has ever had. He weeds like a man settling scores — because he is.", "file": "thom_01.mp3", "face": "TRAVELER" },
+    { "who": "THOMAS", "text": "I can hear you, Gabriel. The acoustics in this church are a plague.", "file": "thom_02.mp3" },
+    { "who": "GABRIEL", "text": "Then come in where the hearing's honest, and meet a traveler. — Thomas has a brother, you see. Had. There was a farm, and a will, and a signature that got there faster than the truth did.", "file": "thom_03.mp3" },
+    { "who": "THOMAS", "text": "Forty acres, traveler. My father's land, that I worked every summer from the age of nine while Aaron was — elsewhere. Being charming somewhere. And one signature later it's his, sold inside a year, and he's never once said the word 'sorry'. Eleven years now.", "file": "thom_04.mp3", "face": "TRAVELER" },
+    { "who": "TRAVELER", "text": "Eleven years is a long time to carry forty acres around.", "file": "thom_05.mp3" },
+    { "who": "THOMAS", "text": "Hah. You sound like him.", "file": "thom_06.mp3", "face": "GABRIEL" },
+    { "who": "GABRIEL", "text": "Because the traveler has eyes, Thomas. You don't sleep. You pray angry — I've heard you; it sounds like invoicing. The doctor says your blood pressure is a sermon in itself, and you take his tablets, as you should, and still the ground doesn't owe you money. The grudge does. And it doesn't pay either.", "file": "thom_07.mp3" },
+    { "who": "THOMAS", "text": "So I'm to forgive him? Just like that? Say it was FINE? It was not fine. It will never have been fine.", "file": "thom_08.mp3" },
+    { "who": "GABRIEL", "text": "No. Hear me, because this part matters more than anything I'll say this year: forgiveness does not mean it was fine. It doesn't excuse Aaron, it doesn't return the farm, and it isn't owed to him at all. It's something you do for YOUR own chest — putting down a stone you were never sentenced to carry. The wrong stays wrong. You just stop hauling it.", "file": "thom_09.mp3", "face": "camera" },
+    { "note": "Gabriel reaches into Thomas's coat pocket — familiar as family — and comes out with an actual stone. Then another. A third." },
+    { "who": "GABRIEL", "text": "Show the traveler your pockets, Thomas. — He started it himself, this practice, years ago. A stone for every grudge, carried until he's ready. It was meant to teach him the weight. Instead he's been collecting.", "file": "thom_10.mp3" },
+    { "who": "THOMAS", "text": "…The little one's the neighbour's dog. The flat one is the diocese roofing committee. The heavy one — the heavy one you know.", "file": "thom_11.mp3" },
+    { "who": "TRAVELER", "text": "And the ledge by the altar? The pile of stones — is that where they end up?", "file": "thom_12.mp3", "face": "customObject" },
+    { "who": "GABRIEL", "text": "Every stone on that ledge is a grudge somebody finished with. Laid down in daylight, in front of God and the draught under the door. Nobody carries them off, and nobody asks whose was whose. It is my favourite architecture in this whole church.", "file": "thom_13.mp3" },
+    { "note": "OBJECTIVE — Thomas stands a long moment, rolling the stones in his palm. Then he crosses to the ledge." },
+    { "pause": 1.6 },
+    { "who": "THOMAS", "text": "The dog can go. God knows the dog's been dead four years, and I've been feuding with a memory of barking. …And the roofing committee. Life's short and the roof did, eventually, get fixed.", "file": "thom_14.mp3", "face": "customObject" },
+    { "note": "Two stones click down onto the cairn. Small sound; the whole church seems to hear it. His hand closes around the third — the heavy one — and stops." },
+    { "who": "THOMAS", "text": "Not this one. I'm not lying in a church, Gabriel — I'm not done with this one yet. But…", "file": "thom_15.mp3" },
+    { "who": "THOMAS", "text": "…but I know where to put it, now, when I am. That's new. Eleven years and that's new.", "file": "thom_16.mp3", "face": "GABRIEL" },
+    { "who": "GABRIEL", "text": "That's not small, Thomas. That's the whole road, seen from the start of it. Keep taking the tablets, keep raking my churchyard half to death — and when the heavy one's ready, the ledge will hold it. Stone doesn't rush. Neither do I.", "file": "thom_17.mp3" },
+    { "who": "TRAVELER", "text": "Two stones lighter is two stones lighter. I've seen men put down less and stand straighter.", "file": "thom_18.mp3", "face": "camera" },
+    { "note": "MISSION COMPLETE — Brother Thomas sleeps through the night for the first time in some while. The heavy stone stays in his pocket — but now it has somewhere to go. The candle by the cairn burns steady." }
+  ]
+}
