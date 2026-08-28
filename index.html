@@ -805,10 +805,8 @@ function buildRoom(R){
   box(cp.x,H,cp.z,Math.abs(rx)*R.w+Math.abs(fx)*R.d,0.3,Math.abs(rz)*R.w+Math.abs(fz)*R.d,darkMat,false);
   const gp=emissiveStrip(cp.x,H-0.18,cp.z,Math.abs(rx)*(R.w-3)+Math.abs(fx)*(R.d-3),0.1,
                          Math.abs(rz)*(R.w-3)+Math.abs(fz)*(R.d-3),0xbfd8ff,0.55);
-  // back wall: colour accent strip, and for fitted game rooms a big screenshot of the game
+  // back wall: for fitted game rooms, a big screenshot of the game
   // (assets/walls/<roomid>.jpg) filling as much of the wall as its aspect allows.
-  const bp=P(-hd+0.35,0);
-  emissiveStrip(bp.x,3.2,bp.z,Math.abs(rx)*(R.w-1)+0.12,0.3,Math.abs(rz)*(R.w-1)+0.12,col,1.0);
   if(['hallwyl','velocity','rally','blindspots','crypt','cerebro'].indexOf(R.id)>=0){
     const ap=P(-hd+0.45,0), ry=Math.atan2(fx,fz);
     new THREE.TextureLoader().load('assets/walls/'+R.id+'.jpg',(tex)=>{
