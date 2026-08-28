@@ -145,6 +145,10 @@
   <div id="banner"></div>
 </div>
 <div id="lockHint">Click to start - <b>F11</b> / <b>Esc</b> to exit</div>
+<!-- real loading progress (models etc. via the shared Three.js loading manager) -->
+<div id="loadBar" style="position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:6;width:280px;height:5px;border-radius:3px;background:rgba(127,230,255,.15);overflow:hidden;display:none">
+  <div id="loadFill" style="width:0%;height:100%;background:#7fe6ff;border-radius:3px;transition:width .25s"></div>
+</div>
 <div id="tourHint" style="position:fixed;left:50%;top:14px;transform:translateX(-50%);display:none;
   background:rgba(10,18,30,.6);border:1px solid rgba(127,230,255,.3);border-radius:8px;
   padding:6px 14px;font-size:13px;color:#cfe0f2;pointer-events:none;backdrop-filter:blur(3px)">
@@ -608,6 +612,25 @@ function pbr(base,normal,rep,opts){
 const HALL={minX:-48,maxX:48,minZ:-46,maxZ:38};   // inner shell, rooms included
 const BUILDINGS=[];                                // collision boxes {x,z,hw,hd}
 const worldGroup=new THREE.Group();scene.add(worldGroup);
+
+// ---- loading bar under the click-to-start hint: REAL progress from the shared
+// Three.js loading manager (every model load reports here). Purely informational —
+// the player can click to start at any time; assets pop in as they arrive.
+(function(){
+  const bar=document.getElementById('loadBar'),fill=document.getElementById('loadFill');
+  let doneLoading=false;
+  THREE.DefaultLoadingManager.onStart=function(){if(!doneLoading)bar.style.display='block';};
+  THREE.DefaultLoadingManager.onProgress=function(url,loaded,total){
+    if(doneLoading)return;
+    bar.style.display='block';
+    fill.style.width=Math.round(loaded/Math.max(1,total)*100)+'%';
+  };
+  THREE.DefaultLoadingManager.onLoad=function(){
+    doneLoading=true;fill.style.width='100%';
+    setTimeout(()=>{bar.style.display='none';},450);
+  };
+  THREE.DefaultLoadingManager.onError=function(){};   // a missing optional model must not wedge the bar
+})();
 const animated=[];                                 // {update(dt)} hooks (fountain, signs…)
 
 const wallMat=new THREE.MeshStandardMaterial({color:0x131b2b,roughness:0.9,metalness:0.25});
