@@ -2897,7 +2897,6 @@ function buildCommunityDoor(){
     dl.intensity=0.8+Math.sin(t*1.7)*0.15;
   }});
   BUILDINGS.push({x:R.cx,z:R.cz+2,hw:0.85,hd:0.35});
-  addFloorText('THE COMMUNITY',R.cx,R.cz-1.6,0,1,0.5,0x5fe0c8);
   hotspot(R.cx,R.cz+0.6,2.6,'A standing door — the community',()=>openCommunityStories());
 }
 // The community doorway (the standing door in the Garden room) gets its own menu — no locks.
