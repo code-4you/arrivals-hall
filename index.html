@@ -1155,7 +1155,7 @@ function buildGarden(front){
   lamp(-3,front+7);lamp(3,front+7);lamp(-3,front+21);lamp(3,front+21);
   lamp(-16,front+14);lamp(16,front+14);
   const moon=new THREE.PointLight(0x9fb8e0,0.5,80);moon.position.set(0,18,MID+1);worldGroup.add(moon);
-  buildCompass(0,front+4.6);
+  buildCompass(-4.6,front+4.6);   // west of the path, on the grass — not blocking the walk out
   buildDeliveryDoor(0,CZ1-0.55);                                   // set into the back wall
 }
 
