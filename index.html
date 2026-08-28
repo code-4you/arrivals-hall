@@ -245,8 +245,8 @@
         <!-- WORK — the rooms that are paid jobs; completing one earns credits for the Shop -->
         <div id="workPanel" style="display:none">
           <div style="padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(255,210,127,.3);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;margin-bottom:10px">
-            <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:8px">Work</div>
-            <div style="font-size:13px;color:#8fa3bf;margin-bottom:10px">Jobs around the Hall. Finish one, come back, and collect your pay — credits to spend in the Shop. Balance: <span id="wkBal" style="color:var(--amber)">◈ 0</span></div>
+            <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:8px">Missions</div>
+            <div style="font-size:13px;color:#8fa3bf;margin-bottom:10px">Missions around the Hall. Finish one, come back, and collect your pay — credits to spend in the Shop. Balance: <span id="wkBal" style="color:var(--amber)">◈ 0</span></div>
             <div id="wkList" style="font-size:13px;line-height:1.6;color:#c3d0e2"></div>
           </div>
           <button class="menuBtn back" id="wkClose" style="margin-top:12px">◂ Back to the fountain</button>
@@ -2058,10 +2058,15 @@ function buildFountainList(){
     list.appendChild(app);
     return;
   }
-  // THE FOUNTAIN APP page (menu card): the wish list, homes, ideas, and about
+  // THE FOUNTAIN APP page (menu card): missions first, then the wish list, counselling…
+  const wk=document.createElement('button');wk.className='menuBtn';
+  wk.style.cssText='width:100%;margin:7px 0;min-width:0;border-left-color:var(--amber)';
+  wk.innerHTML='⚒&nbsp; Missions';
+  wk.onclick=()=>openWork();
+  list.appendChild(wk);
   const td=document.createElement('button');td.className='menuBtn';
   td.style.cssText='width:100%;margin:7px 0;min-width:0;border-left-color:var(--amber)';
-  td.innerHTML='☑&nbsp; Things to do';
+  td.innerHTML='☑&nbsp; Things to do (ask anything)';
   td.onclick=()=>openTodo();
   list.appendChild(td);
   // counselling — talks WITH your things-to-do list; its notes land on the profile
@@ -2070,12 +2075,6 @@ function buildFountainList(){
   cn.innerHTML='🗨&nbsp; Counselling';
   cn.onclick=()=>openCounsel();
   list.appendChild(cn);
-  // work — the rooms that are paid jobs; earnings are spent in the Shop tab
-  const wk=document.createElement('button');wk.className='menuBtn';
-  wk.style.cssText='width:100%;margin:7px 0;min-width:0;border-left-color:var(--amber)';
-  wk.innerHTML='⚒&nbsp; Work';
-  wk.onclick=()=>openWork();
-  list.appendChild(wk);
   // homes and work — the flow that used to live on Elara's menu
   const hm=document.createElement('button');hm.className='menuBtn';
   hm.style.cssText='width:100%;margin:7px 0;min-width:0;border-left-color:var(--green)';
@@ -2278,12 +2277,9 @@ function taskDone(o){const t=o.task&&TASKS[o.task];return t?!!t.done():!!o.done;
 function openTasks(){return Object.keys(TASKS).filter(k=>!TASKS[k].done()&&(!TASKS[k].avail||TASKS[k].avail()));}
 // ---- objectives store. "Things to do" is ALWAYS the objective unless the fountain has
 // allocated a task; when that task completes, "Things to do" is the objective again.
-// the standing objective when nothing is allocated: a brand-new player is sent to the
-// stranger first (Blindspots, first conversation); once that is done — and forever
-// after, whenever no task is active — it is "Find work (press C)".
-const DEFAULT_OBJ_STRANGER={id:'default',title:'Talk to the stranger',place:'blindspots',tracked:true,isDefault:true};
-const DEFAULT_OBJ_WORK={id:'default',title:'Find work (press C)',place:'fountain',tracked:true,isDefault:true};
-function defaultObj(){return blindspotsConvoDone('why')?DEFAULT_OBJ_WORK:DEFAULT_OBJ_STRANGER;}
+// the standing objective whenever nothing is allocated: find a mission in the fountain app
+const DEFAULT_OBJ_MISSION={id:'default',title:'Find a mission (Press C)',place:'fountain',tracked:true,isDefault:true};
+function defaultObj(){return DEFAULT_OBJ_MISSION;}
 function loadObjs(){try{return JSON.parse(localStorage.getItem('atd:objectives')||'[]').filter(o=>o&&o.task);}catch(e){return[];}}   // task-less entries (old format) are dropped
 function saveObjs(o){try{localStorage.setItem('atd:objectives',JSON.stringify(o));}catch(e){}}
 function activeObjs(){                               // what the mini-map shows
@@ -2377,7 +2373,9 @@ function closeMenu(relock){
   else document.getElementById('lockHint').style.display=look.locked?'none':'block';
 }
 function toggleMenu(){ if(menuPage)closeMenu(false); else openMenu('controls'); }
-MENU_PAGES.forEach(p=>document.getElementById('tab-'+p).onclick=()=>{if(menuPage!==p)openMenu(p);});
+// a tab click always (re)opens its page — so "The fountain app" returns to the app's
+// main list even when a sub-panel (missions / wish list / counselling…) is open
+MENU_PAGES.forEach(p=>document.getElementById('tab-'+p).onclick=()=>openMenu(p));
 document.getElementById('menuClose').onclick=()=>closeMenu(true);
 function renderMapObjs(){
   const el=document.getElementById('mapObjList');el.innerHTML='';
