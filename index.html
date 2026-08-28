@@ -868,7 +868,7 @@ function buildWorld(){
   buildLeadersBoard();                                     // Leaders board — play counts, side wall of Completion
   buildIdeasWall();                                        // Ideas — write on the wall (old Fame Wall room)
   buildWishBoard();                                        // Things people asked — side wall of the Ideas room
-  buildVisitorBoard();                                     // Visitors — where from + how long, east wall of Ideas
+  buildVisitorBoard();                                     // Visitors — where from + how long, foyer wall beside the MAP
 
   // ----- hall facade band above the storefronts (y 6..10) -----
   box(0,6,-36.3,96,4,0.6,wallMatHi,false);                 // north face
@@ -1899,8 +1899,10 @@ function buildVisitorBoard(){
       ctx.textAlign='left';ctx.fillStyle='#dfe9f5';ctx.font='20px Segoe UI';
       while(place.length>2&&ctx.measureText(place).width>480)place=place.slice(0,-4)+'…';
       ctx.fillText(place,68,y);
-      ctx.textAlign='right';ctx.fillStyle='#8fb8ff';ctx.font='bold 20px Segoe UI';
-      ctx.fillText(fmt(r.mins),712,y);
+      ctx.textAlign='right';ctx.font='bold 20px Segoe UI';
+      const mm=Math.max(0,Math.round(+r.mins||0));
+      if(!+r.here&&mm<2){ctx.fillStyle='#8497ac';ctx.fillText('bounced',712,y);}   // gone within 2 min
+      else{ctx.fillStyle='#8fb8ff';ctx.fillText(fmt(r.mins),712,y);}
       y+=34;
     }
     ctx.textAlign='center';ctx.fillStyle='#8497ac';ctx.font='italic 19px Segoe UI';
@@ -1912,11 +1914,11 @@ function buildVisitorBoard(){
     api({a:'visitors'}).then(r=>{if(r&&r.ok&&r.rows)draw(r.rows,'');});
   };
   visitorBoardRefresh=refresh;refresh();
-  const panel=new THREE.Mesh(new THREE.PlaneGeometry(7.0,7.0*560/760),
+  const panel=new THREE.Mesh(new THREE.PlaneGeometry(3.4,3.4*560/760),
     new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
-  panel.position.set(R.cx+R.w/2-0.75,2.9,R.cz);panel.rotation.y=-Math.PI/2;   // east side wall, facing into the room
+  panel.position.set(7.62,2.6,36.9);panel.rotation.y=-Math.PI/2;   // foyer east wall, beside the MAP panel
   worldGroup.add(panel);
-  hotspot(R.cx+R.w/2-2.5,R.cz,2.2,'Visitors board',()=>banner('VISITORS · COUNTRY, STATE, LENGTH OF STAY'));
+  hotspot(6.8,36.9,2.4,'Visitors board',()=>banner('VISITORS · COUNTRY, STATE, LENGTH OF STAY'));
 }
 
 /* ---------- SAVE GAME — the old Vault terminal, now a page on the main menu ---------- */
@@ -2868,9 +2870,9 @@ document.getElementById('cClose').onclick=()=>{document.getElementById('communit
 // spawn, listing the controls with a big F11 button. Fades as the player walks into the mall.
 function buildControlHolo(){
   if(RETURN_TO||AT_FOUNTAIN)return;   // arriving back from a game, or straight to the fountain — no panel
-  // sit ~3.6m ahead of the spawn ALONG the spawn's view direction, so it's dead-centre on entry
+  // sit ~5.2m ahead of the spawn, shifted WEST so the view up the foyer stays clear
   const fx=-Math.sin(SPAWN_YAW),fz=-Math.cos(SPAWN_YAW);
-  const HX=SPAWN.x+fx*3.6, HZ=SPAWN.z+fz*3.6;
+  const HX=SPAWN.x+fx*5.2-3.6, HZ=SPAWN.z+fz*5.2;
   const g=new THREE.Group();g.position.set(HX,0,HZ);worldGroup.add(g);
   const cnv=document.createElement('canvas');cnv.width=640;cnv.height=470;
   const ctx=cnv.getContext('2d');
@@ -3614,7 +3616,7 @@ const _RS=RETURN_TO&&RETURN_SPAWN[RETURN_TO];
 const SPAWN = _RS ? {x:_RS.x,z:_RS.z}
             : AT_FOUNTAIN ? {x:0,z:3.2}                 // just south of the fountain (centre 0,-4)
             : {x:0,z:44.6};                             // default: just inside the doors
-const SPAWN_YAW = _RS ? _RS.yaw : AT_FOUNTAIN ? 0 : 0.42;   // fountain: yaw 0 = look north, straight at it
+const SPAWN_YAW = _RS ? _RS.yaw : 0;   // yaw 0 = look north, straight up the foyer into the mall
 const player={pos:new THREE.Vector3(SPAWN.x,0,SPAWN.z),speed:6.4,r:0.55,y:0,vy:0,grounded:true};
 const sprint={energy:6,max:6,cooling:false,active:false};
 const look={yaw:SPAWN_YAW,pitch:-0.02,locked:false}; // yaw 0 = straight into the mall; spawn is angled a bit
