@@ -1040,7 +1040,9 @@ function buildFoyer(){
   for(const x of [-5.5,5.5]){                                       // fixed sidelight panes
     const p=new THREE.Mesh(new THREE.PlaneGeometry(4.7,5.1),glassMat);p.position.set(x,2.6,DZ);worldGroup.add(p);}
   const mkLeaf=(sign)=>{                                            // a sliding leaf: pane + handle
-    const g=new THREE.Group();g.position.set(0,0,DZ);
+    // the leaves run on their own track a fraction inside the sidelight plane —
+    // coplanar glass z-fights (flickers) when a leaf slides across a sidelight
+    const g=new THREE.Group();g.position.set(0,0,DZ-0.09);
     const pane=new THREE.Mesh(new THREE.PlaneGeometry(2.9,5.0),glassMat);pane.position.set(sign*1.5,2.6,0);g.add(pane);
     const bar=new THREE.Mesh(new THREE.BoxGeometry(0.12,1.6,0.12),frameMat);bar.position.set(sign*0.32,2.4,-0.07);g.add(bar);
     worldGroup.add(g);return g;
