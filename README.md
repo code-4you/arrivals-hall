@@ -19,7 +19,7 @@ expect rough edges.
 | E | Interact / enter a game |
 | Shift | Jog |
 | Space | Jump |
-| M | Map & objectives |
+| M | Map & tracking |
 | Esc | Free the cursor |
 
 Best on desktop with a keyboard. The doors navigate to games hosted on
