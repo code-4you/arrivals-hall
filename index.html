@@ -764,7 +764,7 @@ const ROOMS=[
   {id:'fps',     name:'FPS HALL', sub:'ALL-TIME BEST',   type:'game',     cx:43, cz:-28,w:12,d:10,dir:'W'},
   {id:'blindspots',name:'BLINDSPOTS',sub:'LESSONS',    type:'game',    cx:43, cz:-14,w:12,d:10,dir:'W'},
   // NEXUS (cz:-1) is built separately by buildNexus() — an expanded wing with the temporal gate
-  {id:'crypt',   name:'CRYPT',    sub:'FOUNTAIN KEEPER', type:'game',     cx:43, cz:16, w:12,d:10,dir:'W'},
+  {id:'crypt',   name:'GARRISON', sub:'FOUNTAIN KEEPER', type:'game',     cx:43, cz:16, w:12,d:10,dir:'W'},
   // north galleria, openings face south (+z) — Makers' Row, clear of the corners
   {id:'lab',     name:'LAB',      sub:'FOR LEASE',       type:'spare',    cx:-28,cz:-41,w:12,d:10,dir:'S'},
   {id:'submit',  name:'COMPLETION',sub:'ADD YOUR GAME',  type:'community',cx:-14,cz:-41,w:12,d:10,dir:'S'},
@@ -1479,23 +1479,21 @@ function buildCryptShrine(){
   const rlight=new THREE.PointLight(0x59e08a,1.1,13);rlight.position.set(cx,1.7,cz-1.7);worldGroup.add(rlight);
   animated.push({update(dt,t){crystal.rotation.y+=dt*0.9;crystal.position.y=1.6+Math.sin(t*1.6)*0.12;
     rlight.intensity=1.0+Math.sin(t*3)*0.25;}});
-  // the distinctive Rift Keeper element: the KayKit Skeleton Warrior, loaded from the game folder.
-  // The character GLB has no clips, so we borrow the shared KayKit idle from the rig file — he
-  // stands guard exactly as he appears in the game, breathing gently.
+  // the distinctive element: the Arachnotron war-machine (this copy's own assets
+  // folder), standing guard beside the pedestal where the skeleton warrior used to.
   if(!window.__mdlFail){
     const L=new THREE.GLTFLoader();
-    L.load('local/fountain-keeper/Skeleton_Warrior.glb',(cg)=>{
+    L.load('assets/mechs/doom_eternal_arachnotron.glb',(cg)=>{
       const m=cg.scene;
-      const bb=new THREE.Box3().setFromObject(m);const s=1.95/Math.max(0.01,bb.max.y-bb.min.y);m.scale.setScalar(s);
+      const bb=new THREE.Box3().setFromObject(m);const s=2.1/Math.max(0.01,bb.max.y-bb.min.y);m.scale.setScalar(s);
       m.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true;}});
-      const place=()=>{const bb2=new THREE.Box3().setFromObject(m);
-        m.position.set(cx-1.3,-bb2.min.y,cz+1.0);m.rotation.y=-Math.PI/2;worldGroup.add(m);};
-      L.load('local/fountain-keeper/Rig_Medium_General.glb',(rg)=>{
-        const idle=(rg.animations||[]).find(c=>c.name==='Idle_A')||(rg.animations||[])[0];
-        if(idle){const mixer=new THREE.AnimationMixer(m);mixer.clipAction(idle).play();mixer.update(1.2);
-          animated.push({update(dt){mixer.update(dt);}});}
-        place();
-      },undefined,place);
+      const bb2=new THREE.Box3().setFromObject(m);
+      m.position.set(cx-1.3,-bb2.min.y,cz+2.8);m.rotation.y=Math.PI;worldGroup.add(m);   // native forward is +X → π faces the entrance; south of the pedestal
+      if(cg.animations&&cg.animations.length){        // play its own idle if the file carries one
+        const mixer=new THREE.AnimationMixer(m);
+        mixer.clipAction(cg.animations[0]).play();
+        animated.push({update(dt){mixer.update(dt);}});
+      }
     },undefined,()=>{});
   }
   // info screen on the back wall (east), facing the entrance
@@ -1503,7 +1501,7 @@ function buildCryptShrine(){
   ctx.fillStyle='#0a1a12';ctx.fillRect(0,0,360,270);
   ctx.fillStyle='#123324';ctx.fillRect(0,0,360,26);
   ctx.strokeStyle='#5fe0a0';ctx.lineWidth=4;ctx.strokeRect(6,34,348,230);
-  ctx.textAlign='center';ctx.fillStyle='#8affc0';ctx.font='bold 46px Segoe UI';ctx.fillText('CRYPT',180,112);
+  ctx.textAlign='center';ctx.fillStyle='#8affc0';ctx.font='bold 46px Segoe UI';ctx.fillText('GARRISON',180,112);
   ctx.fillStyle='#cfe0d6';ctx.font='20px Segoe UI';ctx.fillText('Fountain Keeper · 40-wave defense',180,152);
   if(fountainDone()){ctx.fillStyle='#b6ff9c';ctx.font='bold 22px Segoe UI';ctx.fillText('✓ FOUNTAIN SAFE — descend again',180,214);}
   else{ctx.fillStyle='#ffd27f';ctx.font='bold 22px Segoe UI';ctx.fillText('descend',180,214);}
@@ -1511,7 +1509,7 @@ function buildCryptShrine(){
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7*270/360),
     new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.62,roughness:0.5}));
   screen.position.set(cx-0.2,1.85,cz);screen.rotation.y=-Math.PI/2;worldGroup.add(screen);
-  hotspot(cx-1.7,cz,2.8,'Crypt — descend into Fountain Keeper',()=>launchRiftKeeper());
+  hotspot(cx-1.7,cz,2.8,'Garrison — descend into Fountain Keeper',()=>launchRiftKeeper());
 }
 
 // Blindspots (the former Wake room) — a first-person "lessons" vignette in a Sponza cathedral
@@ -2232,7 +2230,7 @@ const LOCATIONS={
   fps:{x:38,z:-28,label:'FPS Hall'},
   blindspots:{x:38,z:-14,label:'Blindspots'},
   chronos:{x:38,z:-1,label:'Chronos Court'},
-  crypt:{x:38,z:16,label:'Crypt'},
+  crypt:{x:38,z:16,label:'Garrison'},
   vault:{x:30,z:28,label:'Under construction'},
   cerebro:{x:-16,z:28,label:'Cerebro — the week\'s voices'},
   delivery:{x:0,z:40,label:'Delivery door — beyond the garden'}
@@ -2247,7 +2245,7 @@ function escHtml(s){return (s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','
 const TASKS={
   chronos1:{place:'chronos',title:'Complete Chronos Court — mission 1',done:()=>chronosDone(1)},
   chronos2:{place:'chronos',title:'Complete Chronos Court — mission 2',done:()=>chronosDone(2),avail:()=>chronosDone(1)},
-  crypt:   {place:'crypt',  title:'Defend the fountain — Fountain Keeper',done:()=>fountainDone()},
+  crypt:   {place:'crypt',  title:'Join the Garrison and stop the invasion',done:()=>fountainDone()},
   rally1:  {place:'rally',  title:'Win Rally stage 1 — Cliffhanger',   done:()=>rallyDone(1)},
   rally2:  {place:'rally',  title:'Win Rally stage 2 — Forest meander',done:()=>rallyDone(2),avail:()=>rallyDone(1)},
   hex1:    {place:'velocity',title:'Complete Velocity — Cityscape, casual',done:()=>hexDone(1)},
@@ -2684,7 +2682,7 @@ document.getElementById('nbClose').onclick=()=>closeFountainPanel();
 // thing to do pays a little. Pay is collected automatically (once per task) whenever
 // the Work panel or the Shop is opened. Credits are spent in the Shop tab.
 const WORK={
-  crypt:   {job:'Fountain Keeper — defend the fountain', pay:60},
+  crypt:   {job:'Join the Garrison and stop the invasion', pay:60},
   delivery:{job:'Delivery Run — drive the routes, hand the package over on foot', pay:50},
   cerebro: {job:'Listening shift — staff the Cerebro dome, hear the week\'s voices', pay:30}
 };
