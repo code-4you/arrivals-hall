@@ -209,7 +209,6 @@
            (they wrap to one column on narrow screens) -->
       <div style="display:flex;flex-wrap:wrap;gap:20px;max-width:1000px;margin:0 auto;align-items:flex-start">
       <div style="flex:1 1 400px;min-width:0;text-align:center">
-        <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--teal);opacity:.9;margin:4px 0 10px">The fountain app</div>
         <!-- #fountainContent is shared with the chromeless water menu (E at the basin):
              it gets reparented into whichever of the two is open, so the ids stay unique -->
         <div id="todoMenuSlot"></div>
@@ -267,8 +266,13 @@
           </div>
         </div>
       </div>
-      <!-- RIGHT column: the organiser / counselor profile (filled by renderOrganiserProfile) -->
-      <div id="fountainProfileCol" style="flex:1 1 380px;min-width:0;text-align:left"></div>
+      <!-- RIGHT column: the page title, then the organiser / counselor profile
+           (#fountainProfileCol is wiped and refilled by renderOrganiserProfile, so the
+            title lives on the wrapper where repaints can't take it) -->
+      <div style="flex:1 1 380px;min-width:0;text-align:left">
+        <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--teal);opacity:.9;margin:4px 0 10px;text-align:center">The fountain app</div>
+        <div id="fountainProfileCol"></div>
+      </div>
       </div>
     </div>
 
@@ -1591,7 +1595,7 @@ function blindspotsConvoDone(id){try{return localStorage.getItem('atd:blindspots
 function launchBlindspots(n){
   try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('blindspots:'+n);
-  location.href='https://lightsmithforge.linkpc.net/blindspots/index.html'+(n===2?'#get-real':'#why');
+  goGame('https://lightsmithforge.linkpc.net/blindspots/index.html'+(n===2?'#get-real':'#why'),{'atd:fromHub':'1'});
 }
 
 // Cerebro (the former Forge room) — the walk-in listening dome: what people said
@@ -1638,7 +1642,7 @@ function buildCerebroKiosk(){
 function launchCerebro(){
   try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','cerebro');}catch(e){}
   trackPlay('cerebro:1');
-  location.href='https://lightsmithforge.linkpc.net/cerebro/index.html';
+  goGame('https://lightsmithforge.linkpc.net/cerebro/index.html',{'atd:fromHub':'1','atd:returnTo':'cerebro'});
 }
 
 /* ============================================================
@@ -1704,36 +1708,108 @@ function localPlayRows(){
     if(k&&k.indexOf('atd:plays:')===0)rows.push({game:k.slice(10),count:+localStorage.getItem(k)||0});}}catch(e){}
   return rows;
 }
+// progress = every atd:* key plus the games' own done-flags that predate the prefix
+function progressKey(k){return !!k&&((k.indexOf('atd:')===0&&k!=='atd:accountKey')||k.indexOf('delivery:done:')===0);}
 function collectProgress(){
   const o={};
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
-    if(k&&k.indexOf('atd:')===0&&k!=='atd:accountKey')o[k]=localStorage.getItem(k);}}catch(e){}
+    if(progressKey(k))o[k]=localStorage.getItem(k);}}catch(e){}
   return o;
 }
-// merge, never clobber: completion flags OR together, play counts take the max
-function applyProgress(o){
+// merge, never clobber: '1' flags win, play counts + credits take the max, JSON lists
+// union, JSON objects fill in missing keys, anything else keeps the local value
+function mergeVal(k,local,remote){
+  if(local==null)return remote;
+  if(k.indexOf('atd:plays:')===0||k==='atd:credits')return String(Math.max(+local||0,+remote||0));
+  if(remote==='1')return '1';
+  if(/^[\[{]/.test(remote)&&/^[\[{]/.test(local)){
+    try{const a=JSON.parse(local),b=JSON.parse(remote);
+      if(Array.isArray(a)&&Array.isArray(b)){
+        const seen=new Set(a.map(x=>JSON.stringify(x)));
+        b.forEach(x=>{const s=JSON.stringify(x);if(!seen.has(s)){a.push(x);seen.add(s);}});
+        return JSON.stringify(a);
+      }
+      if(a&&b&&typeof a==='object'&&typeof b==='object'){for(const kk in b)if(!(kk in a))a[kk]=b[kk];return JSON.stringify(a);}
+    }catch(e){}
+  }
+  return local;
+}
+function applyProgress(o){                 // returns how many entries actually changed
   let n=0;
   try{for(const k in o){
-    if(k.indexOf('atd:')!==0||k==='atd:accountKey')continue;
-    if(k.indexOf('atd:plays:')===0)
-      localStorage.setItem(k,String(Math.max(+localStorage.getItem(k)||0,+o[k]||0)));
-    else if(localStorage.getItem(k)==null||o[k]==='1')
-      localStorage.setItem(k,String(o[k]));
-    n++;
+    if(!progressKey(k))continue;
+    const cur=localStorage.getItem(k),v=mergeVal(k,cur,String(o[k]));
+    if(v!==cur){localStorage.setItem(k,v);n++;}
   }}catch(e){}
   return n;
 }
-function scheduleKeySave(){
+/* ---- AUTO-SYNC: every copy of the hall (lightsmithforge, GitHub Pages, itch) shares
+   one save through the account key. A key is minted silently on the first visit,
+   travels between sites in the URL (?k=…) and via account/go.html on door hops,
+   two keys that meet are merged server-side (a:'link'), and progress is pushed
+   whenever it changes. The Vault stays as the manual way in on a brand-new device. */
+const KEY_RE=/^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/;
+let _lastSync='';
+function syncNow(){                        // push only if something changed since the last push
   const key=accountKey();if(!key)return;
-  clearTimeout(_keySaveT);
-  _keySaveT=setTimeout(()=>api({a:'save',key,data:collectProgress()}),1500);
+  const data=collectProgress(),s=JSON.stringify(data);
+  if(s===_lastSync)return;_lastSync=s;
+  api({a:'save',key,data});
+}
+function scheduleKeySave(){clearTimeout(_keySaveT);_keySaveT=setTimeout(syncNow,1500);}
+function pullProgress(){                   // server → local, then repaint, then push the union back
+  const key=accountKey();if(!key)return;
+  api({a:'load',key}).then(r=>{
+    if(!(r&&r.ok&&r.data))return;
+    if(r.key&&KEY_RE.test(r.key)&&r.key!==key){try{localStorage.setItem('atd:accountKey',r.key);}catch(e){}}   // follow an alias
+    if(applyProgress(r.data))progressArrived();
+    syncNow();
+  });
+}
+function progressArrived(){                // repaint what depends on progress, no reload needed
+  try{refreshMiniObjs();}catch(e){}
+  try{collectAllPay();}catch(e){}
+  try{if(menuPage==='fountain'){renderWork();renderSideQuests();renderOrganiserProfile();}}catch(e){}
+  try{if(ideasWallRefresh)ideasWallRefresh();}catch(e){}
+  try{refreshVaultUI();}catch(e){}
+}
+function accountSync(){
+  let ok=false;try{localStorage.setItem('atd:probe','1');localStorage.removeItem('atd:probe');ok=true;}catch(e){}
+  if(!ok)return;                           // storage blocked (some iframes) — nothing to sync with
+  let key=accountKey(),urlKey='';
+  try{urlKey=(new URLSearchParams(location.search).get('k')||'').toUpperCase();}catch(e){}
+  if(!KEY_RE.test(urlKey))urlKey='';
+  if(urlKey){
+    try{history.replaceState(null,'',location.pathname+location.hash);}catch(e){}
+    if(!key){try{localStorage.setItem('atd:accountKey',urlKey);}catch(e){}key=urlKey;}
+    else if(key!==urlKey){api({a:'link',keep:key,other:urlKey}).then(()=>pullProgress());return;}
+  }
+  if(!key){
+    api({a:'newkey'}).then(r=>{
+      if(!(r&&r.ok&&r.key))return;
+      try{localStorage.setItem('atd:accountKey',r.key);}catch(e){}
+      try{refreshVaultUI();}catch(e){}
+      syncNow();
+    });
+    return;
+  }
+  pullProgress();
+}
+setInterval(syncNow,15000);
+addEventListener('pagehide',syncNow);
+// this copy sends every door through account/go.html on lightsmithforge, which plants
+// the key + launch settings there (storage is per-site) before opening the game
+function goGame(url,ss){
+  const q='k='+encodeURIComponent(accountKey()||'')+'&to='+encodeURIComponent(url)
+    +(ss?'&ss='+encodeURIComponent(JSON.stringify(ss)):'');
+  location.href='https://lightsmithforge.linkpc.net/account/go.html?'+q;
 }
 
 /* ---------- THE HALLWYL — a warm door out of the sci-fi, into 1899 ---------- */
 function launchHallwyl(){
   try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('hallwyl:1');
-  location.href='https://lightsmithforge.linkpc.net/the_hallwyl/index.html';
+  goGame('https://lightsmithforge.linkpc.net/the_hallwyl/index.html',{'atd:fromHub':'1'});
 }
 function buildHallwylDoor(){
   const R=ROOMS.find(r=>r.id==='hallwyl');
@@ -2017,12 +2093,12 @@ function refreshVaultUI(){
 function launchStory(id){
   try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('stories:'+id);
-  location.href='https://lightsmithforge.linkpc.net/quick-stories/#'+id;
+  goGame('https://lightsmithforge.linkpc.net/quick-stories/#'+id,{'atd:fromHub':'1'});
 }
 function launchStoriesIndex(){                       // the whole listening room — always open
   try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('stories:index');
-  location.href='https://lightsmithforge.linkpc.net/quick-stories/';
+  goGame('https://lightsmithforge.linkpc.net/quick-stories/',{'atd:fromHub':'1'});
 }
 // The fountain unlocks in order, like the Chronos gate. Story 1 is ALWAYS open (the way in);
 // each later part stays locked until you've FINISHED the one before it (heard in Quick Stories,
@@ -4165,15 +4241,15 @@ function openMissionSelect(){
   }
   document.getElementById('missionModal').style.display='flex';
 }
-document.getElementById('goM1').onclick=()=>{trackPlay('chronos:1');location.href='https://lightsmithforge.linkpc.net/chronos-paradox/index.html?mission=1';};
-document.getElementById('goM2').onclick=()=>{if(chronosDone(1)){trackPlay('chronos:2');location.href='https://lightsmithforge.linkpc.net/chronos-paradox/index.html?mission=2';}};
+document.getElementById('goM1').onclick=()=>{trackPlay('chronos:1');goGame('https://lightsmithforge.linkpc.net/chronos-paradox/index.html?mission=1');};
+document.getElementById('goM2').onclick=()=>{if(chronosDone(1)){trackPlay('chronos:2');goGame('https://lightsmithforge.linkpc.net/chronos-paradox/index.html?mission=2');}};
 document.getElementById('mClose').onclick=()=>{document.getElementById('missionModal').style.display='none';lockPointer();};
 
 // Trigger Rally stage select — Cliffhanger unlocks Forest meander; progress persists (localStorage)
 function rallyDone(n){try{return localStorage.getItem('atd:rally:'+n)==='1';}catch(e){return false;}}
 function launchRally(trackId){try{sessionStorage.setItem('hubTrack',trackId);}catch(e){}
   trackPlay('rally:'+trackId);
-  location.href='https://lightsmithforge.linkpc.net/TriggerRally-racing-game/server/public/';}
+  goGame('https://lightsmithforge.linkpc.net/TriggerRally-racing-game/server/public/',{hubTrack:trackId});}
 function openRallySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const d1=rallyDone(1),d2=rallyDone(2);
@@ -4215,7 +4291,7 @@ document.getElementById('bsClose').onclick=()=>{document.getElementById('blindsp
 function deliveryDone(id){try{return !!localStorage.getItem('delivery:done:'+id);}catch(e){return false;}}
 function launchDelivery(trackId){try{sessionStorage.setItem('hubTrack',trackId);}catch(e){}
   trackPlay('delivery:'+trackId);
-  location.href='https://lightsmithforge.linkpc.net/delivery/server/public/';}
+  goGame('https://lightsmithforge.linkpc.net/delivery/server/public/',{hubTrack:trackId});}
 function openDeliverySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const tag=(t,c)=>' <span style="color:'+c+';font-size:12px;letter-spacing:.12em">'+t+'</span>';
@@ -4232,7 +4308,7 @@ document.getElementById('delivClose').onclick=()=>{document.getElementById('deli
 function hexDone(n){try{return localStorage.getItem('atd:hexgl:'+n)==='1';}catch(e){return false;}}
 function launchHex(diff){try{sessionStorage.setItem('hubHex','1');sessionStorage.setItem('hubHexDiff',String(diff));}catch(e){}
   trackPlay('hexgl:'+(diff+1));
-  location.href='https://lightsmithforge.linkpc.net/HexGL-racing-game/index.html';}
+  goGame('https://lightsmithforge.linkpc.net/HexGL-racing-game/index.html',{hubHex:'1',hubHexDiff:String(diff)});}
 function openVelocitySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const d1=hexDone(1),d2=hexDone(2);
@@ -4259,7 +4335,7 @@ function fountainDone(){try{return localStorage.getItem('atd:fountainkeeper:1')=
 function launchRiftKeeper(){
   try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','crypt');}catch(e){}
   trackPlay('fountainkeeper:1');
-  location.href='https://lightsmithforge.linkpc.net/fountain-keeper/index.html';
+  goGame('https://lightsmithforge.linkpc.net/fountain-keeper/index.html',{'atd:fromHub':'1','atd:returnTo':'crypt'});
 }
 
 // ---------- Vault modal wiring (account keys — see the ACCOUNT block above) ----------
@@ -4339,6 +4415,7 @@ document.getElementById('smMailFallback').onclick=()=>{
 document.getElementById('smClose').onclick=()=>{document.getElementById('submitModal').style.display='none';lockPointer();};
 
 buildWorld();
+accountSync();                     // one save across every copy of the hall — see AUTO-SYNC
 loadElara();
 loadScientist();
 document.getElementById('loadNote').style.display='none';
