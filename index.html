@@ -252,7 +252,7 @@
           </div>
           <div style="padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.25);border-left:3px solid var(--cyan);border-radius:0 10px 10px 0;margin-bottom:10px">
             <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px">Side quests</div>
-            <div id="sqList" style="font-size:13px;line-height:1.6;color:#c3d0e2;max-height:42vh;overflow-y:auto"></div>
+            <div id="sqList" style="font-size:13px;line-height:1.6;color:#c3d0e2;max-height:max(140px,calc(100vh - 500px));overflow-y:auto"></div>
           </div>
         </div>
         <div id="fountainMenuSlot">
@@ -650,7 +650,9 @@ const darkMat=new THREE.MeshStandardMaterial({color:0x0a0f1a,roughness:0.95,meta
 function box(x,y,z,w,h,d,mat,collide){
   const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
   m.position.set(x,y+h/2,z);worldGroup.add(m);
-  if(collide)BUILDINGS.push({x,z,hw:w/2,hd:d/2});
+  // colliders carry their top height — jump above it and you can pass over or stand on it
+  // (walls are ~6 high, far out of reach, so they behave exactly as before)
+  if(collide)BUILDINGS.push({x,z,hw:w/2,hd:d/2,h:y+h});
   return m;
 }
 function emissiveStrip(x,y,z,w,h,d,color,intensity){
@@ -981,7 +983,7 @@ function buildFountain(){
   const beam=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.5,8.4,12,1,true),
     new THREE.MeshBasicMaterial({color:0x7fe6ff,transparent:true,opacity:0.11,side:THREE.DoubleSide}));
   beam.position.y=5.2;g.add(beam);
-  BUILDINGS.push({x:0,z:-4,rad:4.5});   // round, flush with the basin — no square corners
+  BUILDINGS.push({x:0,z:-4,rad:4.5,h:0.95});   // round, flush with the basin; rim is standable from a boots jump
   animated.push({update(dt,t){
     core.rotation.y+=dt*0.7;core.position.y=3.4+Math.sin(t*1.4)*0.16;
     rings[0].rotation.x=1.1+t*0.5;rings[1].rotation.y=1.2+t*0.42;
@@ -998,30 +1000,39 @@ function buildFountain(){
     hotspot(FX+dx*OUT, FZ+dz*OUT, RAD, 'Listen — The Fountain', ()=>openFountainAtWater());
   addFloorText('ATRIUM',0,4.4,0,-1,0.8,0x9fd8ff);
 
-  // ----- shop purchases, made visible (applied at build; new buys show on next arrival) -----
+  // ----- shop purchases, made visible — applied at build AND live at the moment of buying
+  fountainParts={pool:pool,core:core,rings:rings,beam:beam};
   const ownedItems=loadOwned();
-  if(ownedItems.indexOf('goldglow')>=0){                       // Golden fountain glow
-    pool.material.color.set(0x8f6a2a);pool.material.emissive.set(0xd8a82f);
-    core.material.color.set(0xffe8b0);core.material.emissive.set(0xf0c053);
-    rings.forEach(r=>r.material.color.set(0xffd27f));
-    beam.material.color.set(0xffd27f);
-    fountainLight.color.set(0xffd27f);
+  if(ownedItems.indexOf('goldglow')>=0)applyGoldGlow();
+  if(ownedItems.indexOf('plant')>=0)buildAtriumPlant();
+}
+// Golden fountain glow — recolors the live fountain, so a purchase shows instantly
+var fountainParts=null,plantBuilt=false;
+function applyGoldGlow(){
+  if(!fountainParts)return;
+  const p=fountainParts;
+  p.pool.material.color.set(0x8f6a2a);p.pool.material.emissive.set(0xd8a82f);
+  p.core.material.color.set(0xffe8b0);p.core.material.emissive.set(0xf0c053);
+  p.rings.forEach(r=>r.material.color.set(0xffd27f));
+  p.beam.material.color.set(0xffd27f);
+  fountainLight.color.set(0xffd27f);
+}
+// Atrium plant, beside the basin — buildable at world build or right after purchase
+function buildAtriumPlant(){
+  if(plantBuilt)return;plantBuilt=true;
+  const pg=new THREE.Group();pg.position.set(5.6,0,-1.2);worldGroup.add(pg);
+  const pot=new THREE.Mesh(new THREE.CylinderGeometry(0.34,0.46,0.6,10),
+    new THREE.MeshStandardMaterial({color:0x8f5a35,roughness:0.85}));
+  pot.position.y=0.3;pg.add(pot);
+  const leafMat=new THREE.MeshStandardMaterial({color:0x4caf50,roughness:0.6,emissive:0x1d4020,emissiveIntensity:0.3});
+  for(let i=0;i<7;i++){
+    const a=i/7*Math.PI*2;
+    const leaf=new THREE.Mesh(new THREE.ConeGeometry(0.1,1.0+Math.random()*0.5,6),leafMat);
+    leaf.position.set(Math.cos(a)*0.14,1.0,Math.sin(a)*0.14);
+    leaf.rotation.x=Math.sin(a)*0.5;leaf.rotation.z=-Math.cos(a)*0.5;
+    pg.add(leaf);
   }
-  if(ownedItems.indexOf('plant')>=0){                          // Atrium plant, beside the basin
-    const pg=new THREE.Group();pg.position.set(5.6,0,-1.2);worldGroup.add(pg);
-    const pot=new THREE.Mesh(new THREE.CylinderGeometry(0.34,0.46,0.6,10),
-      new THREE.MeshStandardMaterial({color:0x8f5a35,roughness:0.85}));
-    pot.position.y=0.3;pg.add(pot);
-    const leafMat=new THREE.MeshStandardMaterial({color:0x4caf50,roughness:0.6,emissive:0x1d4020,emissiveIntensity:0.3});
-    for(let i=0;i<7;i++){
-      const a=i/7*Math.PI*2;
-      const leaf=new THREE.Mesh(new THREE.ConeGeometry(0.1,1.0+Math.random()*0.5,6),leafMat);
-      leaf.position.set(Math.cos(a)*0.14,1.0,Math.sin(a)*0.14);
-      leaf.rotation.x=Math.sin(a)*0.5;leaf.rotation.z=-Math.cos(a)*0.5;
-      pg.add(leaf);
-    }
-    BUILDINGS.push({x:5.6,z:-1.2,rad:0.55});
-  }
+  BUILDINGS.push({x:5.6,z:-1.2,rad:0.55,h:0.6});   // the pot is a hop-up step
 }
 
 // Arrival confetti — a short burst over the player when they arrive (shop purchase)
@@ -1051,6 +1062,28 @@ function spawnArrivalConfetti(){
     });
     if(life>4){doneFx=true;worldGroup.remove(g);}
   }});
+}
+
+// Hover boots — a higher jump, and a soft ring of light where you land (shop purchase).
+// One ring mesh is reused for every landing; hoverBoots is cached and set live on purchase.
+var hoverBoots=loadOwned().indexOf('hoverboots')>=0, landRing=null, landT=9;
+function initLandingRing(){
+  landRing=new THREE.Mesh(new THREE.RingGeometry(0.32,0.5,24),
+    new THREE.MeshBasicMaterial({color:0x7fe6ff,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
+  landRing.rotation.x=-Math.PI/2;landRing.visible=false;worldGroup.add(landRing);
+  animated.push({update(dt){
+    if(!landRing.visible)return;
+    landT+=dt;const s=1+landT*3.4;
+    landRing.scale.set(s,s,1);
+    landRing.material.opacity=Math.max(0,0.7-landT*1.5);
+    if(landT>0.5)landRing.visible=false;
+  }});
+}
+function softLanding(){
+  if(!landRing)initLandingRing();
+  landT=0;landRing.visible=true;landRing.scale.set(1,1,1);
+  landRing.material.opacity=0.7;
+  landRing.position.set(player.pos.x,player.y+0.06,player.pos.z);   // on whatever was landed on
 }
 
 // the arrival foyer: glass doors behind the player (they never open), MAP panel on the right
@@ -1153,7 +1186,7 @@ function buildGarden(front){
   gw(15,CZ0,14.2,1);                      // front wall — right of the doors
   // low decorative perimeter hedges
   const hedge=(x,z,w,d)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,1.1,d),hedgeMat);
-    m.position.set(x,0.55,z);worldGroup.add(m);BUILDINGS.push({x,z,hw:w/2,hd:d/2});};
+    m.position.set(x,0.55,z);worldGroup.add(m);BUILDINGS.push({x,z,hw:w/2,hd:d/2,h:1.1});};   // hedge tops — boots clear them
   hedge(-11.5,CZ1-1.6,17,1.2);hedge(11.5,CZ1-1.6,17,1.2);   // gap in the middle for the Delivery door
   hedge(-20.5,MID,1.2,D-2);hedge(20.5,MID,1.2,D-2);
   // maple trees from the low-poly LOD pack (assets/env/garden_maples.glb, LOD1 meshes) —
@@ -1173,7 +1206,7 @@ function buildGarden(front){
     const seat=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.16,0.6),barkMat);seat.position.y=0.5;g.add(seat);
     const back=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.7,0.14),barkMat);back.position.set(0,0.85,-0.24);g.add(back);
     for(const lx of [-0.9,0.9]){const l=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.5,0.5),barkMat);l.position.set(lx,0.25,0);g.add(l);}
-    worldGroup.add(g);BUILDINGS.push({x,z,hw:1.1,hd:0.45});};
+    worldGroup.add(g);BUILDINGS.push({x,z,hw:1.1,hd:0.45,h:0.6});};   // bench seats — any jump reaches
   bench(-5.5,front+14,Math.PI/2);bench(5.5,front+14,-Math.PI/2);          // face the birdbath
   bench(-5.5,front+26,Math.PI-0.2);bench(5.5,front+26,Math.PI+0.2);       // face into the garden, not the wall
   // central birdbath / planter
@@ -1182,7 +1215,7 @@ function buildGarden(front){
   const bbBowl=new THREE.Mesh(new THREE.CylinderGeometry(1.1,0.7,0.3,16),stoneMat);bbBowl.position.y=1.0;bath.add(bbBowl);
   const water=new THREE.Mesh(new THREE.CylinderGeometry(0.95,0.95,0.06,16),
     new THREE.MeshStandardMaterial({color:0x3a7fa0,emissive:0x2a6f90,emissiveIntensity:0.35,roughness:0.2,metalness:0.5}));
-  water.position.y=1.16;bath.add(water);worldGroup.add(bath);BUILDINGS.push({x:0,z:front+14,hw:1.1,hd:1.1});
+  water.position.y=1.16;bath.add(water);worldGroup.add(bath);BUILDINGS.push({x:0,z:front+14,hw:1.1,hd:1.1,h:1.2});
   // warm garden lamps + soft moonlight
   const lamp=(x,z)=>{
     const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.1,3.4,8),
@@ -1925,8 +1958,8 @@ function buildVisitorBoard(){
     hotspot(6.8,z,2.2,label,()=>banner(say));
     return b;
   }
-  const bVis=makePanel(36.9,'Visitors board','VISITORS · COUNTRY, STATE, LENGTH OF STAY');
-  const bTim=makePanel(40.4,'Visit times','VISIT TIMES · LONGEST STAYS · ALL TIME');
+  const bVis=makePanel(36.9,'Recent visitors','RECENT VISITORS · COUNTRY, STATE, LENGTH OF STAY');
+  const bTim=makePanel(40.4,'Visitors book','VISITORS BOOK · LONGEST STAYS · ALL TIME');
   function draw(b,title,rows,src,counts){
     const ctx=b.ctx;
     ctx.fillStyle='#0a1626';ctx.fillRect(0,0,760,560);
@@ -1961,10 +1994,10 @@ function buildVisitorBoard(){
   }
   const refresh=()=>{
     const self=[{region:'This device',country:'',mins:(Date.now()-VISIT_T0)/60000,here:1,you:1}];
-    draw(bVis,'VISITORS',self,'your visit');
-    draw(bTim,'VISIT TIMES',self,'your visit');
-    api({a:'visitors'}).then(r=>{if(r&&r.ok&&r.rows)draw(bVis,'VISITORS',r.rows,'');});
-    api({a:'visittimes'}).then(r=>{if(r&&r.ok&&r.rows)draw(bTim,'VISIT TIMES',r.rows,'',r.counts);});
+    draw(bVis,'RECENT VISITORS',self,'your visit');
+    draw(bTim,'VISITORS BOOK',self,'your visit');
+    api({a:'visitors'}).then(r=>{if(r&&r.ok&&r.rows)draw(bVis,'RECENT VISITORS',r.rows,'');});
+    api({a:'visittimes'}).then(r=>{if(r&&r.ok&&r.rows)draw(bTim,'VISITORS BOOK',r.rows,'',r.counts);});
   };
   visitorBoardRefresh=refresh;refresh();
 }
@@ -2250,17 +2283,28 @@ const TASKS={
   rally2:  {place:'rally',  title:'Win Rally stage 2 — Forest meander',done:()=>rallyDone(2),avail:()=>rallyDone(1)},
   hex1:    {place:'velocity',title:'Complete Velocity — Cityscape, casual',done:()=>hexDone(1)},
   hex2:    {place:'velocity',title:'Complete Velocity — Cityscape, hard',  done:()=>hexDone(2),avail:()=>hexDone(1)},
-  delivery:{place:'delivery',title:'Make the delivery run — drive the routes, hand over on foot',
+  delivery:{place:'delivery',title:'Make the delivery run',
             done:()=>deliveryDone('uUJTPz6M')||deliveryDone('RF87t6b6')},
-  blindspots:{place:'blindspots',title:'Walk Blindspots — the lesson, through to the far door',done:()=>blindspotsDone()},
-  cerebro: {place:'cerebro',title:'Hear what the world said this week — Cerebro',done:()=>cerebroDone()}
+  blindspots:{place:'blindspots',title:'Meet the Maker',done:()=>blindspotsDone()},
+  cerebro: {place:'cerebro',title:'Voices this week — Cerebro',done:()=>cerebroDone()},
+  // fountain-app quests — talking to the app itself pays well (see taskPay)
+  tour:    {place:'elara',  title:'Take the tour with Elara',done:()=>tourDone()},
+  todo:    {place:'fountain',pay:100,title:'List a thing to do',
+            done:()=>{try{return loadTodo().length>0;}catch(e){return false;}}},
+  counsel: {place:'fountain',pay:100,title:'Counselling',
+            done:()=>{try{return loadCounsel().length>0;}catch(e){return false;}}},
+  home:    {place:'fountain',pay:50, title:'Find a home',
+            done:()=>{try{return localStorage.getItem('atd:homeChosen')==='1';}catch(e){return false;}}},
+  ideas:   {place:'fountain',pay:100,title:'Submit your ideas — write on the wall',
+            done:()=>{try{return loadIdeas().length>0;}catch(e){return false;}}}
 };
 fetch('local/quick-stories/stories/index.json').then(r=>r.json()).then(j=>{
   (j.categories||[]).forEach(c=>(c.stories||[]).forEach(f=>{
     const id=String(f).replace(/\.json$/,'');
     const title=id.replace(/-/g,' ').replace(/\b\w/g,ch=>ch.toUpperCase());
     const place=/^the-fountain/.test(id)?'fountain':(c.title==='The community'?'garden':'theater');
-    TASKS['story:'+id]={place:place,title:'Listen to “'+title+'” — '+c.title,done:()=>storyDone(id)};
+    const cat=c.title==='The Sleeper'?'The Cthulhu Redemption':c.title;   // the series' quest name
+    TASKS['story:'+id]={place:place,title:'Listen to '+cat+' — “'+title+'”',done:()=>storyDone(id)};
   }));
   refreshMiniObjs();
   renderSideQuests();          // the listening tasks join the side-quest list once known
@@ -2365,6 +2409,7 @@ function openMenu(page){
   document.getElementById('menuModal').style.display='flex';
   document.getElementById('lockHint').style.display='none';
 }
+var confettiPending=false;             // a just-bought Arrival confetti fires on menu close
 function closeMenu(relock){
   restoreTodoFromMenu();
   resetFountainPanels();
@@ -2372,6 +2417,7 @@ function closeMenu(relock){
   paused=false;menuPage=null;
   document.body.classList.remove('qOpen');
   document.getElementById('menuModal').style.display='none';
+  if(confettiPending){confettiPending=false;setTimeout(spawnArrivalConfetti,250);}
   if(relock!==false)lockPointer();                 // a button click IS a gesture → can re-lock
   else document.getElementById('lockHint').style.display=look.locked?'none':'block';
 }
@@ -2682,12 +2728,12 @@ document.getElementById('nbClose').onclick=()=>closeFountainPanel();
 // thing to do pays a little. Pay is collected automatically (once per task) whenever
 // the Work panel or the Shop is opened. Credits are spent in the Shop tab.
 const WORK={
-  crypt:   {job:'Join the Garrison and stop the invasion', pay:60},
-  delivery:{job:'Delivery Run — drive the routes, hand the package over on foot', pay:50},
-  cerebro: {job:'Listening shift — staff the Cerebro dome, hear the week\'s voices', pay:30}
+  crypt:   {job:'Join the Garrison and stop the invasion', pay:200},
+  delivery:{job:'Delivery Run — drive the routes, hand the package over on foot', pay:200},
+  cerebro: {job:'Listening shift — staff the Cerebro dome, hear the week\'s voices', pay:200}
 };
 const SMALL_PAY=8;                                   // what any other finished task pays
-function taskPay(k){return WORK[k]?WORK[k].pay:SMALL_PAY;}
+function taskPay(k){return WORK[k]?WORK[k].pay:((TASKS[k]&&TASKS[k].pay)||SMALL_PAY);}
 function loadCredits(){try{return parseInt(localStorage.getItem('atd:credits')||'0',10)||0;}catch(e){return 0;}}
 function saveCredits(n){try{localStorage.setItem('atd:credits',String(Math.max(0,Math.round(n))));}catch(e){}}
 function loadPaid(){try{return JSON.parse(localStorage.getItem('atd:paid')||'{}');}catch(e){return{};}}
@@ -2769,13 +2815,39 @@ function renderWork(){
   }
   renderSideQuests();
 }
-// SIDE QUESTS — every other task, with its small pay and an add-objective toggle
+// SIDE QUESTS — everything but the crypt (delivery + cerebro appear here too, even
+// though they are main missions), in a curated order: Meet the Maker, the tour, the
+// fountain talks, the Cthulhu Redemption, the Garden series, delivery, Cerebro, then
+// the two fountain-app quests — and the rest after a gap.
+function sqRank(k){
+  if(k==='blindspots')return 0;
+  if(k==='tour')return 1;
+  if(k==='delivery')return 2;
+  if(k==='cerebro')return 3;
+  if(k==='todo')return 4;
+  if(k==='counsel')return 5;
+  if(k==='home')return 6;
+  if(k==='ideas')return 7;
+  // the "Listen to" series close out the top group, in this order
+  if(k.indexOf('story:the-fountain')===0)return 8;
+  if(k.indexOf('story:')===0&&TASKS[k].title.indexOf('Cthulhu')>=0)return 9;
+  if(k.indexOf('story:')===0&&TASKS[k].place==='garden')return 10;
+  return 11;
+}
 function renderSideQuests(){
   const el=document.getElementById('sqList');if(!el)return;
   el.innerHTML='';
   const paid=loadPaid();
   const objs=loadObjs();
-  Object.keys(TASKS).filter(k=>!WORK[k]).forEach(k=>{
+  const keys=Object.keys(TASKS).filter(k=>k!=='crypt')
+    .map((k,i)=>[k,i]).sort((a,b)=>(sqRank(a[0])-sqRank(b[0]))||(a[1]-b[1])).map(x=>x[0]);
+  let restGap=false;
+  keys.forEach(k=>{
+    if(!restGap&&sqRank(k)===11){restGap=true;   // the rest sit below a spacer line
+      const sp=document.createElement('div');
+      sp.style.cssText='margin-top:14px;border-top:1px solid rgba(127,230,255,.18);padding-top:8px';
+      el.appendChild(sp);
+    }
     const row=document.createElement('div');
     row.style.cssText='display:flex;gap:8px;align-items:flex-start;margin:4px 0';
     const tx=document.createElement('div');tx.style.cssText='flex:1;min-width:0';
@@ -2809,7 +2881,9 @@ const SHOP_ITEMS=[
   {id:'confetti',name:'Arrival confetti',desc:'A small celebration over you each time you arrive in the Hall.',price:40,
    img:'<svg viewBox="0 0 140 100" width="132" height="94"><rect x="30" y="20" width="6" height="11" rx="1.5" fill="#7fe6ff" transform="rotate(20 33 25)"/><rect x="95" y="14" width="6" height="11" rx="1.5" fill="#ffd27f" transform="rotate(-30 98 20)"/><rect x="60" y="9" width="6" height="11" rx="1.5" fill="#b6ff9c" transform="rotate(45 63 15)"/><rect x="110" y="44" width="6" height="11" rx="1.5" fill="#ff9cc8" transform="rotate(70 113 50)"/><rect x="20" y="54" width="6" height="11" rx="1.5" fill="#b6ff9c" transform="rotate(-45 23 60)"/><circle cx="48" cy="40" r="4.5" fill="#ffd27f"/><circle cx="82" cy="30" r="4.5" fill="#ff9cc8"/><circle cx="70" cy="58" r="4.5" fill="#7fe6ff"/><path d="M25 82 q11 -9 22 0 t22 0 t22 0 t22 0" stroke="#ffd27f" fill="none" stroke-width="2.5" stroke-linecap="round"/></svg>'},
   {id:'plant',   name:'Atrium plant',desc:'A potted plant beside the fountain, watered in your name.',price:25,
-   img:'<svg viewBox="0 0 140 100" width="132" height="94"><path d="M55 72 h30 l-5 22 h-20 z" fill="#7a4a2b"/><rect x="51" y="67" width="38" height="7" rx="2.5" fill="#8f5a35"/><path d="M70 67 q-3 -26 -25 -34 q19 2 25 19 M70 67 q6 -24 27 -28 q-17 10 -23 30 M70 67 q2 -13 17 -17 q-11 8 -15 22" fill="none" stroke="#b6ff9c" stroke-width="4" stroke-linecap="round"/></svg>'}
+   img:'<svg viewBox="0 0 140 100" width="132" height="94"><path d="M55 72 h30 l-5 22 h-20 z" fill="#7a4a2b"/><rect x="51" y="67" width="38" height="7" rx="2.5" fill="#8f5a35"/><path d="M70 67 q-3 -26 -25 -34 q19 2 25 19 M70 67 q6 -24 27 -28 q-17 10 -23 30 M70 67 q2 -13 17 -17 q-11 8 -15 22" fill="none" stroke="#b6ff9c" stroke-width="4" stroke-linecap="round"/></svg>'},
+  {id:'hoverboots',name:'Hover boots',desc:'Jump more than twice as high — and land softly, in a ring of light.',price:200,
+   img:'<svg viewBox="0 0 140 100" width="132" height="94"><path d="M52 14 h22 v32 l16 9 q9 5 5 13 h-43 z" fill="#2a3a52" stroke="#7fe6ff" stroke-width="2.5"/><rect x="48" y="70" width="50" height="7" rx="3.5" fill="#7fe6ff" opacity=".9"/><ellipse cx="72" cy="88" rx="34" ry="6" fill="#7fe6ff" opacity=".25"/><ellipse cx="72" cy="88" rx="19" ry="4" fill="#7fe6ff" opacity=".5"/></svg>'}
 ];
 function loadOwned(){try{return JSON.parse(localStorage.getItem('atd:owned')||'[]');}catch(e){return[];}}
 function saveOwned(l){try{localStorage.setItem('atd:owned',JSON.stringify(l));}catch(e){} syncProfile();}
@@ -2841,6 +2915,11 @@ function renderShop(){
       if(loadCredits()<it.price){b.textContent='Not enough ◈';setTimeout(()=>{b.textContent='Buy';},1400);return;}
       saveCredits(loadCredits()-it.price);
       const o=loadOwned();o.push(it.id);saveOwned(o);
+      // the purchase appears in the world right away — no refresh needed
+      if(it.id==='goldglow')applyGoldGlow();
+      else if(it.id==='plant')buildAtriumPlant();
+      else if(it.id==='confetti')confettiPending=true;   // bursts over you as the menu closes
+      else if(it.id==='hoverboots')hoverBoots=true;      // the next jump is already higher
       renderShop();
     };
     body.appendChild(b);
@@ -3275,9 +3354,10 @@ function elaraView(view){
     mk('No — I’ll find my own place',()=>{say('elara',"That's alright — there are homes available for sale on the open side of the city. Live wherever you like.");elaraView('stay3');});
   }else if(view==='stay3'){
     document.getElementById('elaraQ').textContent="What's your budget — and how much space would you like? Our cheapest homes start at 30% of your income.";
-    mk('A room',()=>{closeElaraMenu();say('elara',"A room of your own — owned, not rented, from thirty percent of your income. I'll add you to the list.");});
-    mk('A small home',()=>{closeElaraMenu();say('elara',"A small home, priced at construction cost — no more than that. I'll add you to the list.");});
-    mk('A family home',()=>{closeElaraMenu();say('elara',"A family home, with the open construction area nearby for whatever you build next. I'll add you to the list.");});
+    const chose=()=>{try{localStorage.setItem('atd:homeChosen','1');}catch(e){}};   // the Find-a-home quest completes here
+    mk('A room',()=>{chose();closeElaraMenu();say('elara',"A room of your own — owned, not rented, from thirty percent of your income. I'll add you to the list.");});
+    mk('A small home',()=>{chose();closeElaraMenu();say('elara',"A small home, priced at construction cost — no more than that. I'll add you to the list.");});
+    mk('A family home',()=>{chose();closeElaraMenu();say('elara',"A family home, with the open construction area nearby for whatever you build next. I'll add you to the list.");});
   }
   document.getElementById('elaraModal').style.display='flex';
 }
@@ -3912,6 +3992,7 @@ const TOUCH={on:false,eBtn:null,hidden:false,sync:null};
 function resolveCollision(pos,r){
   for(const b of BUILDINGS){
     if(b.off)continue;                         // e.g. the entrance gate while the doors are open
+    if(b.h!==undefined&&player.y>=b.h-0.05)continue;   // feet at/above its top — pass over, stand on
     const dx=pos.x-b.x, dz=pos.z-b.z;
     if(b.rad){                                 // round collider (the fountain) — push out radially
       const d=Math.hypot(dx,dz)||1e-4, min=b.rad+r;
@@ -3924,6 +4005,17 @@ function resolveCollision(pos,r){
       else pos.z=b.z+Math.sign(dz||1)*(b.hd+r);
     }
   }
+}
+// the surface under the feet: the tallest collider top at/below the player that the
+// feet overlap (small margin so standing near an edge still holds). 0 = the floor.
+function groundAt(x,z,y){
+  let g=0;
+  for(const b of BUILDINGS){
+    if(b.off||b.h===undefined||b.h>y+0.05||b.h<=g)continue;
+    if(b.rad){if(Math.hypot(x-b.x,z-b.z)<b.rad+0.25)g=b.h;continue;}
+    if(Math.abs(x-b.x)<b.hw+0.25&&Math.abs(z-b.z)<b.hd+0.25)g=b.h;
+  }
+  return g;
 }
 
 // ---------- state / banner / prompt ----------
@@ -3976,9 +4068,15 @@ function update(dt){
     player.pos.z=clamp(player.pos.z+_m.z*spd*dt,HALL.minZ+0.6,77);   // south limit reaches into the (bigger) garden
     resolveCollision(player.pos,player.r);
   }
-  if(player.grounded&&keys.Space){player.vy=5.2;player.grounded=false;}
+  if(player.grounded&&keys.Space){player.vy=hoverBoots?8.1:5.2;player.grounded=false;}
   player.vy-=17*dt;player.y+=player.vy*dt;
-  if(player.y<=0){player.y=0;player.vy=0;player.grounded=true;}
+  const gnd=groundAt(player.pos.x,player.pos.z,player.y);
+  if(player.grounded&&player.y>gnd+0.02)player.grounded=false;   // stepped off an edge — fall
+  if(player.vy<=0&&player.y<=gnd){
+    const hardFall=!player.grounded&&player.vy<-3.5;
+    player.y=gnd;player.vy=0;player.grounded=true;
+    if(hoverBoots&&hardFall)softLanding();   // the boots cushion it in light
+  }
 
   updateDoors(dt);
 
