@@ -290,7 +290,8 @@
       <div style="max-width:560px;margin:0 auto;text-align:center">
         <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--teal);opacity:.9;margin:4px 0 8px">Your key</div>
         <p style="color:#c3d0e2;font-size:14px;line-height:1.55;margin:0 0 10px">Your key carries everything — missions finished, doors opened, stories heard. Write it down, then enter it on any other device (or on the live site) to continue there.</p>
-        <div style="font-family:Consolas,monospace;font-size:22px;letter-spacing:.14em;color:#5fe0c8;background:rgba(10,26,22,.7);border:1px solid rgba(95,224,200,.35);border-radius:9px;padding:12px 10px;margin:10px 0" id="vkKey">— no key yet —</div>
+        <div style="font-family:Consolas,monospace;font-size:22px;letter-spacing:.14em;color:#5fe0c8;background:rgba(10,26,22,.7);border:1px solid rgba(95,224,200,.35);border-radius:9px;padding:12px 10px;margin:10px 0;cursor:pointer;pointer-events:auto" id="vkKey" title="Click to copy">— no key yet —</div>
+        <div style="font-size:12px;color:#8fa3bf;margin:-4px 0 8px">click the key to copy it</div>
         <button class="menuBtn" id="vkNew" style="width:100%;margin:7px 0;min-width:0;border-left-color:var(--teal)">✦&nbsp; Create my key</button>
         <button class="menuBtn" id="vkSave" style="width:100%;margin:7px 0;min-width:0;border-left-color:var(--teal)">⬆&nbsp; Save my progress to the key</button>
         <div style="display:flex;gap:8px;margin:14px 0 0">
@@ -332,7 +333,7 @@
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">TRIGGER RALLY</div>
         “Trigger Rally” © 2012–2013 <a href="https://triggerrally.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Code Artemis</a> · triggerrally.com. Code under GPL v3; game content used locally under its own license (not redistributed).
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">FOUNTAIN KEEPER (RIFT KEEPER)</div>
-        Built by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a>. Enemy models &amp; animations — “KayKit Character Pack: Skeletons” by Kay Lousberg (kaylousberg.itch.io), CC0. Textures — “Retro Textures Fantasy” by Kenney (kenney.nl), CC0. Music — <a href="https://opengameart.org" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">OpenGameArt.org</a> (various artists, Creative Commons). Built on Three.js.
+        Built by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a>. Enemy models &amp; animations — “KayKit Character Pack: Skeletons” by Kay Lousberg (kaylousberg.itch.io), CC0; Chronos mechs, rifle &amp; drone — Quaternius (CC0). Boss models (CC&nbsp;BY&nbsp;4.0, via Sketchfab): “<a href="https://sketchfab.com/3d-models/animal-company-shadow-mob-boss-c9ed405505d94b5fa313a0bb7f005c04" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">animal company - Shadow Mob Boss</a>” by Romeo rios vr · “<a href="https://sketchfab.com/3d-models/boss-nightmare-mu-online-f73956f3a5614495a37318a6a2b0e7ba" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Boss Nightmare - Mu Online</a>” by CreadorDeMu · “<a href="https://sketchfab.com/3d-models/tillagemon-boss-skeleton-5c83cdeb86404e63900c1d04f8b391fb" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Tillagemon Boss Skeleton</a>” by Vasian-Digital3D. Textures — “Retro Textures Fantasy” by Kenney (kenney.nl), CC0. Voices — browser text-to-speech. Built on Three.js.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">BLINDSPOTS</div>
         Built by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a>. Based on the “light probe volume (Sponza)” <a href="https://threejs.org/examples/#webgl_lightprobes_sponza" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Three.js</a> example. Sponza scene — <a href="https://github.com/KhronosGroup/glTF-Sample-Assets" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Khronos glTF Sample Assets</a> (Crytek · Frank Meinl). “Soldier” character from the Three.js examples. Voices — recorded lines with browser text-to-speech fallback.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">THE CHRONOS PARADOX</div>
@@ -474,6 +475,18 @@
   </div>
 </div>
 
+<div class="modal" id="ynModal" style="display:none;z-index:60">
+  <div style="max-width:420px;padding:26px 30px;border:1px solid rgba(182,255,156,.4);border-radius:14px;background:rgba(8,14,24,.96);text-align:center;box-shadow:0 0 50px rgba(90,200,120,.22)">
+    <p id="ynQ" style="color:#eaf4ff;font-size:18px;line-height:1.5;margin:0 0 16px"></p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="menuBtn" id="ynYes" style="min-width:120px;border-left-color:var(--green)">Yes</button>
+      <button class="menuBtn back" id="ynNo" style="min-width:120px">No</button>
+    </div>
+  </div>
+</div>
+<div id="blankScreen" style="display:none;position:fixed;inset:0;z-index:70;background:#000;color:#eaf4ff;text-align:center;font-size:28px;letter-spacing:.04em">
+  <div style="position:absolute;left:0;right:0;top:42%"><div id="blankMsg"></div><div id="blankCount" style="font-size:64px;margin-top:14px;color:var(--green)"></div></div>
+</div>
 <div class="modal" id="elaraModal" style="display:none">
   <div style="max-width:520px;padding:28px 32px;border:1px solid rgba(182,255,156,.4);border-radius:14px;background:rgba(8,14,24,.96);text-align:center;box-shadow:0 0 50px rgba(90,200,120,.22)">
     <div id="elaraTag" style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--green);opacity:.9">Your guide</div>
@@ -1516,8 +1529,8 @@ function buildCryptShrine(){
   const rlight=new THREE.PointLight(0x59e08a,1.1,13);rlight.position.set(cx,1.7,cz-1.7);worldGroup.add(rlight);
   animated.push({update(dt,t){crystal.rotation.y+=dt*0.9;crystal.position.y=1.6+Math.sin(t*1.6)*0.12;
     rlight.intensity=1.0+Math.sin(t*3)*0.25;}});
-  // the distinctive element: the Arachnotron war-machine (this copy's own assets
-  // folder), standing guard beside the pedestal where the skeleton warrior used to.
+  // the distinctive element: the Arachnotron war-machine (hub's own assets folder),
+  // standing guard beside the pedestal where the skeleton warrior used to.
   if(!window.__mdlFail){
     const L=new THREE.GLTFLoader();
     L.load('assets/mechs/doom_eternal_arachnotron.glb',(cg)=>{
@@ -1595,7 +1608,7 @@ function blindspotsConvoDone(id){try{return localStorage.getItem('atd:blindspots
 function launchBlindspots(n){
   try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('blindspots:'+n);
-  goGame('https://lightsmithforge.linkpc.net/blindspots/index.html'+(n===2?'#get-real':'#why'),{'atd:fromHub':'1'});
+  location.href='https://lightsmithforge.linkpc.net/blindspots/index.html'+(n===2?'#get-real':'#why');
 }
 
 // Cerebro (the former Forge room) — the walk-in listening dome: what people said
@@ -1642,7 +1655,7 @@ function buildCerebroKiosk(){
 function launchCerebro(){
   try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','cerebro');}catch(e){}
   trackPlay('cerebro:1');
-  goGame('https://lightsmithforge.linkpc.net/cerebro/index.html',{'atd:fromHub':'1','atd:returnTo':'cerebro'});
+  location.href='https://lightsmithforge.linkpc.net/cerebro/index.html';
 }
 
 /* ============================================================
@@ -1797,8 +1810,8 @@ function accountSync(){
 }
 setInterval(syncNow,15000);
 addEventListener('pagehide',syncNow);
-// this copy sends every door through account/go.html on lightsmithforge, which plants
-// the key + launch settings there (storage is per-site) before opening the game
+// the GitHub / itch copies send every door through account/go.html on lightsmithforge,
+// which plants the key + launch settings there before opening the game
 function goGame(url,ss){
   const q='k='+encodeURIComponent(accountKey()||'')+'&to='+encodeURIComponent(url)
     +(ss?'&ss='+encodeURIComponent(JSON.stringify(ss)):'');
@@ -1809,7 +1822,7 @@ function goGame(url,ss){
 function launchHallwyl(){
   try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('hallwyl:1');
-  goGame('https://lightsmithforge.linkpc.net/the_hallwyl/index.html',{'atd:fromHub':'1'});
+  location.href='https://lightsmithforge.linkpc.net/the_hallwyl/index.html';
 }
 function buildHallwylDoor(){
   const R=ROOMS.find(r=>r.id==='hallwyl');
@@ -2007,8 +2020,7 @@ function buildWishBoard(){
   panel.position.set(R.cx-R.w/2+0.75,2.9,R.cz);panel.rotation.y=Math.PI/2;   // west side wall, facing into the room
   worldGroup.add(panel);
   const h=hotspot(R.cx-R.w/2+2.5,R.cz,2.2,'Organiser room — private',()=>{
-    // absolute — this copy runs on GitHub Pages, where /organiser/ doesn't exist
-    location.href='https://lightsmithforge.linkpc.net/organiser/index.html';
+    location.href='../organiser/index.html';   // the private Organiser Room (login gate)
   });
   h.clickable=true;   // a plain mouse click at the wall works too, not just E
 }
@@ -2093,12 +2105,12 @@ function refreshVaultUI(){
 function launchStory(id){
   try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('stories:'+id);
-  goGame('https://lightsmithforge.linkpc.net/quick-stories/#'+id,{'atd:fromHub':'1'});
+  location.href='https://lightsmithforge.linkpc.net/quick-stories/#'+id;
 }
 function launchStoriesIndex(){                       // the whole listening room — always open
   try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('stories:index');
-  goGame('https://lightsmithforge.linkpc.net/quick-stories/',{'atd:fromHub':'1'});
+  location.href='https://lightsmithforge.linkpc.net/quick-stories/';
 }
 // The fountain unlocks in order, like the Chronos gate. Story 1 is ALWAYS open (the way in);
 // each later part stays locked until you've FINISHED the one before it (heard in Quick Stories,
@@ -3178,35 +3190,85 @@ function stripRootMotion(clip){
 }
 function loadElara(){
   if(window.__mdlFail)return;
-  // Phones take the baked-GLTF route on purpose: Elara.fbx is 43 MB plus fifteen clip
-  // files, while Elara.gltf is 3 MB with Idle/Walk/Run/Wave baked in — every animation
-  // call falls back to idle when a gesture clip is missing, so the tour still runs.
-  if(MOBILE||window.__fbxFail||!THREE.FBXLoader){
-    new THREE.GLTFLoader().load('assets/people/Elara.gltf',(gl)=>{
-      const clips={};(gl.animations||[]).forEach(c=>clips[c.name]=c);
-      PEOPLE.models.elara={scene:gl.scene,clips};spawnElara();
-    },undefined,()=>{});
-    return;
-  }
-  const fbx=new THREE.FBXLoader();
-  fbx.load('assets/people/mixamo/Elara.fbx',(obj)=>{
-    const clips={};
-    PEOPLE.models.elara={scene:obj,clips};
-    [['idle',['Idle','Idle_Neutral']],['walking',['Walk']],['running',['Run']],
-     ['talk1',['Talk_1']],['talk2',['Talk_2']],['talk3',['Talk_3']],['pointing',['Point']],
-     ['explain',['Explain']],                             // Female Locomotion Pack
-     ['talk4',['Talk_4']],['talk5',['Talk_5']],           // more talking variety (small / big question)
-     ['wave',['Wave']],['nod',['Nod']],['thankful',['Thankful']],
-     ['happy1',['Happy_1']],['happy2',['Happy_2']]        // occasional cheerful idles (not constant)
-    ].forEach(([file,names])=>{
-      fbx.load('assets/people/mixamo/'+file+'.fbx',(a)=>{
-        const c=(a.animations||[])[0];if(!c)return;
-        names.forEach(n=>{const cl=normalizeRig(stripRootMotion(c.clone()));cl.name=n;clips[n]=cl;});
-      },undefined,()=>{});
-    });
-    spawnElara();
-  },undefined,()=>{});
+  // Elara = the CC3 "realistic female" (assets for claude to copy…/realistic_female), built by
+  // tools/gltf/build-elara.js: spec-gloss→metal/rough, webp textures, 21 lip-sync/expression morphs
+  // (names in morphTargetDictionary) and the 15 Mixamo gesture clips retargeted onto her rig.
+  new THREE.GLTFLoader().load('assets/people/elara.glb',(gl)=>{
+    const clips={};(gl.animations||[]).forEach(c=>clips[c.name]=c);
+    PEOPLE.models.elara={scene:gl.scene,clips,cc3:true};spawnElara();
+  },undefined,(e)=>{console.warn('Elara failed to load',e);});
 }
+
+/* ---- Elara's lip sync: text → CC3 visemes on her morph targets (+ jaw bone), driven by the recorded
+   mp3 (loudness via an AnalyserNode, shapes from the line's letters) or browser TTS word boundaries. */
+const LIP={queue:[],now:{},tgt:{},active:false,audioMode:false,actx:null,analyser:null,buf:null,srcs:new WeakMap(),level:0,
+  VIS:{sil:{},AA:{V_Open:0.9,Jaw_Open:0.5},EE:{V_Wide:0.8,V_Lip_Open:0.35,Jaw_Open:0.1},OH:{V_Tight_O:0.9,Jaw_Open:0.22},UW:{V_Tight:0.8,V_Tight_O:0.2},
+       PP:{V_Explosive:1},FF:{V_Dental_Lip:1},CH:{V_Affricate:0.9,Jaw_Open:0.08},DD:{V_Lip_Open:0.7,Jaw_Open:0.12,V_Tongue_up:0.4},TH:{V_Lip_Open:0.6,V_Tongue_Out:0.5,Jaw_Open:0.1}},
+  LETTER:{a:'AA',e:'EE',i:'EE',y:'EE',o:'OH',u:'UW',w:'UW',b:'PP',m:'PP',p:'PP',f:'FF',v:'FF',j:'CH',c:'DD',d:'DD',g:'DD',h:'DD',k:'DD',l:'DD',n:'DD',q:'UW',r:'DD',s:'DD',t:'DD',x:'DD',z:'DD'}};
+function lipVisemes(word){
+  const w=word.toLowerCase().replace(/[^a-z']/g,''),out=[];
+  for(let i=0;i<w.length;i++){
+    const two=w.slice(i,i+2);let v;
+    if(two==='ch'||two==='sh'){v='CH';i++;}else if(two==='th'){v='TH';i++;}else if(two==='oo'){v='UW';i++;}
+    else if(two==='ee'||two==='ea'){v='EE';i++;}else if(two==='ou'||two==='ow'){v='OH';i++;}else if(two==='ck'){v='DD';i++;}
+    else v=LIP.LETTER[w[i]];
+    if(!v||(out.length&&out[out.length-1]===v))continue;
+    out.push(v);
+  }
+  if(w.endsWith('e')&&out.length>1&&out[out.length-1]==='EE')out.pop();
+  return out.length?out:['AA'];
+}
+function lipWord(word,startMs,durMs){
+  const vs=lipVisemes(word),per=Math.min(durMs/vs.length,1000/11);
+  LIP.queue=LIP.queue.filter(q=>q.t0<startMs).map(q=>q.t1>startMs?Object.assign({},q,{t1:startMs}):q);
+  vs.forEach((v,i)=>LIP.queue.push({vis:v,t0:startMs+i*per,t1:startMs+(i+1)*per}));
+  LIP.queue.push({vis:'sil',t0:startMs+vs.length*per,t1:startMs+durMs+400});
+  if(LIP.queue.length>400)LIP.queue=LIP.queue.slice(-200);
+  LIP.active=true;
+}
+function lipText(text,startMs,totalMs){           // whole line on an estimated / known timeline
+  const words=String(text).split(/\s+/).filter(Boolean),chars=words.reduce((a,w)=>a+w.length+1,0);
+  let t=startMs;for(const w of words){const d=totalMs*(w.length+1)/chars;lipWord(w,t,d);t+=d;}
+}
+function lipStop(){LIP.queue=[];LIP.active=false;LIP.audioMode=false;}
+function lipAttachAudio(a){                       // recorded line: loudness opens the mouth
+  try{
+    if(!LIP.actx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;LIP.actx=new AC();LIP.analyser=LIP.actx.createAnalyser();LIP.analyser.fftSize=1024;LIP.analyser.smoothingTimeConstant=0.5;LIP.buf=new Float32Array(1024);LIP.analyser.connect(LIP.actx.destination);}
+    if(LIP.actx.state==='suspended')LIP.actx.resume();
+    if(!LIP.srcs.has(a)){const src=LIP.actx.createMediaElementSource(a);src.connect(LIP.analyser);LIP.srcs.set(a,src);}
+    LIP.audioMode=true;
+  }catch(e){LIP.audioMode=false;}
+}
+function lipLevel(){
+  if(!LIP.audioMode||!LIP.analyser)return 1;
+  LIP.analyser.getFloatTimeDomainData(LIP.buf);let s=0;for(let i=0;i<LIP.buf.length;i++)s+=LIP.buf[i]*LIP.buf[i];
+  LIP.level+=(Math.min(1,Math.sqrt(s/LIP.buf.length)*6)-LIP.level)*0.5;return LIP.level;
+}
+function lipUpdate(p,dt){
+  if(!p.morphs)return;
+  const now=performance.now();
+  for(const v in LIP.VIS)for(const n in LIP.VIS[v])LIP.tgt[n]=0;
+  LIP.tgt.V_Tongue_up=0;LIP.tgt.V_Tongue_Out=0;
+  if(LIP.active){
+    let vis='sil',best=-Infinity;for(const q of LIP.queue)if(now>=q.t0&&now<q.t1&&q.t0>best){vis=q.vis;best=q.t0;}
+    if(now>LIP.queue.reduce((m,q)=>Math.max(m,q.t1),0))LIP.active=false;
+    const shape=LIP.VIS[vis]||{};let amp=0.9;
+    if(LIP.audioMode){const lvl=lipLevel();amp*=lvl;if(vis==='sil'&&lvl>0.15)for(const n in LIP.VIS.AA)LIP.tgt[n]=LIP.VIS.AA[n]*amp;}
+    for(const n in shape)LIP.tgt[n]=shape[n]*amp;
+  }
+  // idle life: blink, slight smile, a little brow movement
+  if(p.blinkT==null){p.blinkT=-1;p.nextBlink=state.time+2;}
+  if(p.blinkT<0&&state.time>p.nextBlink){p.blinkT=0;p.nextBlink=state.time+2.5+Math.random()*4;}
+  let bl=0;if(p.blinkT>=0){p.blinkT+=dt;bl=p.blinkT<0.08?p.blinkT/0.08:p.blinkT<0.2?1-(p.blinkT-0.08)/0.12:0;if(p.blinkT>0.2)p.blinkT=-1;}
+  LIP.tgt.Eye_Blink_L=bl;LIP.tgt.Eye_Blink_R=bl;
+  LIP.tgt.Mouth_Smile_L=LIP.tgt.Mouth_Smile_R=0.18;
+  const b=0.05+0.05*Math.sin(state.time*0.7);LIP.tgt.Brow_Raise_Inner_L=LIP.tgt.Brow_Raise_Inner_R=b;
+  const k=1-Math.pow(0.72,dt*60);
+  for(const n in LIP.tgt){const c=LIP.now[n]||0,v=c+(LIP.tgt[n]-c)*k;LIP.now[n]=Math.abs(v)<1e-4?0:v;}
+  for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;for(const n in LIP.now){const i=d[n];if(i!==undefined)inf[i]=LIP.now[n];}}
+  if(p.jaw){const open=(LIP.now.Jaw_Open||0)+(LIP.now.V_Open||0)*0.3;p.jaw.quaternion.copy(p.jawRest).multiply(_jawQ.setFromAxisAngle(_jawAxis,open*0.26));}
+}
+const _jawQ=new THREE.Quaternion(),_jawAxis=new THREE.Vector3(0,0,1);   // CC_Base_JawRoot opens about its local +Z
 function makePerson(key,opts){
   opts=opts||{};
   const src=PEOPLE.models[key];if(!src)return null;
@@ -3215,7 +3277,9 @@ function makePerson(key,opts){
   const bb=new THREE.Box3().setFromObject(model);
   const s=(opts.h||1.7)/Math.max(0.01,bb.max.y-bb.min.y);
   inner.scale.setScalar(s);inner.position.y=-bb.min.y*s;
+  if(src.cc3)inner.rotation.y=Math.PI;               // the CC3 export faces -Z; people here face +Z
   model.traverse(o=>{
+    if(src.cc3){ if(o.isMesh||o.isSkinnedMesh){ o.frustumCulled=false; o.castShadow=true; } return; }   // keep her real materials
     if(o.isMesh||o.isSkinnedMesh){
       const om=o.material;
       const mk=(m)=>new THREE.MeshStandardMaterial({
@@ -3232,6 +3296,10 @@ function makePerson(key,opts){
   // by name — personAnim just waits until that clip exists, then plays it.
   const idle=src.clips['Idle']?'Idle':(src.clips['Idle_Neutral']?'Idle_Neutral':(Object.keys(src.clips)[0]||'Idle'));
   const p={key,mesh:g,inner,mixer,clips:src.clips,talk:0,act:null,actName:'',home:0,idle};
+  if(src.cc3){
+    p.morphs=[];model.traverse(o=>{if(o.morphTargetDictionary&&o.morphTargetInfluences)p.morphs.push(o);
+      if(o.isBone&&/CC_Base_JawRoot/.test(o.name)){p.jaw=o;p.jawRest=o.quaternion.clone();}});
+  }
   if(idle)personAnim(p,idle);
   return p;
 }
@@ -3269,11 +3337,14 @@ function elaraIdle(p,dt){
     else p.flTimer=rand(12,20);
   } else personAnim(p,p.idle,0.9);
 }
+const ELARA_BLOCK={x:0,z:0,rad:0.02,off:true};    // small on purpose (the player radius 0.55 adds to it) — you can stand right up to her without passing through; follows her in updatePeople
+BUILDINGS.push(ELARA_BLOCK);
 function spawnElara(){
   const p=makePerson('elara',{h:1.87});if(!p)return;   // ~9% taller than a default person
   // once the tour's been done, she stays where it ended (the last stop) instead of the greeting spot.
   const rest = tourDone() ? TOUR[TOUR.length-1].at : [3,16];
   p.mesh.position.set(rest[0],0,rest[1]);p.homeYaw=Math.PI;
+  ELARA_BLOCK.x=rest[0];ELARA_BLOCK.z=rest[1];ELARA_BLOCK.off=false;
   p.mesh.rotation.y=Math.PI;                          // facing the entrance, waiting
   // a press-E hotspot that follows her (kept in sync in updatePeople).
   // Both spawn points offer the same menu — the tour is simply its top option.
@@ -3286,7 +3357,7 @@ function spawnElara(){
 // feet float. Fix: every frame, plant the lowest foot bone on the floor (simple foot IK).
 const _footV=new THREE.Vector3();
 function groundPerson(p){
-  if(!p.feet){p.feet=[];p.inner.traverse(o=>{if(o.isBone&&/(ToeBase|Foot)$/i.test(o.name))p.feet.push(o);});}
+  if(!p.feet){p.feet=[];p.inner.traverse(o=>{if(o.isBone&&/(ToeBase|Foot)(_\d+)?$/i.test(o.name))p.feet.push(o);});}
   if(!p.feet.length)return;
   p.inner.updateWorldMatrix(true,true);
   let minY=Infinity;
@@ -3297,6 +3368,7 @@ function updatePeople(dt){
   for(const k in persons){
     const p=persons[k];if(!p)continue;
     p.mixer.update(dt);
+    if(k==='elara')lipUpdate(p,dt);
     // during the tour, updateTour drives Elara's position/facing/animation
     if(!(k==='elara'&&tour.active)){
       const talking=p.talk>0;
@@ -3309,7 +3381,8 @@ function updatePeople(dt){
     }
     groundPerson(p);
     // keep Elara's tour hotspot on her, and switch it off while the tour is running
-    if(p.hot){ p.hot.x=p.mesh.position.x; p.hot.z=p.mesh.position.z; p.hot.r=tour.active?-1:2.6; }
+    if(p.hot){ p.hot.x=p.mesh.position.x; p.hot.z=p.mesh.position.z; p.hot.r=(tour.active||dateRunning)?-1:2.6; }   // no 'Press E' during the tour or the date
+    if(k==='elara'){ ELARA_BLOCK.x=p.mesh.position.x; ELARA_BLOCK.z=p.mesh.position.z; ELARA_BLOCK.off=false; }
   }
 }
 
@@ -3334,7 +3407,7 @@ const TOUR = [
       "This is the Atrium — the heart of the complex. Every light you see is a doorway to another world.",
       "They say the fountain remembers everyone who passes through. Stay long enough, and it'll remember you too." ] },
   { at:[24,12],  via:[[7,13],[17,13.5]], look:[43,16],  anim:['Point','Talk_3'], lines:[
-      "Down here in the Crypt — Fountain Keeper. The mall's own doors go dark, and forty waves of the dead march on the fountain.",
+      "Down here at the Garrison — Fountain Keeper. The mall's own doors go dark, and forty waves of the dead march on the fountain.",
       "Bend their road with blocks, build your traps, and don't let a single one reach the water." ] },
   { at:[24,-6],  look:[43,-2],  anim:['Explain','Talk_5'], lines:[
       "On your right: the Chronos Court.",
@@ -3381,7 +3454,7 @@ function skipTour(){
 const ELARA_TOPICS=[
   { q:"What should I try first?", a:[
       "For a quiet moment, the fountain here in the atrium tells stories — just press E at the water.",
-      "For your pulse: the Chronos Court to the east, or the racing doors out west. The Crypt, if you're feeling brave." ] },
+      "For your pulse: the Chronos Court to the east, or the racing doors out west. The Garrison, if you're feeling brave." ] },
   { q:"How does choosing neighbours work?", a:[
       "Instead of hunting for a home near your friends, this is a place where homes are always kept available — so friends can move in, and anyone can move again, any time.",
       "You choose your neighbours by application, design your own area, and elect your own council. Homes stay affordable, so you don't have to work full time unless you choose to." ] },
@@ -3418,6 +3491,7 @@ function elaraView(view){
     mk((tourDone()?'↺&nbsp; Take the tour again':'▶&nbsp; Take the guided tour'),
        ()=>{closeElaraMenu();startTour();},true);
     mk('Just talk',()=>elaraChatView());
+    mk("“You're sexy”",()=>elaraDate());
     ELARA_TOPICS.forEach(t=>mk('“'+t.q+'”',()=>{closeElaraMenu();saySequence('elara',t.a);}));
   }else if(view==='stay1'){
     elaraAsk("Wonderful — we have affordable homes and work opportunities. Would you like to rent, or own?");
@@ -3436,6 +3510,46 @@ function elaraView(view){
     mk('A family home',()=>{chose();closeElaraMenu();say('elara',"A family home, with the open construction area nearby for whatever you build next. I'll add you to the list.");});
   }
   document.getElementById('elaraModal').style.display='flex';
+}
+// ---- "You're sexy": a short scripted flirt — you and Elara trade lines (male browser voice for you),
+// two yes/no pop-ups, a "continue to tomorrow" countdown, and a yes at the end takes you to her place.
+function speakLine(who,text){                       // say() as a promise, with a length-based safety net
+  return new Promise(res=>{let done=false;const go=()=>{if(done)return;done=true;res();};say(who,text,go);setTimeout(go,Math.max(2500,text.length*90)+4000);});
+}
+function askYesNo(q){
+  return new Promise(res=>{
+    const m=document.getElementById('ynModal');document.getElementById('ynQ').textContent=q;
+    const fin=v=>{m.style.display='none';res(v);};
+    document.getElementById('ynYes').onclick=()=>fin(true);document.getElementById('ynNo').onclick=()=>fin(false);
+    m.style.display='flex';document.exitPointerLock&&document.exitPointerLock();
+  });
+}
+function blankCountdown(msg,from){
+  return new Promise(res=>{
+    const b=document.getElementById('blankScreen');document.getElementById('blankMsg').textContent=msg;b.style.display='block';
+    let n=from;const c=document.getElementById('blankCount');c.textContent=n;
+    const tick=setInterval(()=>{n--;if(n<=0){clearInterval(tick);b.style.display='none';res();}else c.textContent=n;},1000);
+  });
+}
+let dateRunning=false;
+async function elaraDate(){
+  if(dateRunning)return;dateRunning=true;
+  closeElaraMenu(false);
+  const p=persons.elara; if(p)facePerson(p,player.pos.x,player.pos.z);
+  try{
+    await speakLine('you',"You're sexy.");
+    await speakLine('elara',"Thank you. I think you're handsome too.");
+    await speakLine('elara',"Do you want to have dinner with me?");
+    if(!(await askYesNo("Have dinner with Elara?"))){ say('elara',"Maybe another time."); return; }
+    await blankCountdown("Continue to tomorrow…",3);
+    await speakLine('you',"That was a nice dinner.");
+    await speakLine('elara',"Do you want to come back to my place?");
+    if(await askYesNo("Go back to Elara's place?")){
+      try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
+      location.href='https://lightsmithforge.linkpc.net/elaras-home/index.html#sexy';return;
+    }
+    say('elara',"Another night, then.");
+  }finally{ dateRunning=false; if(!/elaras-home/.test(location.href))lockPointer(); }
 }
 // ---- "Other": a small chat with Elara, backed by Gemini through account/gemini.php.
 // The API key never appears in this page — the proxy adds it server-side from
@@ -3460,10 +3574,14 @@ function elaraChatView(){
   document.getElementById('elaraModal').style.display='flex';
   setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50);
 }
+let ecSpeaking=false,elaraSpeakStart=null;   // elaraSpeakStart fires once, the moment her next line is actually audible
 async function ecSend(){
   const inp=document.getElementById('ecIn'),text=inp.value.trim();if(!text)return;
   inp.value='';ecBubble('you',text);
   const wait=ecBubble('elara','…');
+  const modal=document.getElementById('elaraModal');
+  modal.style.display='none';ecSpeaking=true;                  // step aside right away; she answers out loud, then the panel returns
+  const back=()=>{ if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ modal.style.display='flex'; setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
   if(ecSource===null){
     try{ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000);}
     catch(e){ecSource='(page source unavailable)';}
@@ -3482,16 +3600,18 @@ async function ecSend(){
       ||(j.error&&('('+j.error.message+')'))||'…';
     ecHist.push({role:'model',parts:[{text:out}]});
     wait.textContent='Elara: '+out;
+    // step out of the way while she answers (her lips move to the words), then come back for the next question
     // read aloud, pipelined: the first sentence plays while the rest is still synthesizing
     const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(out);
-    if(sm)saySequence('elara',[sm[1],sm[2]]);else say('elara',out);
-  }catch(e){wait.textContent='Elara: (I lost the thread — is the network alright?)';}
+    if(sm)saySequence('elara',[sm[1],sm[2]],back);else say('elara',out,back);
+    setTimeout(back,Math.max(4000,out.length*90)+8000);   // safety net: never leave the chat closed for good
+  }catch(e){wait.textContent='Elara: (I lost the thread — is the network alright?)';back();}
   document.getElementById('ecMsgs').scrollTop=1e9;
 }
 document.getElementById('ecSend').onclick=()=>ecSend();
 document.getElementById('ecIn').addEventListener('keydown',e=>{if(e.code==='Enter')ecSend();});
 function closeElaraMenu(relock){document.getElementById('elaraModal').style.display='none';if(relock!==false)lockPointer();}
-document.getElementById('elaraClose').onclick=()=>{closeElaraMenu();say('elara',"I'll be right here.");};
+document.getElementById('elaraClose').onclick=()=>{ecSpeaking=false;closeElaraMenu();say('elara',"I'll be right here.");};
 // (voice warm-up removed — browser voices speak instantly, nothing to prefetch)
 // gestures that read best played once and held (not looped) so she doesn't keep re-doing them
 const ONESHOT_ANIMS={Point:1,Wave:1,Thankful:1,Nod:1};
@@ -3553,7 +3673,7 @@ function updateTour(dt){
     else {
       const spd=2.7, step=Math.min(spd*dt,d);
       p.mesh.position.x+=dx/d*step; p.mesh.position.z+=dz/d*step;
-      resolveCollision(p.mesh.position,0.5);      // slide around columns/fountain
+      ELARA_BLOCK.off=true; resolveCollision(p.mesh.position,0.5); ELARA_BLOCK.off=false;   // slide around columns/fountain (not herself)
       p.mesh.rotation.y=-Math.atan2(dz,dx)+Math.PI/2;   // face travel direction
       personAnim(p,p.clips['Walk']?'Walk':p.idle);
     }
@@ -3566,6 +3686,7 @@ function updateTour(dt){
 const SPEAKERS={
   elara:    {voice:null,pitch:1.08,rate:1.02,color:'#b6ff9c',name:'ELARA',    gender:'female'},
   custodian:{voice:null,pitch:0.9, rate:0.94,color:'#7fe6ff',name:'CUSTODIAN',gender:'male'},
+  you:      {voice:null,pitch:1.0, rate:1.0, color:'#ffd27f',name:'YOU',      gender:'male'},
   scientist:{voice:null,pitch:0.85,rate:0.98,color:'#7fb4ff',name:'DR. VANCE',gender:'male'},
   system:   {voice:null,pitch:1.0, rate:1.0, color:'#cfd8e6',name:'',         gender:null},
 };
@@ -3650,6 +3771,7 @@ function assignVoices(){
   if(!VOICES.length)return;
   SPEAKERS.elara.voice    =pickBest('female');
   SPEAKERS.custodian.voice=pickBest('male');
+  SPEAKERS.you.voice      =pickBest('male');
   SPEAKERS.scientist.voice=SPEAKERS.custodian.voice;   // same voice, distinct pitch — never robotic David
   SPEAKERS.system.voice   =VOICES[0];
 }
@@ -3704,6 +3826,7 @@ function startTtsKeepAlive(v){
 }
 function stopTtsKeepAlive(){if(ttsKeepAlive){clearInterval(ttsKeepAlive);ttsKeepAlive=null;}}
 function stopSpeech(){
+  lipStop();
   const run=ttsRun;ttsRun=null;
   if(run)run.cancelled=true;
   stopTtsKeepAlive();
@@ -3768,9 +3891,11 @@ function ttsSpeak(sp,text,onDone){
       }
       setTimeout(()=>speakChunk(idx+1,0),idx+1<chunks.length?70:0);
     };
-    u.onstart=()=>{started=true;run.spoke=true;};
+    u.onstart=()=>{started=true;run.spoke=true;if(sp.lip){lipText(part,performance.now(),(part.length/(14*u.rate))*1000);if(elaraSpeakStart){const f=elaraSpeakStart;elaraSpeakStart=null;f();}}};
     u.onend=()=>done(false);
-    u.onboundary=()=>{sawWord=true;lastWord=ticks;};
+    u.onboundary=(e)=>{sawWord=true;lastWord=ticks;
+      if(sp.lip&&e&&typeof e.charIndex==='number'){const len=e.charLength||(part.slice(e.charIndex).match(/^\S+/)||[''])[0].length;
+        lipWord(part.substr(e.charIndex,len),performance.now(),Math.max(120,(len+1)/(14*u.rate)*1000));}};
     u.onerror=e=>{
       const kind=(e&&e.error)||'';
       if(kind==='interrupted'||kind==='canceled')return;   // we stopped it — not "finished"
@@ -3820,18 +3945,26 @@ function say(who,text,onDone){
     try{a.currentTime=0;}catch(_){}
     a.volume=1;_curVoice=a;
     if(onDone)a.addEventListener('ended',onDone,{once:true});
+    if(who==='elara'){
+      lipStop();lipAttachAudio(a);
+      const start=()=>{const d=isFinite(a.duration)&&a.duration>0?a.duration*1000:Math.max(2000,text.length*62);lipText(text,performance.now(),d);};
+      if(a.readyState>=1)start();else a.addEventListener('loadedmetadata',start,{once:true});
+      a.addEventListener('ended',lipStop,{once:true});
+      a.addEventListener('playing',()=>{if(elaraSpeakStart){const f=elaraSpeakStart;elaraSpeakStart=null;f();}},{once:true});
+    }
     a.play().catch(()=>ttsSpeak(sp,text,onDone));
     return;
   }
+  if(who==='elara'){lipStop();sp.lip=true;}else sp.lip=false;
   ttsSpeak(sp,text,onDone);   // the ranked natural browser voice — free, no API
 }
 // Speak a list of lines one after another, each starting only once the previous line's
 // RECORDED audio has finished (so long lines aren't cut off). Falls back to a text-length
 // estimate for browser TTS. Used for Dr. Vance's multi-line briefings.
-function saySequence(who,lines){
+function saySequence(who,lines,onDone){
   let i=0;
   const step=()=>{
-    if(i>=lines.length)return;
+    if(i>=lines.length){if(onDone)onDone();return;}
     const txt=lines[i++];
     let advanced=false;
     const go=()=>{ if(advanced)return; advanced=true; setTimeout(step,500); };
@@ -4241,15 +4374,15 @@ function openMissionSelect(){
   }
   document.getElementById('missionModal').style.display='flex';
 }
-document.getElementById('goM1').onclick=()=>{trackPlay('chronos:1');goGame('https://lightsmithforge.linkpc.net/chronos-paradox/index.html?mission=1');};
-document.getElementById('goM2').onclick=()=>{if(chronosDone(1)){trackPlay('chronos:2');goGame('https://lightsmithforge.linkpc.net/chronos-paradox/index.html?mission=2');}};
+document.getElementById('goM1').onclick=()=>{trackPlay('chronos:1');location.href='https://lightsmithforge.linkpc.net/chronos-paradox/index.html?mission=1';};
+document.getElementById('goM2').onclick=()=>{if(chronosDone(1)){trackPlay('chronos:2');location.href='https://lightsmithforge.linkpc.net/chronos-paradox/index.html?mission=2';}};
 document.getElementById('mClose').onclick=()=>{document.getElementById('missionModal').style.display='none';lockPointer();};
 
 // Trigger Rally stage select — Cliffhanger unlocks Forest meander; progress persists (localStorage)
 function rallyDone(n){try{return localStorage.getItem('atd:rally:'+n)==='1';}catch(e){return false;}}
 function launchRally(trackId){try{sessionStorage.setItem('hubTrack',trackId);}catch(e){}
   trackPlay('rally:'+trackId);
-  goGame('https://lightsmithforge.linkpc.net/TriggerRally-racing-game/server/public/',{hubTrack:trackId});}
+  location.href='https://lightsmithforge.linkpc.net/TriggerRally-racing-game/server/public/';}
 function openRallySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const d1=rallyDone(1),d2=rallyDone(2);
@@ -4291,7 +4424,7 @@ document.getElementById('bsClose').onclick=()=>{document.getElementById('blindsp
 function deliveryDone(id){try{return !!localStorage.getItem('delivery:done:'+id);}catch(e){return false;}}
 function launchDelivery(trackId){try{sessionStorage.setItem('hubTrack',trackId);}catch(e){}
   trackPlay('delivery:'+trackId);
-  goGame('https://lightsmithforge.linkpc.net/delivery/server/public/',{hubTrack:trackId});}
+  location.href='https://lightsmithforge.linkpc.net/delivery/server/public/';}
 function openDeliverySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const tag=(t,c)=>' <span style="color:'+c+';font-size:12px;letter-spacing:.12em">'+t+'</span>';
@@ -4308,7 +4441,7 @@ document.getElementById('delivClose').onclick=()=>{document.getElementById('deli
 function hexDone(n){try{return localStorage.getItem('atd:hexgl:'+n)==='1';}catch(e){return false;}}
 function launchHex(diff){try{sessionStorage.setItem('hubHex','1');sessionStorage.setItem('hubHexDiff',String(diff));}catch(e){}
   trackPlay('hexgl:'+(diff+1));
-  goGame('https://lightsmithforge.linkpc.net/HexGL-racing-game/index.html',{hubHex:'1',hubHexDiff:String(diff)});}
+  location.href='https://lightsmithforge.linkpc.net/HexGL-racing-game/index.html';}
 function openVelocitySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const d1=hexDone(1),d2=hexDone(2);
@@ -4335,7 +4468,7 @@ function fountainDone(){try{return localStorage.getItem('atd:fountainkeeper:1')=
 function launchRiftKeeper(){
   try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','crypt');}catch(e){}
   trackPlay('fountainkeeper:1');
-  goGame('https://lightsmithforge.linkpc.net/fountain-keeper/index.html',{'atd:fromHub':'1','atd:returnTo':'crypt'});
+  location.href='https://lightsmithforge.linkpc.net/fountain-keeper/index.html';
 }
 
 // ---------- Vault modal wiring (account keys — see the ACCOUNT block above) ----------
@@ -4370,6 +4503,16 @@ document.getElementById('vkLoad').onclick=()=>{
       vkSetStatus('Loaded — '+n+' entries merged. This device now continues that key.',true);
     }else vkSetStatus('Key not found (or the server is unreachable).',false);
   });
+};
+
+// click the key to copy it (clipboard API, with the old execCommand path as fallback)
+document.getElementById('vkKey').onclick=()=>{
+  const key=accountKey();if(!key)return;
+  const done=()=>vkSetStatus('Key copied — paste it on your other device.',true);
+  const fallback=()=>{try{const t=document.createElement('textarea');t.value=key;document.body.appendChild(t);
+    t.select();document.execCommand('copy');t.remove();done();}catch(e){vkSetStatus('Could not copy — write it down: '+key,false);}};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(key).then(done,fallback);
+  else fallback();
 };
 
 // ---------- Submit / contact form (works anywhere the hub is hosted — itch.io included) ----------
