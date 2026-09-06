@@ -4121,6 +4121,7 @@ async function ecSend(){
       ||(j.error&&('('+j.error.message+')'))||'…';
     ecHist.push({role:'model',parts:[{text:out}]});
     wait.textContent='Elara: '+out;
+    api({a:'asked',vid:visitId(),q:text,ans:out});   // kept for the Organiser Room's ASKED ELARA board
     // step out of the way while she answers (her lips move to the words), then come back for the next question
     // read aloud, pipelined: the first sentence plays while the rest is still synthesizing
     const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(out);
