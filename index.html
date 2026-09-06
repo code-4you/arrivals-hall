@@ -22,8 +22,9 @@
   #app{position:fixed;inset:0}
   /* ---- HUD ---- */
   #hud{position:fixed;inset:0;pointer-events:none}
-  #cross{position:fixed;left:50%;top:50%;width:6px;height:6px;transform:translate(-50%,-50%);
-    border-radius:50%;background:rgba(190,240,255,.85);box-shadow:0 0 6px rgba(0,0,0,.8);pointer-events:none}
+  #cross{position:fixed;left:50%;top:50%;width:30px;height:30px;margin:-4px 0 0 -14px;pointer-events:none;display:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.85))}   /* fingertip on the screen centre, only when something is clickable */
+  #cross.hand{display:block}
+  #cross svg{width:100%;height:100%;fill:#fff}
   #prompt{position:fixed;left:50%;top:58%;transform:translateX(-50%);
     font-size:15px;text-align:center;pointer-events:none;display:none;
     background:rgba(10,18,30,.55);border:1px solid rgba(127,230,255,.28);border-radius:8px;
@@ -145,7 +146,7 @@
 <div id="app"></div>
 
 <div id="hud">
-  <div id="cross"></div>
+  <div id="cross"><svg viewBox="0 0 24 24"><path d="M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></svg></div>
   <div id="prompt"><span id="promptText">Press <b>E</b></span></div>
   <div id="subtitle"></div>
   <div id="banner"></div>
@@ -326,6 +327,8 @@
       <div style="font-size:13.5px;line-height:1.6;color:#cfe0f2;background:rgba(8,16,28,.6);border:1px solid rgba(127,230,255,.22);border-radius:10px;padding:16px 20px">
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em">THE ARRIVALS HALL</div>
         Built by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a>, designed and written with Claude (<a href="https://www.anthropic.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Anthropic</a>). Environment art by Quaternius (CC0), KayKit &amp; Kenney; floor — “<a href="https://sketchfab.com/3d-models/seamless-floor-tiled-texture-ii-7bd8520796e34e0bb0c6c4c22c3f1d3d" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Seamless floor Tiled Texture II</a>” by Arthur.Zim (CC&nbsp;BY&nbsp;4.0); characters via Mixamo; built on <a href="https://threejs.org" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Three.js</a>.
+        <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">ELARA</div>
+        Elara’s body — “Cat Woman” by <a href="https://sketchfab.com/patromes" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">patromes</a> on <a href="https://sketchfab.com/3d-models/cat-woman-148ebfcf617c4e43a3be1229f1fa4caa" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a>, <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">CC BY 4.0</a>. Gestures and walk — <a href="https://www.mixamo.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Mixamo</a>, retargeted onto her rig.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">QUICK STORIES</div>
         <a href="https://lightsmithforge.linkpc.net/quick-stories/index.html" onclick="try{sessionStorage.setItem('atd:fromHub','1')}catch(e){}" style="color:var(--cyan);pointer-events:auto">Quick Stories</a> — a theatre of small plays: the Custodian &amp; AI self-perception, the Commons, Choose Neighbours, missions of faith and healing, the Sleeper's redemption, and the classics (Plato, Dostoevsky, Ibsen — public domain, adapted freely). Produced by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a> · story dialogue written by <span style="color:#b6ff9c">Claude</span>, Anthropic's AI — who, in the fiction, also plays the Custodian at the fountain. Player engine &amp; TTS by Lightsmith Forge · voices — browser text-to-speech with recorded lines to come.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">HEXGL</div>
@@ -470,7 +473,8 @@
     <h2 style="margin:.15em 0 .45em;font-size:26px;color:#fff;letter-spacing:.03em">A door to the <span style="color:#5fe0c8">Garden</span></h2>
     <p style="color:#c3d0e2;font-size:14px;line-height:1.55;margin:0 0 18px">A community for higher consciousness, built on the three things — friends near, a home you can afford, work worth doing. Every episode is open. Step through any of them.</p>
     <div id="communityList"></div>
-    <button class="menuBtn" id="cMore" style="width:100%;margin:14px 0 0;min-width:0;border-left-color:var(--amber)">✦&nbsp; More stories — the listening room</button>
+    <button class="menuBtn" id="cElaraHome" style="width:100%;margin:14px 0 0;min-width:0;border-left-color:var(--amber)">⌂&nbsp; Elara's home</button>
+    <button class="menuBtn" id="cYourHome" style="width:100%;margin:8px 0 0;min-width:0;border-left-color:var(--amber)">⌂&nbsp; Your home</button>
     <button class="menuBtn back" id="cClose" style="margin-top:12px">◂ Step back</button>
   </div>
 </div>
@@ -486,6 +490,15 @@
 </div>
 <div id="blankScreen" style="display:none;position:fixed;inset:0;z-index:70;background:#000;color:#eaf4ff;text-align:center;font-size:28px;letter-spacing:.04em">
   <div style="position:absolute;left:0;right:0;top:42%"><div id="blankMsg"></div><div id="blankCount" style="font-size:64px;margin-top:14px;color:var(--green)"></div></div>
+</div>
+<!-- DEVELOPER OPTIONS — hold [ and ] together to open (nothing on screen points here) -->
+<div class="modal" id="devModal" style="display:none;z-index:65;justify-content:flex-end;padding-right:28px;box-sizing:border-box;background:rgba(3,5,10,.22)">
+  <div style="max-width:620px;width:92%;max-height:92vh;display:flex;flex-direction:column;padding:24px 28px;border:1px solid rgba(255,210,127,.45);border-radius:14px;background:rgba(8,14,24,.97);text-align:left;box-shadow:0 0 50px rgba(255,190,90,.15)">
+    <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber);opacity:.9">Developer options</div>
+    <h2 style="margin:.15em 0 .6em;font-size:22px;color:#fff">Elara &amp; the hall</h2>
+    <div id="devBody" style="font-size:13.5px;line-height:1.5;color:#cfe0f2;max-height:62vh;overflow-y:auto;padding-right:8px;pointer-events:auto"></div>
+    <button class="menuBtn back" id="devClose" style="margin-top:14px;width:100%;min-width:0">◂ Close (or hold [ ] again)</button>
+  </div>
 </div>
 <div class="modal" id="elaraModal" style="display:none">
   <div style="max-width:520px;padding:28px 32px;border:1px solid rgba(182,255,156,.4);border-radius:14px;background:rgba(8,14,24,.96);text-align:center;box-shadow:0 0 50px rgba(90,200,120,.22)">
@@ -747,6 +760,8 @@ function addSign(str,x,y,z,rotY,size,color,intensity){
   });
 }
 // name written flat on the floor, reading correctly for a viewer walking in direction (vx,vz)
+const FLOOR_NAMES_VISIBLE=false;   // room names painted on the floor: built as before, just hidden (the signs above the rooms stay)
+const THRESHOLD_LINES_VISIBLE=false;   // the glowing line on the floor across each room's opening: built, hidden
 function addFloorText(str,x,z,vx,vz,size,color){
   withFont(()=>{
     const geo=new THREE.TextGeometry(str,{font:FONT,size,height:0.02,curveSegments:4});
@@ -760,6 +775,7 @@ function addFloorText(str,x,z,vx,vz,size,color){
     g.add(m);
     g.rotation.y=Math.atan2(-vx,-vz);
     g.position.set(x,0,z);
+    g.name='floorText';g.visible=FLOOR_NAMES_VISIBLE;
     worldGroup.add(g);
   });
 }
@@ -848,9 +864,10 @@ function buildRoom(R){
   addSign(R.sub, sp.x,4.42,sp.z,rotY,0.26,0xcfe0f2,0.55);
   const fp=P(hd+2.0,0);
   addFloorText(R.name,fp.x,fp.z,-fx,-fz,0.8,col);
-  // emissive threshold line
+  // emissive threshold line on the floor across the room's opening — built as before, hidden by the switch
   const tp=P(hd+0.1,0);
-  emissiveStrip(tp.x,0.02,tp.z,Math.abs(rx)*OPEN+0.14,0.05,Math.abs(rz)*OPEN+0.14,col,0.9);
+  const tl=emissiveStrip(tp.x,0.02,tp.z,Math.abs(rx)*OPEN+0.14,0.05,Math.abs(rz)*OPEN+0.14,col,0.9);
+  tl.name='thresholdLine';tl.visible=THRESHOLD_LINES_VISIBLE;
   // placeholder interaction until the storefront is fitted out (build 2)
   const FITTED=['credits','rally','velocity','crypt','blindspots','hallwyl','theater','submit','fame','vault','garden','cerebro'];
   if(FITTED.indexOf(R.id)<0){ // these rooms have real content now — they add their own hotspots
@@ -1117,7 +1134,7 @@ function buildFoyer(){
   box(0,4.2,28,10,H-4.2,T,wallMatHi,false);
   addSign('FOYER',0,5.05,27.55,Math.PI,0.62,0x9fd8ff,1.0);
   addFloorText('FOYER',0,25.6,0,-1,0.8,0x9fd8ff);
-  emissiveStrip(0,0.02,27.9,10.1,0.05,0.18,0x9fd8ff,0.9);
+  { const fl=emissiveStrip(0,0.02,27.9,10.1,0.05,0.18,0x9fd8ff,0.9); fl.name='foyerLine'; fl.visible=THRESHOLD_LINES_VISIBLE; }   // floor line across the foyer opening: built, hidden by the same switch as the room lines
 
   // ----- glass entrance: two leaves that slide open on proximity -----
   const glassMat=new THREE.MeshStandardMaterial({color:0xaad8f0,transparent:true,opacity:0.18,
@@ -1722,7 +1739,9 @@ function localPlayRows(){
   return rows;
 }
 // progress = every atd:* key plus the games' own done-flags that predate the prefix
-function progressKey(k){return !!k&&((k.indexOf('atd:')===0&&k!=='atd:accountKey')||k.indexOf('delivery:done:')===0);}
+// developer-page settings (atd:dev:*, the face mode) are per-machine tuning, not progress: never pushed, never pulled back
+function localOnlyKey(k){return k.indexOf('atd:dev:')===0||k.indexOf('atd:faceMode')===0;}
+function progressKey(k){return !!k&&((k.indexOf('atd:')===0&&k!=='atd:accountKey'&&!localOnlyKey(k))||k.indexOf('delivery:done:')===0);}
 function collectProgress(){
   const o={};
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
@@ -2020,7 +2039,7 @@ function buildWishBoard(){
   panel.position.set(R.cx-R.w/2+0.75,2.9,R.cz);panel.rotation.y=Math.PI/2;   // west side wall, facing into the room
   worldGroup.add(panel);
   const h=hotspot(R.cx-R.w/2+2.5,R.cz,2.2,'Organiser room — private',()=>{
-    location.href='../organiser/index.html';   // the private Organiser Room (login gate)
+    location.href='https://lightsmithforge.linkpc.net/organiser/index.html';   // the private Organiser Room (login gate)
   });
   h.clickable=true;   // a plain mouse click at the wall works too, not just E
 }
@@ -3113,13 +3132,14 @@ function openCommunityStories(){
 document.getElementById('fStop').onclick=()=>stopFountainVoices();
 document.getElementById('whatClose').onclick=()=>closeWhatAreYou();
 document.getElementById('fClose').onclick=()=>closeFountainWater(true);
-document.getElementById('cMore').onclick=()=>launchStoriesIndex();
+document.getElementById('cElaraHome').onclick=()=>{location.href='https://lightsmithforge.linkpc.net/elaras-home/index.html';};   // the garden door: the two apartments (the listening-room link was removed 2026-09-07)
+document.getElementById('cYourHome').onclick=()=>{location.href='https://lightsmithforge.linkpc.net/your-home/index.html';};
 document.getElementById('cClose').onclick=()=>{document.getElementById('communityModal').style.display='none';lockPointer();};
 
 // the opening screen, IN the game: a transparent holo-panel projected in front of the
 // spawn, listing the controls with a big F11 button. Fades as the player walks into the mall.
 function buildControlHolo(){
-  if(RETURN_TO||AT_FOUNTAIN)return;   // arriving back from a game, or straight to the fountain — no panel
+  if(RETURN_TO||AT_FOUNTAIN||AFTER_TOUR)return;   // arriving back from a game, straight to the fountain, or beside Elara after the tour — no panel
   // sit ~5.2m ahead of the spawn, shifted WEST so the view up the foyer stays clear
   const fx=-Math.sin(SPAWN_YAW),fz=-Math.cos(SPAWN_YAW);
   const HX=SPAWN.x+fx*5.2-3.6, HZ=SPAWN.z+fz*5.2;
@@ -3195,40 +3215,120 @@ function loadElara(){
   // (names in morphTargetDictionary) and the 15 Mixamo gesture clips retargeted onto her rig.
   new THREE.GLTFLoader().load('assets/people/elara.glb',(gl)=>{
     const clips={};(gl.animations||[]).forEach(c=>clips[c.name]=c);
-    PEOPLE.models.elara={scene:gl.scene,clips,cc3:true};spawnElara();
+    const facing=(gl.asset&&gl.asset.extras&&gl.asset.extras.facing)||'-z';   // build-elara.js records which way the model faces at rest
+    PEOPLE.models.elara={scene:gl.scene,clips,cc3:true,facing};spawnElara();
   },undefined,(e)=>{console.warn('Elara failed to load',e);});
 }
 
 /* ---- Elara's lip sync: text → CC3 visemes on her morph targets (+ jaw bone), driven by the recorded
    mp3 (loudness via an AnalyserNode, shapes from the line's letters) or browser TTS word boundaries. */
-const LIP={queue:[],now:{},tgt:{},active:false,audioMode:false,actx:null,analyser:null,buf:null,srcs:new WeakMap(),level:0,
+/* Face modes — chosen from Elara's E menu (More… → Mouth / head movements), remembered in localStorage.
+   hybrid : words drive the mouth (syllable-timed visemes from the TTS word boundaries); the captured eyes/brows/head
+            run underneath at full strength while she listens and are turned down while she speaks
+   capture: the captured performance only — mouth follows the recording, not the words
+   letters: the older engine — letter visemes + synthetic blink/brows, no capture
+   off    : still face (blink only) */
+const FACE_MODES=[['hybrid','Words move the mouth · captured eyes & head (calmer while speaking)'],['capture','Captured performance only · mouth follows the recording'],['letters','Letter visemes only · no capture'],['off','Still face']];
+// developer options never survive a refresh: every atd:dev:* key and the face mode are cleared here, before anything reads them
+try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&(k.indexOf('atd:dev:')===0||k.indexOf('atd:faceMode')===0))localStorage.removeItem(k);}}catch(e){}
+const DEV_DEF={talkFace:0.35,talkHead:0.3,headMax:35,aimYaw:9,aimPitch:0};   // aimYaw 9°: found by eye in the hall — she points at you when her body turns toward you   // aimYaw/aimPitch: degrees, where she believes the visitor is       // how much of the captured expressions / head motion stays while she speaks (hybrid)
+function devNum(k){try{const v=parseFloat(localStorage.getItem('atd:dev:'+k));return isFinite(v)?v:DEV_DEF[k];}catch(e){return DEV_DEF[k];}}
+let TALK_FACE_LEVEL=devNum('talkFace'), TALK_HEAD_LEVEL=devNum('talkHead');
+const FACE_MODE_KEY='atd:faceMode2';   // v2 key: the default is hybrid again for every browser; the old 'atd:faceMode' is ignored
+function faceMode(){try{return localStorage.getItem(FACE_MODE_KEY)||'hybrid';}catch(e){return 'hybrid';}}
+function setFaceMode(m){try{localStorage.setItem(FACE_MODE_KEY,m);}catch(e){} if(persons.elara)applyFaceMode(persons.elara);}
+function applyFaceMode(p){
+  p.faceMode=faceMode(); if(!p.faceTalk)return;
+  const cap=p.faceMode==='hybrid'||p.faceMode==='capture';
+  p.faceIdle.setEffectiveWeight(cap?1:0); p.faceTalk.setEffectiveWeight(0);
+  if(p.faceHead)p.faceHead.setEffectiveWeight(cap?1:0);
+  LIP.now={};   // forget the previous mode's smoothed values
+}
+const LIP={queue:[],now:{},tgt:{},active:false,audioMode:false,actx:null,analyser:null,buf:null,srcs:new WeakMap(),level:0,msPerChar:70,
   VIS:{sil:{},AA:{V_Open:0.9,Jaw_Open:0.5},EE:{V_Wide:0.8,V_Lip_Open:0.35,Jaw_Open:0.1},OH:{V_Tight_O:0.9,Jaw_Open:0.22},UW:{V_Tight:0.8,V_Tight_O:0.2},
        PP:{V_Explosive:1},FF:{V_Dental_Lip:1},CH:{V_Affricate:0.9,Jaw_Open:0.08},DD:{V_Lip_Open:0.7,Jaw_Open:0.12,V_Tongue_up:0.4},TH:{V_Lip_Open:0.6,V_Tongue_Out:0.5,Jaw_Open:0.1}},
   LETTER:{a:'AA',e:'EE',i:'EE',y:'EE',o:'OH',u:'UW',w:'UW',b:'PP',m:'PP',p:'PP',f:'FF',v:'FF',j:'CH',c:'DD',d:'DD',g:'DD',h:'DD',k:'DD',l:'DD',n:'DD',q:'UW',r:'DD',s:'DD',t:'DD',x:'DD',z:'DD'}};
-function lipVisemes(word){
-  const w=word.toLowerCase().replace(/[^a-z']/g,''),out=[];
-  for(let i=0;i<w.length;i++){
-    const two=w.slice(i,i+2);let v;
-    if(two==='ch'||two==='sh'){v='CH';i++;}else if(two==='th'){v='TH';i++;}else if(two==='oo'){v='UW';i++;}
-    else if(two==='ee'||two==='ea'){v='EE';i++;}else if(two==='ou'||two==='ow'){v='OH';i++;}else if(two==='ck'){v='DD';i++;}
-    else v=LIP.LETTER[w[i]];
-    if(!v||(out.length&&out[out.length-1]===v))continue;
-    out.push(v);
-  }
-  if(w.endsWith('e')&&out.length>1&&out[out.length-1]==='EE')out.pop();
-  return out.length?out:['AA'];
+// word → visemes with relative durations: vowels are held about twice as long as consonants, plosives get a short
+// closed beat, a silent final 'e' is dropped, and a doubled shape is merged. Each entry: {v, w} (w = relative length).
+const VOWEL_W=1.8,CONS_W=1.0,PLOSIVE_W=0.7;
+/* ---- SYLLABLES → MOUTH SHAPES (default). A word is cut into syllables, one vowel nucleus each; every syllable gets one clear
+   mouth opening (the nucleus shape, 2.2 beats) with quick consonant shapes in front (onset) and behind (coda, 0.55 beats
+   each, at most two counted). Rules: silent final e ("time", "makes") is dropped unless the word has no other vowel ("the") or
+   ends in consonant+le ("table"); -ed after a consonant other than t/d is silent ("walked", not "wanted"); y is a vowel except
+   before a vowel at the start ("yes"); io / ia / iu / eo / ua / uo split into two nuclei ("radio"); a single consonant between
+   nuclei starts the next syllable, a cluster leaves its first letter (or ch/sh/th/ph) behind. Nucleus shapes: a→AA, e/i/y→EE,
+   o→OH, u→UW; ee ea ie ei ey→EE; oo ue ui eu ew→UW; ou ow oa oi oy au aw eau→OH; ai ay igh→AA (long i / a); i+consonant+e→AA. ---- */
+const NUCLEUS={igh:'AA',eau:'OH',iou:'UW',io:'AA',ee:'EE',ea:'EE',ie:'EE',ei:'EE',ey:'EE',oo:'UW',ou:'OH',ow:'OH',oa:'OH',oi:'OH',oy:'OH',au:'OH',aw:'OH',ai:'AA',ay:'AA',ue:'UW',ui:'UW',eu:'UW',ew:'UW'};
+function lipSyllables(word){
+  let w=word.toLowerCase().replace(/[^a-z]/g,'').replace(/qu/g,'qw'); if(!w)return [];   // qu = a consonant sound (quiet, quick)
+  const isV=(ch,i)=>'aeiou'.includes(ch)||(ch==='y'&&!(i===0&&'aeiou'.includes(w[1]||'')));
+  const vowelsBefore=(n)=>{for(let i=0;i<n;i++)if(isV(w[i],i))return true;return false;};
+  // silent endings
+  let dropE=false;
+  if(/[^aeiou]e$/.test(w)&&vowelsBefore(w.length-1)&&!/[^aeiou]le$/.test(w)){w=w.slice(0,-1);dropE=true;}
+  else if(/[^aeioutd]ed$/.test(w)&&vowelsBefore(w.length-2))w=w.slice(0,-2)+'d';
+  else if(/[^aeiousxz]es$/.test(w)&&!/(ch|sh)es$/.test(w)&&vowelsBefore(w.length-2))w=w.slice(0,-2)+'s';
+  // vowel runs → nuclei
+  const groups=[];let i=0;
+  while(i<w.length){ if(isV(w[i],i)){let j=i+1;while(j<w.length&&isV(w[j],j))j++; let run=w.slice(i,j); const before=w[i-1]||'',after=w[j]||'';
+      const parts=[]; while(run.length){ const m=run.match(/^(i[oau]|eo|ua|uo)/); const tion=/^io/.test(run)&&after==='n'&&'tsc'.includes(before);   // -tion / -sion / -cian: one syllable
+        if(m&&run.length>=2&&!tion){parts.push(run[0]);run=run.slice(1);} else {parts.push(run);run='';} }
+      let pos=i; for(const pt of parts){groups.push({s:pos,e:pos+pt.length,txt:pt});pos+=pt.length;} i=j; } else i++; }
+  if(!groups.length)return [{onset:w,nuc:'AA',coda:''}];
+  const syl=[];
+  for(let g=0;g<groups.length;g++){ const cur=groups[g],prev=groups[g-1],next=groups[g+1];
+    let onset=prev?'':w.slice(0,cur.s), coda='';
+    if(prev){ const cl=w.slice(prev.e,cur.s); if(cl.length<=1||/^(ch|sh|th|ph)$/.test(cl))onset=cl; else {const d=cl.match(/^(ch|sh|th|ph)/);const cut=d?d[0].length:1;syl[syl.length-1].coda=cl.slice(0,cut);onset=cl.slice(cut);} }
+    if(!next)coda=w.slice(cur.e);
+    let nuc=NUCLEUS[cur.txt]; if(!nuc){const c=cur.txt[0]; nuc=(c==='i'&&!next&&dropE&&/^[^aeiou]$/.test(w.slice(cur.e)))?'AA':(LIP.LETTER[c]||'AA');}   // long i before a dropped silent e (time, like)
+    syl.push({onset,nuc,coda}); }
+  return syl;
 }
-function lipWord(word,startMs,durMs){
-  const vs=lipVisemes(word),per=Math.min(durMs/vs.length,1000/11);
+function lipConsonants(str){ const out=[];let i=0; while(i<str.length){const two=str.slice(i,i+2);
+  if(two==='ch'||two==='sh'){out.push('CH');i+=2;continue;} if(two==='th'){out.push('TH');i+=2;continue;} if(two==='ph'){out.push('FF');i+=2;continue;} if(two==='ck'){out.push('DD');i+=2;continue;} if(two==='qu'){out.push('UW');i+=2;continue;}
+  const v=LIP.LETTER[str[i]]; if(v&&v!=='AA'&&v!=='EE'&&v!=='OH')out.push(v); i++;} return out; }
+function lipVisemesSyllables(word){
+  const syl=lipSyllables(word),out=[]; LIP.lastSplit=syl.map(x=>x.onset+x.nuc.toLowerCase()+x.coda).join('·');
+  const push=(v,wt)=>{ if(!v)return; if(out.length&&out[out.length-1].v===v){out[out.length-1].w+=wt*0.5;return;} out.push({v,w:wt}); };
+  for(const x of syl){ lipConsonants(x.onset).slice(0,2).forEach(v=>push(v,0.55)); push(x.nuc,2.2); lipConsonants(x.coda).slice(0,2).forEach(v=>push(v,0.55)); }
+  return out.length?out:[{v:'AA',w:2.2}];
+}
+function lipVisemes(word){
+  if(devFlag('lipSyllables',true))return lipVisemesSyllables(word);
+  const w=word.toLowerCase().replace(/[^a-z']/g,''),out=[];
+  const push=(v,wt)=>{ if(!v)return; if(out.length&&out[out.length-1].v===v){out[out.length-1].w+=wt*0.5;return;} out.push({v,w:wt}); };
+  for(let i=0;i<w.length;i++){
+    const two=w.slice(i,i+2);
+    if(two==='ch'||two==='sh'){push('CH',CONS_W);i++;continue;}
+    if(two==='th'){push('TH',CONS_W);i++;continue;}
+    if(two==='oo'){push('UW',VOWEL_W);i++;continue;}
+    if(two==='ee'||two==='ea'||two==='ie'){push('EE',VOWEL_W);i++;continue;}
+    if(two==='ou'||two==='ow'||two==='oa'){push('OH',VOWEL_W);i++;continue;}
+    if(two==='ai'||two==='ay'||two==='ei'){push('AA',VOWEL_W*0.7);push('EE',VOWEL_W*0.6);i++;continue;}
+    if(two==='ck'){push('DD',PLOSIVE_W);i++;continue;}
+    if(two==='qu'){push('UW',CONS_W);i++;continue;}
+    const c=w[i],v=LIP.LETTER[c]; if(!v)continue;
+    const isV='aeiouy'.includes(c), isP='bpmtdkg'.includes(c);
+    push(v,isV?VOWEL_W:isP?PLOSIVE_W:CONS_W);
+  }
+  if(w.length>2&&w.endsWith('e')&&out.length>1&&out[out.length-1].v==='EE')out.pop();   // silent final e
+  return out.length?out:[{v:'AA',w:VOWEL_W}];
+}
+function lipWord(word,startMs,durMs,pauseAfter){
+  const vs=lipVisemes(word),total=vs.reduce((a,x)=>a+x.w,0);
+  const speak=Math.max(80,durMs-(pauseAfter||0));            // time the mouth is busy; the rest is a pause
   LIP.queue=LIP.queue.filter(q=>q.t0<startMs).map(q=>q.t1>startMs?Object.assign({},q,{t1:startMs}):q);
-  vs.forEach((v,i)=>LIP.queue.push({vis:v,t0:startMs+i*per,t1:startMs+(i+1)*per}));
-  LIP.queue.push({vis:'sil',t0:startMs+vs.length*per,t1:startMs+durMs+400});
+  let t=startMs; for(const x of vs){const d=speak*x.w/total; LIP.queue.push({vis:x.v,t0:t,t1:t+d}); t+=d;}
+  LIP.queue.push({vis:'sil',t0:t,t1:startMs+durMs+400});
   if(LIP.queue.length>400)LIP.queue=LIP.queue.slice(-200);
   LIP.active=true;
 }
+// pauses that punctuation implies after a word (ms) — the TTS holds there too
+function lipPause(word){ return /[.!?…]$/.test(word)?260:/[,;:]$/.test(word)?140:0; }
 function lipText(text,startMs,totalMs){           // whole line on an estimated / known timeline
-  const words=String(text).split(/\s+/).filter(Boolean),chars=words.reduce((a,w)=>a+w.length+1,0);
-  let t=startMs;for(const w of words){const d=totalMs*(w.length+1)/chars;lipWord(w,t,d);t+=d;}
+  const words=String(text).split(/\s+/).filter(Boolean);
+  const cost=words.map(w=>w.length+1+lipPause(w)/LIP.msPerChar),sum=cost.reduce((a,b)=>a+b,0);
+  let t=startMs;words.forEach((w,i)=>{const d=totalMs*cost[i]/sum;lipWord(w,t,d,lipPause(w));t+=d;});
 }
 function lipStop(){LIP.queue=[];LIP.active=false;LIP.audioMode=false;}
 function lipAttachAudio(a){                       // recorded line: loudness opens the mouth
@@ -3242,42 +3342,452 @@ function lipAttachAudio(a){                       // recorded line: loudness ope
 function lipLevel(){
   if(!LIP.audioMode||!LIP.analyser)return 1;
   LIP.analyser.getFloatTimeDomainData(LIP.buf);let s=0;for(let i=0;i<LIP.buf.length;i++)s+=LIP.buf[i]*LIP.buf[i];
-  LIP.level+=(Math.min(1,Math.sqrt(s/LIP.buf.length)*6)-LIP.level)*0.5;return LIP.level;
+  LIP.level+=(Math.min(1,Math.sqrt(s/LIP.buf.length)*10)-LIP.level)*0.5;return LIP.level;
 }
 function lipUpdate(p,dt){
   if(!p.morphs)return;
+  if(p.faceMode===undefined)applyFaceMode(p);
+  const mode=p.faceTalk?p.faceMode:(p.faceMode==='off'?'off':'letters');
   const now=performance.now();
-  for(const v in LIP.VIS)for(const n in LIP.VIS[v])LIP.tgt[n]=0;
-  LIP.tgt.V_Tongue_up=0;LIP.tgt.V_Tongue_Out=0;
-  if(LIP.active){
+  if(LIP.active&&now>LIP.queue.reduce((m,q)=>Math.max(m,q.t1),0))LIP.active=false;
+  const talking=LIP.active;
+  // captured performance: 'capture' crossfades talk/idle on speech; 'hybrid' keeps the mouth-free idle underneath,
+  // turned down while she speaks so the words on the mouth are the one thing happening
+  if(p.faceTalk){
+    const cap=mode==='hybrid'||mode==='capture'||!!DEV_SOLO.key;   // a dev-page solo plays the capture whatever the face mode
+    const wantTalk=mode==='capture'&&talking?1:0, wantIdle=mode==='capture'?1-wantTalk:(talking?TALK_FACE_LEVEL:1), wantHead=mode==='hybrid'&&talking?TALK_HEAD_LEVEL:1;
+    const k=Math.min(1,dt*3), tw=p.faceTalk.getEffectiveWeight(), iw=p.faceIdle.getEffectiveWeight();
+    p.faceTalk.setEffectiveWeight(cap?tw+(wantTalk-tw)*k:0); p.faceIdle.setEffectiveWeight(cap&&!faceOff('Face_Idle')?iw+(wantIdle-iw)*k:0);   // dev page can switch the expressions layer off
+    if(p.faceHead){const hw=p.faceHead.getEffectiveWeight();p.faceHead.setEffectiveWeight(cap?hw+(wantHead-hw)*k:0);}
+  }
+  // our own morph writes: mouth (hybrid/letters), plus blink/smile/brows when there is no capture underneath
+  const mouthOn=mode==='hybrid'||mode==='letters', lifeOn=mode==='letters'||mode==='off';
+  const managed=new Set();
+  LIP.tgt={}; for(const v in LIP.VIS)for(const n in LIP.VIS[v])LIP.tgt[n]=0; LIP.tgt.V_Tongue_up=0;LIP.tgt.V_Tongue_Out=0;
+  for(const n in LIP.tgt)managed.add(n);
+  if(mouthOn&&talking){
     let vis='sil',best=-Infinity;for(const q of LIP.queue)if(now>=q.t0&&now<q.t1&&q.t0>best){vis=q.vis;best=q.t0;}
-    if(now>LIP.queue.reduce((m,q)=>Math.max(m,q.t1),0))LIP.active=false;
     const shape=LIP.VIS[vis]||{};let amp=0.9;
-    if(LIP.audioMode){const lvl=lipLevel();amp*=lvl;if(vis==='sil'&&lvl>0.15)for(const n in LIP.VIS.AA)LIP.tgt[n]=LIP.VIS.AA[n]*amp;}
+    if(LIP.audioMode){const lvl=lipLevel();amp*=Math.max(0.45,lvl);if(vis==='sil'&&lvl>0.15)for(const n in LIP.VIS.AA)LIP.tgt[n]=LIP.VIS.AA[n]*amp;}
     for(const n in shape)LIP.tgt[n]=shape[n]*amp;
   }
-  // idle life: blink, slight smile, a little brow movement
-  if(p.blinkT==null){p.blinkT=-1;p.nextBlink=state.time+2;}
-  if(p.blinkT<0&&state.time>p.nextBlink){p.blinkT=0;p.nextBlink=state.time+2.5+Math.random()*4;}
-  let bl=0;if(p.blinkT>=0){p.blinkT+=dt;bl=p.blinkT<0.08?p.blinkT/0.08:p.blinkT<0.2?1-(p.blinkT-0.08)/0.12:0;if(p.blinkT>0.2)p.blinkT=-1;}
-  LIP.tgt.Eye_Blink_L=bl;LIP.tgt.Eye_Blink_R=bl;
-  LIP.tgt.Mouth_Smile_L=LIP.tgt.Mouth_Smile_R=0.18;
-  const b=0.05+0.05*Math.sin(state.time*0.7);LIP.tgt.Brow_Raise_Inner_L=LIP.tgt.Brow_Raise_Inner_R=b;
-  const k=1-Math.pow(0.72,dt*60);
-  for(const n in LIP.tgt){const c=LIP.now[n]||0,v=c+(LIP.tgt[n]-c)*k;LIP.now[n]=Math.abs(v)<1e-4?0:v;}
-  for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;for(const n in LIP.now){const i=d[n];if(i!==undefined)inf[i]=LIP.now[n];}}
-  if(p.jaw){const open=(LIP.now.Jaw_Open||0)+(LIP.now.V_Open||0)*0.3;p.jaw.quaternion.copy(p.jawRest).multiply(_jawQ.setFromAxisAngle(_jawAxis,open*0.26));}
+  if(lifeOn&&!devFlag('off:Blink',false)){
+    if(p.blinkT==null){p.blinkT=-1;p.nextBlink=state.time+2;}
+    if(p.blinkT<0&&state.time>p.nextBlink){p.blinkT=0;p.nextBlink=state.time+2.5+Math.random()*4;}
+    let bl=0;if(p.blinkT>=0){p.blinkT+=dt;bl=p.blinkT<0.08?p.blinkT/0.08:p.blinkT<0.2?1-(p.blinkT-0.08)/0.12:0;if(p.blinkT>0.2)p.blinkT=-1;}
+    LIP.tgt.Eye_Blink_L=bl;LIP.tgt.Eye_Blink_R=bl;managed.add('Eye_Blink_L');managed.add('Eye_Blink_R');
+    if(mode==='letters'){LIP.tgt.Mouth_Smile_L=LIP.tgt.Mouth_Smile_R=0.18;const b=0.05+0.05*Math.sin(state.time*0.7);LIP.tgt.Brow_Raise_Inner_L=LIP.tgt.Brow_Raise_Inner_R=b;
+      ['Mouth_Smile_L','Mouth_Smile_R','Brow_Raise_Inner_L','Brow_Raise_Inner_R'].forEach(n=>managed.add(n));}
+  }
+  const ks=1-Math.pow(0.72,dt*60);
+  for(const n of managed){const c=LIP.now[n]||0,v=c+((LIP.tgt[n]||0)-c)*ks;LIP.now[n]=Math.abs(v)<1e-4?0:v;}
+  if(mouthOn||lifeOn)for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;for(const n of managed){const i=d[n];if(i!==undefined)inf[i]=LIP.now[n];}}
+  else if(mode==='off')for(const m of p.morphs){const inf=m.morphTargetInfluences;for(let i=0;i<inf.length;i++)inf[i]=0;}
+  // jaw bone follows whatever is on the mouth now (our visemes or the capture's)
+  if(p.jaw){const m=p.morphs.find(x=>x.morphTargetDictionary.Jaw_Open!==undefined);
+    if(m){const d=m.morphTargetDictionary,inf=m.morphTargetInfluences;const open=(inf[d.Jaw_Open]||0)+(inf[d.V_Open]||0)*0.3;
+      p.jaw.quaternion.copy(p.jawRest).multiply(_jawQ.setFromAxisAngle(_jawAxis,open*0.26));}}
+  // three r128 draws only the 8 strongest morphs per mesh: while she talks, rank the mouth shapes first so they never get dropped
+  for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;if(inf.length<=8)continue;
+    if(!m._mouthIdx){m._mouthIdx=new Set();for(const n in d)if(/^V_|^Jaw_|^Mouth_/.test(n))m._mouthIdx.add(d[n]);}
+    const order=[];for(let i=0;i<inf.length;i++)if(Math.abs(inf[i])>0.01)order.push([i,Math.abs(inf[i])*(talking&&m._mouthIdx.has(i)?3:1)]);
+    if(order.length>8){order.sort((x,y)=>y[1]-x[1]);for(let q=8;q<order.length;q++)inf[order[q][0]]=0;}}
 }
 const _jawQ=new THREE.Quaternion(),_jawAxis=new THREE.Vector3(0,0,1);   // CC_Base_JawRoot opens about its local +Z
+/* ---- eyes follow the visitor: engages only while her head is turned toward the camera (within ~35°), blends over the
+   captured eye motion, limited to 30° of eye swing, smoothed in time. Off past 75°, off when the dev switch says so,
+   and off while p.eyesOff is set (for scenes that want her looking elsewhere). ---- */
+const _eyeV=new THREE.Vector3(),_eyeD=new THREE.Vector3(),_eyeP=new THREE.Vector3(),_eyeQ=new THREE.Quaternion(),_eyeR=new THREE.Quaternion(),_eyeI=new THREE.Quaternion(),_eyeParent=new THREE.Quaternion();
+function eyesSetup(p,model,group){   // call once, before any animation: her forward = the group's heading (the inner turn makes her face +Z inside it)
+  p.eyes=[];model.updateWorldMatrix(true,true);
+  const yaw=group?group.rotation.y:0,fwdW=new THREE.Vector3(Math.sin(yaw),0,Math.cos(yaw));
+  const upW=new THREE.Vector3(0,1,0),leftW=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));p.boneAxes={};   // her left = up × forward
+  model.traverse(o=>{if(o.isBone&&/CC_Base_([LR]_Eye|Head|NeckTwist0[12])/.test(o.name)){const inv=o.getWorldQuaternion(new THREE.Quaternion()).invert();
+      p.boneAxes[o.name]={fwd:fwdW.clone().applyQuaternion(inv),up:upW.clone().applyQuaternion(inv),left:leftW.clone().applyQuaternion(inv)};}
+    if(o.isBone&&/CC_Base_[LR]_Eye/.test(o.name)){const wq=o.getWorldQuaternion(new THREE.Quaternion());
+    p.eyes.push({b:o,fwd:fwdW.clone().applyQuaternion(wq.clone().invert()),q:o.quaternion.clone(),rest:o.quaternion.clone()});}
+    if(o.isBone&&/CC_Base_Head/.test(o.name)){const wq=o.getWorldQuaternion(new THREE.Quaternion());p.headBone=o;p.headFwd=fwdW.clone().applyQuaternion(wq.clone().invert());}});
+}
+
+/* ---- head turns toward the visitor (dev option, off by default): the head bone is eased toward the camera while the
+   visitor is in front of her body (weight fades out between 60° and 90° off her body's heading), limited to headMax
+   degrees, smoothed, layered over the captured head motion. Runs before the eyes so they see the turned head. ---- */
+function headTrack(p,dt,camPos,enabled,maxDeg,bodyYaw){
+  if(!p.headBone||!p.headFwd)return;
+  const cap=p.headBone.quaternion.clone();
+  if(!p.headQ)p.headQ=cap.clone();
+  let w=0;
+  if(enabled&&!p.eyesOff){
+    p.inner.updateWorldMatrix(true,true);
+    const hp=p.headBone.getWorldPosition(_eyeP.clone()),to=_eyeD.subVectors(camPos,hp).normalize();
+    const bf=new THREE.Vector3(Math.sin(bodyYaw),0,Math.cos(bodyYaw));
+    const a=bf.angleTo(new THREE.Vector3(to.x,0,to.z).normalize())*180/Math.PI;   // visitor vs her body's heading
+    w=a<60?1:a>90?0:(90-a)/30;
+    if(w>0){
+      const hq=p.headBone.getWorldQuaternion(_eyeQ.clone()),hf=p.headFwd.clone().applyQuaternion(hq);
+      const ang=hf.angleTo(to)*180/Math.PI;
+      _eyeR.setFromUnitVectors(hf,to); if(ang>maxDeg)_eyeR.slerp(_eyeI.identity(),1-maxDeg/ang);
+      const tw=_eyeR.clone().multiply(hq); p.headBone.parent.getWorldQuaternion(_eyeParent);
+      p.headQ.slerp(_eyeParent.invert().multiply(tw),Math.min(1,dt*4));
+    }
+  }
+  if(w>0)p.headBone.quaternion.copy(cap).slerp(p.headQ,w); else p.headQ.copy(cap);
+}
+function eyesTrack(p,dt,camPos,enabled){
+  if(!p.eyes||!p.eyes.length||!p.headBone)return;
+  p.inner.updateWorldMatrix(true,true);
+  let w=0;
+  if(enabled&&!p.eyesOff){
+    const hq=p.headBone.getWorldQuaternion(_eyeQ),hp=p.headBone.getWorldPosition(_eyeP);
+    const hf=_eyeV.copy(p.headFwd).applyQuaternion(hq),to=_eyeD.subVectors(camPos,hp).normalize();
+    const a=hf.angleTo(to)*180/Math.PI;                       // how far the visitor is off her head's forward
+    w=a<25?1:a>45?0:(45-a)/20;
+  }
+  // captured eye movements play through the follow: while the capture holds the eyes clearly off centre (bones 9°+ from the
+  // bind pose, or look shapes 0.35+) the follow steps aside; once they come back (below 5° / 0.2) the eyes return to the visitor
+  if(w>0&&devFlag('eyeCaptureFirst',true)){
+    let dev=0; for(const e of p.eyes){ if(!e.rest)continue; const a1=_eyeV.copy(e.fwd).applyQuaternion(e.rest),a2=_eyeD.copy(e.fwd).applyQuaternion(e.b.quaternion); dev=Math.max(dev,a1.angleTo(a2)*180/Math.PI); }
+    if(p.morphs&&p.morphs[0]){const m=p.morphs[0],d=m.morphTargetDictionary;if(!m.__look){m.__look=[];for(const n in d)if(/^Eye_[LR]_Look_/.test(n))m.__look.push(d[n]);}let lk=0;for(const i of m.__look)lk=Math.max(lk,m.morphTargetInfluences[i]);dev=Math.max(dev,lk*25);}
+    p.eyeCapOn=dev>9?true:dev<5?false:!!p.eyeCapOn;
+    p.eyeCapBlend=(p.eyeCapBlend||0)+((p.eyeCapOn?1:0)-(p.eyeCapBlend||0))*Math.min(1,dt*6);
+    w*=1-p.eyeCapBlend;
+  } else p.eyeCapBlend=0;
+  const k=Math.min(1,dt*10);
+  // one line of sight for both eyes, from the point between them: they turn together and never converge on a close visitor
+  let dShared=null; if(w>0){const mid=new THREE.Vector3();for(const e of p.eyes)mid.add(e.b.getWorldPosition(_eyeP.clone()));mid.divideScalar(p.eyes.length);dShared=camPos.clone().sub(mid).normalize();}
+  for(const e of p.eyes){
+    const cap=e.b.quaternion.clone();                          // the captured / rest value the mixer left this frame
+    if(w>0){
+      const wq=e.b.getWorldQuaternion(_eyeQ.clone());
+      const fwd=e.fwd.clone().applyQuaternion(wq),d=dShared;
+      const ang=fwd.angleTo(d)*180/Math.PI;
+      if(ang<75){
+        _eyeR.setFromUnitVectors(fwd,d); if(ang>30)_eyeR.slerp(_eyeI.identity(),1-30/ang);   // cap the swing
+        const tw=_eyeR.clone().multiply(wq);                     // tracked world rotation
+        e.b.parent.getWorldQuaternion(_eyeParent);
+        const tl=_eyeParent.invert().multiply(tw);               // → local
+        e.q.slerp(tl,k);                                         // smooth in time
+      } else w=0;
+    }
+    if(w>0)e.b.quaternion.copy(cap).slerp(e.q,w); else e.q.copy(cap);
+  }
+  // while the eyes follow, the capture's iris shape keys (Eye_L/R_Look_*) step aside by the same amount, so nothing else pulls the irises
+  if(w>0&&p.morphs)for(const m of p.morphs){ if(!m.__look){m.__look=[];const d=m.morphTargetDictionary;for(const n in d)if(/^Eye_[LR]_Look_/.test(n))m.__look.push(d[n]);} for(const i of m.__look)m.morphTargetInfluences[i]*=(1-w); }
+}
+function devFlag(k,def){try{const v=localStorage.getItem('atd:dev:'+k);return v===null?def:v==='1';}catch(e){return def;}}
+
+
+/* ---- Developer options page: hold [ and ] together. Face mode, the captured-face levels while she talks,
+   a test line, a reset, and a live info line. Everything here is saved in localStorage (atd:faceMode, atd:dev:*). ---- */
+const devKeys={BracketLeft:false,BracketRight:false};
+/* where she believes you are: the camera, swung about her head by the dev aim offsets — yaw about the vertical
+   (+ = her left = your right as you face her), pitch as elevation (+ = up). Body turn, head turn and eyes all aim here. */
+const ELARA_AIM=new THREE.Vector3(),_aimH=new THREE.Vector3();
+function elaraAim(p){
+  ELARA_AIM.copy(camera.position);
+  const yo=(devNum('aimYaw')||0)*Math.PI/180,po=(devNum('aimPitch')||0)*Math.PI/180;
+  if(!yo&&!po)return ELARA_AIM;
+  const h=p.headBone?p.headBone.getWorldPosition(_aimH):_aimH.set(p.mesh.position.x,1.75,p.mesh.position.z);
+  let x=ELARA_AIM.x-h.x,y=ELARA_AIM.y-h.y,z=ELARA_AIM.z-h.z;
+  if(yo){const c=Math.cos(yo),sn=Math.sin(yo),nx=x*c+z*sn,nz=-x*sn+z*c;x=nx;z=nz;}
+  if(po){const r=Math.hypot(x,z),d=Math.hypot(r,y),el=Math.atan2(y,r)+po,nr=d*Math.cos(el);y=d*Math.sin(el);if(r>1e-6){x*=nr/r;z*=nr/r;}}
+  return ELARA_AIM.set(h.x+x,h.y+y,h.z+z);
+}
+// idle layers switched off on the dev page (atd:dev:off:<clip>): their actions are held at weight 0 before each mixer update
+const ELARA_IDLE='Idle_Mixamo';   // her standing idle (user's pick, 2026-09-07); the others stay selectable on the dev page
+const IDLE_LABELS={Idle:'Dahlia body capture',Idle_Mixamo:'Mixamo idle (default)',Idle_UAL:'Universal Animation Library: Idle_Loop',Idle_UAL_Talking:'Universal Animation Library: Idle_Talking_Loop',Idle_UAL_FoldArms:'Universal Animation Library 2: Idle_FoldArms_Loop'};
+// the captured face, in parts (dev page): Face_Head bone groups and Face_Idle/Face_Talk morph groups
+const FACE_HEAD_PARTS={eyes:/_[LR]_Eye/,head:/CC_Base_Head/,neck:/NeckTwist/};
+const FACE_MORPH_GROUPS={brows:/^Brow_/,lids:/^Eye_(Blink|Squint|Wide)/,look:/^Eye_[LR]_Look/,headShapes:/^(Head_Turn|Head_Tilt)/,cheeks:/^(Cheek_|Nose_|Neck_Tighten)/};
+const DEV_SOLO={key:null};
+const DEV_TL={open:false};   // the red "what each part does" panel
+/* ---- WINKS. A blink with one eye is a wink. The capture has one stretch where she closes one eye, then the other, then the
+   first again — the "funny stupid winks set". In normal play the two eyelids are kept together (so it no longer happens every
+   loop); the set is replayed exactly from the recording on a schedule, and a clean wink of her LEFT eye has its own schedule.
+   Clock = play time (state.time). The dev page can fire both; "later, maybe": winks tied to moments in conversation. ---- */
+const WINK={set:null,active:null,nextSet:300,SET_EVERY:600,nextLeft:120,LEFT_EVERY:120};
+function winkFindSet(p){   // the longest alternating one-eyed stretch in Face_Idle, with its eyelid values kept for replay
+  const c=p.clips&&p.clips.Face_Idle,m=p.morphs&&p.morphs[0]; if(!c||!m)return null;
+  const d=m.morphTargetDictionary,iL=d.Eye_Blink_L,iR=d.Eye_Blink_R,n=Object.keys(d).length,t=c.tracks.find(tr=>tr.name.indexOf(m.name)===0);
+  if(!t||iL===undefined||iR===undefined)return null;
+  const runs=[];let cur=null;
+  for(let f=0;f<t.times.length;f++){const L=t.values[f*n+iL],R=t.values[f*n+iR],k=Math.max(L,R)<0.3?'-':L-R>0.3?'L':R-L>0.3?'R':'b';
+    if(cur&&cur.k===k)cur.f1=f;else{if(cur)runs.push(cur);cur={k,f0:f,f1:f};}}
+  if(cur)runs.push(cur);
+  const one=runs.filter(r=>r.k==='L'||r.k==='R');if(!one.length)return null;
+  const cl=[];for(const r of one){const last=cl[cl.length-1];if(last&&t.times[r.f0]-t.times[last.f1]<0.8){last.f1=r.f1;last.seq.push(r.k);}else cl.push({f0:r.f0,f1:r.f1,seq:[r.k]});}
+  cl.sort((a,b)=>b.seq.length-a.seq.length);const best=cl[0];
+  const f0=Math.max(0,best.f0-4),f1=Math.min(t.times.length-1,best.f1+4),frames=[];
+  for(let f=f0;f<=f1;f++)frames.push([t.times[f]-t.times[f0],t.values[f*n+iL],t.values[f*n+iR]]);
+  return {t0:t.times[f0],t1:t.times[f1],dur:t.times[f1]-t.times[f0],pattern:best.seq.map(k=>k==='L'?'left':'right').join(', '),frames};
+}
+function winkPlay(kind){ if(kind==='set'&&!WINK.set)return; WINK.active={kind,start:state.time,dur:kind==='set'?WINK.set.dur:0.45}; }
+function winkUpdate(p){   // after the mixer and the lip engine: eyelids together normally, a scheduled wink on top
+  if(!p.morphs)return;
+  if(!WINK.active){ if(state.time>=WINK.nextSet){WINK.nextSet+=WINK.SET_EVERY;winkPlay('set');} else if(state.time>=WINK.nextLeft){WINK.nextLeft+=WINK.LEFT_EVERY;winkPlay('left');} }
+  let L=null,R=null;const a=WINK.active;
+  if(a){const u=state.time-a.start; if(u>a.dur)WINK.active=null;
+    else if(a.kind==='set'){const fr=WINK.set.frames;let i=0;while(i<fr.length-1&&fr[i+1][0]<=u)i++;L=fr[i][1];R=fr[i][2];}
+    else L=Math.sin(Math.min(1,u/0.45)*Math.PI);}   // her left eye only; the right lid keeps doing what it was doing
+  for(const m of p.morphs){const d=m.morphTargetDictionary,inf=m.morphTargetInfluences,iL=d.Eye_Blink_L,iR=d.Eye_Blink_R;if(iL===undefined||iR===undefined)continue;
+    if(L===null){const v=Math.max(inf[iL],inf[iR]);inf[iL]=v;inf[iR]=v;} else {inf[iL]=L;if(R!==null)inf[iR]=R;}}
+}
+const winkClock=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+/* ---- SMILES. While she is quiet, every 18–40 s one of these plays over the captured face: builds over 0.5 s, holds, releases
+   over 0.8 s. Never while she talks (a smile in progress lets go in 0.3 s when she starts), not in the "still face" mode.
+   Shape-key strengths (1 = fully on). Dev page: layer switch, "Smile now" cycles through them, countdown in "Running now". ---- */
+const SMILE={next:8+Math.random()*7,active:null,cursor:0,GAP:[18,40],variants:[
+  {name:'soft smile',hold:[1.6,3.0],shapes:{Mouth_Smile_L:0.18,Mouth_Smile_R:0.18,Cheek_Raise_L:0.12,Cheek_Raise_R:0.12}},
+  {name:'warm smile',hold:[1.5,2.6],shapes:{Mouth_Smile_L:0.3,Mouth_Smile_R:0.3,Cheek_Raise_L:0.35,Cheek_Raise_R:0.35,Eye_Squint_L:0.2,Eye_Squint_R:0.2,Mouth_Dimple_L:0.08,Mouth_Dimple_R:0.08}},
+  {name:'half smile, her left',hold:[1.2,2.2],shapes:{Mouth_Smile_L:0.26,Mouth_Smile_R:0.06,Mouth_Dimple_L:0.14,Cheek_Raise_L:0.2}},
+  {name:'half smile, her right',hold:[1.2,2.2],shapes:{Mouth_Smile_R:0.26,Mouth_Smile_L:0.06,Mouth_Dimple_R:0.14,Cheek_Raise_R:0.2}},
+  {name:'smile with parted lips',hold:[1.0,1.8],shapes:{Mouth_Smile_L:0.24,Mouth_Smile_R:0.24,V_Lip_Open:0.12,Cheek_Raise_L:0.25,Cheek_Raise_R:0.25}},
+  {name:'lips pressed, a thought',hold:[0.8,1.4],shapes:{Mouth_Press_R:0.18,Mouth_Roll_In_Upper_L:0.12,Mouth_Roll_In_Upper_R:0.12,Mouth_Roll_In_Lower_L:0.12,Mouth_Roll_In_Lower_R:0.12}},
+  {name:'small pucker',hold:[0.6,1.0],shapes:{Mouth_Pucker_Up_L:0.12,Mouth_Pucker_Up_R:0.12,Mouth_Pucker_Down_L:0.12,Mouth_Pucker_Down_R:0.12}}]};
+// the dev page's mouth-movement list: the original demo's two idle touches, the nine lip-sync shapes, the seven smiles
+const MOUTH_ORIG=[['orig:smile','Slight smile','the original resting smile: Mouth_Smile 0.18, held',{Mouth_Smile_L:0.18,Mouth_Smile_R:0.18},3],
+  ['orig:brow','Brow lift','the original letter-mode life: inner brows raised 0.10, held',{Brow_Raise_Inner_L:0.1,Brow_Raise_Inner_R:0.1},3]];
+const MOUTH_VIS=[['AA','open — a, ah'],['EE','wide — e, i, ee'],['OH','round — o'],['UW','tight — oo, u, w'],['PP','lips closed — p, b, m'],['FF','teeth on lip — f, v'],['TH','tongue between the teeth — th'],['CH','ch, sh, j'],['DD','lips parted, tongue up — t, d, s, n, l, k…']];
+function mouthPlay(id){ const p=persons.elara; if(!p)return;
+  if(id.indexOf('vis:')===0){ if(p.talk>0)return; const now=performance.now(); LIP.queue=[{vis:id.slice(4),t0:now,t1:now+1200},{vis:'sil',t0:now+1200,t1:now+1500}]; LIP.active=true; return; }   // through the lip engine, jaw included
+  const o=MOUTH_ORIG.find(x=>x[0]===id); if(o){SMILE.active={v:{name:o[1],shapes:o[3]},start:state.time,hold:o[4],release:0.6};return;}
+  const m=id.match(/^smile:(\d+)$/); if(m)smilePlay(+m[1]); }
+function smilePlay(i){ const v=SMILE.variants[i===undefined?(Math.random()*SMILE.variants.length)|0:i]; SMILE.active={v,start:state.time,hold:v.hold[0]+Math.random()*(v.hold[1]-v.hold[0]),release:0.8}; }
+function smileUpdate(p){   // after the mixer, the lip engine and the winks
+  if(!p.morphs)return;
+  const talking=LIP.active||p.talk>0, allowed=!talking&&p.faceMode!=='off'&&!devFlag('off:Smile',false);
+  if(!SMILE.active&&allowed&&state.time>=SMILE.next)smilePlay();
+  const a=SMILE.active; if(!a)return;
+  if(talking&&a.release>0.15){a.release=0.15;a.hold=Math.min(a.hold,state.time-a.start-0.5);}   // she starts talking: let go at once
+  const u=state.time-a.start,ATT=0.5,ss=x=>x<=0?0:x>=1?1:x*x*(3-2*x);
+  let A; if(u<ATT)A=ss(u/ATT); else if(u<ATT+a.hold)A=1; else A=1-ss((u-ATT-a.hold)/a.release);
+  if(u>=ATT+a.hold+a.release){SMILE.active=null;SMILE.next=state.time+SMILE.GAP[0]+Math.random()*(SMILE.GAP[1]-SMILE.GAP[0]);return;}
+  for(const m of p.morphs){const d=m.morphTargetDictionary,inf=m.morphTargetInfluences;for(const n in a.v.shapes){const i=d[n];if(i!==undefined)inf[i]=Math.max(inf[i],A*a.v.shapes[n]);}}
+}
+const MORPH_LABEL={Brow_Raise_Inner:'inner brow raise',Brow_Raise_Outer:'outer brow raise',Brow_Drop:'brow drop (frown)',Eye_Blink:'blink',Eye_Squint:'squint',Eye_Wide:'eyes wide',
+  Cheek_Raise:'cheek raise',Nose_Sneer:'nose sneer',Neck_Tighten:'neck tighten',Head_Turn_L:'head turn to her left',Head_Turn_R:'head turn to her right',Head_Turn_Up:'head turn up',Head_Turn_Down:'head turn down',Head_Tilt_L:'head tilt to her left',Head_Tilt_R:'head tilt to her right'};
+function devTimelineText(p){   // list & sequence of what every captured-face part does over one loop, read from the clip data
+  if(p.__timeline)return p.__timeline;
+  const L=[],f1=x=>(+x).toFixed(1),f2=x=>(+x).toFixed(2);
+  const idle=p.clips.Face_Idle,hc=p.clips.Face_Head,mesh=p.morphs[0],d=mesh.morphTargetDictionary,n=Object.keys(d).length;
+  const tr=idle&&idle.tracks.find(t=>t.name.indexOf(mesh.name)===0);
+  const base=nm=>{const m=nm.match(/^Eye_[LR]_Look_(L|R|Up|Down)$/);if(m)return 'look '+({L:'to her left',R:'to her right',Up:'up',Down:'down'})[m[1]];return MORPH_LABEL[nm]||MORPH_LABEL[nm.replace(/_[LR]$/,'')]||nm;};
+  const side=nm=>/^Head_/.test(nm)?'':/^Eye_L_Look/.test(nm)?'L':/^Eye_R_Look/.test(nm)?'R':/_L$/.test(nm)?'L':/_R$/.test(nm)?'R':'';   // Head_Turn_L is a direction, not a side
+  const names=re=>Object.keys(d).filter(nm=>re.test(nm));
+  function morphEvents(list,th,minFrames){ const idx=list.map(nm=>d[nm]),F=tr.times.length,ev=[];let cur=null;
+    for(let f=0;f<F;f++){ let m=0;for(let i=0;i<idx.length;i++){const v=tr.values[f*n+idx[i]];if(v>m)m=v;}
+      if(m>th){ if(!cur)cur={f0:f,f1:f,peak:{}}; cur.f1=f;
+        idx.forEach((ix,i)=>{const v=tr.values[f*n+ix];if(v>th){const k=base(list[i]),sd=side(list[i]);const o=cur.peak[k]=cur.peak[k]||{L:0,R:0,v:0};o.v=Math.max(o.v,v);if(sd)o[sd]=Math.max(o[sd],v);}}); }
+      else if(cur){ev.push(cur);cur=null;} }
+    if(cur)ev.push(cur); return ev.filter(e=>e.f1-e.f0>=minFrames); }
+  const evLine=e=>'  '+f1(tr.times[e.f0])+'–'+f1(tr.times[e.f1])+' s  '+Object.entries(e.peak).map(([k,o])=>k+' '+f2(o.v)+(Math.abs(o.L-o.R)>0.15?(o.L>o.R?' (mostly her left)':' (mostly her right)'):'')).join(' + ');
+  L.push('WINKS');
+  L.push('  A blink with one eye is a wink. The capture closes the eyelids unevenly in one stretch only: '+(WINK.set?'one eye then the other ('+WINK.set.pattern+'), '+f1(WINK.set.t0)+'–'+f1(WINK.set.t1)+' s of the loop':'none found')+' — the "funny stupid winks set".');
+  L.push('  In normal play both eyelids are kept together, so that stretch reads as ordinary blinks and the set only plays when scheduled:');
+  L.push('  every 10 minutes of play from the 5-minute mark (5:00, 15:00, 25:00 …), replayed exactly from the recording.');
+  L.push('  A clean single wink of her LEFT eye plays every 2 minutes (2:00, 4:00 …); it waits while the set is playing.');
+  L.push('  Play time counts only while the hall is running (the pause menu stops the clock). Both can be fired now from the Tools buttons.');
+  L.push('  Later, maybe: winks tied to moments in conversation (not built).');
+  L.push('');
+  L.push('EYES');
+  L.push('  She follows you with her eyes. Whenever the capture moves her eyes clearly off centre (eye bones 9°+ from rest, or look shapes 0.35+), that captured movement plays through; when they come back (below 5° / 0.2) the follow resumes. Switch: "Captured eye movements play through the follow".');
+  L.push('');
+  L.push('SYLLABLES → MOUTH SHAPES (how the mouth is timed while she talks)');
+  L.push('  The voice reports each word as it starts; the word\'s time is split over its syllables, one mouth opening per syllable: onset consonants (quick) → the vowel shape (long) → coda consonants (quick).');
+  L.push('  Vowel shapes: AA (V_Open + jaw) for a, ai, ay, igh and i before a silent e · EE (V_Wide, lips parted) for e, i, y, ee, ea, ie, ei, ey · OH (V_Tight_O) for o, ou, ow, oa, oi, oy, au, aw · UW (V_Tight) for u, oo, ue, ui, eu, ew, qu.');
+  L.push('  Consonant shapes: PP (lips closed, V_Explosive) for b, m, p · FF (teeth on lip, V_Dental_Lip) for f, v, ph · TH (tongue out) for th · CH (V_Affricate) for ch, sh, j · DD (lips parted, tongue up) for c, d, g, h, k, l, n, r, s, t, x, z, ck · UW for w, qu.');
+  L.push('  Silent endings dropped: final e (time, makes) unless the word has no other vowel (the) or ends in consonant+le (table); -ed after most consonants (walked); -es after a consonant (makes).');
+  L.push('  A fuller reference (Preston Blair, Oculus 15, Azure 22 sets and a phoneme table) is in tools/gltf/syllable-mouth-shapes.md.');
+  L.push('');
+  L.push('WHILE SHE TALKS');
+  L.push('  Body: one of the talking gesture clips Talk_1–5 per line, at random (on the tour, the stop\'s own gesture: Wave, Point, Explain, Nod, Thankful). Switch: "Body: a talking gesture clip".');
+  L.push('  Mouth: in "Words move the mouth" and "Letter visemes" the V_* viseme shapes + the jaw bone, timed from the voice\'s word boundaries; in "Captured performance" the recording\'s own mouth (Face_Talk, 15–36.5 s of the capture).');
+  L.push('  Face: captured expressions kept at '+TALK_FACE_LEVEL.toFixed(2)+' and captured eyes/neck/head bones at '+TALK_HEAD_LEVEL.toFixed(2)+' in the default mode (sliders); in full in "Captured performance"; off in the other modes.');
+  L.push('  Eyes follow you as when she stands; captured eye movements play through. Smiles pause; winks keep their schedule.');
+  L.push('');
+  L.push('MOUTH MOVEMENTS (dev page list, ▶ each)');
+  L.push('  From the original talk.html demo: the resting slight smile (Mouth_Smile_L/R 0.18, on all the time back then) and the letter-mode brow life (inner brows 0.05–0.10 on a slow wave). Both are off in the captured-face modes now; the letter-visemes mode still uses them.');
+  L.push('  The nine lip-sync shapes, played through the lip engine so the jaw moves too: AA open · EE wide · OH round · UW tight · PP lips closed · FF teeth on lip · TH tongue · CH · DD.');
+  L.push('  Plus the seven smiles below.');
+  L.push('');
+  L.push('SMILES (while she is quiet)');
+  L.push('  One of these every 18–40 s, first one 8–15 s after she appears: builds over 0.5 s, holds, releases over 0.8 s. Never while she talks; a smile in progress lets go in 0.15 s when she starts. Mouth shapes run at 40% strength (cheeks and eyes at full). Off in the still-face mode.');
+  for(const v of SMILE.variants)L.push('  '+v.name+' — hold '+v.hold[0]+'–'+v.hold[1]+' s — '+Object.entries(v.shapes).map(([k,x])=>k+' '+x).join(', '));
+  L.push('');
+  if(tr){
+    L.push('CAPTURED EXPRESSIONS — Face_Idle shape keys, one loop of '+f1(idle.duration)+' s ('+tr.times.length+' frames). Seconds into the loop; strength 1 = the shape key fully on.');
+    const sec=(title,re)=>{L.push('');L.push(title);const ev=morphEvents(names(re),0.15,3);if(!ev.length)L.push('  (nothing above 0.15)');ev.forEach(e=>L.push(evLine(e)));};
+    sec('BROWS',/^Brow_/);
+    L.push('');L.push('BLINKS, SQUINTS & WIDE EYES');
+    const bl=morphEvents(names(/^Eye_Blink/),0.5,1);L.push('  blinks ('+bl.length+'), at: '+bl.map(e=>f1(tr.times[e.f0])).join(', ')+' s');
+    const sq=morphEvents(names(/^Eye_(Squint|Wide)/),0.15,3);if(!sq.length)L.push('  (no squint / wide above 0.15)');sq.forEach(e=>L.push(evLine(e)));
+    sec('EYE LOOK SHAPES (the irises, by shape key)',/^Eye_[LR]_Look/);
+    sec('HEAD TURN & TILT SHAPES',/^(Head_Turn|Head_Tilt)/);
+    sec('CHEEKS, NOSE & NECK',/^(Cheek_|Nose_|Neck_Tighten)/);
+  } else L.push('No Face_Idle clip in this model.');
+  if(hc&&p.boneAxes){
+    L.push('');L.push('CAPTURED BONES — Face_Head, one loop of '+f1(hc.duration)+' s. Movement relative to the clip\'s first frame, which is what this layer adds on top of the body.');
+    const q0=new THREE.Quaternion(),q=new THREE.Quaternion(),inv=new THREE.Quaternion(),v=new THREE.Vector3();
+    const boneReport=(title,re,th)=>{L.push('');L.push(title+' (movements over '+th+'°)');
+      for(const t of hc.tracks){ if(!re.test(t.name))continue; const bone=t.name.replace(/\.quaternion$/,''),ax=p.boneAxes[bone],F=t.times.length;
+        if(!ax){L.push('  '+bone+': no rest axes');continue;} if(F<3){L.push('  '+bone.replace(/_\d+$/,'')+': static ('+F+' keys — no movement in the capture)');continue;}
+        q0.fromArray(t.values,0);inv.copy(q0).invert();const ev=[];let cur=null;
+        for(let f=0;f<F;f++){ q.fromArray(t.values,f*4).premultiply(inv);   // q0⁻¹·q(f): the change since frame 0 in the bone's own frame
+          v.copy(ax.fwd).applyQuaternion(q);const ang=v.angleTo(ax.fwd)*180/Math.PI,yaw=Math.atan2(v.dot(ax.left),v.dot(ax.fwd))*180/Math.PI,pitch=Math.asin(Math.max(-1,Math.min(1,v.dot(ax.up))))*180/Math.PI;
+          if(ang>th){ if(!cur)cur={f0:f,f1:f,peak:0,L:0,R:0,U:0,D:0}; cur.f1=f; cur.peak=Math.max(cur.peak,ang);   // largest swing in each direction during the movement
+            if(yaw>0)cur.L=Math.max(cur.L,yaw);else cur.R=Math.max(cur.R,-yaw); if(pitch>0)cur.U=Math.max(cur.U,pitch);else cur.D=Math.max(cur.D,-pitch); }
+          else if(cur){ev.push(cur);cur=null;} }
+        if(cur)ev.push(cur);const evs=ev.filter(e=>t.times[e.f1]-t.times[e.f0]>=0.15);
+        L.push('  '+bone.replace(/_\d+$/,'')+': '+(evs.length?evs.length+' movements':'none'));
+        for(const e of evs){const dir=[];if(e.L>=3)dir.push(e.L.toFixed(0)+'° to her left');if(e.R>=3)dir.push(e.R.toFixed(0)+'° to her right');if(e.U>=3)dir.push(e.U.toFixed(0)+'° up');if(e.D>=3)dir.push(e.D.toFixed(0)+'° down');
+          L.push('    '+f1(t.times[e.f0])+'–'+f1(t.times[e.f1])+' s  peak '+e.peak.toFixed(0)+'°'+(dir.length?' (up to '+dir.join(', ')+')':''));} } };
+    boneReport('EYE BONES',/_[LR]_Eye/,8);boneReport('HEAD BONE',/CC_Base_Head/,6);boneReport('NECK BONES',/NeckTwist/,3);
+  }
+  return p.__timeline=L.join('\n');
+}   // dev page "play": 'Face_Idle' | 'Face_Head' | 'morph:<group>' | 'head:<part>' — that one alone, session only
+function faceOff(id){        // is this layer / part muted right now?  id: 'Face_Idle' 'Face_Head' 'morph:brows' 'head:eyes' …
+  const sk=DEV_SOLO.key;
+  if(sk){ if(sk===id)return false;
+    if(id==='Face_Idle')return !(sk==='Face_Idle'||sk.indexOf('morph:')===0);
+    if(id==='Face_Head')return !(sk==='Face_Head'||sk.indexOf('head:')===0);
+    if(sk==='Face_Idle')return id.indexOf('morph:')!==0;
+    if(sk==='Face_Head')return id.indexOf('head:')!==0;
+    return true; }
+  return devFlag('off:'+id,false);
+}
+const soloHead=()=>/^(head:|Face_Head)/.test(DEV_SOLO.key||'');   // a head/eye-bone solo: the tracking steps aside so the capture shows
+function devMuteClips(p){ if(devFlag('off:Idle',false)){const c=p.clips[p.idle||'Idle'],a=c&&p.mixer.existingAction(c);if(a)a.setEffectiveWeight(0);}
+  if(p.faceIdle&&faceOff('Face_Idle'))p.faceIdle.setEffectiveWeight(0);
+  if(p.faceHeadParts)for(const k in p.faceHeadParts)if(faceOff('Face_Head')||faceOff('head:'+k))p.faceHeadParts[k].setEffectiveWeight(0); }
+function devMorphMute(p){   // after the mixer and the lip engine: zero the morph groups switched off on the dev page
+  const off=Object.keys(FACE_MORPH_GROUPS).filter(g=>faceOff('morph:'+g)); if(!off.length)return;
+  for(const m of p.morphs){ if(!m.__grp){m.__grp={};const d=m.morphTargetDictionary;for(const g in FACE_MORPH_GROUPS){m.__grp[g]=[];for(const n in d)if(FACE_MORPH_GROUPS[g].test(n))m.__grp[g].push(d[n]);}}
+    for(const g of off)for(const i of m.__grp[g])m.morphTargetInfluences[i]=0; }
+}
+let devRunT=null;
+function devRunTick(){   // the live "running now" line on the page
+  const el=document.getElementById('devRun'),p=persons.elara;if(!el||!p)return;
+  const run=p.mixer._actions.filter(a=>a.isScheduled()&&a.getEffectiveWeight()>0.005).map(a=>a.getClip().name+' '+a.getEffectiveWeight().toFixed(2));
+  el.textContent='Running now: '+(run.join(' · ')||'nothing — bind pose')+(p.talk>0?' · talking':'')+(LIP.lastSplit?' · last word: '+LIP.lastSplit:'')+(devFlag('eyes',true)?((p.eyeCapBlend||0)>0.5?' · captured eye movement playing':' · eyes follow'):'')+(devFlag('headFollow',false)?' · head follows':'')+(DEV_SOLO.key?' · PLAYING ALONE: '+DEV_SOLO.key:'')+(WINK.active?' · WINKING: '+(WINK.active.kind==='set'?'funny stupid set':'left eye'):'')+' · winks set in '+winkClock(WINK.nextSet-state.time)+' · left wink in '+winkClock(WINK.nextLeft-state.time)+(SMILE.active?' · SMILING: '+SMILE.active.v.name:' · next smile in '+winkClock(SMILE.next-state.time));
+}
+function devOpen(){return document.getElementById('devModal').style.display==='flex';}
+function devToggle(){ if(devOpen())devClose(); else{ if(anyModalOpen())return; devRender(); document.getElementById('devModal').style.display='flex'; document.exitPointerLock&&document.exitPointerLock(); clearInterval(devRunT);devRunT=setInterval(devRunTick,400); document.getElementById('lockHint').style.display='none'; } }
+function devClose(){document.getElementById('devModal').style.display='none';clearInterval(devRunT);lockPointer();}
+function devRender(){
+  const b=document.getElementById('devBody'),cur=faceMode(),p=persons.elara,keep=b.scrollTop;
+  const fmt=(v,step)=>step<1?(+v).toFixed(2):(+v).toFixed(0);
+  const row=(h)=>'<div style="margin:6px 0">'+h+'</div>';
+  const sec=(t,note)=>'<div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:14px">'+t+'</div>'+(note?'<div style="color:#8fa3bf;font-size:12px;margin:2px 0 4px">'+note+'</div>':'');
+  const btn=(label,attr,on)=>'<button class="menuBtn" '+attr+' style="width:100%;margin:5px 0;min-width:0;text-align:left'+(on?';border-left-color:var(--green)':'')+'">'+(on?'✓ ':'')+label+'</button>';
+  // a checkbox: ticked = the layer is on. inv = the stored flag is an "off" flag (atd:dev:off:*, atd:dev:noTurn)
+  const chk=(key,def,inv,label,note,solo)=>{const on=inv?!devFlag(key,false):devFlag(key,def);
+    const lab='<label style="flex:1;display:flex;gap:9px;align-items:flex-start;margin:6px 0;cursor:pointer;pointer-events:auto"><input type="checkbox" data-chk="'+key+'" data-inv="'+(inv?1:0)+'"'+(on?' checked':'')+' style="margin:3px 0 0;pointer-events:auto;accent-color:#ffd27f"><span>'+label+(note?' <span style="color:#8fa3bf">'+note+'</span>':'')+'</span></label>';
+    if(!solo)return lab; const act=DEV_SOLO.key===solo;   // ▶ plays this one alone from the start; ■ stops
+    return '<div style="display:flex;align-items:center;gap:8px">'+lab+'<button class="menuBtn" data-solo="'+solo+'" style="width:auto;min-width:0;margin:0;padding:3px 10px;font-size:12px;white-space:nowrap'+(act?';border-left-color:var(--green)':'')+'">'+(act?'■ stop':'▶ play')+'</button></div>';};
+  const pl=(id,label,note)=>'<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="flex:1">'+label+(note?' <span style="color:#8fa3bf">('+note+')</span>':'')+'</span><button class="menuBtn" data-mouth="'+id+'" style="width:auto;min-width:0;margin:0;padding:3px 10px;font-size:12px;white-space:nowrap">▶ play</button></div>';
+  const sl=(id,key,label,min,max,step,unit,note)=>row(label+': <b id="'+id+'V">'+fmt(devNum(key),step)+unit+'</b> <span style="color:#8fa3bf">(default '+fmt(DEV_DEF[key],step)+unit+(note?'; '+note:'')+')</span><br><input id="'+id+'" data-num="'+key+'" data-step="'+step+'" data-unit="'+unit+'" type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+devNum(key)+'" style="width:100%;pointer-events:auto">');
+  b.innerHTML=
+    sec('MOUTH / HEAD MOVEMENTS')+
+    FACE_MODES.map(([id,label])=>btn(label,'data-face="'+id+'"',cur===id)).join('')+
+    sec('CAPTURED FACE WHILE SHE TALKS')+
+    sl('devTalkFace','talkFace','Expressions kept while talking',0,1,0.05,'')+
+    sl('devTalkHead','talkHead','Head motion kept while talking',0,1,0.05,'')+
+    sec('WHAT MOVES HER WHILE SHE STANDS','Everything that runs while she is idle. Untick a layer to switch it off (with nothing on she holds the bind pose).')+
+    chk('off:Idle',false,true,'Body: standing idle','(the clip ticked below)')+
+    (p?'<div style="margin:0 0 6px 27px">'+Object.keys(p.clips).filter(n=>/^Idle/.test(n)).map(n=>'<label style="display:block;margin:3px 0;cursor:pointer;pointer-events:auto"><input type="radio" name="devIdle" value="'+n+'"'+(p.idle===n?' checked':'')+' style="pointer-events:auto;accent-color:#ffd27f;margin:0 8px 0 0">'+(IDLE_LABELS[n]||n)+' <span style="color:#8fa3bf">('+n+')</span></label>').join('')+'</div>':'')+
+    chk('off:Face_Idle',false,true,'Face: captured expressions','(Face_Idle, mouth left out — pick the parts below; ▶ plays one alone from the start, ■ stops)','Face_Idle')+
+    '<div style="margin-left:27px">'+
+    chk('off:morph:brows',false,true,'Brows','','morph:brows')+
+    chk('off:morph:lids',false,true,'Blinks, squints & wide eyes','','morph:lids')+
+    chk('off:morph:look',false,true,'Eye look shapes','(the capture moves the irises with these, on top of the eye bones)','morph:look')+
+    chk('off:morph:headShapes',false,true,'Head turn & tilt shapes','(shape keys, on top of the head bone)','morph:headShapes')+
+    chk('off:morph:cheeks',false,true,'Cheeks, nose & neck','','morph:cheeks')+
+    '</div>'+
+    chk('off:Face_Head',false,true,'Face: captured eyes, neck & head bones','(Face_Head, layered over the body — pick the parts below; a ▶ here pauses the eye / head tracking so you see the capture)','Face_Head')+
+    '<div style="margin-left:27px">'+
+    chk('off:head:eyes',false,true,'Eye bones','','head:eyes')+
+    chk('off:head:head',false,true,'Head bone','','head:head')+
+    chk('off:head:neck',false,true,'Neck bones','','head:neck')+
+    '</div>'+
+    '<button class="menuBtn" id="devTimelineBtn" style="width:100%;margin:6px 0 4px;min-width:0;text-align:left;background:rgba(170,30,30,.92);border-left-color:#ff6b6b;color:#fff">'+(DEV_TL.open?'▾ Hide':'▸ Show')+' what each part does over the loop — the list &amp; sequence, from the clip data</button>'+
+    (DEV_TL.open?'<pre id="devTimeline" style="margin:0 0 8px;max-height:300px;overflow:auto;font:11.5px/1.45 Consolas,monospace;white-space:pre-wrap;background:rgba(0,0,0,.4);padding:8px 10px;border-radius:6px;color:#dbe6f3;pointer-events:auto">'+(p?devTimelineText(p):'Elara not loaded')+'</pre>':'')+
+    chk('off:Blink',false,true,'Face: blinks','(only in the letter / still face modes)')+
+    chk('off:Smile',false,true,'Face: an occasional smile while she is quiet','('+SMILE.variants.length+' variations, one every 18–40 s, never while talking)')+
+    chk('eyes',true,false,'Eyes follow the visitor while she faces them')+
+    chk('eyeCaptureFirst',true,false,'Captured eye movements play through the follow','(while the capture holds her eyes off centre it plays; in between, the eyes come back to you)')+
+    chk('headFollow',false,false,'Her head turns toward the visitor','(limit under Tools)')+
+    chk('noTurn',false,true,'Her body turns toward the visitor when close')+
+    '<div id="devRun" style="color:#8fa3bf;font-size:12px;margin-top:6px">Running now: …</div>'+
+    sec('MOUTH MOVEMENTS','▶ plays one on her now: the original demo\'s resting touches, the nine lip-sync mouth shapes (through the lip engine, jaw included — not in the captured-performance mode), and the seven smiles.')+
+    MOUTH_ORIG.map(o=>pl(o[0],o[1],o[2])).join('')+
+    MOUTH_VIS.map(v=>pl('vis:'+v[0],'Shape '+v[0],v[1])).join('')+
+    SMILE.variants.map((v,i)=>pl('smile:'+i,v.name[0].toUpperCase()+v.name.slice(1),'hold '+v.hold[0]+'–'+v.hold[1]+' s')).join('')+
+    sec('WHAT MOVES HER WHILE SHE TALKS','Everything that runs while she speaks, on top of what runs while she stands (eyes, body turn, winks). Untick to switch the gesture off.')+
+    chk('off:TalkGesture',false,true,'Body: a talking gesture clip','(one of Talk_1–5 per line, picked at random; on the tour the stop\'s own gesture: Wave, Point, Explain, Nod, Thankful)')+
+    chk('lipSyllables',true,false,'Mouth: one movement per syllable','(off: the older letter-by-letter shapes; the split of the last word shows in Running now)')+
+    chk('talkGestureFacing',false,false,'… also while she talks face to face with you','(off: when her body is turned to you she keeps her standing idle while talking — the clips turn her head away; the tour still uses its gestures)')+
+    '<div style="display:flex;gap:6px;margin:4px 0 6px 27px;flex-wrap:wrap">'+[1,2,3,4,5].map(i=>'<button class="menuBtn" data-talk="Talk_'+i+'" style="width:auto;min-width:0;margin:0;padding:4px 10px;font-size:12px">▶ Talk '+i+'</button>').join('')+'<span style="color:#8fa3bf;font-size:12px;align-self:center">preview a clip (not while she talks)</span></div>'+
+    '<div style="margin:2px 0 6px 27px;color:#cfe0f2;font-size:12.5px;line-height:1.5">'+
+    '• Mouth: '+(cur==='capture'?'the recording\'s own mouth (Face_Talk, the 15–36.5 s talking window of the capture)':cur==='off'?'nothing (still face)':(devFlag('lipSyllables',true)?'one movement per syllable, timed from the voice\'s word boundaries (V_* shapes + the jaw bone)':'letter-by-letter shapes, timed from the voice\'s word boundaries'))+'<br>'+
+    '• Face: captured expressions '+(cur==='hybrid'?'kept at '+TALK_FACE_LEVEL.toFixed(2)+' (slider above)':cur==='capture'?'from Face_Talk in full':'off')+'<br>'+
+    '• Face: captured eyes, neck &amp; head bones '+(cur==='hybrid'?'kept at '+TALK_HEAD_LEVEL.toFixed(2)+' (slider above)':cur==='capture'?'in full':'off')+'<br>'+
+    '• Eyes: still follow you'+(devFlag('eyeCaptureFirst',true)?', captured eye movements still play through':'')+'<br>'+
+    '• Smiles: paused while she talks · Winks: stay on their schedule · Blinks: '+(cur==='letters'||cur==='off'?'synthetic':'from the capture')+
+    '</div>'+
+    sec('WHERE SHE BELIEVES YOU ARE','Swings the point she aims at. Body turn, head turn and eyes all follow, as if you stood somewhere else.')+
+    sl('devAimYaw','aimYaw','Aim offset, left / right',-30,30,1,'°','+ is toward your right as you face her')+
+    sl('devAimPitch','aimPitch','Aim offset, up / down',-30,30,1,'°','+ is up')+
+    sec('TOOLS')+
+    sl('devHeadMax','headMax','Head turn limit',10,70,5,'°')+
+    btn('▶ Smile now (next variation)','id="devSmile"',false)+
+    btn('▶ Funny stupid winks set now','id="devWinkSet"',false)+
+    btn('▶ Left-eye wink now','id="devWinkLeft"',false)+
+    btn('Speak a test line (closes this page)','id="devSay"',false)+
+    btn('Reset all developer options to defaults','id="devReset"',false)+
+    '<div style="color:#8fa3bf;font-size:12px;margin-top:12px" id="devInfo">'+(p?('Elara: clip '+p.actName+' · face mode '+cur+' · '+(p.faceTalk?'captured face loaded':'no captured face')+' · voice '+(SPEAKERS.elara.voice?SPEAKERS.elara.voice.name:'none')):'Elara not loaded')+'</div>';
+  b.querySelectorAll('[data-face]').forEach(el=>el.onclick=()=>{setFaceMode(el.dataset.face);devRender();});
+  b.querySelectorAll('input[data-chk]').forEach(el=>el.onchange=()=>{const k=el.dataset.chk,inv=el.dataset.inv==='1',on=el.checked;
+    try{localStorage.setItem('atd:dev:'+k,inv?(on?'0':'1'):(on?'1':'0'));}catch(e){}
+    if(k==='off:Idle'&&on&&p){const c=p.clips[p.idle],a=c&&p.mixer.existingAction(c);if(a&&p.actName===p.idle)a.setEffectiveWeight(1);}   // muting stopped its fade: bring it straight back
+  });
+  document.getElementById('devTimelineBtn').onclick=()=>{DEV_TL.open=!DEV_TL.open;devRender();};
+  b.querySelectorAll('[data-solo]').forEach(el=>el.onclick=()=>{const id=el.dataset.solo;DEV_SOLO.key=DEV_SOLO.key===id?null:id;
+    if(DEV_SOLO.key&&p){if(p.faceIdle)p.faceIdle.time=0;if(p.faceTalk)p.faceTalk.time=0;if(p.faceHeadParts)for(const k in p.faceHeadParts)p.faceHeadParts[k].time=0;}   // from the start, all in step
+    devRender();});
+  b.querySelectorAll('input[name=devIdle]').forEach(el=>el.onchange=()=>{if(!p||!p.clips[el.value])return;const was=p.idle;p.idle=el.value;if(p.actName===was||p.actName===p.idle)personAnim(p,p.idle,0.9);});   // swap the standing idle (session only)
+  b.querySelectorAll('input[data-num]').forEach(el=>el.oninput=()=>{const k=el.dataset.num;document.getElementById(el.id+'V').textContent=fmt(el.value,+el.dataset.step)+el.dataset.unit;try{localStorage.setItem('atd:dev:'+k,el.value);}catch(e){}
+    if(k==='talkFace')TALK_FACE_LEVEL=+el.value; if(k==='talkHead')TALK_HEAD_LEVEL=+el.value;});
+  b.querySelectorAll('[data-mouth]').forEach(el=>el.onclick=()=>mouthPlay(el.dataset.mouth));
+  b.querySelectorAll('[data-talk]').forEach(el=>el.onclick=()=>{if(!p||p.talk>0||LIP.active)return;const c=p.clips[el.dataset.talk];if(!c)return;personAnim(p,el.dataset.talk,1);p.previewUntil=state.time+c.duration;});
+  document.getElementById('devSmile').onclick=()=>{smilePlay(SMILE.cursor);SMILE.cursor=(SMILE.cursor+1)%SMILE.variants.length;};
+  document.getElementById('devWinkSet').onclick=()=>winkPlay('set');
+  document.getElementById('devWinkLeft').onclick=()=>winkPlay('left');
+  document.getElementById('devSay').onclick=()=>{devClose();say('elara',"This is a test line, so you can watch my mouth, my eyes and my head while I speak.");};
+  document.getElementById('devReset').onclick=()=>{   // everything on this page: face mode, sliders, layers, aim offset
+    DEV_SOLO.key=null;
+    try{localStorage.removeItem(FACE_MODE_KEY);for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.indexOf('atd:dev:')===0)localStorage.removeItem(k);}}catch(e){}
+    TALK_FACE_LEVEL=DEV_DEF.talkFace;TALK_HEAD_LEVEL=DEV_DEF.talkHead;
+    if(persons.elara){const q=persons.elara;applyFaceMode(q);if(q.clips[ELARA_IDLE]&&q.idle!==ELARA_IDLE){const was=q.idle;q.idle=ELARA_IDLE;if(q.actName===was)personAnim(q,ELARA_IDLE,0.9);}const c=q.clips[q.idle],a=c&&q.mixer.existingAction(c);if(a&&q.actName===q.idle)a.setEffectiveWeight(1);}
+    devRender();};
+  b.scrollTop=keep;devRunTick();
+}
+document.getElementById('devClose').onclick=devClose;
+addEventListener('keydown',e=>{ if(e.code in devKeys){devKeys[e.code]=true; if(devKeys.BracketLeft&&devKeys.BracketRight){e.preventDefault();devKeys.BracketLeft=devKeys.BracketRight=false;devToggle();}} });
+addEventListener('keyup',e=>{ if(e.code in devKeys)devKeys[e.code]=false; });
 function makePerson(key,opts){
   opts=opts||{};
   const src=PEOPLE.models[key];if(!src)return null;
   const model=THREE.SkeletonUtils.clone(src.scene);
   const inner=new THREE.Group();inner.add(model);
-  const bb=new THREE.Box3().setFromObject(model);
-  const s=(opts.h||1.7)/Math.max(0.01,bb.max.y-bb.min.y);
-  inner.scale.setScalar(s);inner.position.y=-bb.min.y*s;
-  if(src.cc3)inner.rotation.y=Math.PI;               // the CC3 export faces -Z; people here face +Z
+  // CC3 exports: Box3 ignores skinning (elara4's vertices are in metres under a 0.01 armature → a 2 cm box),
+  // so measure her by the head bone instead; the feet are planted by groundPerson each frame anyway.
+  let bbH=0,bbMin=0;
+  if(src.cc3){ model.updateMatrixWorld(true); let hb=null; model.traverse(o=>{if(o.isBone&&/CC_Base_Head/.test(o.name))hb=o;});
+    const hy=hb?hb.getWorldPosition(new THREE.Vector3()).y:1.6; bbH=hy+0.12; bbMin=0; }
+  else { const bb=new THREE.Box3().setFromObject(model); bbH=bb.max.y-bb.min.y; bbMin=bb.min.y; }
+  const s=(opts.h||1.7)/Math.max(0.01,bbH);
+  inner.scale.setScalar(s);inner.position.y=-bbMin*s;
+  if(src.cc3)inner.rotation.y=(src.facing==='+z')?0:Math.PI;   // people here face +Z; turn the export around if it faces -Z
   model.traverse(o=>{
     if(src.cc3){ if(o.isMesh||o.isSkinnedMesh){ o.frustumCulled=false; o.castShadow=true; } return; }   // keep her real materials
     if(o.isMesh||o.isSkinnedMesh){
@@ -3294,11 +3804,28 @@ function makePerson(key,opts){
   const mixer=new THREE.AnimationMixer(model);
   // Elara's clips stream in AFTER spawn (src.clips is empty here), so default to 'Idle'
   // by name — personAnim just waits until that clip exists, then plays it.
-  const idle=src.clips['Idle']?'Idle':(src.clips['Idle_Neutral']?'Idle_Neutral':(Object.keys(src.clips)[0]||'Idle'));
+  const idle=src.clips[ELARA_IDLE]?ELARA_IDLE:(src.clips['Idle']?'Idle':(src.clips['Idle_Neutral']?'Idle_Neutral':(Object.keys(src.clips)[0]||'Idle')));
   const p={key,mesh:g,inner,mixer,clips:src.clips,talk:0,act:null,actName:'',home:0,idle};
   if(src.cc3){
     p.morphs=[];model.traverse(o=>{if(o.morphTargetDictionary&&o.morphTargetInfluences)p.morphs.push(o);
       if(o.isBone&&/CC_Base_JawRoot/.test(o.name)){p.jaw=o;p.jawRest=o.quaternion.clone();}});
+    eyesSetup(p,model,g);
+    // captured facial performance baked into the GLB: Face_Talk (all morphs) while she speaks, Face_Idle (no mouth)
+    // while she stands, crossfaded; Face_Head = her eyes/neck/head from the same capture, layered additively over gestures
+    if(src.clips.Face_Talk&&src.clips.Face_Idle){
+      p.faceTalk=mixer.clipAction(src.clips.Face_Talk);p.faceIdle=mixer.clipAction(src.clips.Face_Idle);
+      for(const a of [p.faceTalk,p.faceIdle]){a.setLoop(THREE.LoopRepeat);a.play();a.time=Math.random()*a.getClip().duration;}
+      p.faceTalk.setEffectiveWeight(0);p.faceIdle.setEffectiveWeight(1);
+      const hc=src.clips.Face_Head;
+      if(hc&&THREE.AnimationUtils.makeClipAdditive){
+        // split by bone group so the dev page can switch each part off: three additive actions driven together through a proxy
+        p.faceHeadParts={};
+        for(const k in FACE_HEAD_PARTS){ const tracks=hc.tracks.filter(t=>FACE_HEAD_PARTS[k].test(t.name)).map(t=>t.clone()); if(!tracks.length)continue;
+          const c=new THREE.AnimationClip('Face_Head_'+k,hc.duration,tracks); THREE.AnimationUtils.makeClipAdditive(c);
+          const a=mixer.clipAction(c); a.blendMode=THREE.AdditiveAnimationBlendMode; a.setLoop(THREE.LoopRepeat); a.play(); a.time=p.faceIdle.time; p.faceHeadParts[k]=a; }
+        p.faceHead={_w:1,getEffectiveWeight(){return this._w;},setEffectiveWeight(w){this._w=w;const off=faceOff('Face_Head');for(const k in p.faceHeadParts)p.faceHeadParts[k].setEffectiveWeight(off||faceOff('head:'+k)?0:w);}};
+      }
+    }
   }
   if(idle)personAnim(p,idle);
   return p;
@@ -3323,26 +3850,16 @@ function pickTalkClip(p){
   const opts=['Talk_1','Talk_2','Talk_3','Talk_4','Talk_5'].filter(n=>p.clips[n]);
   return opts.length?opts[(Math.random()*opts.length)|0]:(p.idle||'Idle');
 }
-// Elara standing about: mostly her neutral idle, but every so often a happy-idle flourish plays
-// through once and settles back — a bit of life without the cheerful idle running constantly.
-function elaraIdle(p,dt){
-  if(p.flourishUntil && state.time<p.flourishUntil) return;           // let a flourish finish
-  if(p.flourishUntil){ p.flourishUntil=0; p.flTimer=rand(12,20); personAnim(p,p.idle,0.9); return; }
-  if(p.flTimer==null) p.flTimer=rand(8,14);
-  p.flTimer-=dt;
-  if(p.flTimer<=0){
-    const opts=['Happy_1','Happy_2'].filter(n=>p.clips[n]);
-    if(opts.length){ const name=opts[(Math.random()*opts.length)|0];
-      personAnim(p,name,1); p.flourishUntil=state.time+p.clips[name].duration; }
-    else p.flTimer=rand(12,20);
-  } else personAnim(p,p.idle,0.9);
-}
+// Elara standing about: her neutral idle (the occasional happy flourish was removed 2026-09-07 at the user's request)
+function elaraIdle(p,dt){ personAnim(p,p.idle,0.9); }
 const ELARA_BLOCK={x:0,z:0,rad:0.02,off:true};    // small on purpose (the player radius 0.55 adds to it) — you can stand right up to her without passing through; follows her in updatePeople
 BUILDINGS.push(ELARA_BLOCK);
 function spawnElara(){
   const p=makePerson('elara',{h:1.87});if(!p)return;   // ~9% taller than a default person
   // once the tour's been done, she stays where it ended (the last stop) instead of the greeting spot.
-  const rest = tourDone() ? TOUR[TOUR.length-1].at : [3,16];
+  // Greeting spot: in the foyer, 1.5 m ahead-right of the arrival spawn (0,44.6), facing the doors —
+  // the tour's welcome lines are spoken from here, then she walks up into the hall.
+  const rest = tourDone() ? TOUR[TOUR.length-1].at : [1.0,43.5];
   p.mesh.position.set(rest[0],0,rest[1]);p.homeYaw=Math.PI;
   ELARA_BLOCK.x=rest[0];ELARA_BLOCK.z=rest[1];ELARA_BLOCK.off=false;
   p.mesh.rotation.y=Math.PI;                          // facing the entrance, waiting
@@ -3352,6 +3869,7 @@ function spawnElara(){
     fn:()=>{ if(tour.active)return; openElaraMenu(); }};
   HOTS.push(p.hot);
   persons.elara=p;
+  WINK.set=winkFindSet(p);   // the funny stupid winks set, from the capture
 }
 // Mixamo clips raise the hips above the bind pose, so a bind-based ground offset lets the
 // feet float. Fix: every frame, plant the lowest foot bone on the floor (simple foot IK).
@@ -3367,16 +3885,19 @@ function groundPerson(p){
 function updatePeople(dt){
   for(const k in persons){
     const p=persons[k];if(!p)continue;
+    if(k==='elara')devMuteClips(p);
     p.mixer.update(dt);
-    if(k==='elara')lipUpdate(p,dt);
+    if(k==='elara'){const aim=elaraAim(p);lipUpdate(p,dt);devMorphMute(p);winkUpdate(p);smileUpdate(p);headTrack(p,dt,aim,devFlag('headFollow',false)&&!soloHead(),devNum('headMax'),p.mesh.rotation.y);eyesTrack(p,dt,aim,devFlag('eyes',true)&&!soloHead());}
     // during the tour, updateTour drives Elara's position/facing/animation
     if(!(k==='elara'&&tour.active)){
       const talking=p.talk>0;
       if(talking)p.talk-=dt;
       const d=Math.hypot(player.pos.x-p.mesh.position.x,player.pos.z-p.mesh.position.z);
-      if(d<10)facePerson(p,player.pos.x,player.pos.z);
-      if(talking){ p.flourishUntil=0; personAnim(p,p.talkClip||p.idle,1); }
-      else if(k==='elara'){ elaraIdle(p,dt); }        // neutral idle, with an occasional happy flourish
+      if(k==='elara'&&devFlag('noTurn',false)){ if(p.homeYaw!==undefined)p.mesh.rotation.y=p.homeYaw; }   // dev option: she keeps her own heading
+      else if(d<10){const aim=k==='elara'?elaraAim(p):player.pos;facePerson(p,aim.x,aim.z);}
+      if(talking){ const faceToFace=k==='elara'&&d<10&&!devFlag('noTurn',false)&&!devFlag('talkGestureFacing',false);   // talking to the visitor, body turned to them: no gesture clip (they turn her head away); the tour keeps its own
+        personAnim(p,(devFlag('off:TalkGesture',false)||faceToFace)?p.idle:(p.talkClip||p.idle),1); }
+      else if(k==='elara'){ if(p.previewUntil&&state.time<p.previewUntil){} else {p.previewUntil=0;elaraIdle(p,dt);} }   // neutral idle (or a dev-page clip preview)
       else personAnim(p,p.idle,0.9);
     }
     groundPerson(p);
@@ -3535,7 +4056,7 @@ let dateRunning=false;
 async function elaraDate(){
   if(dateRunning)return;dateRunning=true;
   closeElaraMenu(false);
-  const p=persons.elara; if(p)facePerson(p,player.pos.x,player.pos.z);
+  const p=persons.elara; if(p){const aim=elaraAim(p);facePerson(p,aim.x,aim.z);}
   try{
     await speakLine('you',"You're sexy.");
     await speakLine('elara',"Thank you. I think you're handsome too.");
@@ -3642,7 +4163,7 @@ function updateTour(dt){
   if(tour.phase==='talk'){
     // face the target, deliver each line in turn — look can be one [x,z], or a
     // per-line list [[x,z],…] so she turns to each room as she mentions it
-    if(stop.look==='player') facePerson(p,player.pos.x,player.pos.z);
+    if(stop.look==='player'){const aim=elaraAim(p);facePerson(p,aim.x,aim.z);}
     else{
       const lk=Array.isArray(stop.look[0])?stop.look[Math.max(0,Math.min(tour.line,stop.look.length-1))]:stop.look;
       facePerson(p,lk[0],lk[1]);
@@ -3891,11 +4412,14 @@ function ttsSpeak(sp,text,onDone){
       }
       setTimeout(()=>speakChunk(idx+1,0),idx+1<chunks.length?70:0);
     };
-    u.onstart=()=>{started=true;run.spoke=true;if(sp.lip){lipText(part,performance.now(),(part.length/(14*u.rate))*1000);if(elaraSpeakStart){const f=elaraSpeakStart;elaraSpeakStart=null;f();}}};
+    u.onstart=()=>{started=true;run.spoke=true;if(sp.lip){LIP.lastB=null;lipText(part,performance.now(),part.length*LIP.msPerChar/u.rate);if(elaraSpeakStart){const f=elaraSpeakStart;elaraSpeakStart=null;f();}}};
     u.onend=()=>done(false);
     u.onboundary=(e)=>{sawWord=true;lastWord=ticks;
       if(sp.lip&&e&&typeof e.charIndex==='number'){const len=e.charLength||(part.slice(e.charIndex).match(/^\S+/)||[''])[0].length;
-        lipWord(part.substr(e.charIndex,len),performance.now(),Math.max(120,(len+1)/(14*u.rate)*1000));}};
+        const now=performance.now(),word=part.substr(e.charIndex,len);
+        if(LIP.lastB){const obs=(now-LIP.lastB.t)/(LIP.lastB.len+1); if(obs>25&&obs<250)LIP.msPerChar=LIP.msPerChar*0.7+obs*0.3;}   // learn this voice's pace
+        LIP.lastB={t:now,len:len+lipPause(word)/LIP.msPerChar};
+        lipWord(word,now,Math.max(120,(len+1)*LIP.msPerChar/u.rate+lipPause(word)),lipPause(word));}};
     u.onerror=e=>{
       const kind=(e&&e.error)||'';
       if(kind==='interrupted'||kind==='canceled')return;   // we stopped it — not "finished"
@@ -3985,10 +4509,12 @@ const AT_FOUNTAIN=(()=>{try{return ['the-fountain','fountain'].includes((locatio
 const RETURN_SPAWN={crypt:{x:35,z:16,yaw:Math.PI/2},     // just outside the Crypt, facing the atrium
                     cerebro:{x:-16,z:26,yaw:0}};         // just outside Cerebro, facing the atrium
 const _RS=RETURN_TO&&RETURN_SPAWN[RETURN_TO];
+const AFTER_TOUR = !_RS && !AT_FOUNTAIN && tourDone();   // tour done: she waits at its last stop (0,6), so you arrive 1.5 m from her instead of at the doors
 const SPAWN = _RS ? {x:_RS.x,z:_RS.z}
             : AT_FOUNTAIN ? {x:0,z:3.2}                 // just south of the fountain (centre 0,-4)
+            : AFTER_TOUR ? {x:1.0,z:7.1}                // beside Elara's after-tour spot, on the side she faces
             : {x:0,z:44.6};                             // default: just inside the doors
-const SPAWN_YAW = _RS ? _RS.yaw : 0;   // yaw 0 = look north, straight up the foyer into the mall
+const SPAWN_YAW = _RS ? _RS.yaw : AFTER_TOUR ? Math.atan2(1.0,1.1) : 0;   // yaw 0 = look north, straight up the foyer into the mall; after the tour: look at her
 const player={pos:new THREE.Vector3(SPAWN.x,0,SPAWN.z),speed:6.4,r:0.55,y:0,vy:0,grounded:true};
 const sprint={energy:6,max:6,cooling:false,active:false};
 const look={yaw:SPAWN_YAW,pitch:-0.02,locked:false}; // yaw 0 = straight into the mall; spawn is angled a bit
@@ -4029,7 +4555,7 @@ addEventListener('keydown',e=>{
   }
 });
 function anyModalOpen(){
-  return ['menuModal','missionModal','rallyModal','deliveryModal','velocityModal','blindspotsModal','fountainModal','whatModal','todoModal','ideasModal','communityModal','elaraModal','submitModal']
+  return ['menuModal','missionModal','rallyModal','deliveryModal','velocityModal','blindspotsModal','fountainModal','whatModal','todoModal','ideasModal','communityModal','elaraModal','submitModal','devModal']
     .some(id=>{const m=document.getElementById(id);return m&&m.style.display&&m.style.display!=='none';});
 }
 addEventListener('keyup',e=>keys[e.code]=false);
@@ -4037,7 +4563,7 @@ addEventListener('mousemove',e=>{if(!look.locked)return;
   look.yaw-=e.movementX*SENS;look.pitch=clamp(look.pitch-e.movementY*SENS,-1.2,1.1);});
 document.addEventListener('pointerlockchange',()=>{
   look.locked=(document.pointerLockElement===renderer.domElement);
-  document.getElementById('lockHint').style.display=(look.locked||paused)?'none':'block';
+  document.getElementById('lockHint').style.display=(look.locked||paused||devOpen())?'none':'block';
 });
 // every click-to-start takes the page fullscreen again if it isn't already
 // (browsers only allow the request on a gesture; F11 or Esc leaves it).
@@ -4065,8 +4591,8 @@ addEventListener('mousedown',e=>{
   if(e.button!==0)return;                 // only a LEFT click grabs the pointer / fires hotspots
   if(e.target.closest('#music,.modal'))return;
   if(!look.locked){if(!goFullscreen())lockPointer();return;}
-  // hotspots marked clickable (the private wish board) also fire on a plain click
-  if(state.phase==='play'&&curHot&&curHot.clickable&&!paused&&!anyModalOpen())curHot.fn();
+  // every hotspot fires on a plain left click as well as E (the hand crosshair shows when one is in reach)
+  if(state.phase==='play'&&curHot&&!paused&&!anyModalOpen())curHot.fn();
 });
 // suppress the browser menu over the 3D world only — menus, modals and inputs keep
 // their native right-click (copy / paste in the key and wish fields)
@@ -4232,7 +4758,7 @@ const state={phase:'play',time:0};   // no start screen — straight into the ma
 let paused=false;                    // Esc pause menu open?
 const bannerEl=document.getElementById('banner');let bannerT=0;
 function banner(txt){bannerEl.textContent=txt;bannerEl.style.opacity='1';bannerT=2.6;}
-const promptEl=document.getElementById('prompt');
+const promptEl=document.getElementById('prompt'),crossEl=document.getElementById('cross');
 const promptText=document.getElementById('promptText');
 let curHot=null;
 let DOORS=null;                                // entrance doors rig (set in buildFoyer)
@@ -4295,8 +4821,9 @@ function update(dt){
     const d=Math.hypot(player.pos.x-h.x,player.pos.z-h.z);
     if(d<h.r&&d<best){best=d;curHot=h;}
   }
-  if(curHot){promptText.innerHTML='Press <b>E</b> — '+curHot.label;promptEl.style.display='block';}
+  if(curHot){promptText.innerHTML='Click or press <b>E</b> — '+curHot.label;promptEl.style.display='block';}
   else promptEl.style.display='none';
+  crossEl.classList.toggle('hand',!!curHot&&look.locked&&state.phase==='play'&&!paused&&!anyModalOpen());
   if(TOUCH.eBtn)TOUCH.eBtn.classList.toggle('live',!!curHot);   // the touch E lights up in range
 
   // Dr. Vance briefs you the first time you reach the Nexus chamber
