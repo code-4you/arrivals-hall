@@ -51,7 +51,7 @@ without it the page still runs and falls back to local storage and browser voice
 - **Skeleton characters** — "KayKit Character Pack: Skeletons" by [Kay Lousberg](https://kaylousberg.itch.io) (CC0)
 - **Textures** — [Kenney](https://kenney.nl) (CC0)
 - **Rover** — "SCI-FI Low-Poly Rover" by Corvin12
-- **Guide characters** — avatars made with [Ready Player Me](https://readyplayer.me); animations from [Mixamo](https://www.mixamo.com) (Adobe). Mixamo assets are included only as needed to run this game; they may not be extracted and redistributed on their own.
+- **Elara** — body "Cat Woman", face capture "Facial animation of a sexy girl" and standing capture "Dahlia", all by [patromes](https://sketchfab.com/patromes) on Sketchfab (CC BY 4.0); gesture animations from [Mixamo](https://www.mixamo.com) (Adobe) — included only as baked into this game, not to be extracted and redistributed on their own; extra idles from the "Universal Animation Library" by [Quaternius](https://quaternius.com) (CC0).
 - **Music** — streamed from [OpenGameArt](https://opengameart.org), credited in-game per track
 - **Voices** — generated with Gemini TTS
 - The games behind the doors (HexGL, Trigger Rally, and my own) live in their own
