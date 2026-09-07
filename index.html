@@ -496,7 +496,7 @@
   <div style="position:absolute;left:0;right:0;top:42%"><div id="blankMsg"></div><div id="blankCount" style="font-size:64px;margin-top:14px;color:var(--green)"></div></div>
 </div>
 <!-- DEVELOPER OPTIONS — hold [ and ] together to open (nothing on screen points here) -->
-<div class="modal" id="devModal" style="display:none;z-index:65;justify-content:flex-end;padding-right:28px;box-sizing:border-box;background:rgba(3,5,10,.22)">
+<div class="modal" id="devModal" style="display:none;z-index:65;justify-content:flex-end;padding-right:28px;box-sizing:border-box;background:rgba(3,5,10,.22);user-select:text;cursor:auto">
   <div style="max-width:620px;width:92%;max-height:92vh;display:flex;flex-direction:column;padding:24px 28px;border:1px solid rgba(255,210,127,.45);border-radius:14px;background:rgba(8,14,24,.97);text-align:left;box-shadow:0 0 50px rgba(255,190,90,.15)">
     <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber);opacity:.9">Developer options</div>
     <h2 style="margin:.15em 0 .6em;font-size:22px;color:#fff">Elara &amp; the hall</h2>
@@ -2066,7 +2066,7 @@ function buildVisitorBoard(){
       new THREE.MeshStandardMaterial({map:b.tex,emissive:0xffffff,emissiveMap:b.tex,emissiveIntensity:0.6,roughness:0.6}));
     panel.position.set(7.62,2.6,z);panel.rotation.y=-Math.PI/2;
     worldGroup.add(panel);
-    hotspot(6.8,z,2.2,label,()=>banner(say));
+    hotspot(6.8,z,2.2,label+' — the whole book, in the Organiser Room',()=>{location.href='https://lightsmithforge.linkpc.net/organiser/index.html';});   // the foyer boards open the Organiser Room
     return b;
   }
   const bVis=makePanel(36.9,'Recent visitors','RECENT VISITORS · COUNTRY, STATE, LENGTH OF STAY');
@@ -3385,7 +3385,7 @@ function lipUpdate(p,dt){
   }
   const ks=1-Math.pow(0.72,dt*60);
   for(const n of managed){const c=LIP.now[n]||0,v=c+((LIP.tgt[n]||0)-c)*ks;LIP.now[n]=Math.abs(v)<1e-4?0:v;}
-  if(mouthOn||lifeOn)for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;for(const n of managed){const i=d[n];if(i!==undefined)inf[i]=LIP.now[n];}}
+  if((mouthOn||lifeOn)&&!(FACE_PRESET.raw&&!LIP.active))for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;for(const n of managed){const i=d[n];if(i!==undefined)inf[i]=LIP.now[n];}}   // Original 0: the captured mouth shows while she is not speaking
   else if(mode==='off')for(const m of p.morphs){const inf=m.morphTargetInfluences;for(let i=0;i<inf.length;i++)inf[i]=0;}
   // jaw bone follows whatever is on the mouth now (our visemes or the capture's)
   if(p.jaw){const m=p.morphs.find(x=>x.morphTargetDictionary.Jaw_Open!==undefined);
@@ -3509,7 +3509,7 @@ const DEV_TL={open:false};   // the red "what each part does" panel
    first again — the "funny stupid winks set". In normal play the two eyelids are kept together (so it no longer happens every
    loop); the set is replayed exactly from the recording on a schedule, and a clean wink of her LEFT eye has its own schedule.
    Clock = play time (state.time). The dev page can fire both; "later, maybe": winks tied to moments in conversation. ---- */
-const WINK={set:null,active:null,nextSet:300,SET_EVERY:600,nextLeft:120,LEFT_EVERY:120};
+const WINK={set:null,active:null,nextSet:300,SET_EVERY:600,nextLeft:120,LEFT_EVERY:120,KEEP_BLINKS:8};   // KEEP_BLINKS: how many of the capture's blinks per loop are let through
 function winkFindSet(p){   // the longest alternating one-eyed stretch in Face_Idle, with its eyelid values kept for replay
   const c=p.clips&&p.clips.Face_Idle,m=p.morphs&&p.morphs[0]; if(!c||!m)return null;
   const d=m.morphTargetDictionary,iL=d.Eye_Blink_L,iR=d.Eye_Blink_R,n=Object.keys(d).length,t=c.tracks.find(tr=>tr.name.indexOf(m.name)===0);
@@ -3525,22 +3525,80 @@ function winkFindSet(p){   // the longest alternating one-eyed stretch in Face_I
   for(let f=f0;f<=f1;f++)frames.push([t.times[f]-t.times[f0],t.values[f*n+iL],t.values[f*n+iR]]);
   return {t0:t.times[f0],t1:t.times[f1],dur:t.times[f1]-t.times[f0],pattern:best.seq.map(k=>k==='L'?'left':'right').join(', '),frames};
 }
+function blinkPlan(p){   // the capture's quick blinks (lid > 0.5, under 0.6 s), and the 8 we keep, evenly spread through the loop
+  const c=p.clips&&p.clips.Face_Idle,m=p.morphs&&p.morphs[0]; if(!c||!m)return null;
+  const d=m.morphTargetDictionary,iL=d.Eye_Blink_L,iR=d.Eye_Blink_R,n=Object.keys(d).length,t=c.tracks.find(tr=>tr.name.indexOf(m.name)===0);
+  if(!t||iL===undefined||iR===undefined)return null;
+  const ev=[];let cur=null;
+  for(let f=0;f<t.times.length;f++){const v=Math.max(t.values[f*n+iL],t.values[f*n+iR]);
+    if(!cur&&v>0.5)cur={t0:t.times[f],t1:t.times[f],n:1}; else if(cur){ if(v>0.5){cur.t1=t.times[f];cur.n++;} else {ev.push(cur);cur=null;} }}
+  if(cur)ev.push(cur);
+  const all=ev.filter(e=>e.n>=2);   // the same count the red panel shows (lid over 0.5 for at least two frames)
+  const quick=all.filter(e=>e.t1-e.t0<=0.6),KEEP=Math.max(1,WINK.KEEP_BLINKS|0),keep=[];
+  if(quick.length<=KEEP)keep.push(...quick); else if(KEEP===1)keep.push(quick[Math.floor(quick.length/2)]); else for(let i=0;i<KEEP;i++)keep.push(quick[Math.round(i*(quick.length-1)/(KEEP-1))]);
+  return {total:all.length,quick:quick.length,keep:keep.map(e=>({t0:e.t0-0.08,t1:e.t1+0.15,at:e.t0}))};
+}
+/* ---- face recording presets (dev page). head = scale on the captured head-bone turn; eyesInTurns = scale on the captured
+   eye movement (bones + look shapes) while the head is turning; blinkTrim = keep 8 blinks; rawLids = no eyelid processing at all ---- */
+const FACE_PRESETS=[
+  {id:'default',name:'Current default (as is)',note:'8 of the 18 blinks, eyelids kept together (winks only on schedule), head turns as captured',head:1,eyesInTurns:1,blinkTrim:true,rawLids:false},
+  {id:'lessHead',name:'Less head turns',note:'head bone at 40%; the captured eye movement and look shapes at 30% while the head turns; blinks and lids as the default',head:0.4,eyesInTurns:0.3,blinkTrim:true,rawLids:false},
+  {id:'orig2',name:'Original 2 — all 18 blinks',note:'every blink in the recording, eyelids kept together, head turns as captured',head:1,eyesInTurns:1,blinkTrim:false,rawLids:false},
+  {id:'orig1',name:'Original 1 — the recording untouched',note:'18 blinks and the one-eyed closures exactly as captured (the winks set every loop), no eyelid processing, head turns as captured',head:1,eyesInTurns:1,blinkTrim:false,rawLids:true},
+  {id:'orig0',name:'Original 0 — as it came with the GLB',note:'the whole capture with nothing changed, mouth included (the actress talks for part of it), 18 blinks and one-eyed closures as captured, no smiles or scheduled winks; her own voice still moves the mouth when she speaks',head:1,eyesInTurns:1,blinkTrim:false,rawLids:true,raw:true,idleClip:'Face_Raw'}];
+let FACE_PRESET=FACE_PRESETS[0];
+function facePresetApply(id){ FACE_PRESET=FACE_PRESETS.find(x=>x.id===id)||FACE_PRESETS[0]; try{localStorage.setItem('atd:dev:blinkTrim',FACE_PRESET.blinkTrim?'1':'0');}catch(e){} if(persons.elara)faceIdleUse(persons.elara,FACE_PRESET.idleClip||'Face_Idle'); }
+function faceIdleUse(p,name){   // which clip plays as her quiet face (Face_Idle, or the untouched Face_Raw), keeping the loop time
+  if(!p||!p.faceIdle)return; const c=p.clips[name]; if(!c)return; const cur=p.faceIdle; if(cur.getClip()===c)return;
+  const a=p.mixer.clipAction(c); a.setLoop(THREE.LoopRepeat); a.play(); a.time=cur.time; a.setEffectiveWeight(cur.getEffectiveWeight());
+  cur.setEffectiveWeight(0); cur.stop(); p.faceIdle=a; p.faceIdleName=name; }
+function headTurnPlan(p){   // when the captured head bone is clearly turned (over 6° from the clip's first frame), padded 0.25 s
+  const hc=p.clips&&p.clips.Face_Head,ax=p.boneAxes&&p.headBone&&p.boneAxes[p.headBone.name]; if(!hc||!ax)return [];
+  const t=hc.tracks.find(tr=>/CC_Base_Head/.test(tr.name)); if(!t||t.times.length<3)return [];
+  const q0=new THREE.Quaternion().fromArray(t.values,0),inv=q0.clone().invert(),q=new THREE.Quaternion(),v=new THREE.Vector3(),out=[];let cur=null;
+  for(let f=0;f<t.times.length;f++){ q.fromArray(t.values,f*4).premultiply(inv); v.copy(ax.fwd).applyQuaternion(q); const on=v.angleTo(ax.fwd)*180/Math.PI>6;
+    if(on){ if(!cur)cur={t0:t.times[f],t1:t.times[f]}; cur.t1=t.times[f]; } else if(cur){out.push(cur);cur=null;} }
+  if(cur)out.push(cur);
+  const merged=[];for(const e of out){const l=merged[merged.length-1];if(l&&e.t0-l.t1<0.3)l.t1=e.t1;else merged.push({t0:e.t0,t1:e.t1});}
+  return merged.map(e=>({t0:Math.max(0,e.t0-0.25),t1:e.t1+0.25}));
+}
+function inHeadTurn(p){ const a=p.faceHeadParts&&p.faceHeadParts.head; if(!a||!WINK.headTurns)return false; const t=a.time; for(const w of WINK.headTurns)if(t>=w.t0&&t<=w.t1)return true; return false; }
+function facePartScale(p,k){ if(k==='head')return FACE_PRESET.head; if(k==='eyes')return inHeadTurn(p)?FACE_PRESET.eyesInTurns:1; return 1; }
+function facePresetMorphs(p){   // after the mixer: the look shapes follow the eye scale during head turns
+  if(FACE_PRESET.eyesInTurns>=1||!inHeadTurn(p))return;
+  for(const m of p.morphs){ if(!m.__look){m.__look=[];const d=m.morphTargetDictionary;for(const n in d)if(/^Eye_[LR]_Look_/.test(n))m.__look.push(d[n]);} for(const i of m.__look)m.morphTargetInfluences[i]*=FACE_PRESET.eyesInTurns; }
+}
+function squintPlan(p){   // the capture's squint stretches (Eye_Squint over 0.15), for the loop timer bar
+  const c=p.clips&&p.clips.Face_Idle,m=p.morphs&&p.morphs[0]; if(!c||!m)return [];
+  const d=m.morphTargetDictionary,iL=d.Eye_Squint_L,iR=d.Eye_Squint_R,n=Object.keys(d).length,t=c.tracks.find(tr=>tr.name.indexOf(m.name)===0);
+  if(!t||iL===undefined||iR===undefined)return [];
+  const out=[];let cur=null;
+  for(let f=0;f<t.times.length;f++){const v=Math.max(t.values[f*n+iL],t.values[f*n+iR]);
+    if(v>0.15){if(!cur)cur={t0:t.times[f],t1:t.times[f],peak:0};cur.t1=t.times[f];cur.peak=Math.max(cur.peak,v);} else if(cur){out.push(cur);cur=null;}}
+  if(cur)out.push(cur); return out.filter(e=>e.t1-e.t0>=0.1);
+}
+function blinkAllowed(p){   // is the idle capture inside one of the kept blink windows right now?
+  const b=WINK.blinks; if(!b||!p.faceIdle)return true; const t=p.faceIdle.time;
+  for(const k of b.keep)if(t>=k.t0&&t<=k.t1)return true; return false;
+}
 function winkPlay(kind){ if(kind==='set'&&!WINK.set)return; WINK.active={kind,start:state.time,dur:kind==='set'?WINK.set.dur:0.45}; }
 function winkUpdate(p){   // after the mixer and the lip engine: eyelids together normally, a scheduled wink on top
   if(!p.morphs)return;
-  if(!WINK.active){ if(state.time>=WINK.nextSet){WINK.nextSet+=WINK.SET_EVERY;winkPlay('set');} else if(state.time>=WINK.nextLeft){WINK.nextLeft+=WINK.LEFT_EVERY;winkPlay('left');} }
+  if(!WINK.active&&!FACE_PRESET.raw){ if(state.time>=WINK.nextSet){WINK.nextSet+=WINK.SET_EVERY;winkPlay('set');} else if(state.time>=WINK.nextLeft){WINK.nextLeft+=WINK.LEFT_EVERY;winkPlay('left');} }
   let L=null,R=null;const a=WINK.active;
   if(a){const u=state.time-a.start; if(u>a.dur)WINK.active=null;
     else if(a.kind==='set'){const fr=WINK.set.frames;let i=0;while(i<fr.length-1&&fr[i+1][0]<=u)i++;L=fr[i][1];R=fr[i][2];}
     else L=Math.sin(Math.min(1,u/0.45)*Math.PI);}   // her left eye only; the right lid keeps doing what it was doing
   for(const m of p.morphs){const d=m.morphTargetDictionary,inf=m.morphTargetInfluences,iL=d.Eye_Blink_L,iR=d.Eye_Blink_R;if(iL===undefined||iR===undefined)continue;
-    if(L===null){const v=Math.max(inf[iL],inf[iR]);inf[iL]=v;inf[iR]=v;} else {inf[iL]=L;if(R!==null)inf[iR]=R;}}
+    if(L===null&&FACE_PRESET.rawLids)continue;   // Original 1: the eyelids exactly as captured
+    if(L===null){let v=Math.max(inf[iL],inf[iR]); if(v>0.25&&devFlag('blinkTrim',true)&&!blinkAllowed(p))v=0.25;   // fewer blinks: the ones not kept are held back
+      inf[iL]=v;inf[iR]=v;} else {inf[iL]=L;if(R!==null)inf[iR]=R;}}
 }
 const winkClock=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
 /* ---- SMILES. While she is quiet, every 18–40 s one of these plays over the captured face: builds over 0.5 s, holds, releases
    over 0.8 s. Never while she talks (a smile in progress lets go in 0.3 s when she starts), not in the "still face" mode.
    Shape-key strengths (1 = fully on). Dev page: layer switch, "Smile now" cycles through them, countdown in "Running now". ---- */
-const SMILE={next:8+Math.random()*7,active:null,cursor:0,GAP:[18,40],variants:[
+const SMILE={AT:34.0,due:false,lastT:null,active:null,cursor:0,variants:[   // AT: seconds into the face recording's loop at which a smile plays (once per loop)
   {name:'soft smile',hold:[1.6,3.0],shapes:{Mouth_Smile_L:0.18,Mouth_Smile_R:0.18,Cheek_Raise_L:0.12,Cheek_Raise_R:0.12}},
   {name:'warm smile',hold:[1.5,2.6],shapes:{Mouth_Smile_L:0.3,Mouth_Smile_R:0.3,Cheek_Raise_L:0.35,Cheek_Raise_R:0.35,Eye_Squint_L:0.2,Eye_Squint_R:0.2,Mouth_Dimple_L:0.08,Mouth_Dimple_R:0.08}},
   {name:'half smile, her left',hold:[1.2,2.2],shapes:{Mouth_Smile_L:0.26,Mouth_Smile_R:0.06,Mouth_Dimple_L:0.14,Cheek_Raise_L:0.2}},
@@ -3559,13 +3617,17 @@ function mouthPlay(id){ const p=persons.elara; if(!p)return;
 function smilePlay(i){ const v=SMILE.variants[i===undefined?(Math.random()*SMILE.variants.length)|0:i]; SMILE.active={v,start:state.time,hold:v.hold[0]+Math.random()*(v.hold[1]-v.hold[0]),release:0.8}; }
 function smileUpdate(p){   // after the mixer, the lip engine and the winks
   if(!p.morphs)return;
-  const talking=LIP.active||p.talk>0, allowed=!talking&&p.faceMode!=='off'&&!devFlag('off:Smile',false);
-  if(!SMILE.active&&allowed&&state.time>=SMILE.next)smilePlay();
+  const talking=LIP.active||p.talk>0, allowed=!talking&&p.faceMode!=='off'&&!devFlag('off:Smile',false)&&!FACE_PRESET.raw;   // Original 0: the recording only
+  const ft=p.faceIdle?p.faceIdle.time:null;
+  if(ft!==null){ if(SMILE.lastT!==null&&SMILE.lastT<SMILE.AT&&ft>=SMILE.AT)SMILE.due=true;   // the recording just reached 34.0 s
+    if(SMILE.due&&(ft<SMILE.lastT||ft>SMILE.AT+16))SMILE.due=false;                            // talked through the window: wait for the next loop
+    SMILE.lastT=ft; }
+  if(!SMILE.active&&allowed&&SMILE.due){SMILE.due=false;smilePlay();}
   const a=SMILE.active; if(!a)return;
   if(talking&&a.release>0.15){a.release=0.15;a.hold=Math.min(a.hold,state.time-a.start-0.5);}   // she starts talking: let go at once
   const u=state.time-a.start,ATT=0.5,ss=x=>x<=0?0:x>=1?1:x*x*(3-2*x);
   let A; if(u<ATT)A=ss(u/ATT); else if(u<ATT+a.hold)A=1; else A=1-ss((u-ATT-a.hold)/a.release);
-  if(u>=ATT+a.hold+a.release){SMILE.active=null;SMILE.next=state.time+SMILE.GAP[0]+Math.random()*(SMILE.GAP[1]-SMILE.GAP[0]);return;}
+  if(u>=ATT+a.hold+a.release){SMILE.active=null;return;}
   for(const m of p.morphs){const d=m.morphTargetDictionary,inf=m.morphTargetInfluences;for(const n in a.v.shapes){const i=d[n];if(i!==undefined)inf[i]=Math.max(inf[i],A*a.v.shapes[n]);}}
 }
 const MORPH_LABEL={Brow_Raise_Inner:'inner brow raise',Brow_Raise_Outer:'outer brow raise',Brow_Drop:'brow drop (frown)',Eye_Blink:'blink',Eye_Squint:'squint',Eye_Wide:'eyes wide',
@@ -3585,6 +3647,10 @@ function devTimelineText(p){   // list & sequence of what every captured-face pa
       else if(cur){ev.push(cur);cur=null;} }
     if(cur)ev.push(cur); return ev.filter(e=>e.f1-e.f0>=minFrames); }
   const evLine=e=>'  '+f1(tr.times[e.f0])+'–'+f1(tr.times[e.f1])+' s  '+Object.entries(e.peak).map(([k,o])=>k+' '+f2(o.v)+(Math.abs(o.L-o.R)>0.15?(o.L>o.R?' (mostly her left)':' (mostly her right)'):'')).join(' + ');
+  L.push('FACE RECORDING PRESETS (dev page buttons)');
+  for(const x of FACE_PRESETS)L.push('  '+x.name+' — '+x.note);
+  if(WINK.headTurns)L.push('  Head-turn windows used by "Less head turns": '+WINK.headTurns.map(w=>f1(w.t0)+'–'+f1(w.t1)).join(', ')+' s');
+  L.push('');
   L.push('WINKS');
   L.push('  A blink with one eye is a wink. The capture closes the eyelids unevenly in one stretch only: '+(WINK.set?'one eye then the other ('+WINK.set.pattern+'), '+f1(WINK.set.t0)+'–'+f1(WINK.set.t1)+' s of the loop':'none found')+' — the "funny stupid winks set".');
   L.push('  In normal play both eyelids are kept together, so that stretch reads as ordinary blinks and the set only plays when scheduled:');
@@ -3615,7 +3681,7 @@ function devTimelineText(p){   // list & sequence of what every captured-face pa
   L.push('  Plus the seven smiles below.');
   L.push('');
   L.push('SMILES (while she is quiet)');
-  L.push('  One of these every 18–40 s, first one 8–15 s after she appears: builds over 0.5 s, holds, releases over 0.8 s. Never while she talks; a smile in progress lets go in 0.15 s when she starts. Mouth shapes run at 40% strength (cheeks and eyes at full). Off in the still-face mode.');
+  L.push('  One per loop of the face recording, when it reaches '+SMILE.AT.toFixed(1)+' s (pink tick on the loop bar), a random variation: builds over 0.5 s, holds, releases over 0.8 s. Never while she talks — if she is talking at that moment it plays as soon as she stops (up to 16 s later), otherwise it waits for the next loop; a smile in progress lets go in 0.15 s when she starts. Mouth shapes run at 40% strength (cheeks and eyes at full). Off in the still-face mode.');
   for(const v of SMILE.variants)L.push('  '+v.name+' — hold '+v.hold[0]+'–'+v.hold[1]+' s — '+Object.entries(v.shapes).map(([k,x])=>k+' '+x).join(', '));
   L.push('');
   if(tr){
@@ -3623,7 +3689,8 @@ function devTimelineText(p){   // list & sequence of what every captured-face pa
     const sec=(title,re)=>{L.push('');L.push(title);const ev=morphEvents(names(re),0.15,3);if(!ev.length)L.push('  (nothing above 0.15)');ev.forEach(e=>L.push(evLine(e)));};
     sec('BROWS',/^Brow_/);
     L.push('');L.push('BLINKS, SQUINTS & WIDE EYES');
-    const bl=morphEvents(names(/^Eye_Blink/),0.5,1);L.push('  blinks ('+bl.length+'), at: '+bl.map(e=>f1(tr.times[e.f0])).join(', ')+' s');
+    const bl=morphEvents(names(/^Eye_Blink/),0.5,1);L.push('  blinks in the recording ('+bl.length+'), at: '+bl.map(e=>f1(tr.times[e.f0])).join(', ')+' s');
+    if(WINK.blinks)L.push('  kept ('+WINK.blinks.keep.length+' of the '+WINK.blinks.quick+' quick ones, evenly spread; switch "fewer blinks"), at: '+WINK.blinks.keep.map(k=>f1(k.at)).join(', ')+' s — the others are held back at the lids');
     const sq=morphEvents(names(/^Eye_(Squint|Wide)/),0.15,3);if(!sq.length)L.push('  (no squint / wide above 0.15)');sq.forEach(e=>L.push(evLine(e)));
     sec('EYE LOOK SHAPES (the irises, by shape key)',/^Eye_[LR]_Look/);
     sec('HEAD TURN & TILT SHAPES',/^(Head_Turn|Head_Tilt)/);
@@ -3672,10 +3739,12 @@ let devRunT=null;
 function devRunTick(){   // the live "running now" line on the page
   const el=document.getElementById('devRun'),p=persons.elara;if(!el||!p)return;
   const run=p.mixer._actions.filter(a=>a.isScheduled()&&a.getEffectiveWeight()>0.005).map(a=>a.getClip().name+' '+a.getEffectiveWeight().toFixed(2));
-  el.textContent='Running now: '+(run.join(' · ')||'nothing — bind pose')+(p.talk>0?' · talking':'')+(LIP.lastSplit?' · last word: '+LIP.lastSplit:'')+(devFlag('eyes',true)?((p.eyeCapBlend||0)>0.5?' · captured eye movement playing':' · eyes follow'):'')+(devFlag('headFollow',false)?' · head follows':'')+(DEV_SOLO.key?' · PLAYING ALONE: '+DEV_SOLO.key:'')+(WINK.active?' · WINKING: '+(WINK.active.kind==='set'?'funny stupid set':'left eye'):'')+' · winks set in '+winkClock(WINK.nextSet-state.time)+' · left wink in '+winkClock(WINK.nextLeft-state.time)+(SMILE.active?' · SMILING: '+SMILE.active.v.name:' · next smile in '+winkClock(SMILE.next-state.time));
+  el.textContent='Running now: '+(run.join(' · ')||'nothing — bind pose')+' · preset: '+FACE_PRESET.name+(inHeadTurn(p)?' · head turning':'')+(p.talk>0?' · talking':'')+(LIP.lastSplit?' · last word: '+LIP.lastSplit:'')+(devFlag('eyes',true)?((p.eyeCapBlend||0)>0.5?' · captured eye movement playing':' · eyes follow'):'')+(devFlag('headFollow',false)?' · head follows':'')+(DEV_SOLO.key?' · PLAYING ALONE: '+DEV_SOLO.key:'')+(WINK.active?' · WINKING: '+(WINK.active.kind==='set'?'funny stupid set':'left eye'):'')+' · winks set in '+winkClock(WINK.nextSet-state.time)+' · left wink in '+winkClock(WINK.nextLeft-state.time)+(SMILE.active?' · SMILING: '+SMILE.active.v.name:(p.faceIdle?(()=>{const D=p.faceIdle.getClip().duration;return ' · next smile at '+SMILE.AT.toFixed(1)+' s of the loop, in '+winkClock(((SMILE.AT-p.faceIdle.time)%D+D)%D);})():''));
+  if(p.faceIdle){const t=p.faceIdle.time,dur=p.faceIdle.getClip().duration,lt=document.getElementById('devLoopT'),bar=document.getElementById('devLoopBar'),head=document.getElementById('devLoopHead');   // the face recording loop timer
+    if(lt)lt.textContent=t.toFixed(1)+' s'; if(bar)bar.style.width=(100*t/dur)+'%'; if(head)head.style.left=(100*t/dur)+'%';}
 }
 function devOpen(){return document.getElementById('devModal').style.display==='flex';}
-function devToggle(){ if(devOpen())devClose(); else{ if(anyModalOpen())return; devRender(); document.getElementById('devModal').style.display='flex'; document.exitPointerLock&&document.exitPointerLock(); clearInterval(devRunT);devRunT=setInterval(devRunTick,400); document.getElementById('lockHint').style.display='none'; } }
+function devToggle(){ if(devOpen())devClose(); else{ if(anyModalOpen())return; devRender(); document.getElementById('devModal').style.display='flex'; document.exitPointerLock&&document.exitPointerLock(); clearInterval(devRunT);devRunT=setInterval(devRunTick,150); document.getElementById('lockHint').style.display='none'; } }
 function devClose(){document.getElementById('devModal').style.display='none';clearInterval(devRunT);lockPointer();}
 function devRender(){
   const b=document.getElementById('devBody'),cur=faceMode(),p=persons.elara,keep=b.scrollTop;
@@ -3693,6 +3762,8 @@ function devRender(){
   b.innerHTML=
     sec('MOUTH / HEAD MOVEMENTS')+
     FACE_MODES.map(([id,label])=>btn(label,'data-face="'+id+'"',cur===id)).join('')+
+    sec('FACE RECORDING PRESETS','How the 57.9 s face recording is played. Ticked = active; session only, Reset returns to the current default.')+
+    FACE_PRESETS.map(x=>btn(x.name+' <span style="color:#8fa3bf;font-weight:400">('+x.note+')</span>','data-preset="'+x.id+'"',FACE_PRESET.id===x.id)).join('')+
     sec('CAPTURED FACE WHILE SHE TALKS')+
     sl('devTalkFace','talkFace','Expressions kept while talking',0,1,0.05,'')+
     sl('devTalkHead','talkHead','Head motion kept while talking',0,1,0.05,'')+
@@ -3716,12 +3787,20 @@ function devRender(){
     '<button class="menuBtn" id="devTimelineBtn" style="width:100%;margin:6px 0 4px;min-width:0;text-align:left;background:rgba(170,30,30,.92);border-left-color:#ff6b6b;color:#fff">'+(DEV_TL.open?'▾ Hide':'▸ Show')+' what each part does over the loop — the list &amp; sequence, from the clip data</button>'+
     (DEV_TL.open?'<pre id="devTimeline" style="margin:0 0 8px;max-height:300px;overflow:auto;font:11.5px/1.45 Consolas,monospace;white-space:pre-wrap;background:rgba(0,0,0,.4);padding:8px 10px;border-radius:6px;color:#dbe6f3;pointer-events:auto">'+(p?devTimelineText(p):'Elara not loaded')+'</pre>':'')+
     chk('off:Blink',false,true,'Face: blinks','(only in the letter / still face modes)')+
-    chk('off:Smile',false,true,'Face: an occasional smile while she is quiet','('+SMILE.variants.length+' variations, one every 18–40 s, never while talking)')+
+    chk('blinkTrim',true,false,'Face: fewer blinks — '+WINK.KEEP_BLINKS+' of the capture\'s '+(WINK.blinks?WINK.blinks.total:'?')+' per loop','(kept at their own times; off = every blink in the recording)')+
+    chk('off:Smile',false,true,'Face: an occasional smile while she is quiet','('+SMILE.variants.length+' variations, one per loop at '+SMILE.AT.toFixed(1)+' s of the face recording, never while talking)')+
     chk('eyes',true,false,'Eyes follow the visitor while she faces them')+
     chk('eyeCaptureFirst',true,false,'Captured eye movements play through the follow','(while the capture holds her eyes off centre it plays; in between, the eyes come back to you)')+
     chk('headFollow',false,false,'Her head turns toward the visitor','(limit under Tools)')+
     chk('noTurn',false,true,'Her body turns toward the visitor when close')+
     '<div id="devRun" style="color:#8fa3bf;font-size:12px;margin-top:6px">Running now: …</div>'+
+    (p&&p.faceIdle?(()=>{const dur=p.faceIdle.getClip().duration,pc=t=>(100*t/dur).toFixed(2)+'%';   // face recording loop timer: where the 57.9 s capture is right now
+      const ticks=((WINK.blinks&&WINK.blinks.keep)||[]).map(k=>'<div title="kept blink '+k.at.toFixed(1)+' s" style="position:absolute;top:0;bottom:0;left:'+pc(k.at)+';width:2px;background:#ffd27f"></div>').join('')+
+        (WINK.set?'<div title="funny stupid winks set" style="position:absolute;top:0;bottom:0;left:'+pc(WINK.set.t0)+';width:'+(100*WINK.set.dur/dur).toFixed(2)+'%;background:rgba(255,110,110,.45)"></div>':'')+
+        (WINK.squints||[]).map(q=>'<div title="squint '+q.peak.toFixed(2)+' ('+q.t0.toFixed(1)+'–'+q.t1.toFixed(1)+' s)" style="position:absolute;top:0;bottom:0;left:'+pc(q.t0)+';width:'+Math.max(0.3,100*(q.t1-q.t0)/dur).toFixed(2)+'%;background:rgba(95,224,200,.6)"></div>').join('')+
+        '<div title="smile at '+SMILE.AT.toFixed(1)+' s" style="position:absolute;top:0;bottom:0;left:'+pc(SMILE.AT)+';width:3px;background:#ff9ad5"></div>';
+      return '<div style="margin:8px 0 3px;color:#8fa3bf;font-size:12px">Face recording loop: <b id="devLoopT" style="color:#dfe9f5">–</b> / '+dur.toFixed(1)+' s <span style="color:#8fa3bf">(amber ticks = kept blinks, red = the winks set, green = squints, pink = the smile; the same clock as the red panel\'s times)</span></div>'+
+        '<div style="position:relative;height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden">'+ticks+'<div id="devLoopBar" style="position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(127,230,255,.55)"></div><div id="devLoopHead" style="position:absolute;top:0;bottom:0;left:0;width:2px;background:#fff"></div></div>';})():'')+
     sec('MOUTH MOVEMENTS','▶ plays one on her now: the original demo\'s resting touches, the nine lip-sync mouth shapes (through the lip engine, jaw included — not in the captured-performance mode), and the seven smiles.')+
     MOUTH_ORIG.map(o=>pl(o[0],o[1],o[2])).join('')+
     MOUTH_VIS.map(v=>pl('vis:'+v[0],'Shape '+v[0],v[1])).join('')+
@@ -3750,6 +3829,7 @@ function devRender(){
     btn('Reset all developer options to defaults','id="devReset"',false)+
     '<div style="color:#8fa3bf;font-size:12px;margin-top:12px" id="devInfo">'+(p?('Elara: clip '+p.actName+' · face mode '+cur+' · '+(p.faceTalk?'captured face loaded':'no captured face')+' · voice '+(SPEAKERS.elara.voice?SPEAKERS.elara.voice.name:'none')):'Elara not loaded')+'</div>';
   b.querySelectorAll('[data-face]').forEach(el=>el.onclick=()=>{setFaceMode(el.dataset.face);devRender();});
+  b.querySelectorAll('[data-preset]').forEach(el=>el.onclick=()=>{facePresetApply(el.dataset.preset);devRender();});
   b.querySelectorAll('input[data-chk]').forEach(el=>el.onchange=()=>{const k=el.dataset.chk,inv=el.dataset.inv==='1',on=el.checked;
     try{localStorage.setItem('atd:dev:'+k,inv?(on?'0':'1'):(on?'1':'0'));}catch(e){}
     if(k==='off:Idle'&&on&&p){const c=p.clips[p.idle],a=c&&p.mixer.existingAction(c);if(a&&p.actName===p.idle)a.setEffectiveWeight(1);}   // muting stopped its fade: bring it straight back
@@ -3768,7 +3848,7 @@ function devRender(){
   document.getElementById('devWinkLeft').onclick=()=>winkPlay('left');
   document.getElementById('devSay').onclick=()=>{devClose();say('elara',"This is a test line, so you can watch my mouth, my eyes and my head while I speak.");};
   document.getElementById('devReset').onclick=()=>{   // everything on this page: face mode, sliders, layers, aim offset
-    DEV_SOLO.key=null;
+    DEV_SOLO.key=null;FACE_PRESET=FACE_PRESETS[0];if(persons.elara)faceIdleUse(persons.elara,'Face_Idle');
     try{localStorage.removeItem(FACE_MODE_KEY);for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.indexOf('atd:dev:')===0)localStorage.removeItem(k);}}catch(e){}
     TALK_FACE_LEVEL=DEV_DEF.talkFace;TALK_HEAD_LEVEL=DEV_DEF.talkHead;
     if(persons.elara){const q=persons.elara;applyFaceMode(q);if(q.clips[ELARA_IDLE]&&q.idle!==ELARA_IDLE){const was=q.idle;q.idle=ELARA_IDLE;if(q.actName===was)personAnim(q,ELARA_IDLE,0.9);}const c=q.clips[q.idle],a=c&&q.mixer.existingAction(c);if(a&&q.actName===q.idle)a.setEffectiveWeight(1);}
@@ -3776,6 +3856,7 @@ function devRender(){
   b.scrollTop=keep;devRunTick();
 }
 document.getElementById('devClose').onclick=devClose;
+document.getElementById('devModal').addEventListener('mousedown',e=>{ if(e.target===e.currentTarget)devClose(); });   // a click outside the box closes the page
 addEventListener('keydown',e=>{ if(e.code in devKeys){devKeys[e.code]=true; if(devKeys.BracketLeft&&devKeys.BracketRight){e.preventDefault();devKeys.BracketLeft=devKeys.BracketRight=false;devToggle();}} });
 addEventListener('keyup',e=>{ if(e.code in devKeys)devKeys[e.code]=false; });
 function makePerson(key,opts){
@@ -3827,7 +3908,7 @@ function makePerson(key,opts){
         for(const k in FACE_HEAD_PARTS){ const tracks=hc.tracks.filter(t=>FACE_HEAD_PARTS[k].test(t.name)).map(t=>t.clone()); if(!tracks.length)continue;
           const c=new THREE.AnimationClip('Face_Head_'+k,hc.duration,tracks); THREE.AnimationUtils.makeClipAdditive(c);
           const a=mixer.clipAction(c); a.blendMode=THREE.AdditiveAnimationBlendMode; a.setLoop(THREE.LoopRepeat); a.play(); a.time=p.faceIdle.time; p.faceHeadParts[k]=a; }
-        p.faceHead={_w:1,getEffectiveWeight(){return this._w;},setEffectiveWeight(w){this._w=w;const off=faceOff('Face_Head');for(const k in p.faceHeadParts)p.faceHeadParts[k].setEffectiveWeight(off||faceOff('head:'+k)?0:w);}};
+        p.faceHead={_w:1,getEffectiveWeight(){return this._w;},setEffectiveWeight(w){this._w=w;const off=faceOff('Face_Head');for(const k in p.faceHeadParts)p.faceHeadParts[k].setEffectiveWeight(off||faceOff('head:'+k)?0:w*facePartScale(p,k));}};
       }
     }
   }
@@ -3874,6 +3955,9 @@ function spawnElara(){
   HOTS.push(p.hot);
   persons.elara=p;
   WINK.set=winkFindSet(p);   // the funny stupid winks set, from the capture
+  WINK.blinks=blinkPlan(p);   // which 8 of the capture's blinks are kept
+  WINK.squints=squintPlan(p);   // squint stretches, for the loop timer bar
+  WINK.headTurns=headTurnPlan(p);   // head-turn windows, for the "less head turns" preset
 }
 // Mixamo clips raise the hips above the bind pose, so a bind-based ground offset lets the
 // feet float. Fix: every frame, plant the lowest foot bone on the floor (simple foot IK).
@@ -3891,7 +3975,7 @@ function updatePeople(dt){
     const p=persons[k];if(!p)continue;
     if(k==='elara')devMuteClips(p);
     p.mixer.update(dt);
-    if(k==='elara'){const aim=elaraAim(p);lipUpdate(p,dt);devMorphMute(p);winkUpdate(p);smileUpdate(p);headTrack(p,dt,aim,devFlag('headFollow',false)&&!soloHead(),devNum('headMax'),p.mesh.rotation.y);eyesTrack(p,dt,aim,devFlag('eyes',true)&&!soloHead());}
+    if(k==='elara'){const aim=elaraAim(p);lipUpdate(p,dt);devMorphMute(p);facePresetMorphs(p);winkUpdate(p);smileUpdate(p);headTrack(p,dt,aim,devFlag('headFollow',false)&&!soloHead(),devNum('headMax'),p.mesh.rotation.y);eyesTrack(p,dt,aim,devFlag('eyes',true)&&!soloHead());}
     // during the tour, updateTour drives Elara's position/facing/animation
     if(!(k==='elara'&&tour.active)){
       const talking=p.talk>0;
@@ -4016,8 +4100,8 @@ function elaraView(view){
     mk((tourDone()?'↺&nbsp; Take the tour again':'▶&nbsp; Take the guided tour'),
        ()=>{closeElaraMenu();startTour();},true);
     mk('Just talk',()=>elaraChatView());
-    mk("“You're sexy”",()=>elaraDate());
     ELARA_TOPICS.forEach(t=>mk('“'+t.q+'”',()=>{closeElaraMenu();saySequence('elara',t.a);}));
+    mk("“You're beautiful”",()=>elaraDate());   // last option: the date sequence
   }else if(view==='stay1'){
     elaraAsk("Wonderful — we have affordable homes and work opportunities. Would you like to rent, or own?");
     mk('Rent',()=>{say('elara',"Hmm — I'd advise against renting. Renting takes away your power, and here it's actually cheaper to own.");elaraView('stay2');});
@@ -4036,7 +4120,7 @@ function elaraView(view){
   }
   document.getElementById('elaraModal').style.display='flex';
 }
-// ---- "You're sexy": a short scripted flirt — you and Elara trade lines (male browser voice for you),
+// ---- "You're beautiful": a short scripted flirt — you and Elara trade lines (male browser voice for you),
 // two yes/no pop-ups, a "continue to tomorrow" countdown, and a yes at the end takes you to her place.
 function speakLine(who,text){                       // say() as a promise, with a length-based safety net
   return new Promise(res=>{let done=false;const go=()=>{if(done)return;done=true;res();};say(who,text,go);setTimeout(go,Math.max(2500,text.length*90)+4000);});
@@ -4062,7 +4146,7 @@ async function elaraDate(){
   closeElaraMenu(false);
   const p=persons.elara; if(p){const aim=elaraAim(p);facePerson(p,aim.x,aim.z);}
   try{
-    await speakLine('you',"You're sexy.");
+    await speakLine('you',"You're beautiful.");
     await speakLine('elara',"Thank you. I think you're handsome too.");
     await speakLine('elara',"Do you want to have dinner with me?");
     if(!(await askYesNo("Have dinner with Elara?"))){ say('elara',"Maybe another time."); return; }
