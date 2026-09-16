@@ -670,7 +670,7 @@ const EARLY_SPEC=[   // key, colour, intensity, distance, world position at rest
   ['crypt',0x59e08a,1.1,13, 45,1.7,14,LS_H],['blindspots',0xffcf8a,0.7,11, 45,2.2,-14,LS_H],['cerebro',0x6fa8ff,0.85,12, 16,2.4,35,LS_H],
   ['hallwyl',0xffc37a,0.85,12, -45,2.4,-26,LS_H],['theater',0x8fd8c8,0.5,11, -43,3.4,18,LS_H],['community',0xffd27f,0.85,9, -30,1.5,34,LS_H]];
 for(const x of [-60,-25,10])for(const z of [-56,-88,-114])EARLY_SPEC.push(['annexe'+x+','+z,0xbfd8ff,0.45,26, x,5.2,z,z===-56?LS_H|LS_A:LS_A]);   // the Annexe corridors; the row by the hall reaches into it
-for(const [x,z] of [[-68,-95],[-68,-63],[-51,-63],[-34,-63],[-17,-63],[0,-63],[-68,-79],[-51,-79],[-34,-79],[-17,-79],[0,-79]])EARLY_SPEC.push(['space'+x+','+z,0xffffff,0.5,9, x,3.2,z,LS_A]);   // the Annexe spaces with a character
+for(const [x,z] of [[-68,-63],[-51,-63],[-34,-63],[-17,-63],[0,-63],[-51,-79],[-34,-79],[-17,-79],[0,-79]])EARLY_SPEC.push(['space'+x+','+z,0xffffff,0.5,9, x,3.2,z,LS_A]);   // the Annexe spaces with a character
 // the levels: exactly eight point lights each, the same number as outside, so every shader compiled for the outside
 // (the city, the garden, Elara) serves the levels unchanged — a different count would be a new shader for each
 for(let i=0;i<LEVEL_Y.length;i++){ const Y=LEVEL_Y[i], set=[LSET.l1,LSET.l2,LSET.l3,LSET.l4,LSET.l5,LSET.l6][i];
@@ -1377,7 +1377,7 @@ function buildRetreatContents(){
    east-west corridor. The shell is plain boxes and builds at start-up; the characters standing
    in four of them are the heavy part and each loads only when you step into its space.
    ============================================================ */
-const SRC='../assets%20for%20claude%20to%20copy%20to%20game%20folder/elara4/';   // the untrimmed sources stay in the asset library
+const SRC='https://lightsmithforge.linkpc.net/assets%20for%20claude%20to%20copy%20to%20game%20folder/elara4/';   // the untrimmed sources stay in the asset library
 const ANNEXE={x0:-76,x1:15,z0:-118,z1:-52,H:7,
   cols:[-68,-51,-34,-17,0],      // space centres across
   rows:[-63,-79,-95,-111],       // and back
@@ -1390,7 +1390,7 @@ const GUESTS=[
   // Jack again, the hall look (no stubble, no gun), wearing the idle / walk / run library one clip at a
   // time: click him (or E) for the next, the number and name show on screen.
   {id:'jack_looks',file:'jack.glb',              name:'JACK · ANIMATIONS',cx:0,cz:-63, col:0xffd27f, plain:true, hide:/Beard_Transparency|pistolLow/,
-   clipsFrom:'../assets%20for%20claude%20to%20copy%20to%20game%20folder/realistic_female/elara_idles.glb?v=2', calm:30, lookAt:14, gaze:true},   // calm: standing idles only, arms moving under 30°
+   clipsFrom:'https://lightsmithforge.linkpc.net/junk_lab_files_live/elara_idles.glb', calm:30, lookAt:14, gaze:true},   // calm: standing idles only, arms moving under 30°
   {id:'scorpion',file:'scorpion.glb',            name:'SCORPION',     cx:-17,cz:-63, col:0x8dff6a},
   // Jack stands in the hall itself, at the north end beside the Ideas board. after:'start' — he is
   // fetched in the background once the START gate is open, never as part of the opening load, and
@@ -1402,16 +1402,11 @@ const GUESTS=[
    speaks:["Hello. I'm Jack. Elara asked me to keep an eye on this end of the hall.",
            "Nothing to see here yet. She's still building it.",
            "Go on, have a look around. I'll be here."]},   // press E on him: one line per press, round and round
-  // the two untrimmed Elara sources, played from the asset library (never copied into the hub):
-  // the model as it came, wearing the whole face capture, beside the capture's own character.
   // her built model in the Lab, wearing each variation in turn: click her (or press E) for the next.
   {id:'elara_wear',url:'assets/people/elara.glb?v=2',           name:'ELARA · CLOTHES',     cx:-68,cz:-63, col:0xffb6e0, faceYaw:0,
    clip:'Idle_Relax', outfits:['cat','secretary','blouse','skirt','under']},   // the keys of OUTFITS, written out: that table is declared further down
-  // the same model again, wearing the secretary look and nothing else to click: space 11.
-  {id:'elara_sec', url:'assets/people/elara.glb?v=2',           name:'ELARA · SECRETARY',   cx:-68,cz:-95, col:0x9fd8ff, faceYaw:0,
-   clip:'Idle_Relax', outfit:'secretary', faceIdle:true},
-  {id:'elara_src', url:SRC+'elara4.glb',                   name:'ELARA · ORIGINAL',    cx:-68,cz:-79, col:0xb6ff9c, faceYaw:0,
-   faceFrom:SRC+'elara4_facial_animation.glb'},
+  // (spaces 06 and 11 — ELARA · ORIGINAL and ELARA · SECRETARY — were cleared 2026-09-17 for something else; their files are kept)
+  // the capture's own character, played from the untrimmed source in the asset library (never copied into the hub)
   {id:'elara_face',url:SRC+'elara4_facial_animation.glb',  name:'THE FACE CAPTURE',    cx:-51,cz:-79, col:0x9fd8ff, faceYaw:0},
   // the same swat file again, unmasked, wearing Elara's captured expressions. Only the morph
   // tracks are borrowed, so her own posing emote still drives the body and nothing fights.
@@ -1424,9 +1419,8 @@ const GUESTS=[
   // Click her (or press E) to step to the next one; the number and name show on screen.
   // NOTE: the untrimmed elara4 source, not the built model. These clips are baked against elara4's
   // rest pose, and the built model's rest differs enough that the same clips leave her arms out.
-  // Space 06 already loads this file, so it comes from cache.
   {id:'elara_clips',url:SRC+'elara4.glb',                   name:'ELARA · TRY IDLES',   cx:  0,cz:-79, col:0x9fe8ff, faceYaw:0,
-   clipsFrom:'../assets%20for%20claude%20to%20copy%20to%20game%20folder/realistic_female/elara_idles.glb?v=2'},
+   clipsFrom:'https://lightsmithforge.linkpc.net/junk_lab_files_live/elara_idles.glb'},
   {id:'swat_full',file:'swat_blend.glb',                   name:'SWAT · RELAX IDLE',   cx:-17,cz:-79, col:0xff8fd0,
    hide:/Balaclava|Helmet/, faceFrom:SRC+'elara4_facial_animation.glb', faceParts:true, alignHead:true,
    bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Relax'}},
