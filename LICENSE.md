@@ -28,6 +28,30 @@ what is written here.
 Re-implementing the same ideas in your own code is not a copyright matter; copying this
 code, text or content is.
 
+## Contributing a level or a game
+
+The hall has room for visitors' work: the floors above it and the Arcade's posters. For that one
+purpose — building a level or a game to submit to The Arrivals Hall, the way
+https://code-4you.github.io/arrivals-hall/contribute.html describes — you may:
+
+- copy this repository (clone, fork or download it) and change it on your own machine;
+- run your copy locally, and publish it from your own GitHub fork's Pages so people can try it
+  while you build;
+- use a coding assistant on it (Claude Code, ChatGPT, Codex, Gemini and the like) — that is
+  not the training or dataset use forbidden above.
+
+This permission ends when your submission is merged or declined, or when you stop working on
+it. It covers nothing beyond the submission: not another site, product or game built on this
+code, and not the parts of the hall you did not make.
+
+By submitting (a pull request, an issue, or the form in the hall) you confirm that the work is
+your own, or that every part of it carries a licence that allows it, and you grant Lightsmith
+Forge a perpetual, worldwide, royalty-free, non-exclusive licence to use, adapt, display and
+distribute it as part of The Arrivals Hall on every copy of the hall (the home site, GitHub,
+itch.io, Game Jolt and copies still to come). You keep the copyright of your own work and stay
+free to use it elsewhere. Lightsmith Forge decides what is hung, and may edit or take down a
+contribution.
+
 ## Third-party work inside the hall keeps its own licence
 
 - Elara's body, face capture and standing capture — "Cat Woman", "Facial animation of a

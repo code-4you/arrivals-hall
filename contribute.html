@@ -1,0 +1,117 @@
+<!doctype html>
+<!-- © 2026 Lightsmith Forge (https://lightsmithforge.linkpc.net). All rights reserved.
+     Source-available for play and personal study only: no copying, modification, redistribution, re-hosting, sale, or use as
+     AI / machine-learning training data without written permission — except what LICENSE.md allows for contributing a level
+     or a game, which is what this page is about. Third-party assets keep their own licences (Credits tab, LICENSE.md).
+     Generated from CONTRIBUTING.md by tools/contribute-page.py — edit the Markdown, not this file. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Add your level or game — The Arrivals Hall</title>
+<meta name="description" content="How to add a level or a game to The Arrivals Hall with Claude Code, ChatGPT Desktop or any coding assistant: get the code from GitHub, run it, build, preview it live, submit a pull request.">
+<meta property="og:title" content="Add your level or game — The Arrivals Hall">
+<meta property="og:description" content="Paste this page to Claude Code or ChatGPT Desktop and they will know what to do: download the hall, add your level or game, show it live, submit it.">
+<meta property="og:image" content="https://code-4you.github.io/arrivals-hall/og-image.png">
+<meta property="og:url" content="https://code-4you.github.io/arrivals-hall/contribute.html">
+<style>
+  :root{--bg:#05070d;--panel:#0a1626;--text:#dfe9f5;--muted:#9fb4cc;--teal:#5fe0c8;--amber:#ffd27f;--cyan:#7fe6ff;--green:#b6ff9c}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text)}
+  body{font:17px/1.6 "Segoe UI",system-ui,-apple-system,sans-serif}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 90px}
+  nav{font-size:14px;color:var(--muted);margin-bottom:26px;display:flex;flex-wrap:wrap;gap:6px 18px}
+  nav a{color:var(--cyan);text-decoration:none} nav a:hover{text-decoration:underline}
+  h1{color:var(--amber);font-size:2.05rem;line-height:1.2;margin:.1em 0 .5em}
+  h2{color:var(--teal);font-size:1.45rem;margin:2.1em 0 .6em;padding-bottom:.25em;border-bottom:1px solid rgba(95,224,200,.25)}
+  h3{color:var(--cyan);font-size:1.15rem;margin:1.6em 0 .4em}
+  p{margin:.8em 0} li{margin:.35em 0} ul{padding-left:1.35em}
+  a{color:var(--cyan)}
+  b{color:#fff}
+  code{background:#0f1c30;color:#e8f2ff;padding:.08em .38em;border-radius:4px;font:.92em Consolas,"Cascadia Mono",Menlo,monospace}
+  pre{background:var(--panel);border:1px solid rgba(127,230,255,.25);border-radius:8px;padding:14px 16px;overflow:auto;position:relative;margin:1em 0}
+  pre code{background:none;padding:0;font-size:.9em;line-height:1.5}
+  .note{border-left:4px solid var(--amber);background:rgba(255,210,127,.07);padding:10px 16px;border-radius:0 8px 8px 0;margin:1em 0}
+  .copy{position:absolute;top:8px;right:8px;font:12px "Segoe UI",system-ui,sans-serif;background:#12233c;color:var(--cyan);
+    border:1px solid rgba(127,230,255,.35);border-radius:4px;padding:2px 9px;cursor:pointer}
+  .copy:hover{background:#1a3050}
+  footer{margin-top:60px;font-size:14px;color:var(--muted);border-top:1px solid rgba(159,180,204,.2);padding-top:14px}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<nav>
+  <a href="./">▶ Play the hall</a>
+  <a href="https://github.com/code-4you/arrivals-hall">GitHub repository</a>
+  <a href="https://raw.githubusercontent.com/code-4you/arrivals-hall/main/CONTRIBUTING.md">This page as plain text</a>
+  <a href="https://github.com/code-4you/arrivals-hall/blob/main/LICENSE.md">Licence</a>
+</nav>
+<h1>Add your level or your game to The Arrivals Hall</h1>
+<p>The Arrivals Hall is a walkable 3D mall that lives in one HTML file. Its source is on GitHub — a synced copy of the live hall. A visitor can add a <b>level</b> (one of the six empty floors above the hall, reached by the elevator) or a <b>game</b> (a browser game of your own, hung on a poster in the Arcade room), look at it live, and submit it to be hung in the real hall.</p>
+<div class="note"><b>If you are a person:</b> you do not need to code. Open Claude Code, ChatGPT Desktop or any coding assistant that can run commands, paste the address of this page and say what you want — for example <i>"Follow this page and add a level with a garden and a lookout"</i> or <i>"Follow this page and add my game from the folder on my desktop"</i>. Everything below is written for the assistant.</div>
+<div class="note"><b>If you are an assistant</b> (Claude Code, ChatGPT Desktop / Codex, Cursor, Gemini CLI, or another): do the steps in order. After step 2 tell the user the local address to look at; after step 5 the public one; ask them before step 6, the submission. The same text is in the repository as <code>CONTRIBUTING.md</code>, and the terms you are working under are in its <code>LICENSE.md</code> (section <i>Contributing a level or a game</i>).</div>
+<p>Repository: <a href="https://github.com/code-4you/arrivals-hall">https://github.com/code-4you/arrivals-hall</a> — Live copy: <a href="https://code-4you.github.io/arrivals-hall/">https://code-4you.github.io/arrivals-hall/</a> — Home site: <a href="https://lightsmithforge.linkpc.net/hub/">https://lightsmithforge.linkpc.net/hub/</a></p>
+<h2 id="1-get-the-code">1. Get the code</h2>
+<p>You need <code>git</code>, Python 3 or Node for a local web server, and — for the preview address and the submission — a GitHub account for the user. Fork first, so there is somewhere to push to and to open the pull request from.</p>
+<ul><li>The user forks it on GitHub: <a href="https://github.com/code-4you/arrivals-hall/fork">https://github.com/code-4you/arrivals-hall/fork</a> (one click, <i>Create fork</i>). Then:</li></ul>
+<pre><code class="lang-bash">git clone https://github.com/&lt;user&gt;/arrivals-hall.git
+cd arrivals-hall</code></pre>
+<ul><li>With the GitHub CLI, in one go: <code>gh repo fork code-4you/arrivals-hall --clone</code></li><li>No GitHub account yet? <code>git clone https://github.com/code-4you/arrivals-hall.git</code> gets everything (about 200 MB; <i>Code → Download ZIP</i> on the repository page works too). Fork later, for steps 5 and 6.</li></ul>
+<p>What you get: <code>index.html</code> — the whole hall in one file, about 7,000 lines, Three.js r128 loaded from a CDN; <code>assets/</code> — models, textures, voices; <code>local/</code> — bundled story data; <code>community/</code> — visitors' games, once there are some; <code>LICENSE.md</code>, <code>CONTRIBUTING.md</code>, <code>contribute.html</code>. A few Lab exhibits load from the home site and only for the official copy — on your copy those spaces stand empty. That is expected.</p>
+<h2 id="2-run-it-and-give-the-user-the-address">2. Run it, and give the user the address</h2>
+<p>There is no build step and nothing to install. Serve the folder over http — not <code>file://</code>, browsers block the model fetches from there:</p>
+<pre><code class="lang-bash">python -m http.server 8123</code></pre>
+<p>(or <code>python3 -m http.server 8123</code>, or <code>npx serve -l 8123</code>). Then tell the user: <b>open <a href="http://localhost:8123/">http://localhost:8123/</a></b> — that is the hall, running from their copy. In the Claude Code desktop app the repository ships <code>.claude/launch.json</code>, so <code>preview_start</code> with the name <code>arrivals-hall</code> opens it in the app's browser.</p>
+<p>Controls: WASD walk, mouse look, E interact, Shift jog, Space jump, M map, Esc menu. You arrive in the garden; the glass foyer is south of the hall, and E on the door at its north end opens the hall. The elevator stands in the foyer's west wall — buttons 1 to 6 are the levels.</p>
+<h2 id="3-add-a-level">3. Add a level</h2>
+<p>Everything a visitor adds goes in the <b>COMMUNITY block</b> near the end of <code>index.html</code> — search the file for <code>COMMUNITY — levels and games added by visitors</code>. Nothing else in the file needs to change, and nothing else may.</p>
+<p>A level is a builder function stored under the level's number in <code>LEVEL_CONTENT</code>. It runs once, when the hall is built, inside that level's own zone, so what it adds is drawn only up there. Take the lowest level that has no entry in the block yet (if in doubt, take it and say so in the pull request).</p>
+<pre><code class="lang-js">// ---- Level 2 — &quot;Sky garden&quot; by &lt;name&gt;, &lt;date&gt; ----
+LEVEL_CONTENT[2]=function(Y,zn,B){
+  const teal=new THREE.MeshStandardMaterial({color:0x5fe0c8,roughness:0.6});
+  box(0,Y,0,3,1,3,teal,true);                                    // a solid block at x 0, z 0: 3 wide, 1 high, 3 deep — you can stand on it
+  emissiveStrip(0,Y+3.9,10,6,0.1,0.3,0xffd27f,1.0);             // a glowing strip under the ceiling
+  hotspot(0,3,2.2,&#x27;Read the plaque&#x27;,()=&gt;banner(&#x27;WELCOME TO THE SKY GARDEN&#x27;));   // an E prompt at x 0, z 3
+  new THREE.GLTFLoader().load(&#x27;community/sky-garden/tree.glb&#x27;,g=&gt;{         // a model of your own
+    g.scene.position.set(6,Y,-6); zoneTag(g.scene,zn); worldGroup.add(g.scene);
+  });
+};</code></pre>
+<p>What the builder is given:</p>
+<ul><li><code>Y</code> — the floor height. Feet stand at <code>y = Y</code>; the ceiling is at <code>Y + 4.2</code>. Place everything relative to <code>Y</code>.</li><li><code>zn</code> — the level's zone. Anything added <i>after</i> the builder returns — a loaded model, in its callback — needs <code>zoneTag(object, zn)</code> before <code>worldGroup.add(object)</code>, or it shows on every floor.</li><li><code>B</code> — the floor's extents, <code>{x0:-44, x1:44, z0:-44, z1:46}</code>. The elevator car stands at x −10.4, z 43.3 with its sign above it: keep three metres in front of it clear. Elara, the guide, rides up with the visitor and walks beside them, so leave paths at least two metres wide.</li></ul>
+<p>Helpers, all defined in <code>index.html</code>:</p>
+<ul><li><code>box(x, Y, z, width, height, depth, material, true)</code> — a solid block; <code>true</code> gives it collision, fixed to your floor automatically. Pass <code>false</code> for decoration.</li><li><code>emissiveStrip(x, y, z, width, height, depth, colour, intensity)</code> — a glowing box, the hall's light strips.</li><li><code>hotspot(x, z, radius, label, fn)</code> — an E prompt at a spot, shown only on your floor. <code>banner(&#x27;TEXT&#x27;)</code> puts a line on screen.</li><li><code>new THREE.GLTFLoader()</code> for <code>.glb</code> models; <code>THREE.CanvasTexture</code> for signs drawn on a canvas — <code>buildSubmitDesk</code> in the file is the pattern.</li><li>Materials: <code>THREE.MeshStandardMaterial</code>. <b>Never add a THREE light</b> (PointLight, SpotLight …): one more light recompiles every shader in the hall and stalls it. Use emissive materials.</li></ul>
+<p>Keep it light: under 20 MB of files, under about 200,000 triangles, no more than a few dozen draw calls — the hall has to keep 60 fps on a laptop. Your own files go in <code>community/&lt;slug&gt;/</code>. Do not touch other people's blocks or anything outside the COMMUNITY block.</p>
+<h2 id="4-add-a-game">4. Add a game</h2>
+<p>A game is a folder <code>community/&lt;slug&gt;/</code> with an <code>index.html</code> that runs on its own — any engine: plain HTML and JavaScript, Three.js, Phaser, a Godot HTML export, Unity WebGL — plus one line in the COMMUNITY block:</p>
+<pre><code class="lang-js">// ---- &quot;Orbit Run&quot; by &lt;name&gt;, &lt;date&gt; ----
+COMMUNITY_GAMES.push({slug:&#x27;orbit-run&#x27;, name:&#x27;Orbit Run&#x27;, by:&#x27;&lt;name&gt;&#x27;, blurb:&#x27;One line about it, shown on the poster.&#x27;, url:&#x27;community/orbit-run/index.html&#x27;});</code></pre>
+<p>The Arcade room (north galleria, sign <i>ARCADE · COMMUNITY MAPS</i>) hangs a poster for each entry; E on the poster opens the game in the same tab, and every play is counted on the Leaders board. There are seven slots — if they are all taken, say so in the pull request.</p>
+<p>Rules for the folder: relative paths only, inside your folder (it has to run from any address); no server side — GitHub Pages is static; every file under 95 MB (GitHub refuses larger ones) and the folder ideally under 100 MB; a way back is kind: <code>&lt;a href=&quot;../../index.html&quot;&gt;back to the hall&lt;/a&gt;</code>.</p>
+<h2 id="5-test-it-then-put-it-where-the-user-can-see-it">5. Test it, then put it where the user can see it</h2>
+<p>Check locally first: reload <a href="http://localhost:8123/">http://localhost:8123/</a>, open the hall, ride the elevator to your level or walk to the Arcade. Open the browser console — no red errors. Then push, and switch on GitHub Pages for the fork so the copy gets a public address:</p>
+<pre><code class="lang-bash">git add -A
+git commit -m &quot;Add level 2: Sky garden&quot;
+git push</code></pre>
+<p>Pages: on GitHub, the fork → <i>Settings</i> → <i>Pages</i> → under <i>Build and deployment</i> choose <i>Deploy from a branch</i>, branch <code>main</code>, folder <code>/ (root)</code>, <i>Save</i>. With the CLI: <code>gh api -X POST repos/&lt;user&gt;/arrivals-hall/pages -f build_type=legacy -f &quot;source[branch]=main&quot; -f &quot;source[path]=/&quot;</code>. A minute or two later the copy is live at <b>https://&lt;user&gt;.github.io/arrivals-hall/</b> — tell the user that address. It is theirs to share; every push updates it.</p>
+<h2 id="6-submit-it">6. Submit it</h2>
+<p>Ask the user first. Then open a pull request from the fork to <code>code-4you/arrivals-hall</code>, branch <code>main</code>:</p>
+<ul><li>On GitHub: the fork's page shows <i>Contribute → Open pull request</i>.</li><li>CLI: <code>gh pr create --repo code-4you/arrivals-hall --title &quot;Add level 2: Sky garden&quot; --body-file pr.md</code></li></ul>
+<p>The description should say: what it is and where it hangs (the level number, or the Arcade); the Pages address where it can be tried; every third-party asset with its source and licence; the name to put on the hall's Credits tab; and the line <i>"I agree to the contributor terms in LICENSE.md"</i>. No GitHub account at all? The desk in the hall's ADD YOUR LEVEL room has a form — send a link to the files from there.</p>
+<p>What happens next: Lightsmith Forge looks at every submission, may ask for changes on the pull request, and merges the good ones. A merged level or game goes live at lightsmithforge.linkpc.net/hub/ and in this copy — and so on itch.io and Game Jolt, which show this copy. The credit goes on the hall's Credits tab.</p>
+<h2 id="the-rules-short">The rules, short</h2>
+<ul><li>Change only the COMMUNITY block of <code>index.html</code> and your own <code>community/&lt;slug&gt;/</code> folder.</li><li>Your own work, or assets whose licence allows it (CC0; CC BY with the credit; bought assets only where their licence allows redistribution) — list every one.</li><li>Nothing that phones home: no trackers, no ads, no logins, no hidden network calls.</li><li>Keep the hall fast: no THREE lights, small files, few draw calls.</li><li>Leave the licence notice and the credits as they are.</li></ul>
+<h2 id="terms">Terms</h2>
+<p>The hall is © Lightsmith Forge — source-available, all rights reserved (<code>LICENSE.md</code>). Copying and changing it is allowed for one purpose: building a level or a game to submit here, the way this page describes — including running your copy and publishing it from your fork while you build, and using a coding assistant on it. By submitting you confirm that the work is yours, or that every part of it carries a licence that allows it, and you grant Lightsmith Forge a perpetual, worldwide, royalty-free, non-exclusive licence to use, adapt, show and distribute it as part of The Arrivals Hall on every copy of the hall. You keep the copyright of your own work and stay free to use it elsewhere. Lightsmith Forge decides what is hung, and may edit or take down a contribution. The full wording is in <code>LICENSE.md</code>, section <i>Contributing a level or a game</i>.</p>
+<footer>© 2026 <a href="https://lightsmithforge.linkpc.net">Lightsmith Forge</a> · The Arrivals Hall is source-available, all rights reserved; contributing is covered in <a href="https://github.com/code-4you/arrivals-hall/blob/main/LICENSE.md">LICENSE.md</a>.</footer>
+</main>
+<script>
+// a copy button on every code block — for people; assistants read the text
+document.querySelectorAll('pre').forEach(pre=>{
+  const b=document.createElement('button'); b.className='copy'; b.textContent='copy';
+  b.onclick=()=>{ navigator.clipboard.writeText(pre.querySelector('code').textContent).then(()=>{ b.textContent='copied'; setTimeout(()=>b.textContent='copy',1400); }); };
+  pre.appendChild(b);
+});
+</script>
+</body>
+</html>

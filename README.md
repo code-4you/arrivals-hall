@@ -40,6 +40,14 @@ The ideas wall, play counts, save keys, and the Elara chat talk to a small PHP +
 backend on lightsmithforge.linkpc.net (`account/api.php`, `account/gemini.php`, CORS `*`);
 without it the page still runs and falls back to local storage and browser voices.
 
+## Add your level or your game
+
+The six floors above the hall and the Arcade's posters are for visitors' work. Ask Claude Code, ChatGPT Desktop
+or any coding assistant to do it from this repository — paste it **https://code-4you.github.io/arrivals-hall/contribute.html**
+and it will know what to do: get the code, run it, add your level or game, show it live on your own GitHub Pages, and
+open a pull request. The same text is in [CONTRIBUTING.md](CONTRIBUTING.md); what the licence allows for this is in
+[LICENSE.md](LICENSE.md), section *Contributing a level or a game*.
+
 ## Built with
 
 - [Three.js](https://threejs.org/) r128 (loaded from CDN)
@@ -61,5 +69,6 @@ without it the page still runs and falls back to local storage and browser voice
 ## License
 
 © Lightsmith Forge — **source-available, not open source**: free to play and read,
-but no copying, re-hosting, or selling without permission. See [LICENSE.md](LICENSE.md).
+but no copying, re-hosting, or selling without permission — except what it allows for contributing a level
+or a game (see above). See [LICENSE.md](LICENSE.md).
 Third-party assets keep their own licenses (details there).

@@ -955,7 +955,7 @@ const ROOMS=[
   {id:'crypt',   name:'GARRISON', sub:'FOUNTAIN KEEPER', type:'game',     cx:43, cz:16, w:12,d:10,dir:'W'},
   // north galleria, openings face south (+z) — Makers' Row, clear of the corners
   {id:'lab',     name:'LAB',      sub:'TWENTY SPACES',   type:'community',cx:-28,cz:-41,w:12,d:10,dir:'S', backOpen:4.4, backOpenAt:0},   // back-wall doorway → the Annexe (buildAnnexe)
-  {id:'submit',  name:'COMPLETION',sub:'ADD YOUR GAME',  type:'community',cx:-14,cz:-41,w:12,d:10,dir:'S'},
+  {id:'submit',  name:'ADD YOUR LEVEL',sub:'OR YOUR GAME',  type:'community',cx:-14,cz:-41,w:12,d:10,dir:'S'},
   {id:'fame',    name:'IDEAS',    sub:'WRITE ON THE WALL',type:'community',cx:0,  cz:-41,w:12,d:10,dir:'S'},
   {id:'arcade',  name:'ARCADE',   sub:'COMMUNITY MAPS',  type:'community',cx:14, cz:-41,w:12,d:10,dir:'S'},
   {id:'lounge',  name:'LOUNGE',   sub:'THE RETREAT',     type:'community',cx:28, cz:-41,w:12,d:10,dir:'S', backOpen:3.6, backOpenAt:-3},   // back-wall doorway → the bent corridor → gym · pool · dance (buildLounge)
@@ -1129,6 +1129,8 @@ function buildHall(now){
   q.push(()=>{buildTheater();});                             // Theater — Quick Stories listening room
   q.push(()=>{buildSubmitDesk();});                          // Completion — how to add your game
   q.push(()=>{buildLeadersBoard();});                        // Leaders board — play counts, side wall of Completion
+  q.push(()=>{buildContributeBoard();});                     // Made with Claude Code / ChatGPT — west wall of the submit room (the how-to page)
+  q.push(()=>{buildArcade();});                              // Arcade — a poster per COMMUNITY_GAMES entry (none yet: the room stays as it is)
   q.push(()=>{buildIdeasWall();});                           // Ideas — write on the wall (old Fame Wall room)
   q.push(()=>{buildWishBoard();});                           // Things people asked — side wall of the Ideas room
   q.push(()=>{
@@ -2358,6 +2360,12 @@ function buildLevel(i){
     const sign=new THREE.Mesh(new THREE.PlaneGeometry(3,0.6),new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.7,roughness:0.5}));
     sign.position.set(ELEV.car.x+ELEV.car.w/2+0.02,Y+3.75,ELEV.car.z); sign.rotation.y=Math.PI/2; worldGroup.add(sign);   // over the car, above the entrance frame
     buildCar(i+1,Y);
+    const own=LEVEL_CONTENT[i+1];                                          // a visitor's level — see the COMMUNITY block near the end
+    if(own){ const nb=BUILDINGS.length, nh=HOTS.length;
+      try{ own(Y,zn,B); }catch(e){ console.error('LEVEL_CONTENT['+(i+1)+'] failed',e); }
+      for(let k=nb;k<BUILDINGS.length;k++){ const b=BUILDINGS[k]; if(b.y0===undefined)b.y0=Y-0.4; if(b.h===undefined)b.h=Y+H; }   // its colliders belong to this floor: the hall underneath never minds them
+      for(let k=nh;k<HOTS.length;k++){ if(HOTS[k].y===undefined)HOTS[k].y=Y; }                                                    // and its E prompts only show up here
+    }
   });
 }
 function elevPress(btn){
@@ -3461,6 +3469,82 @@ function buildSubmitDesk(){
   hotspot(R.cx,-42.5,3.0,'Submit your game',()=>openSubmitModal());
 }
 
+/* ---------- MADE WITH CLAUDE CODE / CHATGPT — west wall of the submit room. The hall is on GitHub; an assistant
+   can add a level or a game from that copy and submit it. E opens the how-to page (and copies its link). ---------- */
+const CONTRIBUTE_URL='https://code-4you.github.io/arrivals-hall/contribute.html';
+function buildContributeBoard(){
+  const R=ROOMS.find(r=>r.id==='submit');
+  const cnv=document.createElement('canvas');cnv.width=1140;cnv.height=840;const ctx=cnv.getContext('2d');   // 1.5x for crisp small text
+  ctx.setTransform(1.5,0,0,1.5,0,0);
+  ctx.fillStyle='#0a1626';ctx.fillRect(0,0,760,560);
+  ctx.strokeStyle='#ffd27f';ctx.lineWidth=5;roundRect(ctx,10,10,740,540,14);ctx.stroke();
+  ctx.textAlign='center';ctx.fillStyle='#ffd27f';ctx.font='bold 46px Segoe UI';ctx.fillText('MADE WITH CLAUDE CODE',380,68);
+  ctx.font='bold 27px Segoe UI';ctx.fillText('or ChatGPT Desktop — from the GitHub copy of this hall',380,108);
+  ctx.fillStyle='#8497ac';ctx.font='italic 18px Segoe UI';ctx.fillText('the whole building is on GitHub, kept in sync with this one',380,140);
+  ctx.strokeStyle='rgba(255,210,127,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(40,160);ctx.lineTo(720,160);ctx.stroke();
+  ctx.textAlign='left';
+  const step=(n,y,head,body)=>{
+    ctx.fillStyle='#ffd27f';ctx.font='bold 30px Segoe UI';ctx.fillText(n,48,y);
+    ctx.fillStyle='#dfe9f5';ctx.font='bold 23px Segoe UI';ctx.fillText(head,92,y);
+    ctx.fillStyle='#9fb4cc';ctx.font='19px Segoe UI';ctx.fillText(body,92,y+30);
+  };
+  step('1',206,'Ask Claude Code or ChatGPT Desktop','to add your level or your game — or to change something');
+  step('2',290,'View it live','on your own copy, and show it to your friends');
+  step('3',374,'Submit it','everything sent gets looked at — good ones get hung in here');
+  ctx.textAlign='center';ctx.fillStyle='#dfe9f5';ctx.font='bold 22px Segoe UI';
+  ctx.fillText('Share this page with them — they will know what to do:',380,440);
+  ctx.fillStyle='#7fe6ff';ctx.font='bold 24px Consolas';ctx.fillText('code-4you.github.io/arrivals-hall/contribute.html',380,478);
+  ctx.fillStyle='#b6ff9c';ctx.font='bold 22px Segoe UI';ctx.fillText('▶ Press E — open the page and copy the link',380,526);
+  const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
+  const panel=new THREE.Mesh(new THREE.PlaneGeometry(7.0,7.0*560/760),
+    new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
+  panel.position.set(R.cx-R.w/2+0.75,2.9,R.cz);panel.rotation.y=Math.PI/2;   // west side wall, facing into the room
+  worldGroup.add(panel);
+  const h=hotspot(R.cx-R.w/2+2.5,R.cz,2.2,'Build it with Claude Code or ChatGPT — open the how-to page',()=>{
+    try{ if(navigator.clipboard)navigator.clipboard.writeText(CONTRIBUTE_URL).catch(()=>{}); }catch(e){}   // a copy is a courtesy: never an error
+    banner('LINK COPIED — PASTE IT TO CLAUDE CODE OR CHATGPT DESKTOP');
+    const w=window.open(CONTRIBUTE_URL,'_blank','noopener');
+    if(!w)location.href=CONTRIBUTE_URL;                                   // a pop-up blocker: go there in this tab instead
+  });
+  h.clickable=true;   // a plain mouse click at the wall works too, not just E
+}
+
+/* ---------- ARCADE — community games: one poster with an E prompt per COMMUNITY_GAMES entry (see the
+   COMMUNITY block near the end). Seven slots: three on the back wall, two on each side wall. ---------- */
+function cgName(k){ const g=COMMUNITY_GAMES.find(g=>'c-'+g.slug===k); return g?g.name:null; }
+function buildArcade(){
+  if(!COMMUNITY_GAMES.length)return;
+  const R=ROOMS.find(r=>r.id==='arcade');
+  const ph=HOTS.findIndex(h=>h.label===R.name+' — opening soon'); if(ph>=0)HOTS.splice(ph,1);   // the room is fitted out now: its placeholder prompt goes
+  const slots=[];
+  for(const dx of [-3.6,0,3.6])slots.push({x:R.cx+dx,z:R.cz-R.d/2+0.75,ry:0,hx:0,hz:1.8});           // back wall
+  for(const dz of [-2.3,2.3])slots.push({x:R.cx-R.w/2+0.75,z:R.cz+dz,ry:Math.PI/2,hx:1.8,hz:0});      // west wall
+  for(const dz of [-2.3,2.3])slots.push({x:R.cx+R.w/2-0.75,z:R.cz+dz,ry:-Math.PI/2,hx:-1.8,hz:0});    // east wall
+  COMMUNITY_GAMES.slice(0,slots.length).forEach((g,i)=>{
+    const sl=slots[i], name=String(g.name||g.slug), by=String(g.by||'a visitor');
+    const cnv=document.createElement('canvas');cnv.width=760;cnv.height=560;const ctx=cnv.getContext('2d');
+    ctx.fillStyle='#0a1626';ctx.fillRect(0,0,760,560);
+    ctx.strokeStyle='#7fe6ff';ctx.lineWidth=5;roundRect(ctx,10,10,740,540,14);ctx.stroke();
+    ctx.textAlign='center';ctx.fillStyle='#7fe6ff';
+    let px=50;ctx.font='bold '+px+'px Segoe UI';
+    while(px>22&&ctx.measureText(name.toUpperCase()).width>680){px-=2;ctx.font='bold '+px+'px Segoe UI';}
+    ctx.fillText(name.toUpperCase(),380,118);
+    ctx.fillStyle='#9fb4cc';ctx.font='22px Segoe UI';ctx.fillText('by '+by,380,166);
+    ctx.fillStyle='#dfe9f5';ctx.font='24px Segoe UI';
+    const words=String(g.blurb||'').split(' ');let line='',y=246,lines=0;   // the blurb, wrapped to four lines
+    for(const w of words){const t=line?line+' '+w:w;
+      if(ctx.measureText(t).width>660&&line){ctx.fillText(line,380,y);y+=34;line=w;if(++lines>=3)break;}else line=t;}
+    if(line&&lines<4)ctx.fillText(line,380,y);
+    ctx.fillStyle='#b6ff9c';ctx.font='bold 24px Segoe UI';ctx.fillText('▶ Press E — play',380,500);
+    const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
+    const panel=new THREE.Mesh(new THREE.PlaneGeometry(3.2,3.2*560/760),
+      new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
+    panel.position.set(sl.x,2.6,sl.z);panel.rotation.y=sl.ry;worldGroup.add(panel);
+    const h=hotspot(sl.x+sl.hx,sl.z+sl.hz,1.9,'Play '+name+' — by '+by,()=>{ trackPlay('c-'+g.slug); location.href=g.url; });
+    h.clickable=true;
+  });
+}
+
 /* ---------- LEADERS BOARD — every door opening is counted (side wall of Completion) ---------- */
 const GAME_NAMES={chronos:'The Chronos Paradox',rally:'Trigger Rally',hexgl:'Velocity · HexGL',
   riftkeeper:'Rift Keeper',fountainkeeper:'Fountain Keeper',blindspots:'Blindspots',hallwyl:'The Hallwyl',stories:'Quick Stories'};
@@ -3484,7 +3568,7 @@ function buildLeadersBoard(){
       ctx.fillText('No doors opened yet — go play something.',380,260);}
     for(const e of entries){
       ctx.textAlign='left';ctx.fillStyle='#dfe9f5';ctx.font='bold 22px Segoe UI';
-      ctx.fillText(GAME_NAMES[e.k]||e.k,48,y);
+      ctx.fillText(GAME_NAMES[e.k]||cgName(e.k)||e.k,48,y);
       ctx.fillStyle='rgba(95,224,200,.25)';ctx.fillRect(48,y+10,620*(e.n/max),16);
       ctx.fillStyle='#5fe0c8';ctx.fillRect(48,y+10,Math.max(6,620*(e.n/max))*0.995,3);
       ctx.textAlign='right';ctx.fillStyle='#5fe0c8';ctx.font='bold 22px Segoe UI';
@@ -7111,6 +7195,30 @@ document.getElementById('smMailFallback').onclick=()=>{
     +'&body='+encodeURIComponent('From: '+name+'\nGame: '+game+'\nLink: '+link+'\n\n'+msg+'\n');
 };
 document.getElementById('smClose').onclick=()=>{document.getElementById('submitModal').style.display='none';lockPointer();};
+
+/* ============================================================
+   COMMUNITY — levels and games added by visitors. The how-to (for people and for coding assistants):
+   https://code-4you.github.io/arrivals-hall/contribute.html  (CONTRIBUTING.md in the repository is the same text)
+
+   A LEVEL is one of the six floors above the hall (elevator buttons 1–6, LEVEL_Y). Put a builder in
+   LEVEL_CONTENT under the level's number; it runs once, when the hall is built, inside that level's zone
+   (so what it adds is drawn only up there). It receives:
+     Y   the floor height — feet stand at y=Y; the ceiling is 4.2 above it
+     zn  the level's zone number — call zoneTag(obj,zn) on anything added LATER (a loaded model), or it draws everywhere
+     B   the floor's extents {x0,x1,z0,z1} (x -44..44, z -44..46); the elevator car stands at x -10.4, z 43.3 — keep it clear
+   Helpers: box(x,Y,z,w,h,d,material,true) — a solid block, its collider fixed to this floor for you;
+            emissiveStrip(x,y,z,w,h,d,color,intensity) — a glowing strip; hotspot(x,z,radius,label,fn) — an E prompt;
+            new THREE.GLTFLoader().load(url,g=>{ zoneTag(g.scene,zn); worldGroup.add(g.scene); }) — a model.
+   Never add a THREE light: one more light recompiles every shader in the hall. Use emissive materials.
+
+   A GAME is a folder community/<slug>/ with an index.html, plus one entry in COMMUNITY_GAMES. The ARCADE room
+   hangs a poster with an E prompt for each entry (buildArcade — seven slots), and counts its plays.
+   ============================================================ */
+const LEVEL_CONTENT={};     // e.g.  LEVEL_CONTENT[3]=function(Y,zn,B){ box(0,Y,0,2,1,2,new THREE.MeshStandardMaterial({color:0x8fd8c8}),true); };
+const COMMUNITY_GAMES=[];   // e.g.  COMMUNITY_GAMES.push({slug:'my-game',name:'My Game',by:'your name',blurb:'one line about it',url:'community/my-game/index.html'});
+// ---- add yours below this line: one block per contributor, your name in a comment, nothing above it changed ----
+
+// ---- end of the community additions ----
 
 buildWorld();
 if(zoneAt(SPAWN.x,SPAWN.z)!=='garden')buildHall(true);   // starting inside (resume, back from a game, the fountain link): the hall at once
