@@ -52,7 +52,7 @@ LEVEL_CONTENT[2]=function(Y,zn,B){
   const teal=new THREE.MeshStandardMaterial({color:0x5fe0c8,roughness:0.6});
   box(0,Y,0,3,1,3,teal,true);                                    // a solid block at x 0, z 0: 3 wide, 1 high, 3 deep — you can stand on it
   emissiveStrip(0,Y+3.9,10,6,0.1,0.3,0xffd27f,1.0);             // a glowing strip under the ceiling
-  hotspot(0,3,2.2,'Read the plaque',()=>banner('WELCOME TO THE SKY GARDEN'));   // an E prompt at x 0, z 3
+  hotspot(0,3,0,'Read the plaque',()=>banner('WELCOME TO THE SKY GARDEN'));     // an E prompt at x 0, z 3 (look at it, within 15 m)
   new THREE.GLTFLoader().load('community/sky-garden/tree.glb',g=>{         // a model of your own
     g.scene.position.set(6,Y,-6); zoneTag(g.scene,zn); worldGroup.add(g.scene);
   });
@@ -69,7 +69,7 @@ Helpers, all defined in `index.html`:
 
 - `box(x, Y, z, width, height, depth, material, true)` — a solid block; `true` gives it collision, fixed to your floor automatically. Pass `false` for decoration.
 - `emissiveStrip(x, y, z, width, height, depth, colour, intensity)` — a glowing box, the hall's light strips.
-- `hotspot(x, z, radius, label, fn)` — an E prompt at a spot, shown only on your floor. `banner('TEXT')` puts a line on screen.
+- `hotspot(x, z, 0, label, fn)` — an E prompt at a spot, shown only on your floor, when the visitor is within 15 m of it, looking at it, with no wall in between (the third argument is unused). For a big object set `.rad` (metres) and `.ay` (its height) on what it returns. `banner('TEXT')` puts a line on screen.
 - `new THREE.GLTFLoader()` for `.glb` models; `THREE.CanvasTexture` for signs drawn on a canvas — `buildSubmitDesk` in the file is the pattern.
 - Materials: `THREE.MeshStandardMaterial`. **Never add a THREE light** (PointLight, SpotLight …): one more light recompiles every shader in the hall and stalls it. Use emissive materials.
 
@@ -107,7 +107,7 @@ Ask the user first. Then open a pull request from the fork to `code-4you/arrival
 - On GitHub: the fork's page shows *Contribute → Open pull request*.
 - CLI: `gh pr create --repo code-4you/arrivals-hall --title "Add level 2: Sky garden" --body-file pr.md`
 
-The description should say: what it is and where it hangs (the level number, or the Arcade); the Pages address where it can be tried; every third-party asset with its source and licence; the name to put on the hall's Credits tab; and the line *"I agree to the contributor terms in LICENSE.md"*. No GitHub account at all? The desk in the hall's ADD YOUR LEVEL room has a form — send a link to the files from there.
+The description should say: what it is and where it hangs (the level number, or the Arcade); the Pages address where it can be tried; every third-party asset with its source and licence; the name to put on the hall's Credits tab; and the line *"I agree to the contributor terms in LICENSE.md"*. No GitHub account at all? The OR MAIL IT board in the hall's ADD YOUR LEVEL room opens a form — send a link to the files from there.
 
 What happens next: Lightsmith Forge looks at every submission, may ask for changes on the pull request, and merges the good ones. A merged level or game goes live at lightsmithforge.linkpc.net/hub/ and in this copy — and so on itch.io and Game Jolt, which show this copy. The credit goes on the hall's Credits tab.
 

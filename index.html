@@ -349,6 +349,8 @@
         Built by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a>, designed and written with Claude (<a href="https://www.anthropic.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Anthropic</a>). Environment art by Quaternius (CC0), KayKit &amp; Kenney; floor — “<a href="https://sketchfab.com/3d-models/seamless-floor-tiled-texture-ii-7bd8520796e34e0bb0c6c4c22c3f1d3d" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Seamless floor Tiled Texture II</a>” by Arthur.Zim (CC&nbsp;BY&nbsp;4.0); characters via Mixamo; built on <a href="https://threejs.org" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Three.js</a>.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">ELARA</div>
         Elara’s body — “Cat Woman” by <a href="https://sketchfab.com/patromes" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">patromes</a> on <a href="https://sketchfab.com/3d-models/cat-woman-148ebfcf617c4e43a3be1229f1fa4caa" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a>, <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">CC BY 4.0</a>; her face capture “<a href="https://sketchfab.com/3d-models/facial-animation-of-a-sexy-girl-51c1d536d7b24f8e910e81fb50198193" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Facial animation of a sexy girl</a>” and standing capture “<a href="https://sketchfab.com/3d-models/dahlia-ccc2406939704544b8c61083cce70b97" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Dahlia</a>” are by patromes too (CC BY 4.0). Her secretary clothes — shirt, pencil skirt, heels and bob — come from “Secretary” by <a href="https://sketchfab.com/patromes" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">patromes</a> as well (CC BY 4.0), hung on her own skeleton. Her long tied-back hair is from “Topless sexy girl with heels”, patromes again (CC BY 4.0). Gestures and walk — <a href="https://www.mixamo.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Mixamo</a>, retargeted onto her rig; extra idles from the “Universal Animation Library” by <a href="https://quaternius.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Quaternius</a> (CC0). The hall itself: © Lightsmith Forge, all rights reserved — see LICENSE.md.
+        <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">JACK</div>
+        Jack — “<a href="https://sketchfab.com/3d-models/agent-phil-coulson-8698b3595c714b31941d239e53d0dd0f" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Agent Phil Coulson</a>” by <a href="https://sketchfab.com/patromes" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">patromes</a> on Sketchfab, <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">CC BY 4.0</a>, in the hall and in the Lab. The pistol he and Elara draw is his too, from the same model.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">THE CITY OUTSIDE</div>
         “New York City” by <a href="https://sketchfab.com/mortalityrexotable" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">golukumar</a> on <a href="https://sketchfab.com/3d-models/new-york-city-4737b6ee73ed4634ad5b414558fdfa45" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the streets and blocks around the hall and the tower on its roof, rebuilt into one file by tools/gltf/build-city.js.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">THE ELEVATOR</div>
@@ -668,10 +670,10 @@ const EARLY_SPEC=[   // key, colour, intensity, distance, world position at rest
   ['retreatOrbit1',0xff4fd8,0.9,14, 67,4.6,-76,LS_R],['retreatOrbit2',0x5fe0ff,0.9,14, 61,4.6,-76,LS_R],['retreatGym',0xdfe8ff,0.7,18, 80,5.5,-76,LS_R],
   ['retreatPool66',0x5fe0ff,0.7,14, 66,1.6,-59,LS_R],['retreatPool78',0x5fe0ff,0.7,14, 78,1.6,-59,LS_R],
   ['delivery',0xffd27f,0.9,9, 30,4,36.3,LS_H],['nexus',0x9fd8ff,0.85,34, 58,7,-1,LS_H],['gate',0x9fd0ff,1.2,18, 62,2.6,-1,LS_H],
-  ['crypt',0x59e08a,1.1,13, 45,1.7,14,LS_H],['blindspots',0xffcf8a,0.7,11, 45,2.2,-14,LS_H],['cerebro',0x6fa8ff,0.85,12, 16,2.4,35,LS_H],
+  ['blindspots',0xffcf8a,0.7,11, 45,2.2,-14,LS_H],['cerebro',0x6fa8ff,0.85,12, 14,2.4,-43,LS_H],
   ['hallwyl',0xffc37a,0.85,12, -45,2.4,-26,LS_H],['theater',0x8fd8c8,0.5,11, -43,3.4,18,LS_H],['community',0xffd27f,0.85,9, -30,1.5,34,LS_H]];
 for(const x of [-60,-25,10])for(const z of [-56,-88,-114])EARLY_SPEC.push(['annexe'+x+','+z,0xbfd8ff,0.45,26, x,5.2,z,z===-56?LS_H|LS_A:LS_A]);   // the Annexe corridors; the row by the hall reaches into it
-for(const [x,z] of [[-68,-63],[-51,-63],[-34,-63],[-17,-63],[0,-63],[-51,-79],[-34,-79],[-17,-79],[0,-79]])EARLY_SPEC.push(['space'+x+','+z,0xffffff,0.5,9, x,3.2,z,LS_A]);   // the Annexe spaces with a character
+for(const [x,z] of [[-68,-63],[-51,-63],[-34,-63],[-17,-63],[0,-63],[-51,-79],[-34,-79],[0,-79]])EARLY_SPEC.push(['space'+x+','+z,0xffffff,0.5,9, x,3.2,z,LS_A]);   // the Annexe spaces with a character
 // the levels: exactly eight point lights each, the same number as outside, so every shader compiled for the outside
 // (the city, the garden, Elara) serves the levels unchanged — a different count would be a new shader for each
 for(let i=0;i<LEVEL_Y.length;i++){ const Y=LEVEL_Y[i], set=[LSET.l1,LSET.l2,LSET.l3,LSET.l4,LSET.l5,LSET.l6][i];
@@ -746,7 +748,8 @@ const ZONE_L={hall:LSET.hall,garden:LSET.out,city:LSET.out,annexe:LSET.annexe,re
 const LVL_OBJ={l1:2048,l2:4096,l3:8192,l4:1<<17,l5:1<<18,l6:1<<19};   // and the layer each level's own pieces are on
 function zoneUpdate(){
   const zn=zoneAt(player.pos.x,player.pos.z,player.y);
-  if(zn!==ZONE.now){ ZONE.now=zn; zoneSweep(); }
+  if(zn!==ZONE.now){ const was=ZONE.now; ZONE.now=zn; zoneSweep();
+    if(zn==='city'&&was==='garden'&&gateDone&&!tour.active)say('elara',"There's nothing out here. Go back to the hall."); }   // out through the garden gate: Elara turns you round (2026-09-17)
   if(LVL_OBJ[zn]){ camera.layers.mask=16|4|8|LVL_OBJ[zn]|ZONE_L[zn]; return; }   // a level: itself, the always-drawn, and the city through its windows
   const out=(zn==='garden'||zn==='city');
   let mask=out?(16|4|8):1;                       // outside, everything of the city is drawn — the trees show through the fence
@@ -917,6 +920,11 @@ function addHoloSign(name,sub,x,y,z,rotY,col,billboard){
 const FLOOR_NAMES_VISIBLE=false;   // room names painted on the floor: built as before, just hidden (the signs above the rooms stay)
 const THRESHOLD_LINES_VISIBLE=false;   // the glowing line on the floor across each room's opening: built, hidden
 function addFloorText(str,x,z,vx,vz,size,color){
+  const g=new THREE.Group();                     // handed back at once — the text lands in it when the font has loaded (the hidden-room switch holds the group)
+  g.rotation.y=Math.atan2(-vx,-vz);
+  g.position.set(x,0,z);
+  g.name='floorText';g.visible=FLOOR_NAMES_VISIBLE;
+  worldGroup.add(g);
   withFont(()=>{
     const geo=new THREE.TextGeometry(str,{font:FONT,size,height:0.02,curveSegments:4});
     geo.computeBoundingBox();
@@ -924,19 +932,51 @@ function addFloorText(str,x,z,vx,vz,size,color){
     geo.translate(-w/2-geo.boundingBox.min.x,0,0);
     const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({
       color,emissive:color,emissiveIntensity:0.7,roughness:0.35,metalness:0.2}));
-    const g=new THREE.Group();
     m.rotation.x=-Math.PI/2;m.position.y=0.06;
     g.add(m);
-    g.rotation.y=Math.atan2(-vx,-vz);
-    g.position.set(x,0,z);
-    g.name='floorText';g.visible=FLOOR_NAMES_VISIBLE;
-    worldGroup.add(g);
   });
+  return g;
 }
 
 // ---------- interactables ----------
-const HOTS=[];   // {x,z,r,label,fn}
-function hotspot(x,z,r,label,fn){const h={x,z,r,label,fn};HOTS.push(h);return h;}
+const HOTS=[];   // {x,z,r,label,fn, ax,ay,az,rad,reach}
+// An E prompt. Since 2026-09-17 it shows when you are within HOT_REACH of the object, the crosshair is on it and no wall is in the way:
+// a sphere of radius rad (default HOT_RAD) round the aim point — the spot itself, HOT_AY up, unless aim says
+// where the object really is ({x,y,z} — y above the spot's floor — plus rad, and reach for a longer arm).
+// A person is a capsule instead: aim.cap = its height, rad its half-width — the crosshair has to be ON the body.
+// r is kept only as a switch: r<0 turns the spot off (Elara on a date, the hall door once it opens on approach).
+const HOT_REACH=15, HOT_RAD=0.9, HOT_AY=1.2;   // 15 m: the user's number (2026-09-17)
+function hotspot(x,z,r,label,fn,aim){const h={x,z,r,label,fn};
+  if(aim){ if(aim.x!==undefined)h.ax=aim.x; if(aim.z!==undefined)h.az=aim.z; if(aim.y!==undefined)h.ay=aim.y; if(aim.rad!==undefined)h.rad=aim.rad; if(aim.reach!==undefined)h.reach=aim.reach; if(aim.cap!==undefined)h.cap=aim.cap; }
+  HOTS.push(h);return h;}
+// The closest approach of the view ray (eye + t·f, t ≥ 0) to a vertical segment from (ax,y0,az) up by H — a body.
+// Returns t (how far along the view) and the squared distance between the two.
+function rayToBody(ex,ey,ez,fx,fy,fz,ax,y0,az,H){
+  const wx=ex-ax, wy=ey-y0, wz=ez-az;
+  const b=fy*H, c=H*H, d0=fx*wx+fy*wy+fz*wz, e=wy*H, den=c-b*b;
+  let u=den>1e-6?(e-d0*b)/den:0; if(u<0)u=0; else if(u>1)u=1;
+  let t=u*b-d0; if(t<0){ t=0; u=e/c; if(u<0)u=0; else if(u>1)u=1; }
+  const qx=wx+t*fx, qy=wy+t*fy-u*H, qz=wz+t*fz;
+  return {t, d2:qx*qx+qy*qy+qz*qz};
+}
+// Is a wall between the eye and the aim point? A 2D test along this floor against the colliders that stand eye-high
+// (walls, piers, the level walls) — never the object's own collider, an open door, a round thing, or the box you stand in.
+function hotBlocked(ex,ey,ez,ax,az){
+  const dx=ax-ex, dz=az-ez;
+  for(const b of BUILDINGS){
+    if(b.off||b.rad)continue;
+    const bot=b.y0||0, top=b.h!==undefined?b.h:(b.y0!==undefined?Infinity:GROUND_TOP);
+    if(ey<bot||ey>top)continue;                                              // not at eye height on this floor
+    if(Math.abs(ax-b.x)<=b.hw&&Math.abs(az-b.z)<=b.hd)continue;             // the object's own collider
+    if(Math.abs(ex-b.x)<=b.hw&&Math.abs(ez-b.z)<=b.hd)continue;             // you are inside it (a doorway)
+    let t0=0,t1=1;                                                           // the segment against the box: slab test
+    const x0=b.x-b.hw,x1=b.x+b.hw,z0=b.z-b.hd,z1=b.z+b.hd;
+    if(dx===0){ if(ex<x0||ex>x1)continue; } else { let a=(x0-ex)/dx,c=(x1-ex)/dx; if(a>c){const t=a;a=c;c=t;} if(a>t0)t0=a; if(c<t1)t1=c; if(t0>t1)continue; }
+    if(dz===0){ if(ez<z0||ez>z1)continue; } else { let a=(z0-ez)/dz,c=(z1-ez)/dz; if(a>c){const t=a;a=c;c=t;} if(a>t0)t0=a; if(c<t1)t1=c; if(t0>t1)continue; }
+    return true;
+  }
+  return false;
+}
 
 /* ============================================================
    ROOM DIRECTORY — one entry per storefront (see PLAN.md)
@@ -948,26 +988,68 @@ const ROOMS=[
   {id:'hallwyl', name:'THE HALLWYL',sub:'DECEMBER 1899', type:'game', col:0xffd27f, cx:-43,cz:-26,w:12,d:10,dir:'E'},
   {id:'velocity',name:'VELOCITY', sub:'HEXGL RACING',    type:'game',     cx:-43,cz:-11,w:12,d:10,dir:'E'},
   {id:'rally',   name:'RALLY',    sub:'TRIGGER RALLY',   type:'game',     cx:-43,cz:4,  w:12,d:10,dir:'E'},
-  {id:'theater', name:'THEATER',  sub:'QUICK STORIES',   type:'community',cx:-43,cz:18, w:12,d:10,dir:'E'},
+  {id:'fps',     name:'FPS HALL', sub:'ALL-TIME BEST',   type:'game',     cx:-43,cz:18, w:12,d:10,dir:'E'},   // swapped with the Theater 2026-09-17: both hidden (HIDDEN_ROOMS)
   // east wall, openings face west (-x) — Chronos Court in the middle
-  {id:'fps',     name:'FPS HALL', sub:'ALL-TIME BEST',   type:'game',     cx:43, cz:-28,w:12,d:10,dir:'W'},
+  {id:'crypt',   name:'GARRISON', sub:'FOUNTAIN KEEPER', type:'game',     cx:43, cz:-28,w:12,d:10,dir:'W'},   // empty, hidden; swapped with the Theater 2026-09-17
   {id:'blindspots',name:'BLINDSPOTS',sub:'LESSONS',    type:'game',    cx:43, cz:-14,w:12,d:10,dir:'W'},
   // NEXUS (cz:-1) is built separately by buildNexus() — an expanded wing with the temporal gate
-  {id:'crypt',   name:'GARRISON', sub:'FOUNTAIN KEEPER', type:'game',     cx:43, cz:16, w:12,d:10,dir:'W'},
+  {id:'theater', name:'THEATER',  sub:'QUICK STORIES',   type:'community',cx:43, cz:16, w:12,d:10,dir:'W'},   // the old Garrison room (2026-09-17); walled over until the stranger opens it — buildTheaterScene
   // north galleria, openings face south (+z) — Makers' Row, clear of the corners
   {id:'lab',     name:'LAB',      sub:'TWENTY SPACES',   type:'community',cx:-28,cz:-41,w:12,d:10,dir:'S', backOpen:4.4, backOpenAt:0},   // back-wall doorway → the Annexe (buildAnnexe)
   {id:'submit',  name:'ADD YOUR LEVEL',sub:'OR YOUR GAME',  type:'community',cx:-14,cz:-41,w:12,d:10,dir:'S'},
   {id:'fame',    name:'IDEAS',    sub:'WRITE ON THE WALL',type:'community',cx:0,  cz:-41,w:12,d:10,dir:'S'},
-  {id:'arcade',  name:'ARCADE',   sub:'COMMUNITY MAPS',  type:'community',cx:14, cz:-41,w:12,d:10,dir:'S'},
+  {id:'cerebro', name:'CEREBRO',  sub:'VOICES THIS WEEK',type:'game',     cx:14, cz:-41,w:12,d:10,dir:'S'},   // the old Arcade room (2026-09-17); was east of the foyer
   {id:'lounge',  name:'LOUNGE',   sub:'THE RETREAT',     type:'community',cx:28, cz:-41,w:12,d:10,dir:'S', backOpen:3.6, backOpenAt:-3},   // back-wall doorway → the bent corridor → gym · pool · dance (buildLounge)
   // south wall, openings face north (-z) — two each side of the foyer, all on the
   // visible wall (x -38..38); the old corner spots hid garden/vault behind the wings
   {id:'garden',  name:'GARDEN',   sub:'THE COMMUNITY',   type:'community',cx:-30,cz:33,w:12,d:10,dir:'N'},
   {id:'credits', name:'UNDER',    sub:'CONSTRUCTION',    type:'studio',   cx:-16,cz:33,w:12,d:10,dir:'N'},   // west of the foyer: the elevator takes this space next (2026-09-16)
-  {id:'cerebro', name:'CEREBRO',  sub:'VOICES THIS WEEK',type:'game',     cx:16, cz:33,w:12,d:10,dir:'N'},   // east of the foyer (moved from x -16 for the elevator)
+  {id:'arcade',  name:'ARCADE',   sub:'COMMUNITY MAPS',  type:'community',cx:16, cz:33,w:12,d:10,dir:'N'},   // Cerebro's old room east of the foyer (2026-09-17); hidden while COMMUNITY_GAMES is empty
   {id:'vault',   name:'UNDER',    sub:'CONSTRUCTION',    type:'community',cx:30, cz:33,w:12,d:10,dir:'N'},
 ];
 const DIRV={E:[1,0],W:[-1,0],S:[0,1],N:[0,-1]};
+// HIDDEN ROOMS (2026-09-17): a listed room is walled over — a plain stretch of wall where its opening was, no sign, no
+// prompt, not on the map; whatever it holds stays built behind the wall (a kiosk's E prompt is blocked by it). The developer
+// page's HIDDEN ROOMS section opens one again (atd:dev:room:<id>, this machine only; Reset walls them all over). The
+// Arcade counts as hidden until a COMMUNITY_GAMES entry gives it a poster.
+const HIDDEN_ROOMS=['fps','crypt','credits','rally','velocity','theater','blindspots','vault','hallwyl','lounge'];   // the empty ones — FPS HALL, the Garrison (emptied: Fountain Keeper starts from Jack), UNDER CONSTRUCTION west of the foyer — the two racing rooms, Blindspots and the Hallwyl, hidden on request, and the Theater and the delivery room (vault) until the stranger opens the Theater (theaterOpened) — and the Lounge (the way to the Retreat) with them
+function roomHidden(R){ return HIDDEN_ROOMS.indexOf(R.id)>=0||(R.id==='arcade'&&!COMMUNITY_GAMES.length); }
+function roomShown(R){ return !roomHidden(R)||devFlag('room:'+R.id,false)||((R.id==='theater'||R.id==='vault'||R.id==='lounge')&&theaterOpened()); }
+function roomApply(R){                            // show the room, or wall it over, as the developer page has it
+  if(!R.fill)return;                              // not a hidden room, or not built yet
+  const on=roomShown(R);
+  for(const m of R.parts)m.visible=on&&!(m.name==='holoSign'&&(R.id==='theater'||R.id==='vault'));   // the Theater and the delivery room open without the sign over them (2026-09-17)
+  R.tl.visible=THRESHOLD_LINES_VISIBLE&&on; R.ft.visible=FLOOR_NAMES_VISIBLE&&on;   // the two that are hidden anyway
+  R.fill.mesh.visible=!on; R.fill.col.off=on;
+  if(R.hot)R.hot.r=on?R.hot.r0:-1;                // its "opening soon" prompt
+}
+// The slots between the rooms along the hall walls — between a room's side wall and the next wall (a neighbour's side
+// wall, a corner infill, the foyer, the Nexus) — are closed, floor to the facade band, one piece per slot, flush with the
+// piers (2026-09-17). Runs after the whole shell is built, so every wall is there to measure to. Only slots under 8 m.
+function buildRoomGaps(){
+  const T=0.6,H=6;
+  for(const R of ROOMS){
+    const [fx,fz]=DIRV[R.dir], rx=-fz, rz=fx, hd=R.d/2, hw=R.w/2;
+    const sc=rx*R.cx+rz*R.cz, pl=fx*R.cx+fz*R.cz+hd;          // the room's centre along the wall, and the opening plane
+    const sr=b=>rx?[rx*b.x-b.hw,rx*b.x+b.hw]:[rz*b.z-b.hd,rz*b.z+b.hd], fr=b=>fx?[fx*b.x-b.hw,fx*b.x+b.hw]:[fz*b.z-b.hd,fz*b.z+b.hd];
+    for(const sg of [1,-1]){
+      const from=hw; let edge=Infinity, at=null;              // from the pier's outer edge (over the dark end of the side wall)
+      for(const b of BUILDINGS){ if(b.rad||b.y0!==undefined||(b.h!==undefined&&b.h<5))continue;   // tall, ground-floor pieces only
+        const fq=fr(b); if(fq[1]<pl-0.6||fq[0]>pl+0.6)continue;                                  // touching the opening plane
+        const sq=sr(b), a0=sg>0?sq[0]-sc:sc-sq[1], a1=sg>0?sq[1]-sc:sc-sq[0];                     // its near and far edge, outward from the room
+        if(a1<=from+T/2+0.01)continue;                                                            // the room's own walls, or the other side
+        if(a0<edge){edge=a0;at=b;}
+      }
+      if(!at)continue;                                                                           // nothing there
+      const fq=fr(at); if(at.gapCover&&fq[1]-fq[0]<=T+0.01)continue;                            // a cover in this wall: the neighbour closed the slot already (one across the corner is just a wall to measure to)
+      const sq=sr(at), end=edge+((sq[1]-sq[0]<=T+0.01)?T/2:0);   // a neighbour's side wall: reach over its dark end to the pier behind it
+      const gap=end-from; if(!(gap>0.05&&gap<8))continue;
+      const side=sg*(from+gap/2);
+      box(R.cx+fx*hd+rx*side,0,R.cz+fz*hd+rz*side,Math.abs(rx)*gap+Math.abs(fx)*T,H,Math.abs(rz)*gap+Math.abs(fz)*T,wallMatHi,true);
+      BUILDINGS[BUILDINGS.length-1].gapCover=true;
+    }
+  }
+}
 
 // build one storefront: back + side walls, piers, header, ceiling, signage, hotspot
 function buildRoom(R){
@@ -977,13 +1059,14 @@ function buildRoom(R){
   const hd=R.d/2,hw=R.w/2,H=6,T=0.6,OPEN=8;
   const col=R.col||TYPE_COLOR[R.type];   // per-room colour override (e.g. Hallwyl's warm 1899 amber)
   const P=(fwd,side)=>({x:R.cx+fx*fwd+rx*side,z:R.cz+fz*fwd+rz*side});
+  const n0=worldGroup.children.length;   // everything built from here is the room: kept for the hidden-room switch (roomApply)
   const wall=(fwd,side,alongF,alongS,y0,h,mat,collide)=>{
     const p=P(fwd,side);
     const w=Math.abs(rx)*alongS+Math.abs(fx)*alongF;
     const d=Math.abs(rz)*alongS+Math.abs(fz)*alongF;
     const m=new THREE.Mesh(new THREE.BoxGeometry(w||T,h,d||T),mat);
     m.position.set(p.x,y0+h/2,p.z);worldGroup.add(m);
-    if(collide)BUILDINGS.push({x:p.x,z:p.z,hw:(w||T)/2,hd:(d||T)/2});
+    if(collide){const c={x:p.x,z:p.z,hw:(w||T)/2,hd:(d||T)/2};BUILDINGS.push(c);m.userData.col=c;}   // the collider rides on its mesh (the hidden-room filler switches it off)
     return m;
   };
   if(R.backOpen){                                            // back wall with a doorway (the Lounge → the Retreat corridor)
@@ -995,17 +1078,17 @@ function buildRoom(R){
   wall(0, hw,R.d,T,0,H,wallMat,true);                        // side walls
   wall(0,-hw,R.d,T,0,H,wallMat,true);
   const pier=(hw-OPEN/2)/2+OPEN/2;                           // piers flank the opening
-  wall(hd, pier,T,hw-OPEN/2,0,H,wallMatHi,true);
-  wall(hd,-pier,T,hw-OPEN/2,0,H,wallMatHi,true);
-  wall(hd,0,T,OPEN,4.2,H-4.2,wallMatHi,false);               // header above the opening
+  const face=[wall(hd, pier,T,hw-OPEN/2,0,H,wallMatHi,true),
+  wall(hd,-pier,T,hw-OPEN/2,0,H,wallMatHi,true),
+  wall(hd,0,T,OPEN,4.2,H-4.2,wallMatHi,false)];              // header above the opening — with the piers, the hall's wall face: it stays when the room is walled over
   // ceiling + glow panel so the room isn't a cave
-  const cp=P(0,0);
-  box(cp.x,H,cp.z,Math.abs(rx)*R.w+Math.abs(fx)*R.d,0.3,Math.abs(rz)*R.w+Math.abs(fz)*R.d,darkMat,false);
+  const cp=P(-0.2,0);   // the slab stops 0.4 short of the facade plane: its front edge sat in the facade band's face and flickered under the glow line (2026-09-17)
+  box(cp.x,H,cp.z,Math.abs(rx)*R.w+Math.abs(fx)*(R.d-0.4),0.3,Math.abs(rz)*R.w+Math.abs(fz)*(R.d-0.4),darkMat,false);
   const gp=emissiveStrip(cp.x,H-0.18,cp.z,Math.abs(rx)*(R.w-3)+Math.abs(fx)*(R.d-3),0.1,
                          Math.abs(rz)*(R.w-3)+Math.abs(fz)*(R.d-3),0xbfd8ff,0.55);
   // back wall: for fitted game rooms, a big screenshot of the game
   // (assets/walls/<roomid>.jpg) filling as much of the wall as its aspect allows.
-  if(['hallwyl','velocity','rally','blindspots','crypt','cerebro'].indexOf(R.id)>=0){
+  if(['hallwyl','velocity','rally','blindspots','cerebro'].indexOf(R.id)>=0){   // (the Garrison, 'crypt', left the list 2026-09-17: the room is empty; walls/crypt.jpg stays for the fountain's quest view)
     const ap=P(-hd+0.45,0), ry=Math.atan2(fx,fz);
     new THREE.TextureLoader().load('assets/walls/'+R.id+'.jpg',(tex)=>{
       tex.encoding=THREE.sRGBEncoding;
@@ -1014,14 +1097,16 @@ function buildRoom(R){
       const m=new THREE.Mesh(new THREE.PlaneGeometry(aw,ah),
         new THREE.MeshBasicMaterial({map:tex}));
       m.position.set(ap.x,3.0,ap.z);m.rotation.y=ry;worldGroup.add(m);
+      if(R.parts){ R.parts.push(m); m.visible=roomShown(R); }   // it arrives after the room was walled over: hidden with the room (roomApply)
     });
   }
   // signage: name + sub on the header face, name again flat on the floor at the threshold
   const rotY=Math.atan2(fx,fz);
   const sp=P(hd+0.5,0);
-  addHoloSign(R.name,R.sub,sp.x,5.0,sp.z,rotY,col);       // holo display on the header (was two lines of 3D text)
+  const sign=addHoloSign(R.name,R.sub,sp.x,5.0,sp.z,rotY,col);   // holo display on the header (was two lines of 3D text)
+  if(R.id==='cerebro')sign.visible=false;                  // Cerebro's sign taken down (2026-09-17)
   const fp=P(hd+2.0,0);
-  addFloorText(R.name,fp.x,fp.z,-fx,-fz,0.8,col);
+  const ft=addFloorText(R.name,fp.x,fp.z,-fx,-fz,0.8,col);
   // emissive threshold line on the floor across the room's opening — built as before, hidden by the switch
   const tp=P(hd+0.1,0);
   const tl=emissiveStrip(tp.x,0.02,tp.z,Math.abs(rx)*OPEN+0.14,0.05,Math.abs(rz)*OPEN+0.14,col,0.9);
@@ -1030,8 +1115,14 @@ function buildRoom(R){
   const FITTED=['credits','rally','velocity','crypt','blindspots','hallwyl','theater','submit','fame','vault','garden','cerebro','lounge','lab'];
   if(FITTED.indexOf(R.id)<0){ // these rooms have real content now — they add their own hotspots
     const hp=P(hd+1.6,0);
-    hotspot(hp.x,hp.z,2.3,R.name+(R.type==='spare'?' — for lease':' — opening soon'),
-      ()=>banner(R.name+(R.type==='spare'?' · FOR LEASE':' · OPENING SOON')));
+    R.hot=hotspot(hp.x,hp.z,2.3,R.name+(R.type==='spare'?' — for lease':' — opening soon'),
+      ()=>banner(R.name+(R.type==='spare'?' · FOR LEASE':' · OPENING SOON')),{rad:2.0});
+  }
+  if(roomHidden(R)){                                         // walled over (2026-09-17) — see HIDDEN_ROOMS
+    R.parts=worldGroup.children.slice(n0).filter(m=>face.indexOf(m)<0); R.tl=tl; R.ft=ft; if(R.hot)R.hot.r0=R.hot.r;   // the inside: walls, ceiling, sign
+    const f=wall(hd,0,T,OPEN,0,4.2,wallMatHi,true);          // the opening filled, floor to header: one flat face with the piers
+    R.fill={mesh:f,col:f.userData.col};
+    roomApply(R);
   }
 }
 
@@ -1122,15 +1213,16 @@ function buildHall(now){
   q.push(()=>{zoneBuild(0,buildAnnexe);});                   // the Annexe: 20 empty spaces behind the Lab; characters load on entry
   q.push(()=>{buildRallyKiosk();});                          // Trigger Rally stage-select console
   q.push(()=>{buildVelocityKiosk();});                       // HexGL level-select console
-  q.push(()=>{buildCryptShrine();});                         // Rift Keeper — skeleton warrior + rift crystal
+  // (the Garrison room was emptied 2026-09-17: Fountain Keeper starts from Jack's E menu now — openJackMenu)
   q.push(()=>{buildCommunityDoor();});                       // the standing door in the Garden room
   q.push(()=>{buildBlindspotsKiosk();});                     // Blindspots — the stranger + lectern (Sponza vignette)
   q.push(()=>{buildCerebroKiosk();});                        // Cerebro — the listening dome (weekly voices)
   q.push(()=>{buildHallwylDoor();});                         // The Hallwyl — the 1899 house (story game)
   q.push(()=>{buildTheater();});                             // Theater — Quick Stories listening room
-  q.push(()=>{buildSubmitDesk();});                          // Completion — how to add your game
+  q.push(()=>{buildTheaterScene();});                        // the stranger in front of it, who opens it (and Elsa)
+  q.push(()=>{buildSubmitDesk();});                          // OR MAIL IT — the send-it-in form, west wall of the ADD YOUR LEVEL room
   q.push(()=>{buildLeadersBoard();});                        // Leaders board — play counts, side wall of Completion
-  q.push(()=>{buildContributeBoard();});                     // Made with Claude Code / ChatGPT — west wall of the submit room (the how-to page)
+  q.push(()=>{buildContributeBoard();});                     // Made with Claude Code / ChatGPT — back wall of the ADD YOUR LEVEL room (the how-to page)
   q.push(()=>{buildArcade();});                              // Arcade — a poster per COMMUNITY_GAMES entry (none yet: the room stays as it is)
   q.push(()=>{buildIdeasWall();});                           // Ideas — write on the wall (old Fame Wall room)
   q.push(()=>{buildWishBoard();});                           // Things people asked — side wall of the Ideas room
@@ -1168,6 +1260,7 @@ function buildHall(now){
   box(37.1,0,28,2.6,6,0.6,wallMatHi,true);
 
   });
+  q.push(()=>{buildRoomGaps();});                            // the slots between the rooms closed, now that every wall is up
   q.push(()=>{
   // ----- the atrium -----
   buildFountain();
@@ -1416,17 +1509,13 @@ const GUESTS=[
   {id:'swat_face',file:'swat_blend.glb',                   name:'SWAT · UNMASKED',     cx:-34,cz:-79, col:0xc8a0ff,
    hide:/Balaclava|Helmet/, faceFrom:SRC+'elara4_facial_animation.glb', faceParts:true, alignHead:true,
    bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Male'}, lookAt:14, gaze:true, gunAlign:true, headTurn:0.4},   // 2026-09-14: the same idle and turn-to-you as Jack; the rifle follows her forearm
-  // the same again in space 09, with the ActorCore 'relax' standing idle on the body (the clip
-  // Elara the guide stands with) and the capture kept for the face.
   // Elara's own model with the ActorCore / UE5 idle, walk and run library baked onto her rig.
   // Click her (or press E) to step to the next one; the number and name show on screen.
   // NOTE: the untrimmed elara4 source, not the built model. These clips are baked against elara4's
   // rest pose, and the built model's rest differs enough that the same clips leave her arms out.
   {id:'elara_clips',url:SRC+'elara4.glb',                   name:'ELARA · TRY IDLES',   cx:  0,cz:-79, col:0x9fe8ff, faceYaw:0,
    clipsFrom:'https://lightsmithforge.linkpc.net/junk_lab_files_live/elara_idles.glb'},
-  {id:'swat_full',file:'swat_blend.glb',                   name:'SWAT · RELAX IDLE',   cx:-17,cz:-79, col:0xff8fd0,
-   hide:/Balaclava|Helmet/, faceFrom:SRC+'elara4_facial_animation.glb', faceParts:true, alignHead:true,
-   bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Relax'}},
+  // (space 09 — SWAT · RELAX IDLE — was cleared 2026-09-17 as well; swat_blend.glb is kept)
 ];
 const GUEST={busy:false, height:1.87};   // one load at a time; sized by the same rule as Elara the guide
 function annexeFloor(x,z,w,d,tint){
@@ -1626,6 +1715,204 @@ function feetUpdate(dt){
     }
   }
 }
+/* ============================================================
+   GUNS (developer page only, 2026-09-17) — Elara and Jack can draw Jack's pistol. Nothing on their E
+   menus: the developer page's GUNS section has "Draw guns" (both hold the stance) and "Spawn the
+   nightmare", Fountain Keeper's Theater boss, 11 m in front of you: they turn to it and shoot, 1 damage
+   a shot, until it bursts away ("Remove the nightmare" takes it off at once).
+   The pistol is assets/people/pistol.glb (tools/gltf/build-pistol.js): Jack's own pistol baked rigid onto
+   the right ring-finger bone of his export, hung on the same bone of each of them and sized to their
+   height; the stance is its clip, remapped by bare CC3 bone name (remapClip) without the face, neck and
+   head (splitClip), which their gaze keeps — aimed at the target while the gun is out. Each frame, after
+   every mixer, the chest (CC_Base_Spine02) is turned so the barrel points at the target. No light is
+   added anywhere: the flash is an additive sphere, so no shader's light count changes.
+   The boss: assets/people/boss_nightmare.glb, "Boss Nightmare - Mu Online" by CreadorDeMu (CC BY 4.0).
+   ============================================================ */
+const GUNS={hold:false,state:null,queue:[],scene:null,mount:null,info:null,clip:null,shooters:[],fx:[],
+  boss:null,bossSrc:null,bossState:null,bossQueue:[]};
+const GUN_STATS={dmg:1,every:0.8,range:45,maxLean:35,holster:2.0,bossHp:40,bossH:2.6,bossAt:11};
+function gunsStatus(){
+  return 'Pistol '+(GUNS.state||'not loaded yet')+' · holding: '+(GUNS.shooters.filter(G=>G.draw>0.4).map(G=>G.key).join(', ')||'nobody')+
+    ' · nightmare: '+(GUNS.boss?(GUNS.boss.dying?'bursting':GUNS.boss.hp+' / '+GUN_STATS.bossHp):(GUNS.bossState==='loading'?'loading':'none'));
+}
+function gunsLoad(cb){
+  if(GUNS.state==='ready'||GUNS.state==='failed'){cb&&cb();return;}
+  if(cb)GUNS.queue.push(cb); if(GUNS.state)return; GUNS.state='loading';
+  new THREE.GLTFLoader().load('assets/people/pistol.glb',(gl)=>{
+    GUNS.scene=gl.scene; GUNS.mount=gl.scene.getObjectByName('PistolMount');
+    GUNS.info=GUNS.mount&&GUNS.mount.userData.pistol; GUNS.clip=(gl.animations||[]).find(a=>a.name==='Gun');
+    GUNS.state=(GUNS.mount&&GUNS.info&&GUNS.clip)?'ready':'failed';
+    GUNS.queue.splice(0).forEach(f=>f());
+  },undefined,()=>{ GUNS.state='failed'; banner('The pistol failed to load'); GUNS.queue.splice(0).forEach(f=>f()); });
+}
+const _gv=new THREE.Vector3(),_gm=new THREE.Vector3(),_gb=new THREE.Vector3(),_gt=new THREE.Vector3(),_gs=new THREE.Vector3();
+const _gq=new THREE.Quaternion(),_gr=new THREE.Quaternion(),_gw=new THREE.Quaternion(),_gp=new THREE.Quaternion();
+function gunsBone(root,name){ let b=null; root.traverse(o=>{ if(!b&&(o.name||'').replace(/_\d+$/,'')===name)b=o; }); return b; }
+function gunsSphere(r,color){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(r,8,6),new THREE.MeshBasicMaterial({color,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+  m.visible=false; m.frustumCulled=false; scene.add(m); zoneTag(m,0); return m;
+}
+// a pistol on the right ring-finger bone of a CC3 body, sized to its height, and the stance remapped onto it
+function gunsArm(key,root,height){
+  const ring=gunsBone(root,GUNS.info.ringBone), spine=gunsBone(root,'CC_Base_Spine02');
+  if(!ring||!spine)return null;
+  const mount=GUNS.mount.clone(); mount.traverse(o=>{ if(o.isMesh)o.frustumCulled=false; });
+  mount.visible=false; ring.add(mount); zoneTag(mount,0);
+  root.updateMatrixWorld(true);
+  mount.scale.setScalar(GUNS.info.ringScalePerHeight*height/Math.max(1e-9,ring.getWorldScale(_gv).x));   // baked in Jack's ring-bone units
+  { const sets=warmSets(mount); for(const bits of sets)warmDraw([mount],bits); mount.userData.warmV=warmKey(mount,sets); }
+  return {key,root,mount,spine,clip:splitClip(remapClip(GUNS.clip,GUNS.scene,root,'Gun'),'Gun',false),
+    muzzle:new THREE.Vector3().fromArray(GUNS.info.muzzle),barrel:new THREE.Vector3().fromArray(GUNS.info.barrel),
+    armed:false,wasArmed:false,draw:0,calm:9,fireCd:0,recoil:0,dy:0,flash:gunsSphere(0.09,0xffd27a),flashT:0,hit:gunsSphere(0.28,0xffb070),hitT:0};
+}
+// whoever is here and not armed yet: Elara the guide, and Jack once the hall has brought him
+function gunsShooters(){
+  const p=persons.elara;
+  if(p&&!GUNS.shooters.some(G=>G.key==='elara')){ const G=gunsArm('elara',p.inner,1.87); if(G){ G.p=p; p.clips.Gun=G.clip; GUNS.shooters.push(G); } }
+  const g=GUESTS.find(q=>q.id==='jack');
+  if(g&&g.root&&g.bodyAction&&!GUNS.shooters.some(G=>G.key==='jack')){
+    const G=gunsArm('jack',g.root,g.h||GUEST.height); if(G){ G.g=g; G.action=g.bodyMixer.clipAction(G.clip); GUNS.shooters.push(G); } }
+}
+function gunsLoadBoss(cb){
+  if(GUNS.bossSrc||GUNS.bossState==='failed'){cb&&cb();return;}
+  if(cb)GUNS.bossQueue.push(cb); if(GUNS.bossState)return; GUNS.bossState='loading';
+  new THREE.GLTFLoader().load('assets/people/boss_nightmare.glb',(gl)=>{
+    const clips={};
+    for(const c of gl.animations||[]){                        // Sketchfab lays takes end to end on one timeline: each starts at 0 here
+      let t0=Infinity; for(const t of c.tracks)if(t.times.length)t0=Math.min(t0,t.times[0]);
+      if(t0>0.005){ for(const t of c.tracks)for(let i=0;i<t.times.length;i++)t.times[i]-=t0; c.resetDuration(); }
+      clips[c.name]=c; }
+    // fitted the way Fountain Keeper fits it: the SKINNED body through its walk (a Box3 of this file is thrown by helper quads)
+    const root=gl.scene, skinned=[]; root.traverse(o=>{ if(o.isSkinnedMesh)skinned.push(o); });
+    const saved=[]; root.traverse(o=>saved.push([o,o.position.clone(),o.quaternion.clone(),o.scale.clone()]));
+    const walk=clips.Caminando, mx=walk?new THREE.AnimationMixer(root):null; if(mx)mx.clipAction(walk).play();
+    let hi=-Infinity; const feet=[];
+    for(let k=0;k<(walk?8:1);k++){
+      if(mx)mx.setTime(walk.duration*k/8); root.updateMatrixWorld(true); let lo=Infinity;
+      for(const m of skinned){ const n=m.geometry.attributes.position.count, st=n>40000?3:1;
+        for(let i=0;i<n;i+=st){ m.boneTransform(i,_gv).applyMatrix4(m.matrixWorld); if(_gv.y<lo)lo=_gv.y; if(_gv.y>hi)hi=_gv.y; } }
+      feet.push(lo); }
+    if(mx){ mx.stopAllAction(); mx.uncacheRoot(root); }
+    for(const [o,pp,q,sc] of saved){ o.position.copy(pp); o.quaternion.copy(q); o.scale.copy(sc); }
+    feet.sort((a,b)=>a-b);
+    const floor=feet[feet.length>>1];
+    GUNS.bossSrc={scene:root,clips,fit:(hi>floor)?{floor,h:hi-floor}:{floor:0,h:1}};
+    GUNS.bossState='ready'; GUNS.bossQueue.splice(0).forEach(f=>f());
+  },undefined,()=>{ GUNS.bossState='failed'; banner('The nightmare failed to load'); GUNS.bossQueue.splice(0).forEach(f=>f()); });
+}
+function gunsBossAnim(B,name,once){
+  const c=B.clips[name]; if(!c)return;
+  const a=B.mixer.clipAction(c); a.reset(); a.enabled=true;
+  if(once){ a.setLoop(THREE.LoopOnce,0); a.clampWhenFinished=true; } else a.setLoop(THREE.LoopRepeat);
+  if(B.act&&B.act!==a)B.act.crossFadeTo(a,0.25,false);
+  a.play(); B.act=a; B.once=!!once;
+}
+function gunsSpawnBoss(done){
+  if(GUNS.boss&&!GUNS.boss.dying){ done&&done(); return; }
+  gunsLoad();
+  gunsLoadBoss(()=>{
+    const S=GUNS.bossSrc; if(!S){ done&&done(); return; }
+    if(GUNS.boss)gunsRemoveBoss();
+    const model=THREE.SkeletonUtils.clone(S.scene), sc=GUN_STATS.bossH/Math.max(0.01,S.fit.h);
+    model.scale.setScalar(sc); model.position.y=-S.fit.floor*sc;
+    model.traverse(o=>{ if(!o.isMesh)return; o.frustumCulled=false;
+      if(!o.isSkinnedMesh&&o.material&&(o.material.opacity===0||/HPBar/i.test(o.material.name||''))){ o.visible=false; return; }   // its own flare quads and health bar
+      if(o.material)o.material=o.material.clone(); });
+    const inner=new THREE.Group(); inner.rotation.y=Math.PI/2; inner.add(model);    // the file's facing knob, as Fountain Keeper has it
+    const grp=new THREE.Group(); grp.add(inner);
+    const fx=-Math.sin(look.yaw), fz=-Math.cos(look.yaw);
+    grp.position.set(player.pos.x+fx*GUN_STATS.bossAt,player.y||0,player.pos.z+fz*GUN_STATS.bossAt);
+    grp.rotation.y=Math.atan2(-fx,-fz);                                              // facing you
+    scene.add(grp); zoneTag(grp,0);
+    { const sets=warmSets(grp); for(const bits of sets)warmDraw([grp],bits); }
+    const B=GUNS.boss={grp,model,mixer:new THREE.AnimationMixer(model),clips:S.clips,hp:GUN_STATS.bossHp,dying:0,act:null,once:false,laughT:7};
+    gunsBossAnim(B,'Poder',true);                                                    // a power-up roar on arrival
+    banner('The nightmare — close the developer page to watch them shoot it');
+    done&&done();
+  });
+}
+function gunsRemoveBoss(){
+  const B=GUNS.boss; if(!B)return;
+  scene.remove(B.grp); B.mixer.stopAllAction();
+  B.grp.traverse(o=>{ if(o.isMesh&&o.material)o.material.dispose(); });                // the clone's own materials; geometry is shared with the loaded file
+  GUNS.boss=null;
+}
+function gunsTurnBone(b,from,to,w){
+  _gr.setFromUnitVectors(from,to);
+  b.getWorldQuaternion(_gw); b.parent.getWorldQuaternion(_gp);
+  _gq.copy(_gp).invert().multiply(_gr).multiply(_gw);
+  b.quaternion.slerp(_gq,w); b.updateMatrixWorld(true);
+}
+function gunsUpdate(dt){
+  const B=GUNS.boss, live=!!(B&&!B.dying);
+  const want=GUNS.hold||live;
+  if(want){ if(GUNS.state!=='ready')gunsLoad(); else gunsShooters(); }
+  // the boss: its clips, its roar and laugh, facing you, and bursting away at 0
+  if(B){
+    B.mixer.update(dt);
+    if(B.dying){ B.dying+=dt; B.grp.scale.setScalar(Math.max(0.001,1-B.dying/0.6)); if(B.dying>=0.6)gunsRemoveBoss(); }
+    else {
+      if(B.once&&B.act&&!B.act.isRunning())gunsBossAnim(B,'Idle');
+      B.laughT-=dt; if(B.laughT<=0){ B.laughT=9+Math.random()*6; gunsBossAnim(B,'Risa',true); }
+      const wy=Math.atan2(player.pos.x-B.grp.position.x,player.pos.z-B.grp.position.z);
+      B.grp.rotation.y+=Math.atan2(Math.sin(wy-B.grp.rotation.y),Math.cos(wy-B.grp.rotation.y))*Math.min(1,dt*2);
+    }
+  }
+  const tgt=live?_gt.set(B.grp.position.x,B.grp.position.y+GUN_STATS.bossH*0.55,B.grp.position.z).clone():null;
+  for(const G of GUNS.shooters){
+    const p=G.p, g=G.g, body=p?p.mesh:g.grp;
+    G.calm=want?0:G.calm+dt;
+    let armed=want||G.calm<GUN_STATS.holster;
+    if(p&&tour.active)armed=false;                                                   // never in the middle of her tour
+    // Jack: the stance and his idle cross-fade on his own body mixer; Elara's clip is chosen in updatePeople
+    if(g&&armed!==G.wasArmed){ const from=armed?g.bodyAction:G.action, to=armed?G.action:g.bodyAction;
+      to.reset(); to.enabled=true; to.setEffectiveWeight(1); to.play(); from.crossFadeTo(to,0.25,false); }
+    G.wasArmed=armed;
+    G.draw+=((armed?1:0)-G.draw)*Math.min(1,dt*5);
+    const out=armed||G.draw>0.02;
+    if(p){ p.gunOut=out; p.gunArmed=armed; p.gunAim=(armed&&tgt)?tgt:null; }
+    if(g){ g.gunOut=out; g.gunAim=(armed&&tgt)?tgt:null; }
+    const show=G.draw>0.4; if(G.mount.visible!==show)G.mount.visible=show;           // it comes up with the hands
+    if(G.flashT>0){ G.flashT-=dt; if(G.flashT<=0)G.flash.visible=false; }
+    if(G.hitT>0){ G.hitT-=dt; if(G.hitT<=0)G.hit.visible=false; }
+    if(!armed||!tgt){ G.dy=0; continue; }
+    // turn to it (Jack's heading is his group's yaw plus the way his export rests)
+    const at=body.position, wantYaw=Math.atan2(tgt.x-at.x,tgt.z-at.z), rest=g?g.restYaw:0;
+    G.dy=Math.atan2(Math.sin(wantYaw-(body.rotation.y+rest)),Math.cos(wantYaw-(body.rotation.y+rest)));
+    body.rotation.y+=G.dy*Math.min(1,dt*6);
+    // lean the gun onto it, and kick it up after a shot
+    G.recoil=Math.max(0,G.recoil-dt*7);
+    body.updateMatrixWorld(true);
+    G.mount.localToWorld(_gm.copy(G.muzzle));
+    _gb.copy(G.barrel).applyQuaternion(G.mount.getWorldQuaternion(_gq)).normalize();
+    _gs.subVectors(tgt,_gm).normalize();
+    const ang=_gb.angleTo(_gs), max=GUN_STATS.maxLean*Math.PI/180;
+    if(ang>max){ const full=_gs.clone(); _gs.copy(_gb).lerp(full,max/ang).normalize(); }
+    gunsTurnBone(G.spine,_gb,_gs,Math.min(1,G.draw));
+    if(G.recoil>0){ _gb.copy(G.barrel).applyQuaternion(G.mount.getWorldQuaternion(_gq)).normalize();
+      gunsTurnBone(G.spine,_gb,_gs.copy(_gb).setY(_gb.y+0.12*G.recoil).normalize(),1); }
+    // fire: drawn, facing it, in range
+    G.fireCd-=dt;
+    const dist=Math.hypot(tgt.x-at.x,tgt.z-at.z);
+    if(G.draw>0.9&&dist<=GUN_STATS.range&&G.fireCd<=0&&Math.abs(G.dy)<0.3&&Math.abs(tgt.y-at.y)<6){
+      G.fireCd=GUN_STATS.every*(0.85+Math.random()*0.3); G.recoil=1;
+      G.mount.localToWorld(_gm.copy(G.muzzle));
+      const len=_gm.distanceTo(tgt);
+      const streak=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.03,len),
+        new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}));
+      streak.position.copy(_gm).lerp(tgt,0.5); streak.lookAt(tgt); streak.frustumCulled=false;
+      scene.add(streak); zoneTag(streak,0); GUNS.fx.push({m:streak,t:0.14});
+      G.flash.position.copy(_gm); G.flash.visible=true; G.flashT=0.06;
+      G.hit.position.copy(tgt); G.hit.visible=true; G.hitT=0.08;
+      B.hp=Math.max(0,B.hp-GUN_STATS.dmg);
+      if(B.hp<=0&&!B.dying){ B.dying=0.001; banner('The nightmare is gone'); }
+    }
+  }
+  for(const f of GUNS.fx){ f.t-=dt; f.m.material.opacity=Math.max(0,f.t/0.14)*0.9;
+    if(f.t<=0){ scene.remove(f.m); f.m.geometry.dispose(); f.m.material.dispose(); f.dead=true; } }
+  if(GUNS.fx.some(f=>f.dead))GUNS.fx=GUNS.fx.filter(f=>!f.dead);
+}
+
 const WALKING=/Walk|Run|Jog|Sprint|Catwalk/i;
 const BREASTS=[];
 let BREAST=(()=>{try{return +localStorage.getItem('atd:elara:breast')||1;}catch(e){return 1;}})();
@@ -1726,6 +2013,7 @@ function loadGuest(g){
     grp.position.set(g.cx,foot,g.cz);   // CC3 exports stand on their own origin
     grp.rotation.y=g.yaw||0;
     worldGroup.add(grp);
+    g.grp=grp; g.root=root;                                    // for the developer-page guns (GUNS)
     // which way the export rests, measured (head bone → eyes): the world heading he faces is grp.rotation.y+g.restYaw.
     // Jack's export rests facing -z, the swat's +z — the code that turns them to you must not assume either.
     g.restYaw=(()=>{ let hd=null,eyes=[]; root.traverse(o=>{ if(/^CC_Base_Head/.test(o.name||''))hd=o; if(/^CC_Base_[LR]_Eye/.test(o.name||''))eyes.push(o); });
@@ -1749,6 +2037,7 @@ function loadGuest(g){
       const localFwd=hip?f0.clone().applyQuaternion(hip.getWorldQuaternion(new THREE.Quaternion()).invert()):null;
       const home=g.yaw||0; let cur=home; const _q=new THREE.Quaternion(), _f=new THREE.Vector3();
       animated.push({update(dt){
+        if(g.gunOut){ cur=grp.rotation.y; return; }              // the gun system is turning him (GUNS): pick up from where it leaves him
         const dx=player.pos.x-g.cx, dz=player.pos.z-g.cz, d=Math.hypot(dx,dz);
         const want=d<g.lookAt?Math.atan2(dx,dz):Math.atan2(Math.sin(home+g.restYaw),Math.cos(home+g.restYaw));   // world heading he should point at
         let actual;
@@ -1776,7 +2065,7 @@ function loadGuest(g){
       const show=(i)=>{ g.outfitAt=((i%g.outfits.length)+g.outfits.length)%g.outfits.length;
         const k=g.outfits[g.outfitAt]; wearOutfit(g.wear,k);
         banner((g.outfitAt+1)+' / '+g.outfits.length+'  ·  '+OUTFITS[k].name); };
-      hotspot(g.cx,g.cz+1.4,2.2,{toString(){return 'Elara — '+OUTFITS[g.outfits[g.outfitAt]].name+' ('+(g.outfitAt+1)+'/'+g.outfits.length+') — next';}},()=>show(g.outfitAt+1));
+      hotspot(g.cx,g.cz+1.4,2.2,{toString(){return 'Elara — '+OUTFITS[g.outfits[g.outfitAt]].name+' ('+(g.outfitAt+1)+'/'+g.outfits.length+') — next';}},()=>show(g.outfitAt+1),{x:g.cx,z:g.cz,y:1.35,rad:0.6});   // aim at the torso
       show(0);
     }
     if(g.clipsFrom){                                           // a library of clips to try on, one at a time
@@ -1814,7 +2103,7 @@ function loadGuest(g){
         };
         g.playClip(0);
         hotspot(g.cx,g.cz+1.4,2.2,{toString(){return g.name.split(' ')[0]+' — animation '+(g.clipAt+1)+'/'+list.length+': '+list[g.clipAt].name+' — next';}},
-          ()=>g.playClip(g.clipAt+1));
+          ()=>g.playClip(g.clipAt+1),{x:g.cx,z:g.cz,y:0.45,rad:0.55});   // aim at the legs (the outfit switch is the torso)
         banner(g.name+' — '+list.length+' animations, click for the next');
         if(g.gaze)guestGaze(g,g.gazeObj,root,grp);              // head and eyes on the visitor over the clips
       },undefined,()=>banner(g.name+' — the animation library failed to load'));
@@ -1826,7 +2115,7 @@ function loadGuest(g){
         const body=splitClip(remapClip(src,bg.scene,root,'Body'),'Body_Idle',false);
         if(!body.tracks.length){banner(g.name+' — the idle would not map');return;}
         const mx=new THREE.AnimationMixer(root);
-        mx.clipAction(body).play();
+        g.bodyAction=mx.clipAction(body); g.bodyAction.play();   // kept: the gun stance cross-fades from it and back (GUNS)
         animated.push({update(dt){mx.update(dt);}});
         g.bodyMixer=mx; g.bodyKept=body.tracks.length; g.bodySrc=src.tracks.length;
         if(g.gunAlign)gunAlign(g,root);
@@ -1976,7 +2265,7 @@ function morphTry(g,root){
       for(const m of st.meshes){ const inf=m.morphTargetInfluences; for(let q=0;q<inf.length;q++)inf[q]=(q===st.at)?1:0; }
       banner(st.label.toUpperCase()+': '+(st.at<0?'as exported':(st.at+1)+' / '+st.n)); };
     const dx=k===0?0:1.7*Math.ceil(k/2)*(k%2?1:-1);
-    hotspot(g.cx+dx,g.cz+0.5,1.2,{toString(){return st.label+' '+(st.at<0?'(as exported)':(st.at+1)+'/'+st.n)+' — next';}},()=>show(st.at+1));
+    hotspot(g.cx+dx,g.cz+0.5,1.2,{toString(){return st.label+' '+(st.at<0?'(as exported)':(st.at+1)+'/'+st.n)+' — next';}},()=>show(st.at+1),{y:0.5,rad:0.6});   // its own spot on the floor
   });
   g.morphSets=sets;
 }
@@ -2012,7 +2301,7 @@ function guestGaze(g,sp,root,grp){
   g.gazeObj=sp; g.gazeRun=true;
   const maxDeg=g.headMax!=null?g.headMax:40;
   animated.push({update(dt){
-    const aim=g.aimKey?aimOffset(sp,devNum(g.aimKey+'Yaw'),devNum(g.aimKey+'Pitch')):elaraAim(sp);   // his own offset from the dev page (aimKey), else Elara's
+    const aim=g.gunAim?g.gunAim:g.aimKey?aimOffset(sp,devNum(g.aimKey+'Yaw'),devNum(g.aimKey+'Pitch')):elaraAim(sp);   // his own offset from the dev page (aimKey), else Elara's
     headTrack(sp,dt,aim,true,maxDeg,grp.rotation.y+g.restYaw);
     eyesTrack(sp,dt,aim,true);
   }});
@@ -2037,7 +2326,8 @@ function guestVoice(g,root,grp){
   animated.push({update(dt){ lipUpdate(sp,dt); }});
   if(g.gaze&&!g.bodyFrom)guestGaze(g,sp,root,grp);           // with a borrowed idle the gaze waits for that mixer (see bodyFrom): it must run after it
   let i=0; const nice=g.name.charAt(0)+g.name.slice(1).toLowerCase();
-  hotspot(g.cx,g.cz,2.6,'Talk to '+nice,()=>{ say(g.id,g.speaks[i++%g.speaks.length]); });
+  const talk=()=>say(g.id,g.speaks[i++%g.speaks.length]);
+  hotspot(g.cx,g.cz,2.6,'Talk to '+nice,()=>{ if(g.id==='jack')openJackMenu(talk); else talk(); },{rad:0.42,cap:1.85});   // the body itself   // Jack: his card (Defend the hall), the rest just talk
 }
 // Where the cost of a big character really is (measured on a GTX 1060, D3D11): a texture upload is
 // ~25 ms, a mesh's buffers a few ms, but every NEW shader program is ~1 s on a first visit (~0.25 s
@@ -2165,11 +2455,10 @@ function buildFountain(){
   // The fountain IS the interaction, and it stays unmarked on purpose — no sign, no label.
   // Walking up to it is the discovery; only then does the E prompt appear. (Elara can
   // introduce it later if we want it found rather than stumbled on.)
-  // Four hotspots ring it — north, south, east and west — so it answers from any approach.
-  // Radii overlap slightly so the diagonals between them aren't dead ground.
-  const FX=0, FZ=-4, OUT=5.0, RAD=5.2;                         // centre, ring offset, reach
-  for(const [dx,dz] of [[0,1],[0,-1],[1,0],[-1,0]])            // S, N, E, W of the fountain
-    hotspot(FX+dx*OUT, FZ+dz*OUT, RAD, 'Listen — The Fountain', ()=>openFountainAtWater());
+  // One spot at its centre with a sphere the size of the basin: look at the water from anywhere in reach,
+  // from any side, and the prompt is there (four ringed spots did this until the crosshair rule, 2026-09-17).
+  const FX=0, FZ=-4;
+  hotspot(FX, FZ, 5.2, 'Listen — The Fountain', ()=>openFountainAtWater(), {y:1.0,rad:4.5});
   addFloorText('ATRIUM',0,4.4,0,-1,0.8,0x9fd8ff);
 
   // ----- shop purchases, made visible — applied at build AND live at the moment of buying
@@ -2390,7 +2679,7 @@ animated.push({update(dt){
   if(r){ r.t+=dt;
     if(r.phase==='close'){ if(cur.open<0.03||r.t>1.4){ r.phase='fade'; r.t=0; } }
     else if(r.phase==='fade'){ fade=Math.min(1,r.t/0.5); if(r.t>=0.55){ elevArrive(r.to); r.phase='arrive'; r.t=0; fade=1; } }
-    else if(r.phase==='arrive'){ fade=1-Math.min(1,r.t/0.5); if(r.t>=0.5){ ELEV.riding=null; fade=0; banner(r.to?'Level '+r.to:'The foyer'); } }
+    else if(r.phase==='arrive'){ fade=1-Math.min(1,r.t/0.5); if(r.t>=0.5){ ELEV.riding=null; fade=0; banner(r.to?'Level '+r.to:'The foyer'); if(r.to)say('elara',"The floors are empty. Go back to the ground floor."); } }   // up a level: Elara sends you down again (2026-09-17)
     ELEV.fadeEl.style.opacity=fade.toFixed(2);
   }
   // the car at your floor opens when you are near its doors (and never mid-ride); the others stay shut
@@ -2426,7 +2715,7 @@ function buildFoyer(){
   box(-8,0,46.4,T,H,3.2,wallMat,true);                    // … and z 44.8..48: the elevator's entrance stands between (buildElevator)
   box(-8,3.3,43.3,T,H-3.3,3.0,wallMat,false);             // the header over it
   box(8,0,38,T,H,20,wallMat,true);                        // east wall (z 28..48)
-  box(0,H,38,16.6,0.3,20,darkMat,false);                  // ceiling / entrance canopy
+  box(0,H,38.2,16.6,0.3,19.6,darkMat,false);              // ceiling / entrance canopy — stops 0.4 short of the hall's facade plane (z 28): its edge flickered in the band's face under the glow line (2026-09-17)
   emissiveStrip(0,H-0.18,38,12,0.1,17,0xbfd8ff,0.6);
   // hall-facing piers + header at the foyer opening (z=28): the opening is 6 m wide (x ±3), 4.2 high, with the north door in it
   box(-6.5,0,28,3.6,H,T,wallMatHi,true);
@@ -2467,7 +2756,7 @@ function buildFoyer(){
   DOORS={entered:false,rigs:[
     {z:DZ,hw:4.6,slide:2.85,left:mkLeaf(-1,DZ,2.9,5.0,0.2,glassMat),right:mkLeaf(1,DZ,2.9,5.0,0.2,glassMat),gate:gateS,open:0},   // [0] south, to the garden: glass
     {z:28,hw:4.6,slide:3.0, left:mkLeaf(-1,28,3.0,4.1,0),  right:mkLeaf(1,28,3.0,4.1,0),  gate:gateN,open:0,manual:true}]}; // [1] north, to the hall: shut until the hall is built (hallOpen)
-  HALLB.hot=hotspot(0,30.6,2.4,'Open the hall',hallOpen);           // E on the interior door, from the foyer
+  HALLB.hot=hotspot(0,30.6,2.4,'Open the hall',hallOpen,{x:0,y:2.0,z:28,rad:2.4});   // E on the interior door, from the foyer
   buildElevator();                                                  // the car in the west wall (drawn from both zones, like the foyer)
   for(let i=n0;i<worldGroup.children.length;i++)zoneTag(worldGroup.children[i],0);   // the foyer is in view from both its zones
 
@@ -2500,7 +2789,7 @@ function buildFoyer(){
   const panel=new THREE.Mesh(new THREE.PlaneGeometry(3.1,3.1),
     new THREE.MeshStandardMaterial({map:mapTex,emissive:0xffffff,emissiveMap:mapTex,emissiveIntensity:0.55,roughness:0.5}));
   panel.position.set(7.62,2.6,33);panel.rotation.y=-Math.PI/2;worldGroup.add(panel);zoneTag(panel,0);
-  hotspot(6.8,33,2.4,'Map',()=>openMenu('map'));
+  hotspot(6.8,33,2.4,'Map',()=>openMenu('map'),{x:7.62,y:2.6,z:33,rad:1.6});   // the board on the east wall
 }
 
 // the garden courtyard beyond the entrance doors — a basic night garden behind a metre-grid steel
@@ -2846,7 +3135,7 @@ function buildDeliveryDoor(cx,cz){
   const pad=new THREE.Mesh(new THREE.PlaneGeometry(4.6,2.2),new THREE.MeshStandardMaterial({color:0x8a8f98,roughness:0.85}));
   pad.rotation.x=-Math.PI/2;pad.position.set(0,0.035,-1.3);g.add(pad);
   BUILDINGS.push({x:cx,z:cz,hw:2.2,hd:0.3});
-  hotspot(cx,cz-1.2,2.8,'Delivery door — start Delivery 1',()=>launchDelivery('RF87t6b6'));   // E goes straight in
+  hotspot(cx,cz-1.2,2.8,'Delivery door — start Delivery 1',()=>launchDelivery('RF87t6b6'),{x:cx,y:1.6,z:cz,rad:1.4});   // E goes straight in; aim: the door
 }
 
 // maple trees from the LOD pack — one GLB holding seven named trees, cloned per placement
@@ -2904,7 +3193,7 @@ function buildCompass(cx,cz){
     L('W',-0.62,0,0x9fd8ff);
   });
   BUILDINGS.push({x:cx,z:cz,hw:1.05,hd:1.05});
-  hotspot(cx,cz,2.2,'Compass',()=>banner('NORTH · through the doors, toward Makers’ Row'));
+  hotspot(cx,cz,2.2,'Compass',()=>banner('NORTH · through the doors, toward Makers’ Row'),{y:0.15,rad:1.3});   // aim: the rose on the floor
 }
 
 /* ============================================================
@@ -2914,7 +3203,21 @@ function buildCompass(cx,cz){
    Projects east out past the mall's east wall (like the foyer).
    ============================================================ */
 let NEXUS_SCI=null, sciSpoken=false;
+// Hidden (2026-09-17) like the HIDDEN ROOMS until the stranger opens the Theater: the opening walled over, the inside,
+// the floor name, the gate prompt, Dr. Vance and the map box hidden. The wing's walls and ceilings stay (seen from the
+// street). Developer page: HIDDEN ROOMS → Show NEXUS (atd:dev:room:nexus).
+const NEXUS_HIDE={parts:null,fill:null,hot:null};
+function nexusShown(){ return devFlag('room:nexus',false)||theaterOpened(); }
+function nexusApply(){
+  if(!NEXUS_HIDE.fill)return;
+  const on=nexusShown();
+  for(const m of NEXUS_HIDE.parts)m.visible=on;
+  NEXUS_HIDE.fill.mesh.visible=!on; NEXUS_HIDE.fill.col.off=on;
+  if(NEXUS_HIDE.hot)NEXUS_HIDE.hot.r=on?NEXUS_HIDE.hot.r0:-1;
+  if(persons.scientist)persons.scientist.mesh.visible=on;
+}
 function buildNexus(){
+  const n0=worldGroup.children.length;
   const col=TYPE_COLOR.game, T=0.6, ACZ=-1;
   const nfMat=new THREE.MeshStandardMaterial({color:0x39465a,roughness:0.6,metalness:0.4});
   const nfloor=new THREE.Mesh(new THREE.PlaneGeometry(30,24),nfMat);   // wing floor (main floor stops at x≈58)
@@ -2924,14 +3227,14 @@ function buildNexus(){
   const AH=6;
   box(44,0,ACZ-5,12,AH,T,wallMat,true);          // south side wall
   box(44,0,ACZ+5,12,AH,T,wallMat,true);          // north side wall
-  box(44,AH,ACZ,12,0.3,10,darkMat,false);        // ceiling
+  box(44.2,AH,ACZ,11.6,0.3,10,darkMat,false);    // ceiling (stops short of the facade plane at x 38, like the rooms' — no flicker under the glow line)
   emissiveStrip(44,AH-0.18,ACZ,9,0.1,7,0xbfd8ff,0.5);
   box(38,0,ACZ-4.5,T,AH,1,wallMatHi,true);       // entrance piers (opening 8 wide)
   box(38,0,ACZ+4.5,T,AH,1,wallMatHi,true);
   box(38,4.2,ACZ,T,AH-4.2,8,wallMatHi,false);    // header
   const rotY=-Math.PI/2;
-  addHoloSign('NEXUS','CHRONOS · GATE',37.5,5.0,ACZ,rotY,col);
-  addFloorText('NEXUS',36,ACZ,1,0,0.8,col);
+  const nsign=addHoloSign('NEXUS','CHRONOS · GATE',37.5,5.0,ACZ,rotY,col); nsign.visible=false;   // taken down 2026-09-17
+  const nname=addFloorText('NEXUS',36,ACZ,1,0,0.8,col); nname.visible=false;                        // the floor name too — neither comes back when the wing opens
   emissiveStrip(37.9,0.02,ACZ,0.14,0.05,8,col,0.9);
 
   // ---- larger chamber: x 50..66, z -11..9, ceiling y=8 ----
@@ -2950,9 +3253,15 @@ function buildNexus(){
   addPiece('Column_Round',53,cz1-2,{targetH:7.8,collide:true,hw:0.7,hd:0.7});
   addFloorText('THE TEMPORAL GATE',56,ACZ,1,0,0.5,col);
 
-  buildTemporalGate(63,ACZ);
+  const gateHot=buildTemporalGate(63,ACZ);
   buildGateStatus(65.6,ACZ+4);
   NEXUS_SCI={x:56,z:ACZ+4.5};
+  const shell=[wallMat,wallMatHi,darkMat];                   // walls, piers, headers, ceilings stay
+  NEXUS_HIDE.parts=worldGroup.children.slice(n0).filter(m=>shell.indexOf(m.material)<0&&m!==nsign&&m!==nname);
+  NEXUS_HIDE.hot=gateHot; gateHot.r0=gateHot.r;
+  const f=box(38,0,ACZ,T,4.2,8,wallMatHi,true);              // the opening filled, floor to header
+  NEXUS_HIDE.fill={mesh:f,col:BUILDINGS[BUILDINGS.length-1]};
+  nexusApply();
 }
 // persistent mission-status board on the chamber back wall (reads saved completion)
 function buildGateStatus(x,z){
@@ -2996,7 +3305,7 @@ function buildTemporalGate(x,z){
     light.intensity=1.1+Math.sin(t*3)*0.25;
   }});
   BUILDINGS.push({x,z,hw:0.7,hd:2.4});
-  hotspot(x-2.2,z,2.8,'Enter the temporal gate',()=>openMissionSelect());
+  return hotspot(x-2.2,z,2.8,'Enter the temporal gate',()=>openMissionSelect(),{x:x,y:2.0,z:z,rad:2.4});   // aim: the gate
 }
 // Dr. Vance — the scientist NPC who briefs you in the Nexus chamber
 function loadScientist(){
@@ -3012,6 +3321,7 @@ function spawnScientist(){
   p.mesh.position.set(NEXUS_SCI.x,0,NEXUS_SCI.z);
   p.mesh.rotation.y=-Math.PI/2;                 // faces west, toward arriving players
   persons.scientist=p;
+  p.mesh.visible=nexusShown();                  // hidden with the Nexus (nexusApply)
 }
 // Dr. Vance's briefing tracks your Chronos progress: Level 1 first (a), then Level 2 once
 // the Wake is done (b), then an all-clear once both missions are complete (c).
@@ -3053,7 +3363,7 @@ function buildRallyKiosk(){
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7*480/360),
     holoMat(tex));
   screen.position.set(cx+0.2,1.38,cz);screen.rotation.y=Math.PI/2;worldGroup.add(screen);
-  hotspot(cx+1.6,cz,2.7,'Rally — choose a stage',()=>openRallySelect());
+  hotspot(cx+1.6,cz,2.7,'Rally — choose a stage',()=>openRallySelect(),{x:cx+0.2,y:1.4,z:cz,rad:1.2});   // aim: the screen
 }
 
 // HexGL level-select console in the Velocity room (press E → level menu)
@@ -3069,52 +3379,11 @@ function buildVelocityKiosk(){
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7*480/360),
     holoMat(tex));
   screen.position.set(cx+0.2,1.38,cz);screen.rotation.y=Math.PI/2;worldGroup.add(screen);
-  hotspot(cx+1.6,cz,2.7,'Velocity — choose a level',()=>openVelocitySelect());
+  hotspot(cx+1.6,cz,2.7,'Velocity — choose a level',()=>openVelocitySelect(),{x:cx+0.2,y:1.4,z:cz,rad:1.2});   // aim: the screen
 }
 
-// Rift Keeper shrine in the Crypt room (east wall) — a KayKit skeleton warrior guards a
-// glowing rift crystal on a stone pedestal; press E to descend into the wave-defense campaign.
-// Beating wave 75 returns you here (see launchRiftKeeper + the game's victory button).
-function buildCryptShrine(){
-  const R=ROOMS.find(r=>r.id==='crypt');
-  const cx=R.cx+2, cz=R.cz;   // inside the Crypt room, near the back; faces the entrance (-x, west)
-  // glowing green rift crystal hovering beside the display
-  const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(0.6,0),
-    new THREE.MeshStandardMaterial({color:0x8affc0,emissive:0x39d67a,emissiveIntensity:1.4,roughness:0.25}));
-  crystal.position.set(cx,1.6,cz-1.7);worldGroup.add(crystal);
-  const rlight=takeLight('crypt',0x59e08a,1.1,13);rlight.position.set(cx,1.7,cz-1.7);worldGroup.add(rlight);
-  animated.push({update(dt,t){crystal.rotation.y+=dt*0.9;crystal.position.y=1.6+Math.sin(t*1.6)*0.12;
-    rlight.intensity=1.0+Math.sin(t*3)*0.25;}});
-  // the distinctive element: the Arachnotron war-machine (hub's own assets folder),
-  // standing guard beside the pedestal where the skeleton warrior used to.
-  if(!window.__mdlFail){
-    const L=new THREE.GLTFLoader();
-    L.load('assets/mechs/doom_eternal_arachnotron.glb',(cg)=>{
-      const m=cg.scene;
-      const bb=new THREE.Box3().setFromObject(m);const s=2.1/Math.max(0.01,bb.max.y-bb.min.y);m.scale.setScalar(s);
-      m.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true;}});
-      const bb2=new THREE.Box3().setFromObject(m);
-      m.position.set(cx-1.3,-bb2.min.y,cz+2.8);m.rotation.y=Math.PI;worldGroup.add(m);   // native forward is +X → π faces the entrance; south of the pedestal
-      if(cg.animations&&cg.animations.length){        // play its own idle if the file carries one
-        const mixer=new THREE.AnimationMixer(m);
-        mixer.clipAction(cg.animations[0]).play();
-        animated.push({update(dt){mixer.update(dt);}});
-      }
-    },undefined,()=>{});
-  }
-  // info screen on the back wall (east), facing the entrance
-  const cnv=document.createElement('canvas');cnv.width=360;cnv.height=480;const ctx=cnv.getContext('2d');
-  holoFrame(ctx,'#5fe0a0');
-  ctx.textAlign='center';ctx.fillStyle='#8affc0';ctx.font='bold 46px Segoe UI';ctx.fillText('GARRISON',180,112);
-  ctx.fillStyle='#cfe0d6';ctx.font='20px Segoe UI';ctx.fillText('Fountain Keeper · 40-wave defense',180,152);
-  if(fountainDone()){ctx.fillStyle='#b6ff9c';ctx.font='bold 22px Segoe UI';ctx.fillText('✓ FOUNTAIN SAFE — descend again',180,214);}
-  else{ctx.fillStyle='#ffd27f';ctx.font='bold 22px Segoe UI';ctx.fillText('descend',180,214);}
-  const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
-  const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7*480/360),
-    holoMat(tex));
-  screen.position.set(cx-0.2,1.38,cz);screen.rotation.y=-Math.PI/2;worldGroup.add(screen);
-  hotspot(cx-1.7,cz,2.8,'Garrison — descend into Fountain Keeper',()=>launchRiftKeeper());
-}
+// (buildCryptShrine — the Garrison's crystal, Arachnotron mech, screen and 'descend' hotspot — was removed
+//  2026-09-17 when the room was emptied; assets/mechs/doom_eternal_arachnotron.glb stays in the folder.)
 
 // Blindspots (the former Wake room) — a first-person "lessons" vignette in a Sponza cathedral
 // where a stranger meets you. The distinctive element is that stranger (Soldier.glb, pulled
@@ -3134,22 +3403,8 @@ function buildBlindspotsKiosk(){
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7*480/360),
     holoMat(tex));
   screen.position.set(cx-0.2,1.38,cz);screen.rotation.y=-Math.PI/2;worldGroup.add(screen);
-  // the stranger — Soldier.glb from the blindspots game folder, standing idle by the lectern.
-  // Phones skip him: the lectern, screen and hotspot carry the room on their own.
-  if(!window.__mdlFail&&!MOBILE){
-    const L=new THREE.GLTFLoader();
-    L.load('local/blindspots/Soldier.glb',(cg)=>{
-      const m=cg.scene;
-      const bb=new THREE.Box3().setFromObject(m);const s=1.85/Math.max(0.01,bb.max.y-bb.min.y);m.scale.setScalar(s);
-      m.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true;}});
-      const bb2=new THREE.Box3().setFromObject(m);
-      m.position.set(cx-1.6,-bb2.min.y,cz+1.2);m.rotation.y=Math.PI/2;worldGroup.add(m);
-      const idle=(cg.animations||[]).find(c=>/idle/i.test(c.name))||(cg.animations||[])[0];
-      if(idle){const mixer=new THREE.AnimationMixer(m);mixer.clipAction(idle).play();mixer.update(0.6);
-        animated.push({update(dt){mixer.update(dt);}});}
-    },undefined,()=>{});
-  }
-  hotspot(cx-1.7,cz,2.8,'Blindspots — step inside',()=>openBlindspotsSelect());
+  // (the stranger — Soldier.glb from the blindspots game folder — stood by the lectern until 2026-09-17: he is in front of the Theater now, buildTheaterScene)
+  hotspot(cx-1.7,cz,2.8,'Blindspots — step inside',()=>openBlindspotsSelect(),{x:cx-0.2,y:1.3,z:cz,rad:1.2});   // aim: the screen
 }
 // two conversations, one before the other: the map plays whichever the entry hash names
 // (#why / #get-real) and its door marks atd:blindspots:<id> done on the way out.
@@ -3167,7 +3422,7 @@ function cerebroDone(){try{return localStorage.getItem('atd:cerebro:1')==='1';}c
 function blindspotsDone(){try{return localStorage.getItem('atd:blindspots:1')==='1';}catch(e){return false;}}
 function buildCerebroKiosk(){
   const R=ROOMS.find(r=>r.id==='cerebro');
-  const cx=R.cx, cz=R.cz+2;   // deep in the room (south wall), faces the entrance (-z, north)
+  const sz=DIRV[R.dir][1], cx=R.cx, cz=R.cz-sz*2;   // deep in the room, faces the entrance (sz: which way the room opens, +1 south, -1 north)
   const gl=takeLight('cerebro',0x6fa8ff,0.85,12);gl.position.set(cx,2.4,cz);worldGroup.add(gl);
   // the mini-dome + orbiting card-lights, beside the display
   const orbit=new THREE.Group();orbit.position.set(cx-1.6,2.15,cz);worldGroup.add(orbit);
@@ -3193,8 +3448,8 @@ function buildCerebroKiosk(){
   const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7*480/360),
     holoMat(tex));
-  screen.position.set(cx,1.38,cz-0.2);screen.rotation.y=Math.PI;worldGroup.add(screen);
-  hotspot(cx,cz-1.7,2.8,'Cerebro — hear the week',()=>launchCerebro());
+  screen.position.set(cx,1.38,cz+sz*0.2);screen.rotation.y=sz>0?0:Math.PI;worldGroup.add(screen);
+  hotspot(cx,cz+sz*1.7,2.8,'Cerebro — hear the week',()=>launchCerebro(),{x:cx,y:1.4,z:cz+sz*0.2,rad:1.2});   // aim: the screen
 }
 function launchCerebro(){
   try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','cerebro');}catch(e){}
@@ -3406,13 +3661,13 @@ function buildHallwylDoor(){
   const bird=new THREE.Mesh(new THREE.SphereGeometry(0.07,10,10),
     new THREE.MeshStandardMaterial({color:0xd8dde6,roughness:0.25,metalness:0.9}));
   bird.position.set(cx+0.6,0.24,cz+0.42);worldGroup.add(bird);
-  hotspot(cx+1.6,cz,2.7,'The Hallwyl — step into 1899',()=>launchHallwyl());
+  hotspot(cx+1.6,cz,2.7,'The Hallwyl — step into 1899',()=>launchHallwyl(),{x:cx+0.2,y:1.4,z:cz,rad:1.2});   // aim: the screen
 }
 
 /* ---------- THEATER — the Quick Stories listening room ---------- */
 function buildTheater(){
   const R=ROOMS.find(r=>r.id==='theater');
-  const cz=R.cz, bx=R.cx-4.3;                     // clear of the back-wall accent strip + lit panel
+  const cz=R.cz, sx=DIRV[R.dir][0], bx=R.cx-sx*4.3;   // clear of the back-wall accent strip + lit panel (sx: which way the room faces, +1 east, -1 west)
   // the big screen
   let heard=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
     if(k&&k.indexOf('atd:story:')===0&&localStorage.getItem(k)==='1')heard++;}}catch(e){}
@@ -3428,25 +3683,210 @@ function buildTheater(){
   const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(7.4,7.4*430/760),
     new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
-  screen.position.set(bx,2.7,cz);screen.rotation.y=Math.PI/2;worldGroup.add(screen);
+  screen.position.set(bx,2.7,cz);screen.rotation.y=sx*Math.PI/2;worldGroup.add(screen);
   // two rows of wooden benches facing the screen
   const wood=new THREE.MeshStandardMaterial({color:0x4a3a28,roughness:0.85,metalness:0.05});
-  for(const x of [R.cx+0.6,R.cx+2.8])for(const z of [cz-2,cz+2]){
+  for(const x of [R.cx+sx*0.6,R.cx+sx*2.8])for(const z of [cz-2,cz+2]){
     box(x,0,z,0.7,0.5,2.7,wood,true);
     const back=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.66,2.7),wood);
-    back.position.set(x+0.32,0.8,z);worldGroup.add(back);
+    back.position.set(x+sx*0.32,0.8,z);worldGroup.add(back);
   }
   const gl=takeLight('theater',0x8fd8c8,0.5,11);gl.position.set(R.cx,3.4,cz);worldGroup.add(gl);
-  hotspot(R.cx+1.7,cz,3.0,'Theater — the listening room',()=>launchStoriesIndex());
+  hotspot(R.cx+sx*1.7,cz,3.0,'Theater — the listening room',()=>launchStoriesIndex(),{x:bx,y:2.7,z:cz,rad:3.4});   // aim: the big screen
 }
 
-/* ---------- SUBMIT — how to hang your door on this wall ---------- */
+/* ---------- THE STRANGER AND ELSA (2026-09-17) — how the Theater opens. The Theater (the old Garrison room) is walled
+   over; the stranger from the Blindspots room (Soldier.glb) waits in the hall in front of it. E on him: the wall goes,
+   Elsa (the Hallwyl's peasant girl) appears in the hall south of the room, he says "A theater. And Elsa." and walks in
+   to the aisle between the benches. E on Elsa: she offers to show you the Hallwyl house (launchHallwyl). E on him
+   inside: "You don't want to talk to me." — Ok / Yes I do, and yes is the Blindspots picker the Blindspots room had.
+   Once opened the Theater stays open on this machine (atd:theaterOpen): later visits find him inside and her outside. */
+function theaterOpened(){ try{ return localStorage.getItem('atd:theaterOpen')==='1'; }catch(e){ return false; } }
+const SCENE={stage:null,soldier:null,elsa:null,mix:null,act:{},hot:null,ehot:null,walk:null,pts:null,sit:null,sitOff:null,seated:false,waitSit:false};
+const SEAT={x:0,z:0,ry:0};   // the front bench's north seat, and the way he faces on it (the screen) — set by buildTheaterScene
+function buildTheaterScene(){
+  const R=ROOMS.find(r=>r.id==='theater'); if(!R||window.__mdlFail)return;
+  const cz=R.cz, doorX=R.cx-R.d/2, sx=DIRV[R.dir][0];                // the opening is at x 38, the room east of it
+  SEAT.x=R.cx+sx*2.8; SEAT.z=cz-2; SEAT.ry=sx>0?Math.PI/2:-Math.PI/2;   // the benches are at cx+sx*0.6 and cx+sx*2.8 (buildTheater); his rest faces -z, so -π/2 faces east
+  SCENE.pts={WAIT:[doorX-5,cz], AISLE:[doorX+1.6,cz], ELSA:[doorX-3,cz+5.5], STAND:[SEAT.x-sx*0.45,SEAT.z]};   // where he waits, the aisle, where she stands (by the wall just south of the opening), in front of his seat
+  SCENE.stage=theaterOpened()?'inside':'wait';
+  new THREE.GLTFLoader().load('local/blindspots/Soldier.glb',(cg)=>{
+    const m=cg.scene;
+    const bb=new THREE.Box3().setFromObject(m);const s=1.85/Math.max(0.01,bb.max.y-bb.min.y);m.scale.setScalar(s);
+    m.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true;o.frustumCulled=false;}});
+    const bb2=new THREE.Box3().setFromObject(m);
+    const at=SCENE.stage==='inside'?SCENE.pts.STAND:SCENE.pts.WAIT;
+    m.position.set(at[0],-bb2.min.y,at[1]);m.rotation.y=SCENE.stage==='inside'?SEAT.ry:Math.PI/2;   // the export rests facing -z: +π/2 turns him west, to the hall
+    worldGroup.add(m); SCENE.soldier=m; SCENE.foot=-bb2.min.y;
+    const clips=cg.animations||[], clip=n=>clips.find(c=>c.name===n);
+    const mx=SCENE.mix=new THREE.AnimationMixer(m);
+    const idle=clip('Idle')||clips[0], walk=clip('Walk');
+    SCENE.tpose=clip('TPose');
+    if(idle){ SCENE.act.idle=mx.clipAction(idle); SCENE.act.idle.play(); mx.update(0.6); }
+    if(walk)SCENE.act.walk=mx.clipAction(walk);
+    mx.addEventListener('finished',e=>{ if(SCENE.sit&&e.action===SCENE.sit.enter)sceneFade(SCENE.sit.enter,SCENE.sit.idle,0.35); });   // sat down: the seated idle takes over
+    animated.push({update(dt){ mx.update(dt); sceneWalk(dt); }});
+    SCENE.hot=hotspot(m.position.x,m.position.z,2.5,'Talk to the stranger',()=>strangerTalk(),{rad:0.42,cap:1.85});   // aim: his body
+    if(SCENE.stage==='inside'){ SCENE.waitSit=true; sitLoad(); }
+  },undefined,()=>{});
+  if(SCENE.stage==='inside')sceneElsa();
+}
+function sceneFade(from,to,t){ if(!to)return; to.reset().setEffectiveWeight(1).fadeIn(t).play(); if(from&&from!==to)from.fadeOut(t); }
+function sceneWalk(dt){                                                // his walk, 1.3 m/s, waypoint to waypoint
+  const w=SCENE.walk; if(!w)return; const m=SCENE.soldier, to=w.pts[w.i];
+  const dx=to[0]-m.position.x, dz=to[1]-m.position.z, d=Math.hypot(dx,dz);
+  if(d<0.08){ m.position.x=to[0]; m.position.z=to[1];
+    if(++w.i<w.pts.length)return;
+    SCENE.walk=null; SCENE.stage='inside'; SCENE.hot.r=2.5;               // arrived in front of his seat
+    if(SCENE.sit)sitDown(false); else { m.rotation.y=SEAT.ry; sceneFade(SCENE.act.walk,SCENE.act.idle,0.4); SCENE.waitSit=true; }   // the sitting clips are still on their way: he stands until they land
+    return; }
+  const step=Math.min(d,1.3*dt); m.position.x+=dx/d*step; m.position.z+=dz/d*step;
+  m.rotation.y=Math.atan2(dx,dz)+Math.PI;                             // faces the way he goes (rest faces -z)
+  SCENE.hot.x=m.position.x; SCENE.hot.z=m.position.z;
+}
+function strangerTalk(){
+  if(SCENE.walk)return;
+  if(SCENE.stage==='wait'){
+    try{localStorage.setItem('atd:theaterOpen','1');}catch(e){}
+    roomApply(ROOMS.find(r=>r.id==='theater'));                        // the Theater shows itself
+    roomApply(ROOMS.find(r=>r.id==='vault'));                          // and the delivery room, across the way
+    roomApply(ROOMS.find(r=>r.id==='lounge'));                         // the Lounge, the way to the Retreat
+    nexusApply();                                                       // and the Chronos gate wing
+    sceneElsa(); sitLoad();
+    SCENE.stage='going'; SCENE.hot.r=-1;                                // no prompt on him until he has arrived
+    say('stranger',"A theater. And Elsa.");
+    setTimeout(()=>{ sceneFade(SCENE.act.idle,SCENE.act.walk,0.4); SCENE.walk={pts:[SCENE.pts.AISLE,SCENE.pts.STAND],i:0}; SCENE.hasWalked=true; },1800);   // hasWalked: he sits down properly at the end (Sit_Enter), not straight into the seated idle
+    return;
+  }
+  const line="You don't want to talk to me.";
+  say('stranger',line);
+  askCard('The stranger','?','#c8d8ff',line,[['Ok',()=>closeElaraMenu()],['Yes I do',()=>{ closeElaraMenu(false); openBlindspotsSelect(); }]]);
+}
+
+/* ---- sitting. The mannequin library's Sitting clips (assets/people/ual_sitting.glb — Quaternius' Universal Animation
+   Library 1, slimmed to A_TPose, Sitting_Enter, Sitting_Idle_Loop, Sitting_Exit by tools/… slim_ual_sitting.py) are
+   retargeted onto his Mixamo bones here, at run time: both rigs are put in a T-pose (A_TPose there, his TPose clip
+   here) and turned to face the same way, then each bone's world rotation is carried over relative to that pose —
+   world(t) = src(t) · inv(srcT) · dstT — and his hips follow the mannequin's pelvis, scaled by hip height. ---- */
+const SIT_MAP={pelvis:'Hips',spine_01:'Spine',spine_02:'Spine1',spine_03:'Spine2',neck_01:'Neck',Head:'Head',
+  clavicle_l:'LeftShoulder',upperarm_l:'LeftArm',lowerarm_l:'LeftForeArm',hand_l:'LeftHand',
+  clavicle_r:'RightShoulder',upperarm_r:'RightArm',lowerarm_r:'RightForeArm',hand_r:'RightHand',
+  thigh_l:'LeftUpLeg',calf_l:'LeftLeg',foot_l:'LeftFoot',ball_l:'LeftToeBase',
+  thigh_r:'RightUpLeg',calf_r:'RightLeg',foot_r:'RightFoot',ball_r:'RightToeBase'};
+for(const [a,b] of [['index','Index'],['middle','Middle'],['ring','Ring'],['pinky','Pinky'],['thumb','Thumb']])
+  for(const sd of ['l','r'])for(let k=1;k<=3;k++)SIT_MAP[a+'_0'+k+'_'+sd]=(sd==='l'?'Left':'Right')+'Hand'+b+k;
+function sitLoad(){
+  if(SCENE.sitState)return; SCENE.sitState='loading';
+  new THREE.GLTFLoader().load('assets/people/ual_sitting.glb',(ug)=>{ SCENE.sitSrc=ug; SCENE.sitState='loaded'; sitBuild(); },undefined,()=>{ SCENE.sitState='failed'; });
+}
+function sitBuild(){
+  if(SCENE.sit||!SCENE.sitSrc||!SCENE.soldier||!SCENE.tpose)return;
+  const ug=SCENE.sitSrc, src=ug.scene, clip=n=>(ug.animations||[]).find(c=>c.name===n);
+  const m=SCENE.soldier, keepRy=m.rotation.y, keepX=m.position.x, keepZ=m.position.z;
+  m.rotation.y=0; m.position.x=0; m.position.z=0;                    // measured with him at the origin, facing his rest way
+  try{
+    const enter=sitRetarget(src,clip('A_TPose'),clip('Sitting_Enter'),m,SCENE.tpose,30,'Sit_Enter');
+    const idle=sitRetarget(src,clip('A_TPose'),clip('Sitting_Idle_Loop'),m,SCENE.tpose,30,'Sit_Idle');
+    const mx=SCENE.mix;
+    const aE=mx.clipAction(enter); aE.setLoop(THREE.LoopOnce,0); aE.clampWhenFinished=true;
+    const aI=mx.clipAction(idle);
+    SCENE.sit={enter:aE,idle:aI};
+    // where his hips land at the seated idle's first frame, relative to his root, in his own frame (facing -z)
+    const tmp=new THREE.AnimationMixer(m); const a=tmp.clipAction(idle); a.play(); tmp.setTime(0); m.updateMatrixWorld(true);
+    let hips=null; m.traverse(o=>{ if(/^mixamorig:?Hips$/.test(o.name))hips=o; });
+    const hw=hips.getWorldPosition(new THREE.Vector3());
+    SCENE.sitOff={x:hw.x-m.position.x, z:hw.z-m.position.z, y:hw.y};
+    tmp.stopAllAction(); tmp.uncacheRoot(m);
+  }catch(e){ console.warn('sitBuild',e); SCENE.sitState='failed'; }
+  m.rotation.y=keepRy; m.position.x=keepX; m.position.z=keepZ; m.updateMatrixWorld(true);
+  if(SCENE.sit&&SCENE.waitSit)sitDown(SCENE.stage==='inside'&&!SCENE.walk&&!SCENE.hasWalked);
+}
+function sitDown(immediate){                                           // onto the seat: the root goes where the seated hips land on the seat's centre
+  const m=SCENE.soldier, o=SCENE.sitOff, c=Math.cos(SEAT.ry), sn=Math.sin(SEAT.ry);
+  const ox=o.x*c+o.z*sn, oz=-o.x*sn+o.z*c;                             // his hip offset, turned the way he sits
+  m.position.x=SEAT.x-ox; m.position.z=SEAT.z-oz; m.rotation.y=SEAT.ry;
+  SCENE.waitSit=false; SCENE.seated=true;
+  const to=immediate?SCENE.sit.idle:SCENE.sit.enter; to.reset().setEffectiveWeight(1).fadeIn(immediate?0.2:0.35).play();
+  for(const a of [SCENE.act.walk,SCENE.act.idle])if(a&&a.isRunning())a.fadeOut(0.35);   // whatever he was doing on his feet
+  SCENE.hot.x=SEAT.x; SCENE.hot.z=SEAT.z; SCENE.hot.cap=1.35;          // the prompt: on him seated
+}
+function sitRetarget(srcRoot,srcT,srcClip,dstRoot,dstT,fps,name){
+  const S={},D={}; srcRoot.traverse(o=>{S[o.name]=o;}); dstRoot.traverse(o=>{D[o.name.replace('mixamorig:','mixamorig')]=o;});   // the loader drops the colon from 'mixamorig:Hips'
+  const pairs=[]; for(const k in SIT_MAP){ const a=S[k], b=D['mixamorig'+SIT_MAP[k]]; if(a&&b)pairs.push({s:a,d:b}); }
+  if(pairs.length<20)throw new Error('sitRetarget: only '+pairs.length+' bones matched');
+  const depth=o=>{ let n=0; for(let q=o.parent;q;q=q.parent)n++; return n; }; pairs.sort((a,b)=>depth(a.d)-depth(b.d));   // parents first
+  const V=()=>new THREE.Vector3(), Q=()=>new THREE.Quaternion();
+  const facing=(root,L,R)=>{ const l=L.getWorldPosition(V()), r=R.getWorldPosition(V()); const f=l.sub(r).cross(new THREE.Vector3(0,1,0)); return Math.atan2(f.x,f.z); };   // the way a T-posed figure faces: left hand → right hand, crossed with up
+  // 1. both in their T-pose; the mannequin turned to face the way he does
+  const mxS=new THREE.AnimationMixer(srcRoot); mxS.clipAction(srcT).play(); mxS.setTime(0); srcRoot.rotation.y=0; srcRoot.updateMatrixWorld(true);
+  const mxD=new THREE.AnimationMixer(dstRoot); mxD.clipAction(dstT).play(); mxD.setTime(0); dstRoot.updateMatrixWorld(true);
+  srcRoot.rotation.y=facing(dstRoot,D.mixamorigLeftHand,D.mixamorigRightHand)-facing(srcRoot,S.hand_l,S.hand_r); srcRoot.updateMatrixWorld(true);
+  const srcRef={},dstRef={};
+  for(const p of pairs){ srcRef[p.s.name]=p.s.getWorldQuaternion(Q()); dstRef[p.d.name]=p.d.getWorldQuaternion(Q()); }
+  const hipsD=D.mixamorigHips, pelvisS=S.pelvis;
+  const hipRefW=hipsD.getWorldPosition(V()), pelRefW=pelvisS.getWorldPosition(V());
+  const ratio=(hipRefW.y-(dstRoot.getWorldPosition(V()).y-(SCENE.foot||0)))/Math.max(0.01,pelRefW.y-srcRoot.getWorldPosition(V()).y);   // hip height above the floor, his over the mannequin's (his feet stand at root y - foot; the mannequin's at its own 0)
+  const hipLocalRef=hipsD.position.clone(), invPar=new THREE.Matrix4().copy(hipsD.parent.matrixWorld).invert();
+  const restW=new Map(); dstRoot.traverse(o=>restW.set(o,o.getWorldQuaternion(Q())));   // his T-pose, for the unmapped parent of the hips
+  mxD.stopAllAction(); mxD.uncacheRoot(dstRoot);
+  // 2. the clip, frame by frame
+  mxS.stopAllAction(); const act=mxS.clipAction(srcClip); act.setLoop(THREE.LoopOnce,0); act.clampWhenFinished=true; act.play();
+  const n=Math.max(2,Math.round(srcClip.duration*fps)), times=new Float32Array(n), qv=pairs.map(()=>new Float32Array(n*4)), hp=new Float32Array(n*3);
+  const worldQ=new Map(), inv=Q(), w=Q(), loc=Q(), pw=Q(), a=V(), b=V();
+  for(let f=0;f<n;f++){
+    const t=Math.min(srcClip.duration-1e-4,f/(n-1)*srcClip.duration); times[f]=t;
+    mxS.setTime(t); srcRoot.updateMatrixWorld(true); worldQ.clear();
+    for(let i=0;i<pairs.length;i++){ const {s,d}=pairs[i];
+      w.copy(s.getWorldQuaternion(Q())).multiply(inv.copy(srcRef[s.name]).invert()).multiply(dstRef[d.name]);   // world(t) = src(t) · inv(srcT) · dstT
+      pw.copy(worldQ.get(d.parent)||restW.get(d.parent)); loc.copy(pw).invert().multiply(w); worldQ.set(d,w.clone());
+      qv[i][f*4]=loc.x; qv[i][f*4+1]=loc.y; qv[i][f*4+2]=loc.z; qv[i][f*4+3]=loc.w; }
+    const dW=pelvisS.getWorldPosition(V()).sub(pelRefW).multiplyScalar(ratio);                          // the pelvis' travel, in metres, scaled to him
+    a.copy(hipRefW).applyMatrix4(invPar); b.copy(hipRefW).add(dW).applyMatrix4(invPar); b.sub(a).add(hipLocalRef);   // into the hips' own parent frame
+    hp[f*3]=b.x; hp[f*3+1]=b.y; hp[f*3+2]=b.z;
+  }
+  mxS.stopAllAction(); mxS.uncacheRoot(srcRoot);
+  const tracks=pairs.map((p,i)=>new THREE.QuaternionKeyframeTrack(p.d.name+'.quaternion',times,qv[i]));
+  tracks.push(new THREE.VectorKeyframeTrack(hipsD.name+'.position',times,hp));
+  return new THREE.AnimationClip(name,srcClip.duration,tracks);
+}
+function sceneElsa(){
+  if(SCENE.elsa||SCENE.elsaLoading)return; SCENE.elsaLoading=true;
+  const at=SCENE.pts.ELSA;
+  new THREE.GLTFLoader().load('local/the_hallwyl/peasant_girl.glb',(cg)=>{
+    const m=cg.scene; const bb=new THREE.Box3().setFromObject(m); const s=1.65/Math.max(0.01,bb.max.y-bb.min.y);   // sized the way the Hallwyl sizes her
+    const g=new THREE.Group(); g.add(m); m.scale.setScalar(s); m.position.y=-bb.min.y*s;
+    m.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true;o.frustumCulled=false;}});
+    g.position.set(at[0],0,at[1]); g.rotation.y=Math.atan2(SCENE.pts.WAIT[0]-at[0],SCENE.pts.WAIT[1]-at[1]);   // faces the Theater's front (her export rests facing +z, as the Hallwyl turns her)
+    worldGroup.add(g); SCENE.elsa=g;
+    const idle=(cg.animations||[]).find(c=>/idle/i.test(c.name))||(cg.animations||[])[0];
+    if(idle){ const mx=new THREE.AnimationMixer(m); mx.clipAction(idle).play(); animated.push({update(dt){mx.update(dt);}}); }
+    SCENE.ehot=hotspot(at[0],at[1],2.5,'Talk to Elsa',()=>elsaTalk(),{rad:0.4,cap:1.65});   // aim: her body
+  },undefined,()=>{ SCENE.elsaLoading=false; });
+}
+function elsaTalk(){
+  const line="Would you like to see the Hallwyl house? I can take you there.";
+  say('elsa',line);
+  askCard('From the Hallwyl','Elsa','#ffb6e0',line,[['Not now',()=>closeElaraMenu()],['Show me the house',()=>{ closeElaraMenu(false); launchHallwyl(); }]]);
+}
+// a question with a few answers, on the same card Elara and Jack use
+function askCard(tag,title,color,question,options){
+  elaraHeader(tag,title,color); cardFor='other';
+  document.exitPointerLock&&document.exitPointerLock();
+  const opts=document.getElementById('elaraOpts'), q=document.getElementById('elaraQ');
+  document.getElementById('elaraChat').style.display='none'; opts.style.display=''; opts.innerHTML=''; q.textContent=question;
+  options.forEach(([html,fn],i)=>{ const b=document.createElement('button'); b.className='menuBtn';
+    b.style.cssText='width:100%;margin:7px 0;min-width:0'+(i===options.length-1?';border-left-color:'+color:''); b.innerHTML=html; b.onclick=fn; opts.appendChild(b); });
+  document.getElementById('elaraModal').style.display='flex';
+}
+
+/* ---------- OR MAIL IT — the send-it-in form, on the west side wall of the ADD YOUR LEVEL room (it hung on the
+   back wall, titled ADD YOUR GAME, until 2026-09-17, when it swapped places with the Claude Code board) ---------- */
 function buildSubmitDesk(){
   const R=ROOMS.find(r=>r.id==='submit');
   const cnv=document.createElement('canvas');cnv.width=760;cnv.height=560;const ctx=cnv.getContext('2d');
   ctx.fillStyle='#0a1626';ctx.fillRect(0,0,760,560);
   ctx.strokeStyle='#5fe0c8';ctx.lineWidth=5;roundRect(ctx,10,10,740,540,14);ctx.stroke();
-  ctx.textAlign='center';ctx.fillStyle='#5fe0c8';ctx.font='bold 46px Segoe UI';ctx.fillText('ADD YOUR GAME',380,66);
+  ctx.textAlign='center';ctx.fillStyle='#5fe0c8';ctx.font='bold 46px Segoe UI';ctx.fillText('OR MAIL IT',380,66);
   ctx.strokeStyle='rgba(95,224,200,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(40,90);ctx.lineTo(720,90);ctx.stroke();
   ctx.textAlign='left';
   const step=(n,y,head,body)=>{
@@ -3466,11 +3906,11 @@ function buildSubmitDesk(){
   const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
   const panel=new THREE.Mesh(new THREE.PlaneGeometry(7.0,7.0*560/760),
     new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
-  panel.position.set(R.cx,2.9,-45.25);panel.rotation.y=0;worldGroup.add(panel);
-  hotspot(R.cx,-42.5,3.0,'Submit your game',()=>openSubmitModal());
+  panel.position.set(R.cx-R.w/2+0.75,2.9,R.cz);panel.rotation.y=Math.PI/2;worldGroup.add(panel);   // west side wall, facing into the room
+  hotspot(R.cx-R.w/2+2.5,R.cz,3.0,'Submit your game',()=>openSubmitModal(),{x:R.cx-R.w/2+0.75,y:2.9,z:R.cz,rad:3.0});   // aim: the board
 }
 
-/* ---------- MADE WITH CLAUDE CODE / CHATGPT — west wall of the submit room. The hall is on GitHub; an assistant
+/* ---------- MADE WITH CLAUDE CODE / CHATGPT — back wall of the ADD YOUR LEVEL room. The hall is on GitHub; an assistant
    can add a level or a game from that copy and submit it. E opens the how-to page (and copies its link). ---------- */
 const CONTRIBUTE_URL='https://code-4you.github.io/arrivals-hall/contribute.html';
 function buildContributeBoard(){
@@ -3479,34 +3919,43 @@ function buildContributeBoard(){
   ctx.setTransform(1.5,0,0,1.5,0,0);
   ctx.fillStyle='#0a1626';ctx.fillRect(0,0,760,560);
   ctx.strokeStyle='#ffd27f';ctx.lineWidth=5;roundRect(ctx,10,10,740,540,14);ctx.stroke();
-  ctx.textAlign='center';ctx.fillStyle='#ffd27f';ctx.font='bold 46px Segoe UI';ctx.fillText('MADE WITH CLAUDE CODE',380,68);
-  ctx.font='bold 27px Segoe UI';ctx.fillText('or ChatGPT Desktop — from the GitHub copy of this hall',380,108);
-  ctx.fillStyle='#8497ac';ctx.font='italic 18px Segoe UI';ctx.fillText('the whole building is on GitHub, kept in sync with this one',380,140);
-  ctx.strokeStyle='rgba(255,210,127,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(40,160);ctx.lineTo(720,160);ctx.stroke();
+  // the wording is the user's (2026-09-17). fitFont: the largest size, from px down to min, at which text is no wider than w
+  const fitFont=(text,px,min,w,pre)=>{ ctx.font=pre+px+'px Segoe UI'; while(px>min&&ctx.measureText(text).width>w){ px--; ctx.font=pre+px+'px Segoe UI'; } return px; };
+  ctx.textAlign='center';ctx.fillStyle='#ffd27f';   // (the MADE WITH CLAUDE CODE title was taken off, 2026-09-17: the two lines under it moved up)
+  fitFont('ASK CLAUDE CODE OR CHATGPT TO MAKE ANYTHING HERE',27,16,690,'bold ');ctx.fillText('ASK CLAUDE CODE OR CHATGPT TO MAKE ANYTHING HERE',380,70);
+  ctx.fillStyle='#8497ac';ctx.font='italic 18px Segoe UI';ctx.fillText('the whole building is on GitHub',380,102);
+  ctx.strokeStyle='rgba(255,210,127,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(40,132);ctx.lineTo(720,132);ctx.stroke();
   ctx.textAlign='left';
   const step=(n,y,head,body)=>{
     ctx.fillStyle='#ffd27f';ctx.font='bold 30px Segoe UI';ctx.fillText(n,48,y);
     ctx.fillStyle='#dfe9f5';ctx.font='bold 23px Segoe UI';ctx.fillText(head,92,y);
-    ctx.fillStyle='#9fb4cc';ctx.font='19px Segoe UI';ctx.fillText(body,92,y+30);
+    ctx.fillStyle='#9fb4cc';ctx.font='19px Segoe UI';ctx.fillText(body,92,y+28);
   };
-  step('1',206,'Ask Claude Code or ChatGPT Desktop','to add your level or your game — or to change something');
-  step('2',290,'View it live','on your own copy, and show it to your friends');
-  step('3',374,'Submit it','everything sent gets looked at — good ones get hung in here');
+  step('1',190,'Ask Claude Code or ChatGPT Desktop','to add a level — or to make something');
+  { // step 1's third line, the address in cyan: one size for both parts, small enough to stay inside the frame
+    const a='Just share this page with them ', u='code-4you.github.io/arrivals-hall/contribute.html';
+    const px=fitFont(a+u,19,13,620,'');
+    ctx.font=px+'px Segoe UI';ctx.fillStyle='#9fb4cc';ctx.fillText(a,92,246); const wa=ctx.measureText(a).width;
+    ctx.fillStyle='#7fe6ff';ctx.fillText(u,92+wa,246);   // same weight as it was measured in: only the colour tells it apart
+  }
+  step('2',296,'View it live','on your own copy, and show it to your friends');
+  step('3',374,'Submit it','everything sent gets looked at — good ones get added and credited');
   ctx.textAlign='center';ctx.fillStyle='#dfe9f5';ctx.font='bold 22px Segoe UI';
   ctx.fillText('Share this page with them — they will know what to do:',380,440);
-  ctx.fillStyle='#7fe6ff';ctx.font='bold 24px Consolas';ctx.fillText('code-4you.github.io/arrivals-hall/contribute.html',380,478);
-  ctx.fillStyle='#b6ff9c';ctx.font='bold 22px Segoe UI';ctx.fillText('▶ Press E — open the page and copy the link',380,526);
+  ctx.fillStyle='#7fe6ff';ctx.font='bold 24px Consolas';ctx.fillText('code-4you.github.io/arrivals-hall/contribute.html',380,474);
+  ctx.fillStyle='#b6ff9c';ctx.font='bold 22px Segoe UI';ctx.fillText('▶ Press E — open the page and copy the link',380,520);
   const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
   const panel=new THREE.Mesh(new THREE.PlaneGeometry(7.0,7.0*560/760),
     new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
-  panel.position.set(R.cx-R.w/2+0.75,2.9,R.cz);panel.rotation.y=Math.PI/2;   // west side wall, facing into the room
+  panel.position.set(R.cx,2.9,-45.25);panel.rotation.y=0;   // the back wall, facing the entrance
   worldGroup.add(panel);
-  const h=hotspot(R.cx-R.w/2+2.5,R.cz,2.2,'Build it with Claude Code or ChatGPT — open the how-to page',()=>{
+  const h=hotspot(R.cx,-42.5,3.0,'Build it with Claude Code or ChatGPT — open the how-to page',()=>{
     try{ if(navigator.clipboard)navigator.clipboard.writeText(CONTRIBUTE_URL).catch(()=>{}); }catch(e){}   // a copy is a courtesy: never an error
     banner('LINK COPIED — PASTE IT TO CLAUDE CODE OR CHATGPT DESKTOP');
     const w=window.open(CONTRIBUTE_URL,'_blank','noopener');
     if(!w)location.href=CONTRIBUTE_URL;                                   // a pop-up blocker: go there in this tab instead
   });
+  h.ax=R.cx; h.az=-45.25; h.ay=2.9; h.rad=3.0;   // aim: the panel itself
   h.clickable=true;   // a plain mouse click at the wall works too, not just E
 }
 
@@ -3518,7 +3967,8 @@ function buildArcade(){
   const R=ROOMS.find(r=>r.id==='arcade');
   const ph=HOTS.findIndex(h=>h.label===R.name+' — opening soon'); if(ph>=0)HOTS.splice(ph,1);   // the room is fitted out now: its placeholder prompt goes
   const slots=[];
-  for(const dx of [-3.6,0,3.6])slots.push({x:R.cx+dx,z:R.cz-R.d/2+0.75,ry:0,hx:0,hz:1.8});           // back wall
+  const sz=DIRV[R.dir][1];   // which way the room opens: +1 south, -1 north
+  for(const dx of [-3.6,0,3.6])slots.push({x:R.cx+dx,z:R.cz-sz*(R.d/2-0.75),ry:sz>0?0:Math.PI,hx:0,hz:sz*1.8});   // back wall
   for(const dz of [-2.3,2.3])slots.push({x:R.cx-R.w/2+0.75,z:R.cz+dz,ry:Math.PI/2,hx:1.8,hz:0});      // west wall
   for(const dz of [-2.3,2.3])slots.push({x:R.cx+R.w/2-0.75,z:R.cz+dz,ry:-Math.PI/2,hx:-1.8,hz:0});    // east wall
   COMMUNITY_GAMES.slice(0,slots.length).forEach((g,i)=>{
@@ -3541,7 +3991,7 @@ function buildArcade(){
     const panel=new THREE.Mesh(new THREE.PlaneGeometry(3.2,3.2*560/760),
       new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
     panel.position.set(sl.x,2.6,sl.z);panel.rotation.y=sl.ry;worldGroup.add(panel);
-    const h=hotspot(sl.x+sl.hx,sl.z+sl.hz,1.9,'Play '+name+' — by '+by,()=>{ trackPlay('c-'+g.slug); location.href=g.url; });
+    const h=hotspot(sl.x+sl.hx,sl.z+sl.hz,1.9,'Play '+name+' — by '+by,()=>{ trackPlay('c-'+g.slug); location.href=g.url; },{x:sl.x,y:2.6,z:sl.z,rad:1.4});   // aim: the poster
     h.clickable=true;
   });
 }
@@ -3586,7 +4036,7 @@ function buildLeadersBoard(){
     new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
   panel.position.set(R.cx+R.w/2-0.75,2.9,R.cz);panel.rotation.y=-Math.PI/2;   // east side wall, facing into the room
   worldGroup.add(panel);
-  hotspot(R.cx+R.w/2-2.5,R.cz,2.2,'Leaders board',()=>banner('LEADERS BOARD · EVERY DOOR OPENING COUNTS'));
+  hotspot(R.cx+R.w/2-2.5,R.cz,2.2,'Leaders board',()=>banner('LEADERS BOARD · EVERY DOOR OPENING COUNTS'),{x:R.cx+R.w/2-0.75,y:2.9,z:R.cz,rad:3.0});   // aim: the board
 }
 
 /* ---------- IDEAS — the old Fame Wall room: write your idea straight onto the wall ---------- */
@@ -3624,7 +4074,7 @@ function buildIdeasWall(){
   const panel=new THREE.Mesh(new THREE.PlaneGeometry(7.0,7.0*560/760),
     new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.6,roughness:0.6}));
   panel.position.set(R.cx,2.9,-45.25);worldGroup.add(panel);
-  hotspot(R.cx,-42.5,3.0,'Write an idea on the wall',()=>openIdeas());
+  hotspot(R.cx,-42.5,3.0,'Write an idea on the wall',()=>openIdeas(),{x:R.cx,y:2.9,z:-45.25,rad:3.0});   // aim: the wall
 }
 
 /* ---------- THINGS PEOPLE ASKED — side wall of the Ideas room: every wish spoken
@@ -3674,6 +4124,7 @@ function buildWishBoard(){
   const h=hotspot(R.cx-R.w/2+2.5,R.cz,2.2,'The Organiser Room — enter',()=>{
     location.href='https://lightsmithforge.linkpc.net/organiser/index.html';   // the private Organiser Room (login gate)
   });
+  h.ax=R.cx-R.w/2+0.75; h.ay=2.9; h.rad=3.0;   // aim: the panel itself
   h.clickable=true;   // a plain mouse click at the wall works too, not just E
 }
 
@@ -3696,7 +4147,7 @@ function buildVisitorBoard(){
       new THREE.MeshStandardMaterial({map:b.tex,emissive:0xffffff,emissiveMap:b.tex,emissiveIntensity:0.6,roughness:0.6}));
     panel.position.set(7.62,2.6,z);panel.rotation.y=-Math.PI/2;
     worldGroup.add(panel);
-    hotspot(6.8,z,2.2,label+' — see it all in the Organiser Room',()=>{location.href='https://lightsmithforge.linkpc.net/organiser/index.html';});   // the foyer board opens the Organiser Room
+    hotspot(6.8,z,2.2,label+' — see it all in the Organiser Room',()=>{location.href='https://lightsmithforge.linkpc.net/organiser/index.html';},{x:7.62,y:2.6,z:z,rad:1.4});   // the foyer board opens the Organiser Room; aim: the panel
     return b;
   }
   const bVis=makePanel(36.9,'Visitors book');
@@ -3993,20 +4444,20 @@ function closeWhatAreYou(){
 const LOCATIONS={
   fountain:{x:0,z:-4,label:'The Fountain'},
   elara:{x:3,z:16,label:'Elara, your guide'},
-  theater:{x:-38,z:18,label:'Theater — Quick Stories'},
+  theater:{x:38,z:16,label:'Theater — Quick Stories'},
   garden:{x:-30,z:28,label:'Garden — The Community'},
   submit:{x:-14,z:-36,label:'Completion — add your game'},
   fame:{x:0,z:-36,label:'Ideas — write on the wall'},
-  arcade:{x:14,z:-36,label:'Arcade'},
+  arcade:{x:16,z:28,label:'Arcade'},
   velocity:{x:-38,z:-11,label:'Velocity — racing'},
   rally:{x:-38,z:4,label:'Rally'},
   hallwyl:{x:-38,z:-26,label:'The Hallwyl — 1899'},
-  fps:{x:38,z:-28,label:'FPS Hall'},
+  fps:{x:-38,z:18,label:'FPS Hall'},
   blindspots:{x:38,z:-14,label:'Blindspots'},
   chronos:{x:38,z:-1,label:'Chronos Court'},
-  crypt:{x:38,z:16,label:'Garrison'},
+  crypt:{x:8,z:-29.5,label:'Jack — Defend the hall'},   // Fountain Keeper starts from Jack's E menu (2026-09-17)
   vault:{x:30,z:28,label:'Under construction'},
-  cerebro:{x:16,z:28,label:'Cerebro — the week\'s voices'},
+  cerebro:{x:14,z:-36,label:'Cerebro — the week\'s voices'},
   delivery:{x:30,z:35,label:'Delivery door — in the room under construction'}
 };
 function escHtml(s){return (s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
@@ -4110,6 +4561,8 @@ function drawMall(cv,full,view){
   const scale=W/v.span;                        // pixels per metre — labels only when they'd fit
   ctx.lineWidth=1.2;ctx.strokeStyle='rgba(127,230,255,.4)';
   for(const A of MAP_AREAS){
+    if(A.name==='NEXUS'&&!nexusShown())continue;   // walled over until the Theater opens
+    if((A.name==='THE RETREAT'||A.name==='RETREAT WALK')&&!roomShown(ROOMS.find(r=>r.id==='lounge')))continue;   // behind the walled-over Lounge, the same
     ctx.strokeRect(sx(A.x0),sz(A.z0),sx(A.x1)-sx(A.x0),sz(A.z1)-sz(A.z0));
     if(full&&scale>1.1){ctx.fillStyle='rgba(127,230,255,.5)';ctx.font='9px sans-serif';ctx.textAlign='center';
       ctx.fillText(A.name,sx((A.x0+A.x1)/2),sz(A.z0)+11);}
@@ -4122,6 +4575,7 @@ function drawMall(cv,full,view){
   } }catch(e){}
   ctx.strokeStyle='rgba(127,230,255,.22)';
   try{for(const R of ROOMS){
+    if(!roomShown(R))continue;                          // a walled-over room is not on the map
     const x=sx(R.cx-R.w/2),y=sz(R.cz-R.d/2);
     ctx.strokeRect(x,y,sx(R.cx+R.w/2)-x,sz(R.cz+R.d/2)-y);
     if(full&&scale>2.2){ctx.fillStyle='rgba(160,200,230,.7)';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(R.name,sx(R.cx),sz(R.cz)+3);}
@@ -4815,7 +5269,7 @@ function buildCommunityDoor(){
     dl.intensity=0.8+Math.sin(t*1.7)*0.15;
   }});
   BUILDINGS.push({x:R.cx,z:R.cz+2,hw:0.85,hd:0.35});
-  hotspot(R.cx,R.cz+0.6,2.6,'A standing door — the community',()=>openCommunityStories());
+  hotspot(R.cx,R.cz+0.6,2.6,'A standing door — the community',()=>openCommunityStories(),{x:R.cx,y:1.1,z:R.cz+2,rad:1.1});   // aim: the door
 }
 // The community doorway (the standing door in the Garden room) gets its own menu — no locks.
 function openCommunityStories(){
@@ -5203,7 +5657,6 @@ function aimOffset(p,yawDeg,pitchDeg){         // the camera, swung yawDeg / pit
 // idle layers switched off on the dev page (atd:dev:off:<clip>): their actions are held at weight 0 before each mixer update
 const ELARA_IDLE='Idle_Relax';    // her standing idle (2026-09-10): the ActorCore 'relax' take (relax-378947.fbx), baked
                                   // onto her rig with bake-elara.html ?set=extra and merged in by tools/gltf/add-clips.js.
-                                  // Space 09 borrows this same clip; 08 stays on Idle_UAL.
                                   // The others stay selectable on the dev page.
 const IDLE_LABELS={Idle:'Dahlia body capture',Idle_Mixamo:'Mixamo idle (default)',Idle_UAL:'Universal Animation Library: Idle_Loop',Idle_UAL_Talking:'Universal Animation Library: Idle_Talking_Loop',Idle_UAL_FoldArms:'Universal Animation Library 2: Idle_FoldArms_Loop',Idle_Relax:'ActorCore: relax'};
 // the captured face, in parts (dev page): Face_Head bone groups and Face_Idle/Face_Talk morph groups
@@ -5575,6 +6028,14 @@ function devRender(){
     sec('HER SHAPE','Breast size, from the two CC3 breast bones her file is weighted to. It holds through every animation; 1.00 is the model as it comes. Flat feet turns each toe fan to a fixed angle while nothing is walking: 1.00 is level with the floor on both feet, above that presses them lower.')+
     '<div style="margin:6px 0">Flat feet standing &nbsp;<b id="devFeetV" style="color:var(--amber)">'+FEET_AMT.toFixed(2)+'</b><br><input id="devFeet" type="range" min="0" max="3" step="0.05" value="'+FEET_AMT+'" style="width:100%;pointer-events:auto"><div style="color:#8fa3bf;font-size:12px">0 = the animation\&rsquo;s own toes. 1.00 = both toe fans level with the floor, whichever way the clip holds them. Above 1 presses them 12 degrees lower per unit.</div></div>'+
     '<div style="margin:6px 0">Breast size &nbsp;<b id="devBreastV" style="color:var(--amber)">'+BREAST.toFixed(2)+'</b> ×<br><input id="devBreast" type="range" min="0.5" max="1.2" step="0.01" value="'+BREAST+'" style="width:100%;pointer-events:auto"></div>'+
+    sec('GUNS','Elara and Jack can draw Jack’s pistol — not on their E menus, only here. Draw guns: both hold the stance. Spawn the nightmare: the Fountain Keeper boss appears 11 m in front of you, they turn to it and shoot, 1 damage a shot, until it bursts away. Close this page to watch: the game is paused while it is open. Jack joins once the hall is open and he has arrived.')+
+    btn('Draw guns — Elara and Jack hold the pistol stance','id="devGunsHold"',GUNS.hold)+
+    btn('Spawn the nightmare boss — they shoot at it','id="devGunsBoss"',!!(GUNS.boss&&!GUNS.boss.dying))+
+    btn('Remove the nightmare','id="devGunsBossOff"',false)+
+    '<div style="color:#8fa3bf;font-size:12px;margin:4px 0" id="devGunsInfo">'+gunsStatus()+'</div>'+
+    sec('HIDDEN ROOMS','These rooms of the hall are walled over: a plain stretch of wall where the opening was, no sign, no prompt, off the map — the empty ones, the racing rooms, Blindspots, the Hallwyl, and the Theater, the delivery room and the Lounge until the stranger opens the Theater. Tick one to open it again — kept on this machine; Reset walls them all over. The Arcade is listed until a COMMUNITY_GAMES entry gives it a poster.')+
+    ROOMS.filter(roomHidden).map(R=>chk('room:'+R.id,false,false,'Show '+(R.name==='UNDER'?'UNDER CONSTRUCTION':R.name+' · '+R.sub),{E:'west wall',W:'east wall',S:'Makers’ Row',N:'south wall'}[R.dir]+(R.id==='credits'?', west of the foyer':''))).join('')+
+    chk('room:nexus',false,false,'Show NEXUS · CHRONOS GATE','east wall — opens with the Theater')+
     sec('TOOLS')+
     sl('devHeadMax','headMax','Head turn limit',10,70,5,'°')+
     btn('▶ Smile now (next variation)','id="devSmile"',false)+
@@ -5595,7 +6056,11 @@ function devRender(){
   b.querySelectorAll('input[data-chk]').forEach(el=>el.onchange=()=>{const k=el.dataset.chk,inv=el.dataset.inv==='1',on=el.checked;
     try{localStorage.setItem('atd:dev:'+k,inv?(on?'0':'1'):(on?'1':'0'));}catch(e){}
     if(k==='off:Idle'&&on&&p){const c=p.clips[p.idle],a=c&&p.mixer.existingAction(c);if(a&&p.actName===p.idle)a.setEffectiveWeight(1);}   // muting stopped its fade: bring it straight back
+    if(k.indexOf('room:')===0){ const R=ROOMS.find(r=>r.id===k.slice(5)); if(R)roomApply(R); if(k==='room:nexus')nexusApply(); }   // HIDDEN ROOMS: open it or wall it over, at once
   });
+  { const el=document.getElementById('devGunsHold'); if(el)el.onclick=()=>{ GUNS.hold=!GUNS.hold; gunsLoad(); devRender(); }; }
+  { const el=document.getElementById('devGunsBoss'); if(el)el.onclick=()=>{ gunsSpawnBoss(()=>devRender()); }; }
+  { const el=document.getElementById('devGunsBossOff'); if(el)el.onclick=()=>{ gunsRemoveBoss(); devRender(); }; }
   { const el=document.getElementById('devBreast'); if(el)el.oninput=()=>{ setBreast(+el.value); document.getElementById('devBreastV').textContent=(+el.value).toFixed(2); }; }
   { const el=document.getElementById('devFeet'); if(el)el.oninput=()=>{ setFlatFeet(+el.value); document.getElementById('devFeetV').textContent=(+el.value).toFixed(2); }; }
   document.getElementById('devTimelineBtn').onclick=()=>{DEV_TL.open=!DEV_TL.open;devRender();};
@@ -5621,6 +6086,7 @@ function devRender(){
     DEV_SOLO.key=null;FACE_PRESET=FACE_PRESETS[0];if(persons.elara)faceIdleUse(persons.elara,'Face_Idle');
     try{localStorage.removeItem(FACE_MODE_KEY);for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.indexOf('atd:dev:')===0)localStorage.removeItem(k);}}catch(e){}
     TALK_FACE_LEVEL=DEV_DEF.talkFace;TALK_HEAD_LEVEL=DEV_DEF.talkHead;
+    for(const R of ROOMS)roomApply(R); nexusApply();   // the hidden rooms walled over again
     if(persons.elara){const q=persons.elara;applyFaceMode(q);if(q.clips[ELARA_IDLE]&&q.idle!==ELARA_IDLE){const was=q.idle;q.idle=ELARA_IDLE;if(q.actName===was)personAnim(q,ELARA_IDLE,0.9);}const c=q.clips[q.idle],a=c&&q.mixer.existingAction(c);if(a&&q.actName===q.idle)a.setEffectiveWeight(1);}
     devRender();};
   b.scrollTop=keep;devRunTick();
@@ -5727,7 +6193,7 @@ function spawnElara(){
   p.mesh.rotation.y=Math.PI;                          // facing south: the entrance from inside, or the spawn from the birdbath
   // a press-E hotspot that follows her (kept in sync in updatePeople).
   // Both spawn points offer the same menu — the tour is simply its top option.
-  p.hot={x:rest[0],z:rest[1],r:1.53,label:'Talk to Elara',
+  p.hot={x:rest[0],z:rest[1],r:1.53,rad:0.42,cap:1.75,label:'Talk to Elara',
     fn:()=>{ if(tour.active&&!tour.isIntro)return; openElaraMenu(); }};
   HOTS.push(p.hot);
   persons.elara=p;
@@ -5798,18 +6264,20 @@ function updatePeople(dt){
     const p=persons[k];if(!p)continue;
     if(k==='elara')devMuteClips(p);
     p.mixer.update(dt);
-    if(k==='elara'){const aim=elaraAim(p);lipUpdate(p,dt);devMorphMute(p);facePresetMorphs(p);winkUpdate(p);smileUpdate(p);headTrack(p,dt,aim,devFlag('headFollow',false)&&!soloHead(),devNum('headMax'),p.mesh.rotation.y);eyesTrack(p,dt,aim,devFlag('eyes',true)&&!soloHead());}
+    if(k==='elara'){const aim=p.gunAim||elaraAim(p);lipUpdate(p,dt);devMorphMute(p);facePresetMorphs(p);winkUpdate(p);smileUpdate(p);headTrack(p,dt,aim,devFlag('headFollow',false)&&!soloHead(),devNum('headMax'),p.mesh.rotation.y);eyesTrack(p,dt,aim,devFlag('eyes',true)&&!soloHead());}
     // during the tour, updateTour drives Elara's position/facing/animation
     if(!(k==='elara'&&tour.active)){
       const talking=p.talk>0;
       if(talking)p.talk-=dt;
       // Elara follows the visitor, 2.7 m behind, whenever the tour is not running (2026-09-08)
-      const walked=(k==='elara'&&!talking&&state.phase==='play'&&elaraFollowStep(p,dt));
+      const walked=(k==='elara'&&!talking&&!p.gunOut&&state.phase==='play'&&elaraFollowStep(p,dt));
       const d=Math.hypot(player.pos.x-p.mesh.position.x,player.pos.z-p.mesh.position.z);
       if(walked){}
+      else if(k==='elara'&&p.gunOut){}                                    // the gun system turns her (GUNS)
       else if(k==='elara'&&devFlag('noTurn',false)){ if(p.homeYaw!==undefined)p.mesh.rotation.y=p.homeYaw; }   // dev option: she keeps her own heading
       else if(d<10){const aim=k==='elara'?elaraAim(p):player.pos;facePerson(p,aim.x,aim.z);}
       if(walked){}
+      else if(k==='elara'&&p.gunOut){ personAnim(p,p.gunArmed?'Gun':p.idle); }   // the pistol stance (GUNS), or back to her idle as it goes away
       else if(talking){ const faceToFace=k==='elara'&&d<10&&!devFlag('noTurn',false)&&!devFlag('talkGestureFacing',false);   // talking to the visitor, body turned to them: no gesture clip (they turn her head away); the tour keeps its own
         personAnim(p,(devFlag('off:TalkGesture',false)||faceToFace)?p.idle:(p.talkClip||p.idle),1); }
       else if(k==='elara'){ if(p.previewUntil&&state.time<p.previewUntil){} else {p.previewUntil=0;elaraIdle(p,dt);} }   // neutral idle (or a dev-page clip preview)
@@ -5858,7 +6326,7 @@ const TOUR = [
       "The empty shopfronts — one of them could be yours." ] },
   { at:[-24,-10],via:[[-15,-21]],look:[-43,-11],anim:['Point'], lines:[
       "And to the west — the fast doors. Anti-grav racing, rally dirt, for the days you'd rather move than think." ] },
-  { at:[-8,18], look:[[-27,28],[16,28]], anim:['Point','Point'], lines:[
+  { at:[-8,18], look:[[-27,28],[14,-36]], anim:['Point','Point'], lines:[   // Cerebro moved to Makers' Row 2026-09-17: she points there (the recorded line still says across the foyer)
       "On the south side, the Garden door — how it began.",
       "Across the foyer, Cerebro — a dome where the week's voices orbit. Come back often; it never sounds the same twice." ] },
   { at:[0,6],    look:'player', anim:['Nod','Talk_2','Wave'], lines:[
@@ -5900,9 +6368,13 @@ const ELARA_TOPICS=[
       "And a feeling of calm — minds pure and free, not full of the normal boredom and chaos. That's Epicurus. The city is designed around it." ] },
 ];
 function elaraAsk(q){document.getElementById('elaraQ').textContent=q;say('elara',q);}
-function elaraHeader(tag,title){
+let cardFor=null;                      // whose card the modal shows: null = Elara's, 'jack' = Jack's (openJackMenu)
+function elaraHeader(tag,title,color){
+  cardFor=null;
   document.getElementById('elaraTag').textContent=tag;
   document.getElementById('elaraTitle').textContent=title;
+  document.getElementById('elaraTitle').style.color=color||'var(--green)';
+  document.getElementById('elaraClose').style.display='';
 }
 let elaraFrom=null;                    // 'fountain' when the homes flow was opened from the fountain menu
 function openElaraMenu(){elaraFrom=null;elaraHeader('Your guide','Elara');elaraView('root');}
@@ -6067,7 +6539,27 @@ async function ecSend(){
 document.getElementById('ecSend').onclick=()=>ecSend();
 document.getElementById('ecIn').addEventListener('keydown',e=>{if(e.code==='Enter')ecSend();});
 function closeElaraMenu(relock){document.getElementById('elaraModal').style.display='none';if(relock!==false)lockPointer();}
-document.getElementById('elaraClose').onclick=()=>{ecSpeaking=false;closeElaraMenu();say('elara',"I'll be right here.");};
+document.getElementById('elaraClose').onclick=()=>{ if(cardFor){ closeElaraMenu(); return; } ecSpeaking=false;closeElaraMenu();say('elara',"I'll be right here.");};   // cardFor: Jack's card, or the stranger's / Elsa's (askCard) — just closes
+// Jack's E menu (2026-09-17). "Defend the hall": he asks whether to start now, and Yes goes to Fountain Keeper
+// (launchRiftKeeper — the way back puts you in front of him); No just closes. "Just talk" is what E did before.
+function openJackMenu(talk){
+  elaraHeader('The hall’s agent','Jack','#ffd27f'); cardFor='jack';
+  document.exitPointerLock&&document.exitPointerLock();
+  const opts=document.getElementById('elaraOpts'), q=document.getElementById('elaraQ'), close=document.getElementById('elaraClose');
+  document.getElementById('elaraChat').style.display='none'; opts.style.display='';
+  const mk=(html,fn,primary)=>{ const b=document.createElement('button'); b.className='menuBtn';
+    b.style.cssText='width:100%;margin:7px 0;min-width:0'+(primary?';border-left-color:#ffd27f':''); b.innerHTML=html; b.onclick=fn; opts.appendChild(b); };
+  opts.innerHTML=''; q.textContent='What can I do for you?';
+  mk('🛡&nbsp; Defend the hall',()=>{
+    const ask='We need help setting up traps and defending the hall. Do you want to start now?';
+    q.textContent=ask; say('jack',ask);
+    opts.innerHTML=''; close.style.display='none';                     // just Yes and No
+    mk('Yes',()=>{ closeElaraMenu(false); launchRiftKeeper(); },true);
+    mk('No',()=>{ close.style.display=''; closeElaraMenu(); });
+  },true);
+  mk('💬&nbsp; Just talk',()=>{ closeElaraMenu(); talk(); });
+  document.getElementById('elaraModal').style.display='flex';
+}
 // (voice warm-up removed — browser voices speak instantly, nothing to prefetch)
 // gestures that read best played once and held (not looped) so she doesn't keep re-doing them
 const ONESHOT_ANIMS={Point:1,Wave:1,Thankful:1,Nod:1};
@@ -6254,6 +6746,8 @@ const SPEAKERS={
   custodian:{voice:null,pitch:0.9, rate:0.94,color:'#7fe6ff',name:'CUSTODIAN',gender:'male'},
   you:      {voice:null,pitch:1.0, rate:1.0, color:'#ffd27f',name:'YOU',      gender:'male'},
   scientist:{voice:null,pitch:0.85,rate:0.98,color:'#7fb4ff',name:'DR. VANCE',gender:'male'},
+  stranger: {voice:null,pitch:0.88,rate:0.96,color:'#c8d8ff',name:'THE STRANGER',gender:'male'},   // the Soldier in front of the Theater (buildTheaterScene)
+  elsa:     {voice:null,pitch:1.12,rate:1.0, color:'#ffb6e0',name:'ELSA',     gender:'female'},
   system:   {voice:null,pitch:1.0, rate:1.0, color:'#cfd8e6',name:'',         gender:null},
 };
 let narrationOn=true;
@@ -6342,6 +6836,8 @@ function assignVoices(){
   SPEAKERS.you.voice      =pickBest('male');
   SPEAKERS.scientist.voice=SPEAKERS.custodian.voice;   // same voice, distinct pitch — never robotic David
   SPEAKERS.jack.voice     =chosenVoice('jack')||SPEAKERS.custodian.voice;   // likewise: the best male voice the machine has, at his own pitch
+  SPEAKERS.stranger.voice =SPEAKERS.custodian.voice;   // the best male voice here, at his own pitch
+  SPEAKERS.elsa.voice     =pickBest('female');
   SPEAKERS.system.voice   =VOICES[0];
 }
 if('speechSynthesis' in window){
@@ -6556,7 +7052,8 @@ const RETURN_TO=(()=>{try{const v=sessionStorage.getItem('atd:returnTo');if(v)se
 // deep link: /hub/index.html#the-fountain drops you standing at the atrium fountain, facing it.
 const AT_FOUNTAIN=(()=>{try{return ['the-fountain','fountain'].includes((location.hash||'').replace(/^#/,''));}catch(e){return false;}})();
 const RETURN_SPAWN={crypt:{x:35,z:16,yaw:Math.PI/2},     // just outside the Crypt, facing the atrium
-                    cerebro:{x:16,z:26,yaw:0}};          // just outside Cerebro, facing the atrium
+                    jack:{x:8,z:-28.5,yaw:0},             // back from Fountain Keeper: in front of Jack, facing him
+                    cerebro:{x:14,z:-34,yaw:Math.PI}};   // just outside Cerebro on Makers' Row, facing the atrium
 const _RS=RETURN_TO&&RETURN_SPAWN[RETURN_TO];
 // Where you were standing, kept in this browser and nowhere else: no account, no server, no
 // cookie, nothing that leaves the machine. A refresh or a quick return puts you back on the
@@ -6821,7 +7318,7 @@ const bannerEl=document.getElementById('banner');let bannerT=0;
 function banner(txt){bannerEl.textContent=txt;bannerEl.style.opacity='1';bannerT=2.6;}
 const promptEl=document.getElementById('prompt'),crossEl=document.getElementById('cross');
 const promptText=document.getElementById('promptText');
-let curHot=null;
+let curHot=null, promptLast=null;
 let DOORS=null;                                // the door rigs: [0] foyer south (z 48), [1] foyer north (z 28), [2] the garden gate (z 78)
 // each door slides open within 3 m of its line, from either side — for you, or for Elara, leading the opening
 // walk or following you through (she was caught behind a door that shut once you were 3 m past it) — and
@@ -6917,23 +7414,40 @@ function update(dt){
     buildRetreatContents();   // past the bend, or already inside it after a refresh
   updateGuests();                                          // a parked character loads once you're near it
 
-  // nearest hotspot claims the prompt
+  // the crosshair claims the prompt: within HOT_REACH (15 m) of a spot's object, looking at it (a sphere round the object —
+  // the board, the desk — or, for a person, their body itself) and no wall between. Where targets overlap, the nearest along the view wins.
   curHot=null;let best=1e9;
+  const ex=player.pos.x, ey=player.y+EYE, ez=player.pos.z, cp=Math.cos(look.pitch);
+  const fx=-Math.sin(look.yaw)*cp, fy=Math.sin(look.pitch), fz=-Math.cos(look.yaw)*cp;   // the view, exactly as updateCamera sets it
   for(const h of HOTS){
+    if(h.r<0)continue;                                               // switched off
     if(Math.abs(player.y-(h.y||0))>2)continue;                       // on another floor: the foyer door and Jack are not up on the levels
-    const d=Math.hypot(player.pos.x-h.x,player.pos.z-h.z);
-    if(d<h.r&&d<best){best=d;curHot=h;}
+    const rad=h.rad||HOT_RAD, ax=h.ax!==undefined?h.ax:h.x, az=h.az!==undefined?h.az:h.z, ay=(h.y||0)+(h.ay!==undefined?h.ay:HOT_AY);
+    const vx=ax-ex, vy=ay-ey, vz=az-ez;
+    if(Math.hypot(vx,vz)-Math.min(rad,1)>(h.reach||HOT_REACH))continue;   // too far from the object (a big one: measured from a metre inside its sphere)
+    let along, pp;
+    if(h.cap){                                                            // a person: the crosshair on the body, feet to head
+      const r=rayToBody(ex,ey,ez,fx,fy,fz,ax,(h.y||0)+0.05,az,h.cap-0.05); along=r.t; pp=r.d2;
+      if(along<=0.05||pp>rad*rad)continue;
+    } else {
+      along=vx*fx+vy*fy+vz*fz; if(along<=0.05)continue;                   // not in front of you
+      const px=vx-along*fx, py=vy-along*fy, pz=vz-along*fz; pp=px*px+py*py+pz*pz;
+      if(pp>rad*rad||pp>along*along)continue;                             // the crosshair is not on it (inside a big sphere: within 45 degrees of its centre)
+    }
+    if(along<best&&!hotBlocked(ex,ey,ez,ax,az)){best=along;curHot=h;}     // and only if you can see it: no wall on the way
   }
   if(ELEV.aim)curHot=ELEV.hot;                                        // an elevator button under the crosshair beats every hotspot
-  if(curHot){promptText.innerHTML='Click or press <b>E</b> — '+curHot.label;promptEl.style.display='block';}
-  else promptEl.style.display='none';
+  const promptNow=curHot?String(curHot.label):null;                 // the page is only touched when the prompt changes (3 ms a frame otherwise)
+  if(promptNow!==promptLast){ promptLast=promptNow;
+    if(promptNow){promptText.innerHTML='Click or press <b>E</b> — '+promptNow;promptEl.style.display='block';}
+    else promptEl.style.display='none'; }
   const live=look.locked&&state.phase==='play'&&!paused&&!anyModalOpen();
   crossEl.classList.toggle('on',live); crossEl.classList.toggle('aim',live&&!!ELEV.aim);
   crossEl.classList.toggle('hand',!!curHot&&!ELEV.aim&&live);
   if(TOUCH.eBtn)TOUCH.eBtn.classList.toggle('live',!!curHot);   // the touch E lights up in range
 
   // Dr. Vance briefs you the first time you reach the Nexus chamber
-  if(persons.scientist&&!sciSpoken&&player.pos.x>51&&Math.abs(player.pos.z+1)<11){sciSpoken=true;nexusBrief();}
+  if(persons.scientist&&!sciSpoken&&nexusShown()&&player.pos.x>51&&Math.abs(player.pos.z+1)<11){sciSpoken=true;nexusBrief();}
   // arm the START button: everything loaded, Elara in the hall, and a browser voice picked for
   // her (the voice list arrives after she does) — but never wait on the voice for long
   if(!gateReady&&!gateDone&&LOADED&&persons.elara&&cityIn()){
@@ -6944,6 +7458,7 @@ function update(dt){
   updateTour(dt);
   updatePeople(dt);
   feetUpdate(dt);                                          // after every mixer: the toes lie flat unless something is walking
+  gunsUpdate(dt);                                          // then the pistols: turn, lean onto the target, fire (developer page)
 }
 function updateCamera(dt){
   camera.position.set(player.pos.x,EYE+player.y,player.pos.z);
@@ -7099,14 +7614,14 @@ document.getElementById('hex1').onclick=()=>launchHex(0);
 document.getElementById('hex2').onclick=()=>{if(hexDone(1))launchHex(1);};
 document.getElementById('hexClose').onclick=()=>{document.getElementById('velocityModal').style.display='none';lockPointer();};
 
-// Fountain Keeper (the Crypt) — launches directly; the game returns here on victory (wave 40).
-// 'atd:fromHub' tells the game to show its return-to-mall button; 'atd:returnTo' spawns
-// the player back at the Crypt on arrival (see the RETURN_TO block up top).
+// Fountain Keeper — started from Jack's E menu ("Defend the hall", openJackMenu) since 2026-09-17; the game returns
+// here on victory (wave 40). 'atd:fromHub' tells the game to show its return-to-mall button; 'atd:returnTo' spawns
+// the player back in front of Jack on arrival (see the RETURN_TO block up top).
 // (It replaced Rift Keeper at this door 2026-08-27; the old game still lives in
 //  ../fountain-keeper/riftkeeper-backup.html and ../rift-keeper_2/.)
 function fountainDone(){try{return localStorage.getItem('atd:fountainkeeper:1')==='1';}catch(e){return false;}}
 function launchRiftKeeper(){
-  try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','crypt');}catch(e){}
+  try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','jack');}catch(e){}
   trackPlay('fountainkeeper:1');
   location.href='https://lightsmithforge.linkpc.net/fountain-keeper/index.html';
 }
@@ -7208,7 +7723,8 @@ document.getElementById('smClose').onclick=()=>{document.getElementById('submitM
      zn  the level's zone number — call zoneTag(obj,zn) on anything added LATER (a loaded model), or it draws everywhere
      B   the floor's extents {x0,x1,z0,z1} (x -44..44, z -44..46); the elevator car stands at x -10.4, z 43.3 — keep it clear
    Helpers: box(x,Y,z,w,h,d,material,true) — a solid block, its collider fixed to this floor for you;
-            emissiveStrip(x,y,z,w,h,d,color,intensity) — a glowing strip; hotspot(x,z,radius,label,fn) — an E prompt;
+            emissiveStrip(x,y,z,w,h,d,color,intensity) — a glowing strip; hotspot(x,z,0,label,fn) — an E prompt (shown within 15 m, looking at the spot, no wall between;
+            for a big object give the result .rad in metres and .ay, its height);
             new THREE.GLTFLoader().load(url,g=>{ zoneTag(g.scene,zn); worldGroup.add(g.scene); }) — a model.
    Never add a THREE light: one more light recompiles every shader in the hall. Use emissive materials.
 
