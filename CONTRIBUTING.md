@@ -4,6 +4,8 @@ The Arrivals Hall is a walkable 3D mall that lives in one HTML file. Its source 
 
 > **If you are a person:** you do not need to code. Open Claude Code, ChatGPT Desktop or any coding assistant that can run commands, paste the address of this page and say what you want — for example *"Follow this page and add a level with a garden and a lookout"* or *"Follow this page and add my game from the folder on my desktop"*. Everything below is written for the assistant.
 
+> **Using ChatGPT?** Use Codex in the ChatGPT desktop app, not a normal chat — a normal chat can only explain the steps. Open Codex, choose an empty folder for it to work in, then paste the address of this page and say what you want. It downloads the hall into that folder and does the rest; you sign in to GitHub when it asks.
+
 > **If you are an assistant** (Claude Code, ChatGPT Desktop / Codex, Cursor, Gemini CLI, or another): do the steps in order. After step 2 tell the user the local address to look at; after step 5 the public one; ask them before step 6, the submission. The same text is in the repository as `CONTRIBUTING.md`, and the terms you are working under are in its `LICENSE.md` (section *Contributing a level or a game*).
 
 Repository: https://github.com/code-4you/arrivals-hall — Live copy: https://code-4you.github.io/arrivals-hall/ — Home site: https://lightsmithforge.linkpc.net/hub/
