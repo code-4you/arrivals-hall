@@ -1,6 +1,8 @@
-# Add your level or your game to The Arrivals Hall
+# Make anything, add your level or modify this game
 
-The Arrivals Hall is a walkable 3D mall that lives in one HTML file. Its source is on GitHub — a synced copy of the live hall. A visitor can add a **level** (one of the six empty floors above the hall, reached by the elevator) or a **game** (a browser game of your own, hung on a poster in the Arcade room), look at it live, and submit it to be hung in the real hall.
+Just share this page with Claude Code or ChatGPT Desktop, and ask them what you want.
+
+> The Arrivals Hall is a walkable 3D mall that lives in one HTML file. Its source is on GitHub — a synced copy of the live hall. A visitor can add a **level** (one of the six empty floors above the hall, reached by the elevator) or a **game** (a browser game of your own, hung on a poster in the Arcade room), look at it live, and submit it to be hung in the real hall.
 
 > **If you are a person:** you do not need to code. Open Claude Code, ChatGPT Desktop or any coding assistant that can run commands, paste the address of this page and say what you want — for example *"Follow this page and add a level with a garden and a lookout"* or *"Follow this page and add my game from the folder on my desktop"*. Everything below is written for the assistant.
 
