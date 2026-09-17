@@ -46,7 +46,7 @@ The six floors above the hall and the Arcade's posters are for visitors' work. A
 or any coding assistant to do it from this repository — paste it **https://code-4you.github.io/arrivals-hall/contribute.html**
 and it will know what to do: get the code, run it, add your level or game, show it live on your own GitHub Pages, and
 open a pull request. The same text is in [CONTRIBUTING.md](CONTRIBUTING.md); what the licence allows for this is in
-[LICENSE.md](LICENSE.md), section *Contributing a level or a game*.
+[LICENSE.md](LICENSE.md), sections *You may* and *Contributing*.
 
 ## Built with
 
@@ -68,7 +68,7 @@ open a pull request. The same text is in [CONTRIBUTING.md](CONTRIBUTING.md); wha
 
 ## License
 
-© Lightsmith Forge — **source-available, not open source**: free to play and read,
-but no copying, re-hosting, or selling without permission — except what it allows for contributing a level
-or a game (see above). See [LICENSE.md](LICENSE.md).
+© Lightsmith Forge — **source-available, not open source**: free to play, to read, and to edit for your own
+personal, non-commercial use, and contributions are welcome (see above); no commercial use, re-hosting, or use as
+AI training data without permission. See [LICENSE.md](LICENSE.md).
 Third-party assets keep their own licenses (details there).

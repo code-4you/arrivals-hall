@@ -10,46 +10,41 @@ what is written here.
 
 ## You may
 
+- Edit the hall for your own personal, non-commercial use, and contribute changes
+  through github.com/code-4you/arrivals-hall.
 - Play the hall, on any site where Lightsmith Forge has published it.
 - Read the source for your own personal study.
-- View and fork this repository on GitHub only to the extent GitHub's own terms require
-  for a public repository — that permission does not extend to any use of the code
-  outside GitHub.
 
 ## You may not, without written permission from Lightsmith Forge
 
-- Copy, modify, translate or build upon the code or content, in whole or in part.
-- Re-host, mirror, embed or redistribute it, or ship it inside another product.
+- Copy, modify, translate or build upon the code or content, in whole or in part,
+  for any commercial purpose.
+- Re-host, mirror, embed or redistribute it or an edited version, or ship it inside
+  another product, except your own fork while you contribute.
 - Sell it, or use it in anything commercial.
 - Use it, or any part of it, as training, fine-tuning, evaluation or retrieval data for
   machine-learning or AI systems, or in datasets intended for that.
 - Remove or alter this notice or the credits.
 
+Using a coding assistant (Claude Code, ChatGPT, Codex, Gemini and the like) to edit your copy
+is not the training or dataset use forbidden above.
+
 Re-implementing the same ideas in your own code is not a copyright matter; copying this
 code, text or content is.
 
-## Contributing a level or a game
+## Contributing
 
-The hall has room for visitors' work: the floors above it and the Arcade's posters. For that one
-purpose — building a level or a game to submit to The Arrivals Hall, the way
-https://code-4you.github.io/arrivals-hall/contribute.html describes — you may:
-
-- copy this repository (clone, fork or download it) and change it on your own machine;
-- run your copy locally, and publish it from your own GitHub fork's Pages so people can try it
-  while you build;
-- use a coding assistant on it (Claude Code, ChatGPT, Codex, Gemini and the like) — that is
-  not the training or dataset use forbidden above.
-
-This permission ends when your submission is merged or declined, or when you stop working on
-it. It covers nothing beyond the submission: not another site, product or game built on this
-code, and not the parts of the hall you did not make.
+Contributions are welcome, the way https://code-4you.github.io/arrivals-hall/contribute.html
+describes. While you work on one, your fork of this repository may be public and published
+with GitHub Pages so people can try it. That ends when your contribution is merged or
+declined, or when you stop working on it.
 
 By submitting (a pull request, an issue, or the form in the hall) you confirm that the work is
 your own, or that every part of it carries a licence that allows it, and you grant Lightsmith
 Forge a perpetual, worldwide, royalty-free, non-exclusive licence to use, adapt, display and
 distribute it as part of The Arrivals Hall on every copy of the hall (the home site, GitHub,
 itch.io, Game Jolt and copies still to come). You keep the copyright of your own work and stay
-free to use it elsewhere. Lightsmith Forge decides what is hung, and may edit or take down a
+free to use it elsewhere. Lightsmith Forge decides what is added, and may edit or take down a
 contribution.
 
 ## Third-party work inside the hall keeps its own licence

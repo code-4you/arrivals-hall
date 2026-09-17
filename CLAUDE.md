@@ -11,7 +11,7 @@ The short version:
   `COMMUNITY_GAMES.push({...})` line. Both go in the COMMUNITY block near the end of `index.html` — search for
   `COMMUNITY — levels and games added by visitors`. Change nothing else in the file.
 - Never add a THREE light (it recompiles every shader in the hall). Keep files under 95 MB each.
-- Ask the user before opening the pull request. Terms: `LICENSE.md`, section *Contributing a level or a game*.
+- Ask the user before opening the pull request. Terms: `LICENSE.md`, sections *You may* and *Contributing*.
 
 Maintainer's note: this folder is a generated copy of the hub (`../hub/`, built by `../make-arrivals-zip.ps1` on the
 maintainer's machine, which mirrors everything except `.git`, `README.md` and the contributor files:

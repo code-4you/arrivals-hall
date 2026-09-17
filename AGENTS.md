@@ -11,4 +11,4 @@ The short version:
   `COMMUNITY_GAMES.push({...})` line. Both go in the COMMUNITY block near the end of `index.html` — search for
   `COMMUNITY — levels and games added by visitors`. Change nothing else in the file.
 - Never add a THREE light (it recompiles every shader in the hall). Keep files under 95 MB each.
-- Ask the user before opening the pull request. Terms: `LICENSE.md`, section *Contributing a level or a game*.
+- Ask the user before opening the pull request. Terms: `LICENSE.md`, sections *You may* and *Contributing*.
