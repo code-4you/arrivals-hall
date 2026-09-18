@@ -6666,6 +6666,9 @@ function devRender(){
     sec('HIDDEN ROOMS','These rooms of the hall are walled over: a plain stretch of wall where the opening was, no sign, no prompt, off the map — the empty ones, the racing rooms, Blindspots, the Hallwyl, and the Theater, the delivery room and the Lounge until the stranger opens the Theater. Tick one to open it again — kept on this machine; Reset walls them all over. The Arcade is listed until a COMMUNITY_GAMES entry gives it a poster.')+
     ROOMS.filter(roomHidden).map(R=>chk('room:'+R.id,false,false,'Show '+(R.name==='UNDER'?'UNDER CONSTRUCTION':R.name+' · '+R.sub),{E:'west wall',W:'east wall',S:'Makers’ Row',N:'south wall'}[R.dir]+(R.id==='credits'?', west of the foyer':''))).join('')+
     chk('room:nexus',false,false,'Show NEXUS · CHRONOS GATE','east wall — opens with the Theater')+
+    sec('ELARA’S OLD TOUR','The nine-stop guided tour she used to offer on her E menu — she walks the hall counterclockwise and talks about each wing, mostly in her recorded voice. The opening walk replaced it for visitors (2026-09-18), so it lives here now. Press T while it runs to stop it. She starts from wherever she is standing.')+
+    btn((tourDone()?'↺ Take the old tour again':'▶ Take the old guided tour')+' <span style="color:#8fa3bf;font-weight:400">(closes this page)</span>','id="devTour"',tour.active&&!tour.isIntro)+
+    btn('▶ Walk with me again <span style="color:#8fa3bf;font-weight:400">(the opening walk, from the garden — closes this page)</span>','id="devWalk"',tour.active&&tour.isIntro)+
     sec('TOOLS')+
     sl('devHeadMax','headMax','Head turn limit',10,70,5,'°')+
     btn('▶ Smile now (next variation)','id="devSmile"',false)+
@@ -6708,6 +6711,11 @@ function devRender(){
     assignVoices(); devRender(); });
   b.querySelectorAll('[data-voicesay]').forEach(el=>el.onclick=()=>{ const who=el.dataset.voicesay; devClose();
     say(who, who==='elara'?"Hello, I'm Elara. This is how I sound with this voice.":"Hello, I'm Jack. This is how I sound with this voice."); });
+  { const el=document.getElementById('devTour'); if(el)el.onclick=()=>{ devClose(); if(tour.active)return; startTour(); }; }   // the old nine-stop tour, off her menu since the opening walk replaced it
+  { const el=document.getElementById('devWalk'); if(el)el.onclick=()=>{ devClose(); if(tour.active)return;   // the opening walk again: both of you back at the garden start
+      const q=persons.elara; if(q){q.mesh.position.set(INTRO_AT[0],0,INTRO_AT[1]);ELARA_BLOCK.x=INTRO_AT[0];ELARA_BLOCK.z=INTRO_AT[1];q.following=false;}
+      player.pos.set(0,0,64.6);player.y=0;player.vy=0;player.grounded=true;look.yaw=Math.PI;look.pitch=-0.02;
+      tour.started=false; startIntro(INTRO_WALK); }; }
   document.getElementById('devSmile').onclick=()=>{smilePlay(SMILE.cursor);SMILE.cursor=(SMILE.cursor+1)%SMILE.variants.length;};
   document.getElementById('devWinkSet').onclick=()=>winkPlay('set');
   document.getElementById('devWinkLeft').onclick=()=>winkPlay('left');
@@ -7069,8 +7077,8 @@ function elaraView(view){
   };
   if(view==='root'){
     elaraAsk("How can I help?");
-    mk((tourDone()?'↺&nbsp; Take the tour again':'▶&nbsp; Take the guided tour'),
-       ()=>{closeElaraMenu();startTour();},true);
+    // (the 2026-08 guided tour — nine stops round the hall, TOUR — is off her menu since 2026-09-18: the opening
+    //  walk is the tour a visitor gets now. It is kept, and starts from the developer page under ELARA'S OLD TOUR.)
     if(tour.active&&tour.isIntro)
       mk('✋&nbsp; Stop here',()=>{closeElaraMenu();stopIntro(true);},true);
     else                                       // the opening walk again (INTRO_WALK): the two of you back at the garden start, then she sets off
