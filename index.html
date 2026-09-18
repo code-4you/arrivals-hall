@@ -649,8 +649,23 @@ addEventListener('resize',()=>{
    in every set. A shader is compiled per set it is drawn under, so the warm-ups (warmDraw) draw each new
    piece once under each set it can be seen from, and the mirror draws with the eye's set (buildHall).
    The count in each set must never change after the first frame: see earlyLights. */
-const LSET={hall:32,out:64,annexe:128,retreat:256,l1:16384,l2:32768,l3:65536,l4:1<<20,l5:1<<21,l6:1<<22,all:32|64|128|256|16384|32768|65536|(1<<20)|(1<<21)|(1<<22)};
+const LSET={hall:32,out:64,annexe:128,retreat:256,l1:16384,l2:32768,l3:65536,l4:1<<20,l5:1<<21,l6:1<<22,labT:1<<23,
+  all:32|64|128|256|16384|32768|65536|(1<<20)|(1<<21)|(1<<22)|(1<<23)};
 const LEVEL_Y=[12.6,17.2,21.8,26.4,31.0,35.6];   // the elevator's six levels, stacked on the hall's roof (floor heights, 4.6 m apart)
+/* THE LAB TOWER (2026-09-18) — five floors over the Annexe ("the lab"), on its own footprint, reached by
+   a second lift and by a stair that runs the whole height. The storey is 10 m, the hall's own height, not
+   the 4.2 of the roof levels. Layer bits are nearly spent (0–22 were in use), so the five floors take one
+   light set between them, not five: only ever one of them is drawn, and labLights carries its eight lights
+   to the floor you are on. Eight is the same count as outside, so no shader is compiled a second time. */
+const LABT={x0:-76,x1:15,z0:-118,z1:-52,H:10,Y:[8,18,28,38,48],
+  shaft:{x0:6,x1:15,z0:-70,z1:-52},        // the stair: a switchback of two 4 m runs, in the wing's south-east corner
+  // The lift hangs on the OUTSIDE of the wing's south wall, in a bay of its own, with its doors flush in the
+  // wall so they read from inside the lab (2026-09-18). It fits without moving anything: there is 4.1 m
+  // between that wall (z −51.7) and the hall's north shell (z −47.6), and the bay needs 4.05. It sits in the
+  // 5 m gap between the space columns at x −51 and x −34, so no space's sign hangs over the doors.
+  car:{x:-42.5,z:-50.5,w:3.6,d:4.4,h:3.3,ow:3.0},   // w = how deep the car is, d = how wide, ow = the doorway in its front
+  bay:{x0:-45.0,x1:-40.0,z0:-52.3,z1:-48.4},        // the wall centres of the bay it stands in; its floor is at every stop
+  zbay:{x0:-45.2,x1:-39.8,z0:-52.45,z1:-48.2}};     // and the footprint that counts as being inside it (zoneAt)
 function lightSet(l,bits){ l.layers.mask=bits; return l; }
 scene.add(lightSet(new THREE.AmbientLight(0x46536e,0.85),LSET.all));
 scene.add(lightSet(new THREE.HemisphereLight(0x7d94c4,0x2a2036,0.55),LSET.all));
@@ -679,6 +694,10 @@ for(const [x,z] of [[-68,-63],[-51,-63],[-34,-63],[-17,-63],[0,-63],[-51,-79],[-
 for(let i=0;i<LEVEL_Y.length;i++){ const Y=LEVEL_Y[i], set=[LSET.l1,LSET.l2,LSET.l3,LSET.l4,LSET.l5,LSET.l6][i];
   for(const [x,z] of [[-26,-26],[26,-26],[-26,26],[26,26],[0,-26],[0,26],[-26,0]])EARLY_SPEC.push(['lvl'+i+'_'+x+','+z,0xbfd8ff,0.55,30, x,Y+3.9,z,set]);
   EARLY_SPEC.push(['lvl'+i+'car',0xdfe8ff,0.6,6, -10.4,Y+2.6,43.3,set]); }
+// the lab tower's eight, all in the one set, resting on its first floor until labLights moves them
+for(const [x,z] of [[-58,-104],[-30,-104],[-2,-104],[-58,-66],[-30,-66],[-2,-66],[-30,-85]])
+  EARLY_SPEC.push(['labT'+x+','+z,0xbfd8ff,0.55,38, x,LABT.Y[0]+8,z,LSET.labT]);
+EARLY_SPEC.push(['labTcore',0xdfe8ff,0.6,16, -42.5,LABT.Y[0]+2.6,-51,LSET.labT]);   // in the lift's bay, which the seven ceiling lights do not reach
 const EARLY={}; let EARLY_ON=false;
 function earlyLights(){ for(const [k,c,i,d,x,y,z,set] of EARLY_SPEC){ const l=lightSet(new THREE.PointLight(c,i,d),set); l.position.set(x,y,z); scene.add(l); EARLY[k]=l; } EARLY_ON=true; }
 function takeLight(key,color,i,dist){
@@ -729,14 +748,25 @@ const worldGroup=new THREE.Group();scene.add(worldGroup);
    ============================================================ */
 worldGroup.userData.zn=1;                                       // the hall, unless a builder says otherwise
 const ZONE={now:null};
-const ZN_MASK={0:1|16,1:1,2:4,3:8,5:2048,6:4096,7:8192,8:1<<17,9:1<<18,10:1<<19};   // 5–10: the six elevator levels (14–16 and 20–22 are their light sets)
+const ZN_MASK={0:1|16,1:1,2:4,3:8,5:2048,6:4096,7:8192,8:1<<17,9:1<<18,10:1<<19,   // 5–10: the six elevator levels (14–16 and 20–22 are their light sets)
+  11:1<<24,12:1<<25,13:1<<26,14:1<<27,15:1<<28};                                    // 11–15: the lab tower's five floors (23 is the one set they share)
 const LVL_BITS=2048|4096|8192|(1<<17)|(1<<18)|(1<<19);   // every level's own layer, in one mask
+const LABT_BITS=(1<<24)|(1<<25)|(1<<26)|(1<<27)|(1<<28);   // and every lab floor's
 function zoneApply(o,zn){ if(o.isCamera||o.isLight)return; o.layers.mask=ZN_MASK[zn]; }   // lights keep their sets (lightSet)
 function zoneTag(o,zn){ o.userData.zn=zn; o.traverse(c=>zoneApply(c,zn)); }
 function zoneSweep(){ const walk=(o,zn)=>{ if(o.userData.zn!==undefined)zn=o.userData.zn; zoneApply(o,zn); const ch=o.children; for(let i=0;i<ch.length;i++)walk(ch[i],zn); }; walk(scene,0); }
 function zoneBuild(zn,fn){ const n=worldGroup.children.length; fn(); for(let i=n;i<worldGroup.children.length;i++)zoneTag(worldGroup.children[i],zn); }
 // where you are: the foyer's south half, the garden and every street count as outside; the two wings are their own zones
 function zoneAt(x,z,y){
+  // up the lab tower, over the Annexe: nothing is walkable between its floor and the first storey at 8.
+  // The floor whose storey you are STANDING in, not the nearest one — a storey is 10 m, so half way up the
+  // stair "nearest" would already call it the floor above, and the glass would look into a floor not drawn.
+  const _kz=LABT.zbay;
+  const _inTower=(x>LABT.x0&&x<LABT.x1&&z>LABT.z0&&z<LABT.z1)
+              || (x>_kz.x0&&x<_kz.x1&&z>_kz.z0&&z<_kz.z1);   // the lift bay hangs outside the wing's south wall, but it IS the lab
+  if(y>4.5&&_inTower){
+    let b=0; for(let i=0;i<LABT.Y.length;i++)if(y>=LABT.Y[i]-1.2)b=i; return 'k'+(b+1); }
+  if(x>_kz.x0&&x<_kz.x1&&z>_kz.z0&&z<_kz.z1)return 'annexe';   // in the bay down at the wing's own floor
   if(y>11){ let b=0,bd=1e9; LEVEL_Y.forEach((ly,i)=>{ const d=Math.abs(y-ly); if(d<bd){bd=d;b=i;} }); return 'l'+(b+1); }   // up on a level
   const out=(z>28&&x>-11.5&&x<8.5)||z>48||!cityKeptOut(x,z,0);   // the foyer (and its elevator car) is outside   // the foyer is outside: its entrance is glass
   if(out)return (Math.abs(x)<22.5&&z>28&&z<78.3)?'garden':'city';   // z>28: the streets north of the hall are city, not garden
@@ -744,13 +774,20 @@ function zoneAt(x,z,y){
   if((x>RETREAT.x0&&x<RETREAT.x1&&z<RETREAT.z1)||(x>28.9&&x<46&&z<-49))return 'retreat';
   return 'hall';
 }
-const ZONE_L={hall:LSET.hall,garden:LSET.out,city:LSET.out,annexe:LSET.annexe,retreat:LSET.retreat,l1:LSET.l1,l2:LSET.l2,l3:LSET.l3,l4:LSET.l4,l5:LSET.l5,l6:LSET.l6};   // the light set each zone is lit by
-const LVL_OBJ={l1:2048,l2:4096,l3:8192,l4:1<<17,l5:1<<18,l6:1<<19};   // and the layer each level's own pieces are on
+const ZONE_L={hall:LSET.hall,garden:LSET.out,city:LSET.out,annexe:LSET.annexe,retreat:LSET.retreat,l1:LSET.l1,l2:LSET.l2,l3:LSET.l3,l4:LSET.l4,l5:LSET.l5,l6:LSET.l6,
+  k1:LSET.labT,k2:LSET.labT,k3:LSET.labT,k4:LSET.labT,k5:LSET.labT};   // the light set each zone is lit by (the lab tower's five share one — see LABT)
+const LVL_OBJ={l1:2048,l2:4096,l3:8192,l4:1<<17,l5:1<<18,l6:1<<19,
+  k1:1<<24,k2:1<<25,k3:1<<26,k4:1<<27,k5:1<<28};   // and the layer each level's own pieces are on
 function zoneUpdate(){
   const zn=zoneAt(player.pos.x,player.pos.z,player.y);
   if(zn!==ZONE.now){ const was=ZONE.now; ZONE.now=zn; zoneSweep();
+    if(zn.charAt(0)==='k')labLights(+zn.slice(1));   // the lab tower's eight lights follow you up (one set for five floors)
     if(zn==='city'&&was==='garden'&&gateDone&&!tour.active)say('elara',"There's nothing out here. Go back to the hall."); }   // out through the garden gate: Elara turns you round (2026-09-17)
-  if(LVL_OBJ[zn]){ camera.layers.mask=16|4|8|LVL_OBJ[zn]|ZONE_L[zn]; return; }   // a level: itself, the always-drawn, and the city through its windows
+  if(LVL_OBJ[zn]){ let m=16|4|8|LVL_OBJ[zn]|ZONE_L[zn];                         // a level: itself, the always-drawn, and the city through its windows
+    // inside the lab tower's glass stair, the floor above and below as well — you can see into both through it
+    if(zn.charAt(0)==='k'&&player.pos.x>LABT.shaft.x0-2&&player.pos.x<LABT.shaft.x1&&player.pos.z>LABT.shaft.z0&&player.pos.z<LABT.shaft.z1){
+      const n=+zn.slice(1); m|=(LVL_OBJ['k'+(n-1)]||0)|(LVL_OBJ['k'+(n+1)]||0); }
+    camera.layers.mask=m; return; }
   const out=(zn==='garden'||zn==='city');
   let mask=out?(16|4|8):1;                       // outside, everything of the city is drawn — the trees show through the fence
   if(DOORS&&DOORS.rigs[1].open>0.02)mask|=1|4|8|16;   // the interior door open: both sides drawn, under this side's lights (every piece is warmed under both sets)
@@ -774,8 +811,8 @@ function warmDraw(objs,lightBits){
 }
 // which sets an object can be seen under: drawn from everywhere (layer 4) → all four; else the set of the zone it stands in
 const _wv=new THREE.Vector3();
-function warmSets(o){ if(o.layers.mask&16)return [LSET.hall,LSET.out,LSET.annexe,LSET.retreat]; if(o.layers.mask&LVL_BITS)return [LSET.out]; if(o.layers.mask&12)return HALLB.started?[LSET.out,LSET.hall]:[LSET.out];   // the garden and the city: also under the hall's lights once the hall exists (seen through its open door)
-  _wv.setFromMatrixPosition(o.matrixWorld); const zn=zoneAt(_wv.x,_wv.z); return zn==='hall'?[LSET.hall,LSET.out]:[ZONE_L[zn]]; }   // the hall: also under the outside lights (seen from the foyer through the open door)
+function warmSets(o){ if(o.layers.mask&16)return [LSET.hall,LSET.out,LSET.annexe,LSET.retreat]; if(o.layers.mask&LVL_BITS)return [LSET.out]; if(o.layers.mask&LABT_BITS)return [LSET.labT]; if(o.layers.mask&12)return [LSET.out,LSET.hall];   // the garden and the city: also under the hall's lights (seen through its open door) — from the first frame, so those five shaders compile behind the START screen and not on the way in (2026-09-18; it waited for HALLB.started)
+  _wv.setFromMatrixPosition(o.matrixWorld); const zn=zoneAt(_wv.x,_wv.z,_wv.y); return zn==='hall'?[LSET.hall,LSET.out]:[ZONE_L[zn]]; }   // the hall: also under the outside lights (seen from the foyer through the open door)
 function warmKey(o,sets){ return matVersion(o)+'/'+sets.reduce((a,b)=>a|b,0); }
 
 // ---- loading bar under the click-to-start hint: REAL progress from the shared
@@ -1158,15 +1195,28 @@ function buildWorld(){
 /* ============================================================
    WHAT LOADS WHEN — before START: the floor and ceiling (the foyer stands on them), the foyer, the
    garden, the hall's shell, the sky, the city (buildCity) and Elara; every light (earlyLights). The
-   START button waits for all of it. Nothing from inside the hall exists until someone presses E on the
-   foyer's interior door (hallOpen): buildHall then builds it a step per frame (or at once, if you start
-   inside — resume, back from a game, the fountain link), hallWarm draws each new piece once, unseen,
-   under both light sets it can be seen from, and when nothing is left to warm the door is released
-   (hallReady). The city stays resident for the whole visit: hidden inside, it costs no frame time.
+   START button waits for all of it. The inside of the hall comes next, still behind the START screen:
+   the moment those are in (hallStart, from the gate's own check in update) the whole hall is built —
+   57 ms — and hallWarm draws each piece once, unseen, under both light sets it can be seen from, the
+   pieces that bring a new shader first. START waits for those shaders (HALLB.compiled; a second each
+   on a first visit, the one cost that freezes a frame) but never more than six seconds, and the rest
+   — buffers and textures, a few pieces a frame — carries on behind the START screen and Elara's hello.
+   When nothing is left to warm, the foyer's interior door is released (hallReady): from then on it
+   slides open on approach, for you and for Elara — there is no E on it (2026-09-18; it was E on the
+   door, 2026-09-16, with the hall built on that press). Anyone at the door before that (hallHurry)
+   reads "Opening the hall…", the warm-up runs at its fast rate, and the door opens by itself when it
+   is done. Starting inside (resume, back from a game, the fountain link) builds the hall at load:
+   buildHall(true). Its models (Dr. Vance, Optimus, the stranger, the columns) download once it is
+   built, so they no longer hold the loading bar up; the shaders they need are compiled early by
+   stand-ins (warmGuestShaders). Measured 2026-09-18: warming was 4.5 s of work when every piece had
+   a draw of its own (1,150 draws, each a walk of the whole scene), four of them 100–260 ms.
+   The city stays resident for the whole visit: hidden inside, it costs no frame time.
    ============================================================ */
-const HALLB={queue:[],started:false,built:false,opening:false,ready:false,hot:null};
-function hallOpen(){ if(HALLB.started)return; HALLB.opening=true; if(HALLB.hot)HALLB.hot.label='Opening the hall…'; banner('Opening the hall…'); buildHall(false); }
-function hallReady(){ HALLB.ready=true; HALLB.opening=false; if(HALLB.hot)HALLB.hot.r=-1; }   // the interior door now opens on approach, like the others
+const HALLB={queue:[],started:false,built:false,compiled:false,opening:false,ready:false,t0:0};
+function hallReady(){ HALLB.ready=true; HALLB.compiled=true; if(HALLB.opening&&bannerT>0.5)bannerT=0.5; HALLB.opening=false; }   // the interior door now opens on approach, like the others ("Opening the hall…" goes as it does)
+// someone is at the interior door and the hall is not ready: build it if nothing has yet, warm it fast, and say so (to you, not for Elara)
+function hallHurry(you){ if(!HALLB.started)buildHall(false); HALLB.opening=true; if(you&&bannerT<0.4)banner('Opening the hall…'); }
+function hallStart(){ if(HALLB.started)return; HALLB.t0=performance.now(); buildHall(false); while(HALLB.queue.length)HALLB.queue.shift()(); }   // all of it at once: nothing is on screen but the START gate
 function buildHall(now){
   if(HALLB.started)return; HALLB.started=true;
   const q=HALLB.queue;
@@ -1211,6 +1261,9 @@ function buildHall(now){
   q.push(()=>{zoneBuild(0,buildNexus);});                    // the expanded Chronos gate wing (its outside shows from the street: drawn in every zone)
   q.push(()=>{zoneBuild(0,buildLounge);});                   // the Lounge + the bent corridor + the Retreat wing shell (contents load at the bend)
   q.push(()=>{zoneBuild(0,buildAnnexe);});                   // the Annexe: 20 empty spaces behind the Lab; characters load on entry
+  q.push(()=>{buildLabLights();});                           // and the five floors over it, a storey a frame (LABT)
+  for(let i=0;i<LABT.Y.length;i++)q.push(()=>buildLabFloor(i));
+  q.push(()=>{ buildLabStair(); buildLabLiftBay(); zoneBuild(0,()=>buildCar(LABLIFT,0,0)); });   // the stair, the lift's bay outside the south wall, and its car down in the wing
   q.push(()=>{buildRallyKiosk();});                          // Trigger Rally stage-select console
   q.push(()=>{buildVelocityKiosk();});                       // HexGL level-select console
   // (the Garrison room was emptied 2026-09-17: Fountain Keeper starts from Jack's E menu now — openJackMenu)
@@ -1286,18 +1339,29 @@ function buildHall(now){
   q.push(()=>{ HALLB.built=true; console.log('hall built'); });
   if(now){ while(q.length)q.shift()(); hallReady(); }
 }
-animated.push({update(){ if(HALLB.queue.length)HALLB.queue.shift()(); }});   // one step a frame after START
-// the hall onto the GPU, two pieces a frame, unseen (warmDraw, under every light set it can be seen from): the hall's own pieces, the wings, whatever arrives
-// later (GLB props, the Retreat's contents, the Annexe's characters) and any material edited since — it keeps looking, every 15 frames
+animated.push({update(){ if(HALLB.queue.length)HALLB.queue.shift()(); }});   // one step a frame — only if hallHurry had to start it (hallStart builds the lot at once)
+// the hall onto the GPU, a few pieces a frame, unseen (warmDraw, under every light set it can be seen from): the hall's own pieces, the wings, whatever arrives
+// later (GLB props, the Retreat's contents, the Annexe's characters) and any material edited since — it keeps looking, every 15 frames.
+// Each look puts the pieces that bring a new shader first (a material not yet drawn under those light sets — a compile, the one cost that
+// freezes a frame: 50–260 ms from Chrome's cache, a second on a first visit); the rest only upload their buffers. HALLB.compiled = the hall's
+// shaders are all in: START waits for that, so the freezes are spent behind the START screen and not under Elara's hello.
 function hallWarm(){
-  let pending=[], tick=0;
+  let pending=[], tick=0, first=0, ofBuilt=false;
+  const seen={};
   const shown=(o)=>{ for(let p=o;p&&p!==scene;p=p.parent)if(!p.visible)return false; return true; };
+  const fresh=(o)=>{ let f=false; const s=warmSets(o).join(); for(const m of [].concat(o.material||[])){ const k=m.uuid+':'+m.version+'/'+s; if(!seen[k]){seen[k]=1;f=true;} } return f; };
   animated.push({update(){
     if(!pending.length){ if(++tick<15)return; tick=0;
-      scene.traverse(o=>{ if((o.isMesh||o.isPoints||o.isLine||o.isSprite)&&(o.layers.mask&(13|LVL_BITS))&&shown(o)&&o.userData.warmV!==warmKey(o,warmSets(o)))pending.push(o); });
-      if(!pending.length){ if(HALLB.opening&&HALLB.built)hallReady(); return; } }   // nothing left to draw: the hall can open
-    const per=(HALLB.opening&&!HALLB.ready)?8:2;                                        // faster while someone waits at the door
-    for(let k=0;k<per&&pending.length;k++){ const m=pending.shift(); const sets=warmSets(m); for(const b of sets)warmDraw([m],b); m.userData.warmV=warmKey(m,sets); }
+      const rest=[]; ofBuilt=HALLB.built;
+      scene.traverse(o=>{ if((o.isMesh||o.isPoints||o.isLine||o.isSprite)&&(o.layers.mask&(13|LVL_BITS|LABT_BITS))&&shown(o)&&o.userData.warmV!==warmKey(o,warmSets(o)))(fresh(o)?pending:rest).push(o); });
+      first=pending.length; pending=pending.concat(rest);
+      if(!pending.length){ if(HALLB.built&&!HALLB.ready)hallReady(); return; } }        // nothing left to draw: the hall can open
+    const per=((HALLB.opening&&!HALLB.ready)||(HALLB.built&&!HALLB.compiled))?16:4;      // faster while someone waits at the door, or START waits for the hall's shaders
+    // a frame's pieces are drawn together, once per light set: a warm draw walks the whole scene (1.2 ms), so one apiece was most of the cost
+    const by={};
+    for(let k=0;k<per&&pending.length;k++){ const m=pending.shift(), sets=warmSets(m); first--; for(const b of sets)(by[b]||(by[b]=[])).push(m); m.userData.warmV=warmKey(m,sets); }
+    for(const b in by)warmDraw(by[b],+b);
+    if(ofBuilt&&first<=0)HALLB.compiled=true;
   }});
 }
 hallWarm();
@@ -1482,7 +1546,11 @@ const ANNEXE={x0:-76,x1:15,z0:-118,z1:-52,H:7,
 // megabytes, so nothing loads until you are actually inside the space.
 const GUESTS=[
   {id:'luke',    file:'luke_cage_power_man.glb', name:'LUKE CAGE',    cx:-51,cz:-63, col:0xff9f6a},
-  {id:'swat',    file:'swat_blend.glb',          name:'SWAT SOLDIER', cx:-34,cz:-63, col:0x7fb7ff},
+  // The same soldier twice, one behind the other, to see what optimizing a bought export costs and saves
+  // (2026-09-18): space 03 is the rebuilt one, space 13 the file exactly as it came. tools/gltf/optimize-swat.js
+  // makes the rebuild — 158 MB → 11.5 MB, 344k → 230k triangles — and says there what went and why it could.
+  {id:'swat_opt',file:'swat_optimized.glb',      name:'SWAT SOLDIER OPTIMIZED', cx:-34,cz:-63, col:0x7fb7ff, sub:'11.5 MB · rebuilt'},
+  {id:'swat',    file:'swat_blend.glb',          name:'ORIGINAL SWAT SOLDIER',  cx:-34,cz:-95, col:0x7fb7ff, sub:'158 MB · as bought'},
   // Jack again, the hall look (no stubble, no gun), wearing the idle / walk / run library one clip at a
   // time: click him (or E) for the next, the number and name show on screen.
   {id:'jack_looks',file:'jack.glb',              name:'JACK · ANIMATIONS',cx:0,cz:-63, col:0xffd27f, plain:true, hide:/Beard_Transparency|pistolLow/,
@@ -1493,7 +1561,14 @@ const GUESTS=[
   // warmed onto the GPU a piece per frame (warmGuest) so his arrival never stalls the game.
   // yaw π: the export rests facing -z, so this turns him to face south, into the hall; lookAt then keeps
   // him turned toward whoever is near. No stubble, no gun; Elara's neutral standing idle on his body.
-  {id:'jack',    file:'jack_hall.glb',          name:'JACK',         cx:  8,cz:-32, col:0xffd27f, yaw:Math.PI, after:'start', quiet:true, plain:true,
+  // the same Jack again, upstairs on lab level 2, where circle 1 calls the nightmare up: gy is the floor he
+  // stands on, so he loads when you reach THAT floor and not when you cross the same spot below (2026-09-18)
+  {id:'jack2',   file:'jack_hall.glb',          name:'JACK',         cx:-31,cz:-63, gy:LABT.Y[1], col:0xffd27f, yaw:Math.PI, plain:true, gun:true,
+   hide:/Beard_Transparency|pistolLow/, bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Male'}, lookAt:14, gaze:true,
+   speaks:["Elara sent me up. Stand in the first circle and something turns up.",
+           "When it does, we shoot it. Stand back a little.",
+           "Three floors above this one are still empty."]},
+  {id:'jack',    file:'jack_hall.glb',          name:'JACK',         cx:  8,cz:-32, col:0xffd27f, yaw:Math.PI, after:'start', quiet:true, plain:true, gun:true,
    hide:/Beard_Transparency|pistolLow/, bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Male'}, lookAt:14, gaze:true, aimKey:'jackAim',   // Idle_Male: the ActorCore male idle (library no. 10), merged into elara.glb; aimKey: his aim offset sliders on the dev page
    speaks:["Hello. I'm Jack. Elara asked me to keep an eye on this end of the hall.",
            "Nothing to see here yet. She's still building it.",
@@ -1534,7 +1609,7 @@ function buildAnnexeSpace(x,z,label,col,sub){
   addHoloSign(label,sub||'',x,4.4,z+D/2+0.5,0,col,true);   // these turn to face you
 }
 function buildAnnexe(){
-  const A=ANNEXE,T=0.6,H=A.H;
+  const A=ANNEXE,T=0.6,H=A.H,S=LABT.shaft;
   // ---- corridor from the Lab's back wall (x -28) north across the shell ----
   box(-30.4,0,-49.3,T,6,5.4,wallMat,true);
   box(-25.6,0,-49.3,T,6,5.4,wallMat,true);
@@ -1546,12 +1621,19 @@ function buildAnnexe(){
   box(A.x0,0,wz,T,H,wd,wallMat,true);                      // west
   box(A.x1,0,wz,T,H,wd,wallMat,true);                      // east
   box(wx,0,A.z0,ww,H,T,wallMat,true);                      // north
-  box(-53.3,0,A.z1,45.4,H,T,wallMat,true);                 // south, west of the doorway
+  // south, west of the doorway — split again round the lift's opening, which is cut right through it
+  { const B=LABT.bay, o0=B.x0+0.3, o1=B.x1-0.3;            // the opening: the bay's clear width
+    box((-76+o0)/2,0,A.z1,o0+76,H,T,wallMat,true);
+    box((o1+-30.6)/2,0,A.z1,-30.6-o1,H,T,wallMat,true);
+    box((o0+o1)/2,3.4,A.z1,o1-o0,H-3.4,T,wallMat,false); }  // and the header over it
   box(-6.9,0,A.z1,37.8,H,T,wallMat,true);                  // south, east of it
-  box(wx,H,wz,ww,0.3,wd,darkMat,false);                    // ceiling
+  // ceiling, in two plates: the stair up the tower comes down through the south-east corner, so that corner is left open
+  box((A.x0+S.x0)/2,H,wz,S.x0-A.x0,0.3,wd,darkMat,false);
+  box((S.x0+A.x1)/2,H,(A.z0+S.z0)/2,A.x1-S.x0,0.3,S.z0-A.z0,darkMat,false);
   annexeFloor(wx,wz,ww,wd);
-  for(const z of A.rows)emissiveStrip(wx,H-0.2,z+8,ww-6,0.1,0.9,0xaee2ff,0.6);   // a light line down each corridor
-  emissiveStrip(10.5,H-0.2,wz,0.9,0.1,wd-6,0xaee2ff,0.6);                        // and the spine
+  // a light line down each corridor, and the spine — both stop short of the stair shaft in the corner (2026-09-18)
+  for(const z of A.rows)emissiveStrip(wx-3.5,H-0.2,z+8,ww-13,0.1,0.9,0xaee2ff,0.6);
+  emissiveStrip(10.5,H-0.2,(A.z0+S.z0-2)/2,0.9,0.1,S.z0-2-A.z0-3,0xaee2ff,0.6);
   for(const x of [-60,-25,10])for(const z of [-56,-88,-114]){
     const l=takeLight('annexe'+x+','+z,0xbfd8ff,0.45,26);l.position.set(x,5.2,z);worldGroup.add(l);
   }
@@ -1564,7 +1646,7 @@ function buildAnnexe(){
     const num='space '+(n<10?'0':'')+n;
     // an occupied space is titled by who stands in it, with its number underneath; an empty one
     // is titled by its number already, so it needs nothing under it.
-    buildAnnexeSpace(x,z, g?g.name:num.toUpperCase(), g?g.col:A.col, g?num:'');
+    buildAnnexeSpace(x,z, g?g.name:num.toUpperCase(), g?g.col:A.col, g?(num+(g.sub?' · '+g.sub:'')):'');
     if(g){ g.yaw=(g.faceYaw!==undefined)?g.faceYaw:Math.PI;   // face the doorway (elara4 rests facing +z, the rest -z)
       const ring=new THREE.Mesh(new THREE.TorusGeometry(1.0,0.035,8,36),
         new THREE.MeshStandardMaterial({color:g.col,emissive:g.col,emissiveIntensity:0.8,roughness:0.4}));
@@ -1572,6 +1654,253 @@ function buildAnnexe(){
       g.light=takeLight('space'+x+','+z,g.col,0.5,9);g.light.position.set(x,3.2,z);worldGroup.add(g.light);
     }
   }
+}
+/* ============================================================
+   THE LAB TOWER — five floors over the Annexe (2026-09-18), on its own footprint. Reached two ways: a
+   second lift (LABLIFT) in the north-east corner, and a stair beside it that runs the whole height. The
+   storey is 10 m, the hall's own; the first floor stands at 8, just clear of the Annexe's roof at 7.3.
+   Each floor is its own zone (k1–k5) and all five share ONE light set — only one of them is ever drawn,
+   so labLights carries its eight lights up to the floor you are on rather than five sets standing idle.
+   The stair shaft is drawn from every zone, because you are inside it between two floors; a sliding door
+   at each landing stops the floor you are NOT on from showing through its doorway, which would otherwise
+   be a hole onto nothing. Floors 1 and 2 carry three circles each: stand in one, press E, and it runs.
+   Floors 3, 4 and 5 are empty. Nothing here is built until the hall is (it is in buildHall's queue).
+   ============================================================ */
+LABT.lights=[];
+function labLights(n){                       // the eight follow you up: one set of lights for five floors
+  const Y=LABT.Y[n-1]; if(Y===undefined)return;
+  for(const l of LABT.lights)l.position.y=Y+l.userData.dy;
+}
+// one mesh for a whole flight — this build of r128 has no BufferGeometryUtils, so the steps go into one
+// buffer by hand. Local axes: x across, y up, z along and rising. They are only the look of the thing;
+// what you actually walk on is the flight's single ramp collider (rampAt), so the climb is smooth.
+function labSteps(n,w,rise,run,mat){
+  const pos=[],nor=[];
+  const quad=(a,b,c,d,nx,ny,nz)=>{ for(const p of [a,b,c,a,c,d]){ pos.push(p[0],p[1],p[2]); nor.push(nx,ny,nz); } };
+  for(let i=0;i<n;i++){ const y=i*rise, z=i*run;
+    quad([-w/2,y+rise,z+run],[w/2,y+rise,z+run],[w/2,y+rise,z],[-w/2,y+rise,z],0,1,0);   // the tread
+    quad([-w/2,y+rise,z],[w/2,y+rise,z],[w/2,y,z],[-w/2,y,z],0,0,-1);                    // the riser under its front edge
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
+  g.computeBoundingSphere();
+  return new THREE.Mesh(g,mat);
+}
+// a circle on the floor: stand in it, press E, and it runs. The lab's ground floor marks its twenty spaces
+// with big rectangles; up here a thing that HAPPENS is a circle, so the two never read as the same offer.
+function labCircle(Y,x,z,col,label,sub,fn,auto){
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.15,0.05,8,40),
+    new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:0.9,roughness:0.4}));
+  ring.rotation.x=-Math.PI/2; ring.position.set(x,Y+0.06,z); worldGroup.add(ring);
+  const disc=new THREE.Mesh(new THREE.CircleGeometry(1.12,40),
+    new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.13}));
+  disc.rotation.x=-Math.PI/2; disc.position.set(x,Y+0.04,z); worldGroup.add(disc);
+  addHoloSign(label,sub,x,Y+2.7,z,0,col,true);
+  const h=hotspot(x,z,2.4,label,fn,{x,z,y:0.9,rad:1.3});
+  h.y=Y;                                     // this floor only — the same circle sits over the one below
+  // auto: stepping into the ring runs it, no E. It re-arms when you walk out, and E still works while you
+  // stand in it (useful once whatever it started is over). (2026-09-18)
+  if(auto){ let inside=false;
+    animated.push({update(){
+      const near=Math.abs(player.y-Y)<2&&Math.hypot(player.pos.x-x,player.pos.z-z)<1.3;
+      if(near&&!inside){ inside=true; try{ fn(); }catch(e){ console.error('circle "'+label+'" failed',e); } }
+      else if(!near)inside=false;
+    }}); }
+  return h;
+}
+// The bay the lift stands in: a shaft hung on the OUTSIDE of the wing's south wall, from the wing's floor to
+// the tower's roof, with a floor at every stop. The doors are cut through the wall, so from inside the lab all
+// you see is an opening in the wall with a lift behind it — and no lift standing about in the room.
+function buildLabLiftBay(){
+  const B=LABT.bay, top=LABT.Y[LABT.Y.length-1]+LABT.H, cx=(B.x0+B.x1)/2, cz=(B.z0+B.z1)/2, W=B.x1-B.x0, D=B.z1-B.z0;
+  // All three sides are glazed (2026-09-18, asked for): the car is glass too, so from inside it you see out
+  // of the building. The panes are thin, the colliders are the same size the solid walls pushed.
+  const glass=new THREE.MeshStandardMaterial({color:0xaad8f0,transparent:true,opacity:0.16,roughness:0.06,metalness:0.5,side:THREE.DoubleSide});
+  const mull=new THREE.MeshStandardMaterial({color:0x2a3854,roughness:0.4,metalness:0.8});
+  zoneBuild(0,()=>{
+    const pane=(x,z,w,d)=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(w,top,d),glass); m.position.set(x,top/2,z); worldGroup.add(m); };
+    pane(B.x0,cz,0.1,D);   BUILDINGS.push({x:B.x0,z:cz,hw:0.15,hd:D/2,h:top});          // west
+    pane(B.x1,cz,0.1,D);   BUILDINGS.push({x:B.x1,z:cz,hw:0.15,hd:D/2,h:top});          // east
+    pane(cx,B.z1,W+0.3,0.1); BUILDINGS.push({x:cx,z:B.z1,hw:(W+0.3)/2,hd:0.15,h:top});  // south — the face the street sees
+    for(const x of [B.x0,B.x1])for(const z of [B.z0,B.z1]){                             // a post up each corner of the cage
+      const p=new THREE.Mesh(new THREE.BoxGeometry(0.26,top,0.26),mull); p.position.set(x,top/2,z); worldGroup.add(p); }
+    for(const fy of [0].concat(LABT.Y).concat([top])){                                   // and a rail round it on every floor line
+      for(const [x,z,w,d] of [[B.x0,cz,0.24,D],[B.x1,cz,0.24,D],[cx,B.z1,W+0.3,0.24]]){
+        const r=new THREE.Mesh(new THREE.BoxGeometry(w,0.34,d),mull); r.position.set(x,Math.min(fy+0.17,top-0.17),z); worldGroup.add(r); } }
+    box(cx,top,cz,W+0.3,0.4,D+0.3,SHELL_MAT,false);            // its roof
+    // A floor at every stop, so each parked car sits in its own compartment and the shaft does not read as six
+    // cars in one glass tube. They are hidden for the length of a ride (liftTravel) and the shaft is clear.
+    LABT.baySlabs=[];
+    for(const Y of LABT.Y){                                    // (the wing's own floor serves the ground stop)
+      LABT.baySlabs.push(box(cx,Y-0.3,cz,W,0.3,D,SHELL_MAT,false));
+      BUILDINGS.push({x:cx,z:cz,hw:W/2,hd:D/2,y0:Y-0.35,h:Y});
+    }
+  });
+}
+function buildLabFloor(i){
+  const A=LABT, Y=A.Y[i], zn=11+i, H=A.H, S=A.shaft;
+  const W=A.x1-A.x0, D=A.z1-A.z0, cx=(A.x0+A.x1)/2, cz=(A.z0+A.z1)/2;
+  const floorM=new THREE.MeshStandardMaterial({color:0x2a3142,roughness:0.85,metalness:0.1});
+  const ceilM=new THREE.MeshStandardMaterial({color:0x0e1320,roughness:0.9,metalness:0.2});
+  const glass=new THREE.MeshStandardMaterial({color:0xaad8f0,transparent:true,opacity:0.14,roughness:0.06,metalness:0.5,side:THREE.DoubleSide});
+  const mull=new THREE.MeshStandardMaterial({color:0x2a3854,roughness:0.4,metalness:0.8});
+  // the outside — slab, walls, window band: it is a building on the skyline, so it is drawn from every zone
+  zoneBuild(0,()=>{
+    // the structural slab, in the same two plates as the floor above it: the stair comes up through the corner
+    box((A.x0-0.2+S.x0)/2,Y-0.4,cz,S.x0-A.x0+0.2,0.4,D+0.4,SHELL_MAT,false);
+    box((S.x0+A.x1+0.2)/2,Y-0.4,(A.z0-0.2+S.z0)/2,A.x1-S.x0+0.2,0.4,S.z0-A.z0+0.2,SHELL_MAT,false);
+    // a side of the building: a solid base and head with a window band between — or, across the stair in the
+    // corner, glazed the whole storey, so the stair is a glass corner from the street as well as from inside
+    const wall=(x,z,w,d,allGlass)=>{ const L=Math.max(w,d), alongX=w>=d;
+      const gh=allGlass?H-0.5:3.8, gy=allGlass?Y+0.25+gh/2:Y+3.0;
+      if(!allGlass){ box(x,Y,z,w,1.1,d,SHELL_MAT,false); box(x,Y+4.9,z,w,H-4.9,d,SHELL_MAT,false); }
+      BUILDINGS.push({x,z,hw:w/2,hd:d/2,y0:Y,h:Y+H});
+      const gl=new THREE.Mesh(new THREE.PlaneGeometry(L,gh),glass); gl.position.set(x,gy,z); if(!alongX)gl.rotation.y=Math.PI/2; worldGroup.add(gl);
+      const n=Math.max(1,Math.round(L/4.5)); for(let k=0;k<=n;k++){ const s=-L/2+L*k/n; const m=new THREE.Mesh(new THREE.BoxGeometry(alongX?0.16:0.44,gh,alongX?0.44:0.16),mull); m.position.set(alongX?x+s:x,gy,alongX?z:z+s); worldGroup.add(m); }
+      if(allGlass)for(const ry of [Y+0.25,Y+H-0.25]){ const r=new THREE.Mesh(new THREE.BoxGeometry(alongX?L:0.44,0.4,alongX?0.44:L),mull); r.position.set(x,ry,z); worldGroup.add(r); } };
+    wall(cx,A.z0,W,0.4); wall(A.x0,cz,0.4,D);
+    { const B=LABT.bay, o0=B.x0+0.3, o1=B.x1-0.3;                                               // south, in three: either side of the lift's opening,
+      wall((A.x0+o0)/2,A.z1,o0-A.x0,0.4); wall((o1+S.x0)/2,A.z1,S.x0-o1,0.4);                    // then its glazed length over the stair
+      box((o0+o1)/2,Y+3.4,A.z1,o1-o0,H-3.4,0.4,SHELL_MAT,false); }                               // (the header over the opening)
+    wall((S.x0+A.x1)/2,A.z1,A.x1-S.x0,0.4,true);
+    wall(A.x1,(A.z0+S.z0)/2,0.4,S.z0-A.z0); wall(A.x1,(S.z0+A.z1)/2,0.4,A.z1-S.z0,true);        // east, likewise
+    if(i===A.Y.length-1){                                                  // the top floor's roof, the stair's own head left open to it
+      box((A.x0-0.2+S.x0)/2,Y+H,cz,S.x0-A.x0+0.2,0.4,D+0.4,SHELL_MAT,false);
+      box((S.x0+A.x1+0.2)/2,Y+H,(A.z0-0.2+S.z0)/2,A.x1-S.x0+0.2,0.4,S.z0-A.z0+0.2,SHELL_MAT,false);
+      box((S.x0+A.x1+0.2)/2,Y+H,(S.z0+A.z1+0.2)/2,A.x1-S.x0+0.2,0.4,A.z1-S.z0+0.2,SHELL_MAT,false); }   // and capped over the shaft
+  });
+  // what you stand on, in two plates: the stair shaft is a hole through the south-east corner of every floor
+  BUILDINGS.push({x:(A.x0+S.x0)/2,z:cz,hw:(S.x0-A.x0)/2,hd:D/2,h:Y,y0:Y-0.4});
+  BUILDINGS.push({x:(S.x0+A.x1)/2,z:(A.z0+S.z0)/2,hw:(A.x1-S.x0)/2,hd:(S.z0-A.z0)/2,h:Y,y0:Y-0.4});
+  zoneBuild(zn,()=>{
+    const plate=(y,mat,rotX)=>{ const mk=(px,pz,pw,pd)=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(pw,pd),mat); m.rotation.x=rotX; m.position.set(px,y,pz); worldGroup.add(m); };
+      mk((A.x0+S.x0)/2,cz,S.x0-A.x0,D); mk((S.x0+A.x1)/2,(A.z0+S.z0)/2,A.x1-S.x0,S.z0-A.z0); };
+    plate(Y+0.02,floorM,-Math.PI/2);
+    plate(Y+H-0.06,ceilM,Math.PI/2);                                     // 6 cm under the slab above: never on the same plane as it
+    for(const [x,z] of [[-58,-104],[-30,-104],[-2,-104],[-58,-66],[-30,-66],[-2,-66],[-30,-85]])emissiveStrip(x,Y+H-0.1,z,3.6,0.1,3.6,0xbfd8ff,0.8);
+    const cnv=document.createElement('canvas'); cnv.width=512; cnv.height=128; const x2=cnv.getContext('2d');
+    x2.fillStyle='#0b1220'; x2.fillRect(0,0,512,128); x2.fillStyle='#7fe6ff'; x2.font='bold 54px Segoe UI'; x2.textAlign='center'; x2.textBaseline='middle'; x2.fillText('LAB LEVEL '+(i+1),256,64);
+    const tex=new THREE.CanvasTexture(cnv); tex.encoding=THREE.sRGBEncoding;
+    const sign=new THREE.Mesh(new THREE.PlaneGeometry(3.4,0.7),new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.7,roughness:0.5}));
+    { const [sx,sz]=LABLIFT.toWorld(LABLIFT.car.w/2+0.03,0);
+      sign.position.set(sx,Y+3.75,sz); sign.rotation.y=LABLIFT.yaw+Math.PI/2; worldGroup.add(sign); }   // over the doors, above the entrance frame
+    buildCar(LABLIFT,i+1,Y);
+    const own=LABT.contents[i+1];
+    if(own){ const nb=BUILDINGS.length; try{ own(Y,zn); }catch(e){ console.error('lab level '+(i+1)+' failed',e); }
+      for(let k=nb;k<BUILDINGS.length;k++){ const b=BUILDINGS[k]; if(b.y0===undefined)b.y0=Y-0.4; if(b.h===undefined)b.h=Y+H; } }
+  });
+}
+// The stair: a switchback of two 4 m runs to a half-landing and back, once per storey, in a shaft that runs
+// from the Annexe floor to the roof. A 10 m storey over two 8.8 m runs is about 30° — real stairs, not a ladder.
+function buildLabStair(){
+  const A=LABT, S=A.shaft, T=0.3, cx=(S.x0+S.x1)/2, cz=(S.z0+S.z1)/2;
+  const FL=[0].concat(A.Y), topY=A.Y[A.Y.length-1]+A.H;
+  const wallM=new THREE.MeshStandardMaterial({color:0x222c3e,roughness:0.75,metalness:0.25});
+  const stepM=new THREE.MeshStandardMaterial({color:0x36415c,roughness:0.7,metalness:0.25,side:THREE.DoubleSide});
+  const doorM=new THREE.MeshStandardMaterial({color:0x2e3a52,roughness:0.35,metalness:0.8});
+  const glassM=new THREE.MeshStandardMaterial({color:0xaad8f0,transparent:true,opacity:0.14,roughness:0.06,metalness:0.5,side:THREE.DoubleSide});
+  const mullM=new THREE.MeshStandardMaterial({color:0x2a3854,roughness:0.4,metalness:0.8});
+  // a glazed wall in place of a solid one: a pane, uprights every ~4.5 m, a rail at each floor line, and the
+  // same collider the box would have pushed. Only the doors are solid now — the stair is a glass corner (2026-09-18)
+  const glassWall=(x,z,w,d,y,h,bare)=>{
+    const L=Math.max(w,d), alongX=w>=d;
+    const pane=new THREE.Mesh(new THREE.BoxGeometry(alongX?L:0.1,h,alongX?0.1:L),glassM);
+    pane.position.set(x,y+h/2,z); worldGroup.add(pane);
+    if(!bare){                               // bare: the tower's own glazing stands right outside it, and two sets of uprights read as a muddle
+      const n=Math.max(1,Math.round(L/4.5));
+      for(let k=0;k<=n;k++){ const s=-L/2+L*k/n;
+        const m=new THREE.Mesh(new THREE.BoxGeometry(alongX?0.14:0.26,h,alongX?0.26:0.14),mullM);
+        m.position.set(alongX?x+s:x,y+h/2,alongX?z:z+s); worldGroup.add(m); }
+      for(const fy of FL)if(fy>=y-0.1&&fy<=y+h+0.1){                        // a rail on every floor line it passes
+        const r=new THREE.Mesh(new THREE.BoxGeometry(alongX?L:0.26,0.34,alongX?0.26:L),mullM);
+        r.position.set(x,fy+0.17,z); worldGroup.add(r); } }
+    BUILDINGS.push({x,z,hw:w/2,hd:d/2,y0:y-0.2,h:y+h});
+  };
+  const XA=8.5, XB=12.5, RW=4;              // the two runs, side by side, with a wall between them
+  const ZE0=-58.5, ZE1=-52.3;               // the landing you arrive on, at every floor
+  const ZM0=-69.7, ZM1=-67.3;               // the half-landing at the far end
+  const DZ0=-58, DZ1=-55.5, DH=2.6;         // the doorway onto each floor, in the shaft's west wall
+  A.doors=[];
+  // Its own two walls are glass from the wing's floor to the roof; the east and south faces are the wing's and
+  // the tower's own outer walls, glazed the whole height across this corner too (buildLabFloor). So that the
+  // glass does not look out onto a floor that isn't drawn, zoneUpdate adds the floor above and below while you
+  // are inside the shaft — they are only a plane or two each, the heavy pieces being drawn from every zone anyway.
+  zoneBuild(0,()=>{
+    glassWall(cx,S.z0,S.x1-S.x0,T,0,topY);                                // north
+    box(13.5,0,S.z1,3,7,0.6,wallM,true);                                  // the wing's south wall stops at x 12: close it to the corner
+    // Its own east and south skin, the whole height, just inside the wing's and the tower's outer walls.
+    // Without them the stair is open to the world between y 7 and 8 — the wing's walls end at 7 and the
+    // tower's begin at 8, and their tops are stood on, so you could walk down run B, slip off its east edge
+    // and out over the wing's wall. (2026-09-18: the fall the user hit.)
+    glassWall(14.62,cz,0.1,S.z1-S.z0,0,topY,true);
+    glassWall(cx,-52.42,S.x1-S.x0,0.1,0,topY,true);
+    glassWall(S.x0,(S.z0+DZ0)/2,T,DZ0-S.z0,0,topY);                       // west, north of the doorways
+    glassWall(S.x0,(DZ1+S.z1)/2,T,S.z1-DZ1,0,topY);                       // west, south of them — and the leaf slides into this length
+    for(let k=0;k<FL.length;k++){                                          // west, filled in between one doorway's head and the next floor
+      const y0=FL[k]+DH, y1=(k+1<FL.length)?FL[k+1]:topY;
+      if(y1>y0)glassWall(S.x0,(DZ0+DZ1)/2,T,DZ1-DZ0,y0,y1-y0);
+    }
+    for(const Y of FL){                                                    // the door at each landing, and the flights up from it
+      const leaf=new THREE.Mesh(new THREE.BoxGeometry(0.14,DH-0.04,DZ1-DZ0),doorM);
+      leaf.position.set(S.x0,Y+(DH-0.04)/2+0.02,(DZ0+DZ1)/2); worldGroup.add(leaf);
+      const gate={x:S.x0,z:(DZ0+DZ1)/2,hw:0.22,hd:(DZ1-DZ0)/2,y0:Y-0.3,h:Y+DH,off:false}; BUILDINGS.push(gate);
+      A.doors.push({leaf,gate,Y,z:(DZ0+DZ1)/2,slide:DZ1-DZ0,open:0});
+      // the landing you step onto from the doorway (and off the run that arrives here)
+      box(cx,Y-0.25,(ZE0+ZE1)/2,S.x1-S.x0-2*T,0.25,ZE1-ZE0,wallM,false);
+      BUILDINGS.push({x:cx,z:(ZE0+ZE1)/2,hw:(S.x1-S.x0-2*T)/2,hd:(ZE1-ZE0)/2,y0:Y-0.3,h:Y,step:true});   // step: walk up onto it off the run that arrives a riser short
+      const next=A.Y.find(v=>v>Y);
+      if(next===undefined){                                                // the top floor: no flight up, so the half of the well that one would fill is floored
+        const cap=(x0,x1,z0,z1)=>{ box((x0+x1)/2,Y-0.25,(z0+z1)/2,x1-x0,0.25,z1-z0,wallM,false);
+          BUILDINGS.push({x:(x0+x1)/2,z:(z0+z1)/2,hw:(x1-x0)/2,hd:(z1-z0)/2,y0:Y-0.3,h:Y,step:true}); };
+        cap(6.3,10.5,ZM0,ZE0);                                             // over where the up-flight's west run would have been
+        cap(10.5,14.7,ZM0,ZM1);                                            // and over the half-landing; only the east run's own slot is left open, to walk back down
+        continue; }
+      const mid=(Y+next)/2, rise=mid-Y, RZ0=ZM1, RZ1=ZE0, len=RZ1-RZ0;
+      box(cx,mid-0.25,(ZM0+ZM1)/2,S.x1-S.x0-2*T,0.25,ZM1-ZM0,wallM,false);   // the half-landing
+      BUILDINGS.push({x:cx,z:(ZM0+ZM1)/2,hw:(S.x1-S.x0-2*T)/2,hd:(ZM1-ZM0)/2,y0:mid-0.3,h:mid,step:true});
+      box(10.5,Y,(RZ0+RZ1)/2,0.3,next-Y,len,wallM,false);                    // the wall between the two runs
+      BUILDINGS.push({x:10.5,z:(RZ0+RZ1)/2,hw:0.15,hd:len/2,y0:Y,h:next});
+      // up the west run to the half-landing, back up the east run to the floor above
+      BUILDINGS.push({x:XA,z:(RZ0+RZ1)/2,hw:RW/2,hd:len/2,ramp:{axis:'z',up:-1,y0:Y,y1:mid}});
+      BUILDINGS.push({x:XB,z:(RZ0+RZ1)/2,hw:RW/2,hd:len/2,ramp:{axis:'z',up:1,y0:mid,y1:next}});
+      const n=Math.max(8,Math.round(rise/0.25));
+      const a=labSteps(n,RW,rise/n,len/n,stepM); a.position.set(XA,Y,RZ1); a.rotation.y=Math.PI; worldGroup.add(a);
+      const b=labSteps(n,RW,rise/n,len/n,stepM); b.position.set(XB,mid,RZ0); worldGroup.add(b);
+    }
+  });
+  animated.push({update(dt){                 // each door opens for whoever is at its own landing
+    for(const d of A.doors){
+      const near=Math.abs(player.y-d.Y)<2.4&&Math.abs(player.pos.x-S.x0)<3.4&&Math.abs(player.pos.z-d.z)<3.4;
+      d.open+=((near?1:0)-d.open)*Math.min(1,dt*5);
+      d.leaf.position.z=d.z+d.open*d.slide; d.gate.off=d.open>0.55;
+    }
+  }});
+}
+/* What stands on each floor. A circle takes (Y, x, z, colour, what it says, the line under it, what it does).
+   Only one of the six is wired up so far — the nightmare, which the developer page has always been able to
+   call; the other five are marked empty and are waiting for their GLB or their sequence. To fill one, replace
+   its body: the floor's Y is handed to you, so a thing you add stands on this floor and nowhere else. */
+// The three stand 10 m out from the lift's doors, 5 m apart, in a row across the way you walk out of it.
+LABT.circleAt=(k)=>LABLIFT.toWorld(LABLIFT.front(1)+10,(k-1)*5);   // k = 0, 1, 2
+LABT.contents={
+  1:(Y)=>{
+    const empty=(n)=>()=>banner('Lab level 1, circle '+n+' — empty. Nothing is hung on it yet.');
+    for(let k=0;k<3;k++){ const [x,z]=LABT.circleAt(k);
+      labCircle(Y,x,z,0x7fe6ff,'Circle '+(k+1)+' — empty','level 1 · nothing on it yet',empty(k+1)); }
+  },
+  2:(Y)=>{
+    const empty=(n)=>()=>banner('Lab level 2, circle '+n+' — empty. Nothing is hung on it yet.');
+    const c0=LABT.circleAt(0), c1=LABT.circleAt(1), c2=LABT.circleAt(2);
+    labCircle(Y,c0[0],c0[1],0xff9f6a,'Spawn the nightmare boss — they shoot at it','level 2 · circle 1 — step in',
+      ()=>gunsSpawnBoss(()=>banner('The nightmare — Elara and Jack turn and shoot')),true);   // the developer page's own, on a floor instead, and it starts as you walk in
+    labCircle(Y,c1[0],c1[1],0x7fe6ff,'Circle 2 — empty','level 2 · nothing on it yet',empty(2));
+    labCircle(Y,c2[0],c2[1],0x7fe6ff,'Circle 3 — empty','level 2 · nothing on it yet',empty(3));
+  },
+};
+function buildLabLights(){
+  for(const [k,c,i,d,,y] of EARLY_SPEC)if(k.indexOf('labT')===0){          // the eight lights, and how far each sits above its floor
+    const l=takeLight(k,c,i,d); l.userData.dy=y-LABT.Y[0]; worldGroup.add(l); LABT.lights.push(l); }
 }
 /* ============================================================
    WHAT SHE WEARS — the clothes of "Secretary" (Patricia) by patromes, hung on Elara's own skeleton.
@@ -1769,9 +2098,10 @@ function gunsArm(key,root,height){
 function gunsShooters(){
   const p=persons.elara;
   if(p&&!GUNS.shooters.some(G=>G.key==='elara')){ const G=gunsArm('elara',p.inner,1.87); if(G){ G.p=p; p.clips.Gun=G.clip; GUNS.shooters.push(G); } }
-  const g=GUESTS.find(q=>q.id==='jack');
-  if(g&&g.root&&g.bodyAction&&!GUNS.shooters.some(G=>G.key==='jack')){
-    const G=gunsArm('jack',g.root,g.h||GUEST.height); if(G){ G.g=g; G.action=g.bodyMixer.clipAction(G.clip); GUNS.shooters.push(G); } }
+  // every Jack that is in and carries gun:true — the hall's, and the one on lab level 2 (2026-09-18)
+  for(const g of GUESTS){
+    if(!g.gun||!g.root||!g.bodyAction||GUNS.shooters.some(G=>G.key===g.id))continue;
+    const G=gunsArm(g.id,g.root,g.h||GUEST.height); if(G){ G.g=g; G.action=g.bodyMixer.clipAction(G.clip); GUNS.shooters.push(G); } }
 }
 function gunsLoadBoss(cb){
   if(GUNS.bossSrc||GUNS.bossState==='failed'){cb&&cb();return;}
@@ -1990,7 +2320,7 @@ function remapClip(clip,srcRoot,dstRoot,name){
 }
 function loadGuest(g){
   if(g.state)return; g.state='loading'; GUEST.busy=true; g.progAt=renderer.info.programs.length;
-  if(!g.quiet)banner('Loading '+g.name+' — a big file, give it a moment');
+  if(!g.quiet)banner('Loading '+g.name+' — '+(g.sub||'a big file, give it a moment'));
   new THREE.GLTFLoader().load(g.url||('assets/people/'+g.file),(gl)=>{
     const root=gl.scene;
     if(g.plain)plainGuest(root);                              // metal/rough + one shader family (see plainGuest)
@@ -2010,7 +2340,7 @@ function loadGuest(g){
     const grp=new THREE.Group();
     grp.add(root);
     grp.scale.setScalar(sc);
-    grp.position.set(g.cx,foot,g.cz);   // CC3 exports stand on their own origin
+    grp.position.set(g.cx,foot+(g.gy||0),g.cz);   // CC3 exports stand on their own origin; gy lifts one onto a lab floor
     grp.rotation.y=g.yaw||0;
     worldGroup.add(grp);
     g.grp=grp; g.root=root;                                    // for the developer-page guns (GUNS)
@@ -2327,7 +2657,8 @@ function guestVoice(g,root,grp){
   if(g.gaze&&!g.bodyFrom)guestGaze(g,sp,root,grp);           // with a borrowed idle the gaze waits for that mixer (see bodyFrom): it must run after it
   let i=0; const nice=g.name.charAt(0)+g.name.slice(1).toLowerCase();
   const talk=()=>say(g.id,g.speaks[i++%g.speaks.length]);
-  hotspot(g.cx,g.cz,2.6,'Talk to '+nice,()=>{ if(g.id==='jack')openJackMenu(talk); else talk(); },{rad:0.42,cap:1.85});   // the body itself   // Jack: his card (Defend the hall), the rest just talk
+  const gh=hotspot(g.cx,g.cz,2.6,'Talk to '+nice,()=>{ if(g.id==='jack')openJackMenu(talk); else talk(); },{rad:0.42,cap:1.85});   // the body itself   // Jack: his card (Defend the hall), the rest just talk
+  if(g.gy!==undefined)gh.y=g.gy;                             // up the lab tower: his prompt belongs to his own floor
 }
 // Where the cost of a big character really is (measured on a GTX 1060, D3D11): a texture upload is
 // ~25 ms, a mesh's buffers a few ms, but every NEW shader program is ~1 s on a first visit (~0.25 s
@@ -2363,7 +2694,7 @@ function plainGuest(root){
 function warmGuestShaders(){
   if(GUEST.shaders===true)return;
   if(!GUEST.shaders){
-    const mk=(mt,at)=>{
+    const mk=(mt,at,front,plain,sets)=>{   // front: single-sided; plain: no maps; sets: the light sets it is seen under (guests: the hall and the Annexe)
       const geo=new THREE.BufferGeometry();
       geo.setAttribute('position',new THREE.Float32BufferAttribute([0,0,0,0.01,0,0,0,0.01,0],3));
       geo.setAttribute('normal',new THREE.Float32BufferAttribute([0,0,1,0,0,1,0,0,1],3));
@@ -2371,10 +2702,10 @@ function warmGuestShaders(){
       geo.setAttribute('skinIndex',new THREE.Uint16BufferAttribute([0,0,0,0,0,0,0,0,0,0,0,0],4));
       geo.setAttribute('skinWeight',new THREE.Float32BufferAttribute([1,0,0,0,1,0,0,0,1,0,0,0],4));
       if(mt)geo.morphAttributes.position=[new THREE.Float32BufferAttribute([0,0,0,0,0,0,0,0,0],3)];
-      const mat=new THREE.MeshStandardMaterial({map:guestTex('white'),normalMap:guestTex('flat'),skinning:true,morphTargets:mt,morphNormals:false,
-        alphaTest:at,side:THREE.DoubleSide,metalness:0,roughness:0.6});
+      const mat=new THREE.MeshStandardMaterial({map:plain?null:guestTex('white'),normalMap:plain?null:guestTex('flat'),skinning:true,morphTargets:mt,morphNormals:false,
+        alphaTest:at,side:front?THREE.FrontSide:THREE.DoubleSide,metalness:0,roughness:0.6});
       const bone=new THREE.Bone(), m=new THREE.SkinnedMesh(geo,mat); m.add(bone); m.bind(new THREE.Skeleton([bone]));
-      m.frustumCulled=false; m.position.y=-60; m.userData.sets=[LSET.hall,LSET.annexe]; return m;   // guests stand in the hall and the Annexe
+      m.frustumCulled=false; m.position.y=-60; m.userData.sets=sets||[LSET.hall,LSET.annexe]; return m;   // guests stand in the hall and the Annexe
     };
     // and the city's two flat variants: base map, double-sided, with / without a cutout
     const mkFlat=(at,noMap,glow)=>{ const geo=new THREE.BufferGeometry();   // glow: the city's building variant (texture doubled as emissive)
@@ -2384,7 +2715,11 @@ function warmGuestShaders(){
       const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({map:noMap?null:guestTex('white'),side:THREE.DoubleSide,alphaTest:at,roughness:0.85,metalness:0,
         emissive:glow?new THREE.Color(0xffffff):new THREE.Color(0x000000),emissiveMap:glow?guestTex('white'):null}));
       m.frustumCulled=false; m.position.y=-60; m.userData.sets=[LSET.out]; return m; };   // the city is outside
-    GUEST.shaders={queue:[mk(false,0),mk(true,0),mk(true,0.12),mkFlat(0),mkFlat(0.5),mkFlat(0,true),mkFlat(0,false,true),mkFlat(0.5,false,true)],shown:null,keep:[]};
+    // and the hall's own people, who arrive after it is built (2026-09-18): Dr. Vance and Optimus are flat-coloured, single-sided and drawn from
+    // every zone (four programs, 260 ms between them when they compiled on arrival); the stranger by the Theater is mapped and single-sided
+    const ALL4=[LSET.hall,LSET.out,LSET.annexe,LSET.retreat];
+    GUEST.shaders={queue:[mk(false,0),mk(true,0),mk(true,0.12),mk(false,0,true,true,ALL4),mk(false,0,true,false,[LSET.hall,LSET.out]),
+      mkFlat(0),mkFlat(0.5),mkFlat(0,true),mkFlat(0,false,true),mkFlat(0.5,false,true)],shown:null,keep:[]};
   }
   const w=GUEST.shaders;
   if(w.queue.length){ const m=w.queue.shift(); scene.add(m); for(const b of m.userData.sets)warmDraw([m],b); scene.remove(m); w.keep.push(m); }
@@ -2410,7 +2745,7 @@ function warmGuest(g,root){
 // inside the space, not merely near it — the doorway is the trigger; after:'start' loads a couple of
 // seconds after the START gate opens, wherever you are
 function updateGuests(){
-  warmGuestShaders();                                       // eight frames at the very start: every light is in from the first frame (earlyLights), and lights are part of a program's key
+  warmGuestShaders();                                       // ten frames at the very start: every light is in from the first frame (earlyLights), and lights are part of a program's key
   if(GUEST.busy)return;
   for(const g of GUESTS){
     if(g.state)continue;
@@ -2420,6 +2755,7 @@ function updateGuests(){
       if(state.time-GUEST.gateT>2){ loadGuest(g); return; }
       continue;
     }
+    if(Math.abs(player.y-(g.gy||0))>3)continue;   // his own floor only: the twenty spaces are on the lab's ground floor, not under every floor of the tower over it (2026-09-18)
     if(Math.abs(player.pos.x-g.cx)<6&&Math.abs(player.pos.z-g.cz)<5.2){ loadGuest(g); return; }
   }
 }
@@ -2461,6 +2797,7 @@ function buildFountain(){
   hotspot(FX, FZ, 5.2, 'Listen — The Fountain', ()=>openFountainAtWater(), {y:1.0,rad:4.5});
   addFloorText('ATRIUM',0,4.4,0,-1,0.8,0x9fd8ff);
 
+  loadOptimus();                               // the robot who stands beside the water and answers for it
   // ----- shop purchases, made visible — applied at build AND live at the moment of buying
   fountainParts={pool:pool,core:core,rings:rings,beam:beam};
   const ownedItems=loadOwned();
@@ -2557,70 +2894,107 @@ function softLanding(){
    "Elevator Building" by adventurer (Sketchfab, CC BY 4.0): its frame is set into the car's front and
    its two leaves are slid by hand (attachFrame), the same clone at every stop.
    ============================================================ */
-const ELEV={car:{x:-10.4,z:43.3,w:4.0,d:3.6,h:3.3},cars:[],at:0,riding:null,aim:null,frameSrc:null,
-  ray:new THREE.Raycaster(),hot:{x:0,z:0,r:1,label:'',fn:null},fadeEl:null};
+// There are two of these now (2026-09-18): the foyer's, and the lab tower's. What they share — the entrance
+// model, the aim ray, the fade — is in LIFTX; a lift itself is a car, the way it faces, how many floors work,
+// and where each one stands. A car is built in its own axes — local +x is the way OUT, local z its width —
+// and `yaw` turns it into the world: 0 opens east, π west, π/2 north (−z), −π/2 south. `front(stop)` is how
+// far in front of the car's centre its doors stand, so everything else is the same whichever way it faces.
+const LIFTX={frameSrc:null,ray:new THREE.Raycaster(),fadeEl:null,aim:null,frameT:0.365,   // frameT: the entrance frame's thickness once scaled to the car (25 model units)
+  hot:{x:0,z:0,r:1,label:'',fn:null}};
+// a glass car (`glass:true` on the lift): the two sliding leaves and the car's own walls go transparent.
+// The floor, the roof, the ceiling light, the button plate and the buttons stay exactly as they are.
+const LIFT_GLASS=new THREE.MeshStandardMaterial({color:0xbfe4f5,transparent:true,opacity:0.26,roughness:0.07,metalness:0.65,side:THREE.DoubleSide});
+// `travel:true` rides for real instead of fading and reappearing (2026-09-18, asked for): the car you are in
+// carries you and Elara up the shaft while you watch the city go past. A fast lift — about 11 m/s at its
+// quickest, easing off at both ends, so one storey takes a second and a half and the full run about five.
+// LIFTX.travel is set while that is happening, and update() leaves the player's feet alone until it clears.
+const LIFT_SPEED=11;
+const liftTime=(d)=>0.8+d/LIFT_SPEED;
+const liftEase=(u)=>u*u*(3-2*u);
+const LIFTS=[];
+function makeLift(cfg){ const L=Object.assign({cars:[],at:0,riding:null,yaw:0},cfg);
+  const c=Math.cos(L.yaw), s=Math.sin(L.yaw);
+  L.toWorld=(lx,lz)=>[L.car.x+lx*c+lz*s, L.car.z-lx*s+lz*c];      // a point in the car's axes, in the world
+  L.toLocal=(wx,wz)=>{ const dx=wx-L.car.x, dz=wz-L.car.z; return [dx*c-dz*s, dx*s+dz*c]; };
+  L.swap=Math.abs(s)>0.5;                                          // a quarter turn: a collider's half-width and half-depth swap over
+  LIFTS.push(L); return L; }
+const ELEV=makeLift({car:{x:-10.4,z:43.3,w:4.0,d:3.6,h:3.3},yaw:0,stops:6,ground:'the foyer',
+  stopY:(s)=>s?LEVEL_Y[s-1]:0, zoneOf:(s)=>s?4+s:0, levelName:(n)=>'Level '+n,
+  front:(stop)=>(stop?2.0:2.7)+0.1825,   // its leaves stand on the foyer face of the wall (2.7 out), or on a level car's own front
+  onArrive:(to)=>{ if(to)say('elara',"The floors are empty. Go back to the ground floor."); }});   // up a level: Elara sends you down again (2026-09-17)
+const LABLIFT=makeLift({car:LABT.car,yaw:Math.PI/2,stops:5,ground:'the lab',
+  stopY:(s)=>s?LABT.Y[s-1]:0, zoneOf:(s)=>s?10+s:0, levelName:(n)=>'Lab level '+n, glass:true, travel:true,
+  front:()=>LABT.car.w/2+0.1825});       // it stands outside the wing's south wall and opens north through it, the same at every stop
 const LEVEL_BOX={x0:-44,x1:44,z0:-44,z1:46};
-ELEV.frameT=0.365;                                              // the entrance frame's thickness once scaled to the car (25 model units)
-ELEV.frontX=(stop)=>(stop?ELEV.car.x+ELEV.car.w/2:-7.7)+ELEV.frameT/2;   // where its leaves stand: on the foyer face of the wall (x -7.7), or on a level car's front
 function buildElevator(){
-  ELEV.ray.layers.enableAll(); ELEV.fadeEl=document.getElementById('fade'); buildCar(0,0);
-  if(envLoader)envLoader.load('assets/env/elevator_building.glb',(gl)=>{ ELEV.frameSrc=gl.scene; for(const car of ELEV.cars)if(car&&!car.frame)attachFrame(car); },undefined,()=>{});
+  LIFTX.ray.layers.enableAll(); LIFTX.fadeEl=document.getElementById('fade'); buildCar(ELEV,0,0);
+  if(envLoader)envLoader.load('assets/env/elevator_building.glb',(gl)=>{ LIFTX.frameSrc=gl.scene;
+    for(const L of LIFTS)for(const car of L.cars)if(car&&!car.frame)attachFrame(L,car); },undefined,()=>{});
 }
 // the entrance model on a car's front: scaled to the car's height, its bottom on the floor, facing out (+x).
 // The model holds two entrances; the second is dropped. Leaves L and R slide along their own x by their width (74 units).
-function attachFrame(car){
-  const C=ELEV.car, root=ELEV.frameSrc.clone(true);
+function attachFrame(L,car){
+  const C=L.car, root=LIFTX.frameSrc.clone(true);
   const spare=root.getObjectByName('Null_1'); if(spare)spare.parent.remove(spare);
   root.updateMatrixWorld(true);
   const grp=root.getObjectByName('Null'); const bb=new THREE.Box3().setFromObject(grp||root); const sz=bb.getSize(new THREE.Vector3()), c=bb.getCenter(new THREE.Vector3());
   const sc=C.h/Math.max(0.01,sz.y);
   const holder=new THREE.Group(); holder.add(root); root.scale.multiplyScalar(sc); root.position.set(-c.x*sc,-bb.min.y*sc,-c.z*sc);
-  holder.position.set(ELEV.frontX(car.stop),car.Y,C.z); holder.rotation.y=Math.PI/2; worldGroup.add(holder);   // not set into the wall: on its face
+  { const [wx,wz]=L.toWorld(L.front(car.stop),0);
+    holder.position.set(wx,car.Y,wz); } holder.rotation.y=L.yaw+Math.PI/2; worldGroup.add(holder);   // not set into the wall: on its face
   root.traverse(o=>{ if(o.isMesh&&o.material){ o.material.side=THREE.DoubleSide; o.castShadow=false; o.receiveShadow=false; } });
-  const L=root.getObjectByName('L'), R=root.getObjectByName('R');
-  car.frame={holder,L,R,L0:L?L.position.x:0,R0:R?R.position.x:0,slide:74,width:sz.x*sc};
-  zoneTag(holder,car.stop?4+car.stop:0);   // the foyer's is drawn from both zones; a level's with its level
+  const lf=root.getObjectByName('L'), rt=root.getObjectByName('R');
+  // a glass car: only the two leaves, never the surround — and a material of its own, since the model's one
+  // mesh material is shared with the foyer's lift and with the surround (2026-09-18)
+  if(L.glass)for(const leaf of [lf,rt])if(leaf)leaf.traverse(o=>{ if(o.isMesh)o.material=LIFT_GLASS; });
+  car.frame={holder,L:lf,R:rt,L0:lf?lf.position.x:0,R0:rt?rt.position.x:0,slide:74,width:sz.x*sc};
+  zoneTag(holder,L.zoneOf(car.stop));   // a ground car is drawn from every zone; a level's with its level
 }
-function buildCar(stop,Y){
-  const C=ELEV.car, w=C.w, d=C.d, h=C.h;
+function buildCar(L,stop,Y){
+  const C=L.car, w=C.w, d=C.d, h=C.h, dir=1;   // built in the car's own axes and turned by L.yaw at the end
   const wallM=new THREE.MeshStandardMaterial({color:0x222c3e,roughness:0.5,metalness:0.6});
   const floorM=new THREE.MeshStandardMaterial({color:0x2c3444,roughness:0.7,metalness:0.2});
   const doorM=new THREE.MeshStandardMaterial({color:0x2e3a52,roughness:0.35,metalness:0.8});
-  const g=new THREE.Group(); g.position.set(C.x,Y,C.z); worldGroup.add(g);
+  const g=new THREE.Group(); g.position.set(C.x,Y,C.z); g.rotation.y=L.yaw; worldGroup.add(g);
+  const col=(lx,lz,lhw,lhd,extra)=>{ const [wx,wz]=L.toWorld(lx,lz);   // a collider given in the car's axes, pushed in the world's
+    return Object.assign({x:wx,z:wz,hw:L.swap?lhd:lhw,hd:L.swap?lhw:lhd},extra); };
   const mk=(x,y,z,sx,sy,sz,mat)=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat||wallM); m.position.set(x,y,z); g.add(m); return m; };
-  mk(-w/2,h/2,0,0.1,h,d); mk(0,h/2,-d/2,w,h,0.1); mk(0,h/2,d/2,w,h,0.1);   // back and sides
+  const wm=L.glass?LIFT_GLASS:wallM;                                     // a glass car: its walls, but not its floor, roof or light
+  mk(-dir*w/2,h/2,0,0.1,h,d,wm); mk(0,h/2,-d/2,w,h,0.1,wm); mk(0,h/2,d/2,w,h,0.1,wm);   // back and sides
   mk(0,h+0.05,0,w+0.2,0.1,d+0.2); mk(0,0.04,0,w,0.06,d,floorM);          // roof, floor (a solid 6 cm: the level's floor finish lies inside it)
   mk(0,h-0.03,0,1.8,0.04,1.6,new THREE.MeshStandardMaterial({color:0xdfe8ff,emissive:0xdfe8ff,emissiveIntensity:1.1,roughness:0.5}));   // the ceiling light
-  for(const sgn of [-1,1])mk(w/2,h/2,sgn*(d/2-0.15),0.12,h,0.3);            // the front beside the entrance frame (the frame itself is the model, attachFrame)
+  for(const sgn of [-1,1])mk(dir*w/2,h/2,sgn*(d/2-0.15),0.12,h,0.3,wm);      // the front beside the entrance frame (the frame itself is the model, attachFrame)
+  if(C.ow&&C.ow<d-0.3)for(const sgn of [-1,1])                               // a car wider than its doorway: close the front either side of it
+    mk(dir*w/2,h/2,sgn*(C.ow+d/2-0.3)/2,0.12,h,(d-0.3)/2-C.ow/2,wm);
   const car={stop,Y,g,frame:null,open:0,buttons:[],hits:[]};
   const y0=Y>0?Y:undefined, top=Y+h;   // this car's colliders exist between its floor and its roof only: the cars above and below stand at the same x,z
-  BUILDINGS.push({x:C.x-w/2,z:C.z,hw:0.06,hd:d/2,y0,h:top},{x:C.x,z:C.z-d/2,hw:w/2,hd:0.06,y0,h:top},{x:C.x,z:C.z+d/2,hw:w/2,hd:0.06,y0,h:top});
-  const fx=ELEV.frontX(stop);
-  for(const sgn of [-1,1])BUILDINGS.push({x:fx,z:C.z+sgn*(d/2-0.3),hw:0.25,hd:0.3,y0,h:top});   // the frame's jambs, where the frame stands
-  car.gate={x:fx,z:C.z,hw:0.25,hd:1.2,off:false,y0,h:top}; BUILDINGS.push(car.gate);
-  if(ELEV.frameSrc)attachFrame(car);
+  BUILDINGS.push(col(-w/2,0,0.06,d/2,{y0,h:top}),col(0,-d/2,w/2,0.06,{y0,h:top}),col(0,d/2,w/2,0.06,{y0,h:top}));
+  const fx=L.front(stop);
+  for(const sgn of [-1,1])BUILDINGS.push(col(fx,sgn*(d/2-0.3),0.25,0.3,{y0,h:top}));   // the frame's jambs, where the frame stands
+  car.gate=col(fx,0,0.25,1.2,{off:false,y0,h:top}); BUILDINGS.push(car.gate);
+  if(LIFTX.frameSrc)attachFrame(L,car);
   // the panel: a drawn plate on the back wall with ten buttons — rings you can aim at, numbers behind them
   const cnv=document.createElement('canvas'); cnv.width=256; cnv.height=512; const x=cnv.getContext('2d');
   x.fillStyle='#0b1220'; x.fillRect(0,0,256,512); x.strokeStyle='#2a3854'; x.lineWidth=6; x.strokeRect(6,6,244,500);
   x.textAlign='center'; x.textBaseline='middle';
-  const LABELS=[['G',0,true],['1',1,true],['2',2,true],['3',3,true],['4',4,true],['5',5,true],['6',6,true],['7',7,false],['8',8,false],['9',9,false]];
+  const LABELS=[['G',0],['1',1],['2',2],['3',3],['4',4],['5',5],['6',6],['7',7],['8',8],['9',9]];
   const spots=[];   // canvas position and panel-local offset of each button: two columns, numbers rising
-  LABELS.forEach(([lab,stopTo,works],i)=>{ const col=i%2, row=Math.floor(i/2); const cx=128+(col?58:-58), cy=256-(row-2)*116;
+  LABELS.forEach(([lab,stopTo],i)=>{ const works=stopTo<=L.stops; const col=i%2, row=Math.floor(i/2); const cx=128+(col?58:-58), cy=256-(row-2)*116;
     x.beginPath(); x.arc(cx,cy,40,0,7); x.fillStyle=works?'#12233c':'#10141b'; x.fill();
     x.font='bold 44px Segoe UI'; x.fillStyle=works?'#dff4ff':'#3a4250'; x.fillText(lab,cx,cy+2);
-    spots.push({lab,stopTo,works,dz:col?-0.14:0.14,dy:(row-2)*0.28}); });   // panel-local offsets (the panel is drawn 1.4x: 0.62 x 1.23 m)
-  x.font='bold 15px Segoe UI'; x.fillStyle='#4a5a74'; x.fillText('7 – 9  NOT YET BUILT',128,492);
+    spots.push({lab,stopTo,works,dz:dir*(col?-0.14:0.14),dy:(row-2)*0.28}); });   // panel-local offsets (the panel is drawn 1.4x: 0.62 x 1.23 m)
+  x.font='bold 15px Segoe UI'; x.fillStyle='#4a5a74'; x.fillText((L.stops+1)+' – 9  NOT YET BUILT',128,492);
   const tex=new THREE.CanvasTexture(cnv); tex.encoding=THREE.sRGBEncoding;
   const panel=new THREE.Mesh(new THREE.PlaneGeometry(0.62,1.23),new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.55,roughness:0.5}));
-  panel.position.set(-w/2+0.06,1.45,0); panel.rotation.y=Math.PI/2; g.add(panel);
+  panel.position.set(dir*(-w/2+0.06),1.45,0); panel.rotation.y=dir*Math.PI/2; g.add(panel);
   for(const sp of spots){
     const ring=new THREE.Mesh(new THREE.TorusGeometry(0.098,0.016,8,32),new THREE.MeshStandardMaterial({color:sp.works?0x9fe8ff:0x2a3040,emissive:sp.works?0x7fe6ff:0x000000,emissiveIntensity:0.35,roughness:0.4,metalness:0.3}));
-    ring.position.set(-w/2+0.075,1.45+sp.dy,sp.dz); ring.rotation.y=Math.PI/2; g.add(ring);
+    ring.position.set(dir*(-w/2+0.075),1.45+sp.dy,sp.dz); ring.rotation.y=dir*Math.PI/2; g.add(ring);
     const hit=new THREE.Mesh(new THREE.CircleGeometry(0.12,16),new THREE.MeshBasicMaterial({visible:false}));   // what the crosshair ray meets
-    hit.position.copy(ring.position); hit.rotation.y=Math.PI/2; g.add(hit);
-    const btn={label:sp.lab,stopTo:sp.stopTo,works:sp.works,ring,hit,flash:0}; hit.userData.btn=btn; car.buttons.push(btn); car.hits.push(hit);
+    hit.position.copy(ring.position); hit.rotation.y=dir*Math.PI/2; g.add(hit);
+    const btn={L,label:sp.lab,stopTo:sp.stopTo,works:sp.works,ring,hit,flash:0}; hit.userData.btn=btn; car.buttons.push(btn); car.hits.push(hit);
   }
-  ELEV.cars[stop]=car; return car;
+  L.cars[stop]=car; return car;
 }
 function buildLevel(i){
   const Y=LEVEL_Y[i], zn=5+i, H=4.2, B=LEVEL_BOX, cx=(B.x0+B.x1)/2, cz=(B.z0+B.z1)/2, W=B.x1-B.x0, D=B.z1-B.z0;
@@ -2649,7 +3023,7 @@ function buildLevel(i){
     const tex=new THREE.CanvasTexture(cnv); tex.encoding=THREE.sRGBEncoding;
     const sign=new THREE.Mesh(new THREE.PlaneGeometry(3,0.6),new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:0.7,roughness:0.5}));
     sign.position.set(ELEV.car.x+ELEV.car.w/2+0.02,Y+3.75,ELEV.car.z); sign.rotation.y=Math.PI/2; worldGroup.add(sign);   // over the car, above the entrance frame
-    buildCar(i+1,Y);
+    buildCar(ELEV,i+1,Y);
     const own=LEVEL_CONTENT[i+1];                                          // a visitor's level — see the COMMUNITY block near the end
     if(own){ const nb=BUILDINGS.length, nh=HOTS.length;
       try{ own(Y,zn,B); }catch(e){ console.error('LEVEL_CONTENT['+(i+1)+'] failed',e); }
@@ -2659,53 +3033,100 @@ function buildLevel(i){
   });
 }
 function elevPress(btn){
-  if(ELEV.riding)return;
+  const L=btn.L;
+  if(L.riding)return;
   if(!btn.works){ btn.flash=0.5; banner("Not built yet"); return; }
-  if(btn.stopTo===ELEV.at){ banner(btn.stopTo?'You are on level '+btn.stopTo:'This is the foyer'); return; }
-  ELEV.riding={to:btn.stopTo,t:0,phase:'close'};
+  if(btn.stopTo===L.at){ banner(btn.stopTo?'You are on '+L.levelName(btn.stopTo).toLowerCase():'This is '+L.ground); return; }
+  L.riding={to:btn.stopTo,t:0,phase:'close'};
 }
-function elevArrive(to){
-  const C=ELEV.car, Y=to?LEVEL_Y[to-1]:0, q=persons.elara;
-  const along=q&&Math.hypot(q.mesh.position.x-C.x,q.mesh.position.z-C.z)<(FOLLOW.on?14:8)&&Math.abs(q.mesh.position.y-(ELEV.at?LEVEL_Y[ELEV.at-1]:0))<2;   // with you, or following a few steps behind
-  player.pos.x=C.x-0.2; player.pos.z=C.z-0.3; player.y=Y; player.vy=0; player.grounded=true;
-  if(along){ q.mesh.position.set(C.x-0.3,Y,C.z+0.75); ELARA_BLOCK.x=q.mesh.position.x; ELARA_BLOCK.z=q.mesh.position.z; q.following=false; FOLLOW.stuck=0; }   // beside you in the car; she walks out after you
-  ELEV.at=to;
+function elevArrive(L,to){
+  const C=L.car, Y=L.stopY(to), q=persons.elara;
+  const along=q&&Math.hypot(q.mesh.position.x-C.x,q.mesh.position.z-C.z)<(FOLLOW.on?14:8)&&Math.abs(q.mesh.position.y-L.stopY(L.at))<2;   // with you, or following a few steps behind
+  const me=L.toWorld(-0.2,-0.3), her=L.toWorld(-0.3,0.75);
+  player.pos.x=me[0]; player.pos.z=me[1]; player.y=Y; player.vy=0; player.grounded=true;
+  if(along){ q.mesh.position.set(her[0],Y,her[1]); ELARA_BLOCK.x=q.mesh.position.x; ELARA_BLOCK.z=q.mesh.position.z; q.following=false; FOLLOW.stuck=0; }   // beside you in the car; she walks out after you
+  L.at=to;
 }
 animated.push({update(dt){
-  if(!ELEV.cars[0])return;
-  const C=ELEV.car, cur=ELEV.cars[ELEV.at]; if(!cur)return;
+ let anyAim=null, anyFade=null;
+ for(const L of LIFTS){
+  if(!L.cars[0])continue;
+  const C=L.car;
+  // The car comes to whatever floor YOU are on. You can reach a lab floor by the stair as well as by the
+  // lift, so "the car stays where it was last left" would leave the doors shut in your face — and if you
+  // ever left a floor another way, the lift was stuck there for good, with no way to call it. (2026-09-18)
+  if(!L.riding)for(const c2 of L.cars){
+    if(!c2||c2.stop===L.at||Math.abs(player.y-c2.Y)>1.5)continue;
+    const [lx,lz]=L.toLocal(player.pos.x,player.pos.z);
+    if(Math.abs(lz)<4&&lx>-C.w/2&&lx<L.front(c2.stop)+6){ L.at=c2.stop; break; }   // within a few steps of its doors
+  }
+  const cur=L.cars[L.at]; if(!cur)continue;
   // the ride: doors shut, black, the other floor, light again, doors open
-  const r=ELEV.riding; let fade=0;
-  if(r){ r.t+=dt;
+  const r=L.riding; let fade=0;
+  if(r&&L.travel){ r.t+=dt;
+    if(r.phase==='close'){ if(cur.open<0.03||r.t>1.4){          // doors shut, then the shaft is cleared and off it goes
+      r.phase='go'; r.t=0; r.y0=L.stopY(L.at); r.y1=L.stopY(r.to); r.dur=liftTime(Math.abs(r.y1-r.y0));
+      r.px=player.pos.x; r.pz=player.pos.z;
+      const q=persons.elara;                                     // she rides if she is in the car with you
+      if(q&&Math.abs(q.mesh.position.y-r.y0)<1.5){ const [lx,lz]=L.toLocal(q.mesh.position.x,q.mesh.position.z);
+        if(Math.abs(lx)<C.w/2+0.4&&Math.abs(lz)<C.d/2+0.4){ r.q=q; r.qx=q.mesh.position.x; r.qz=q.mesh.position.z; } }
+      r.g=cur.g; zoneTag(r.g,0);                                 // drawn from every zone while it is between floors
+      for(const c2 of L.cars)if(c2&&c2!==cur)c2.g.visible=false;  // one car in the shaft, not six
+      if(LABT.baySlabs&&L===LABLIFT)for(const s of LABT.baySlabs)s.visible=false;
+      LIFTX.travel=true;
+    } }
+    else if(r.phase==='go'){
+      const u=Math.min(1,r.t/r.dur), y=r.y0+(r.y1-r.y0)*liftEase(u);
+      r.g.position.y=y;
+      player.pos.x=r.px; player.pos.z=r.pz; player.y=y; player.vy=0; player.grounded=true;
+      if(r.q)r.q.mesh.position.set(r.qx,y,r.qz);
+      if(u>=1){
+        r.g.position.y=r.y0; zoneTag(r.g,L.zoneOf(cur.stop));     // it goes back to being the car parked at its own stop
+        for(const c2 of L.cars)if(c2)c2.g.visible=true;
+        if(LABT.baySlabs&&L===LABLIFT)for(const s of LABT.baySlabs)s.visible=true;
+        LIFTX.travel=false; L.at=r.to; player.y=r.y1;
+        if(r.q){ r.q.mesh.position.y=r.y1; ELARA_BLOCK.x=r.q.mesh.position.x; ELARA_BLOCK.z=r.q.mesh.position.z; r.q.following=false; FOLLOW.stuck=0; }
+        L.riding=null; banner(r.to?L.levelName(r.to):L.ground.charAt(0).toUpperCase()+L.ground.slice(1)); if(L.onArrive)L.onArrive(r.to);
+      }
+    }
+  }
+  else if(r){ r.t+=dt;
     if(r.phase==='close'){ if(cur.open<0.03||r.t>1.4){ r.phase='fade'; r.t=0; } }
-    else if(r.phase==='fade'){ fade=Math.min(1,r.t/0.5); if(r.t>=0.55){ elevArrive(r.to); r.phase='arrive'; r.t=0; fade=1; } }
-    else if(r.phase==='arrive'){ fade=1-Math.min(1,r.t/0.5); if(r.t>=0.5){ ELEV.riding=null; fade=0; banner(r.to?'Level '+r.to:'The foyer'); if(r.to)say('elara',"The floors are empty. Go back to the ground floor."); } }   // up a level: Elara sends you down again (2026-09-17)
-    ELEV.fadeEl.style.opacity=fade.toFixed(2);
+    else if(r.phase==='fade'){ fade=Math.min(1,r.t/0.5); if(r.t>=0.55){ elevArrive(L,r.to); r.phase='arrive'; r.t=0; fade=1; } }
+    else if(r.phase==='arrive'){ fade=1-Math.min(1,r.t/0.5); if(r.t>=0.5){ L.riding=null; fade=0; banner(r.to?L.levelName(r.to):L.ground.charAt(0).toUpperCase()+L.ground.slice(1)); if(L.onArrive)L.onArrive(r.to); } }
+    anyFade=fade;
   }
   // the car at your floor opens when you are near its doors (and never mid-ride); the others stay shut
-  for(const car of ELEV.cars){ if(!car)continue;
-    const mine=car===ELEV.cars[ELEV.at];
-    const q=persons.elara, atCar=(x,y,z)=>Math.abs(y-car.Y)<1.5&&x>C.x-C.w/2&&x<ELEV.frontX(car.stop)+2.4&&Math.abs(z-C.z)<1.9;
-    const near=mine&&!ELEV.riding&&(atCar(player.pos.x,player.y,player.pos.z)||(!!q&&atCar(q.mesh.position.x,q.mesh.position.y,q.mesh.position.z)));   // for you, and for Elara still stepping out behind you
+  for(const car of L.cars){ if(!car)continue;
+    const mine=car===L.cars[L.at];
+    const q=persons.elara, atCar=(x,y,z)=>{ if(Math.abs(y-car.Y)>1.5)return false;
+      const [lx,lz]=L.toLocal(x,z); return Math.abs(lz)<1.9&&lx>-C.w/2&&lx<L.front(car.stop)+2.4; };   // in the car or just outside its doors, whichever way it faces
+    const near=mine&&!L.riding&&(atCar(player.pos.x,player.y,player.pos.z)||(!!q&&atCar(q.mesh.position.x,q.mesh.position.y,q.mesh.position.z)));   // for you, and for Elara still stepping out behind you
     car.open+=((near?1:0)-car.open)*Math.min(1,dt*5);
     if(car.frame){ const f=car.frame; if(f.L)f.L.position.x=f.L0+car.open*f.slide; if(f.R)f.R.position.x=f.R0-car.open*f.slide; } car.gate.off=car.open>0.55;
     for(const b of car.buttons){ if(b.flash>0)b.flash-=dt; }
   }
   // aiming: the crosshair ray against this car's buttons, only from inside it
   let aim=null;
-  const inside=!ELEV.riding&&Math.abs(player.y-cur.Y)<1.5&&player.pos.x>C.x-C.w/2-0.2&&player.pos.x<C.x+C.w/2+0.6&&Math.abs(player.pos.z-C.z)<C.d/2+0.4;
-  if(inside){ ELEV.ray.setFromCamera({x:0,y:0},camera); const hits=ELEV.ray.intersectObjects(cur.hits,false); if(hits.length&&hits[0].distance<4.6)aim=hits[0].object.userData.btn; }   // from anywhere in the 4 m car
-  ELEV.aim=aim;
+  const pl=L.toLocal(player.pos.x,player.pos.z);
+  const inside=!L.riding&&Math.abs(player.y-cur.Y)<1.5&&Math.abs(pl[0])<C.w/2+0.6&&Math.abs(pl[1])<C.d/2+0.4;
+  if(inside){ LIFTX.ray.setFromCamera({x:0,y:0},camera); const hits=LIFTX.ray.intersectObjects(cur.hits,false); if(hits.length&&hits[0].distance<4.6)aim=hits[0].object.userData.btn; }   // from anywhere in the 4 m car
   for(const b of cur.buttons){ const m=b.ring.material; const on=b===aim;
     m.emissiveIntensity=b.flash>0?1.6:(b.works?(on?1.5:0.35):(on?0.5:0)); m.emissive.set(b.flash>0?0xff4a4a:(b.works?0x7fe6ff:(on?0x8a93a6:0x000000)));
     const sc=on?1.2:1; b.ring.scale.set(sc,sc,sc); }
-  if(aim){ ELEV.hot.x=player.pos.x; ELEV.hot.z=player.pos.z; ELEV.hot.label=aim.works?(aim.stopTo?'Level '+aim.stopTo:'Ground — the foyer'):'Not built yet'; ELEV.hot.fn=()=>elevPress(aim); }
+  if(aim)anyAim=aim;
+ }
+ if(anyFade!==null)LIFTX.fadeEl.style.opacity=anyFade.toFixed(2);
+ LIFTX.aim=anyAim;
+ if(anyAim){ const aim=anyAim; LIFTX.hot.x=player.pos.x; LIFTX.hot.z=player.pos.z;
+   LIFTX.hot.label=aim.works?(aim.stopTo?aim.L.levelName(aim.stopTo):'Ground — '+aim.L.ground):'Not built yet'; LIFTX.hot.fn=()=>elevPress(aim); }
 }});
 
 // the arrival foyer — glass sliding doors to the garden (z=48, open on approach) and a solid sliding
-// door to the hall (z=28). The hall does not exist until someone presses E on that door (hallOpen):
-// it is built and warmed while the door says "Opening the hall…", then the door opens, and from then on
-// it opens on approach like the others. The foyer counts as outside (zoneAt): while the interior door
+// door to the hall (z=28). The hall is built when START is pressed (hallStart) and warmed while Elara
+// says hello; that door stays shut until it is ready (hallReady), and from then on it opens on approach
+// like the others — no E. Reach it sooner and it says "Opening the hall…" and opens by itself when it
+// can (hallHurry). The foyer counts as outside (zoneAt): while the interior door
 // is open both sides are drawn (zoneUpdate); shut, it is the airlock between them.
 function buildFoyer(){
   const T=0.6,H=6,DZ=48;                                   // DZ = door line, projected out past the mall
@@ -2755,8 +3176,7 @@ function buildFoyer(){
   const gateN={x:0,z:28,hw:3.2,hd:0.35,off:false};BUILDINGS.push(gateN);
   DOORS={entered:false,rigs:[
     {z:DZ,hw:4.6,slide:2.85,left:mkLeaf(-1,DZ,2.9,5.0,0.2,glassMat),right:mkLeaf(1,DZ,2.9,5.0,0.2,glassMat),gate:gateS,open:0},   // [0] south, to the garden: glass
-    {z:28,hw:4.6,slide:3.0, left:mkLeaf(-1,28,3.0,4.1,0),  right:mkLeaf(1,28,3.0,4.1,0),  gate:gateN,open:0,manual:true}]}; // [1] north, to the hall: shut until the hall is built (hallOpen)
-  HALLB.hot=hotspot(0,30.6,2.4,'Open the hall',hallOpen,{x:0,y:2.0,z:28,rad:2.4});   // E on the interior door, from the foyer
+    {z:28,hw:4.6,slide:3.0, left:mkLeaf(-1,28,3.0,4.1,0),  right:mkLeaf(1,28,3.0,4.1,0),  gate:gateN,open:0,manual:true}]}; // [1] north, to the hall: shut until the hall is ready (hallReady), then on approach — it has no E (2026-09-18)
   buildElevator();                                                  // the car in the west wall (drawn from both zones, like the foyer)
   for(let i=n0;i<worldGroup.children.length;i++)zoneTag(worldGroup.children[i],0);   // the foyer is in view from both its zones
 
@@ -2950,7 +3370,12 @@ function buildHubShell(){
   box(0,SH-0.3,0,100,0.8,96,SHELL_MAT,false);                // roof slab, y 10.7..11.5 (no collider: it would block the hall floor)
   box(-49.7,0,0,1,SH,96,SHELL_MAT,true);                     // west
   box(49.7,0,-30,1,SH,36,SHELL_MAT,true);box(49.7,0,29,1,SH,38,SHELL_MAT,true);          // east, gap for the Nexus (z -12..10)
-  box(-40.5,0,-48.7,19,SH,1,SHELL_MAT,true);box(1.5,0,-48.7,53,SH,1,SHELL_MAT,true);box(48.5,0,-48.7,3,SH,1,SHELL_MAT,true);   // north, gaps for the two walks
+  // north, with gaps for the two walks — and, since the lab's lift bay stands on this line, one for that too:
+  // its own south wall closes the facade there. Without the gap this 19 m length ran straight through the car
+  // and you faced a blank wall instead of the buttons (2026-09-18).
+  { const B=LABT.bay, o0=B.x0-0.15, o1=B.x1+0.15;
+    box((-50+o0)/2,0,-48.7,o0+50,SH,1,SHELL_MAT,true); box((o1-31)/2,0,-48.7,-31-o1,SH,1,SHELL_MAT,true); }
+  box(1.5,0,-48.7,53,SH,1,SHELL_MAT,true);box(48.5,0,-48.7,3,SH,1,SHELL_MAT,true);
   box(-36,0,47.9,28,6.5,1,SHELL_MAT,true);box(36,0,47.9,28,6.5,1,SHELL_MAT,true);       // south, either side of the garden
   box(0,6.5,47.9,100,SH-6.5,1,SHELL_MAT,false);              // south, the band above the garden walls and the doorway
 }
@@ -3307,6 +3732,27 @@ function buildTemporalGate(x,z){
   BUILDINGS.push({x,z,hw:0.7,hd:2.4});
   return hotspot(x-2.2,z,2.8,'Enter the temporal gate',()=>openMissionSelect(),{x:x,y:2.0,z:z,rad:2.4});   // aim: the gate
 }
+/* ---------- OPTIMUS (2026-09-18) — the robot standing beside the fountain. He is the Tesla Optimus model
+   from Sketchfab: no rig of its own and 5,688 separate rigid parts, so Mixamo's auto-rigger could not take it.
+   tools/rig_optimus.py fits a Mixamo skeleton to its measured joints and binds every part rigidly to one bone
+   (assets/people/optimus.glb — 25 bones, clips Idle / Walk / Run / Wave / Point).
+   Pressing E on him opens the fountain's own menu, exactly as pressing E at the water does. ---------- */
+const OPTIMUS={x:3.2,z:0.4,yaw:-0.5};          // south-east of the basin (centre 0,-4, radius 4.5), turned toward the walkway
+const OPTIMUS_H=1.99;                          // the real Optimus is 1.73 m; 15% taller here, at the user's ask (2026-09-18)
+function loadOptimus(){
+  if(window.__mdlFail)return;
+  new THREE.GLTFLoader().load('assets/people/optimus.glb',(gl)=>{
+    const clips={};(gl.animations||[]).forEach(c=>clips[c.name]=c);
+    PEOPLE.models.optimus={scene:gl.scene,clips};
+    const p=makePerson('optimus',{h:OPTIMUS_H});if(!p)return;
+    p.mesh.position.set(OPTIMUS.x,0,OPTIMUS.z);   // he faces +Z as the engine expects, and updatePeople turns him to you within 10 m
+    p.mesh.rotation.y=OPTIMUS.yaw;
+    persons.optimus=p;
+    BUILDINGS.push({x:OPTIMUS.x,z:OPTIMUS.z,hw:0.45,hd:0.40,h:OPTIMUS_H});   // you walk round him, not through him
+    hotspot(OPTIMUS.x,OPTIMUS.z,2.4,'Ask Optimus',()=>openFountainAtWater(),{y:OPTIMUS_H*0.72,rad:0.6,cap:OPTIMUS_H});
+  },undefined,()=>{});
+}
+
 // Dr. Vance — the scientist NPC who briefs you in the Nexus chamber
 function loadScientist(){
   if(window.__mdlFail)return;
@@ -3620,7 +4066,7 @@ function saveWhere(){
     if(Math.hypot(player.pos.x-_whereLast.x,player.pos.z-_whereLast.z)<0.4)return;
     _whereLast={x:player.pos.x,z:player.pos.z};
     localStorage.setItem('atd:where',JSON.stringify({
-      x:+player.pos.x.toFixed(2), z:+player.pos.z.toFixed(2),
+      x:+player.pos.x.toFixed(2), z:+player.pos.z.toFixed(2), y:+player.y.toFixed(2),   // y: the walk ends up on lab level 2 — a refresh there should not drop you to the ground floor
       yaw:+look.yaw.toFixed(3), t:Date.now() }));
   }catch(e){}
 }
@@ -4221,9 +4667,11 @@ function launchStoriesIndex(){                       // the whole listening room
 // which writes 'atd:story:<id>' — same origin, shared storage). 'More stories' is always open.
 function storyDone(id){try{return localStorage.getItem('atd:story:'+id)==='1';}catch(e){return false;}}
 const FOUNTAIN_STORIES=[
-  {id:'the-fountain',   title:'Conversations with the fountain · I', always:true},   // the entry point — never locked
-  {id:'the-fountain-2', title:'Conversations with the fountain · II'},               // unlocks once part I is heard
-  {id:'the-fountain-3', title:'Conversations with the fountain · III'},              // unlocks once part II is heard
+  // 2026-09-18: all three are open from the start, at the water, on Optimus and on the fountain app.
+  // (They used to unlock in order: II after I was heard, III after II.)
+  {id:'the-fountain',   title:'Conversations with the fountain · I',   always:true},
+  {id:'the-fountain-2', title:'Conversations with the fountain · II',  always:true},
+  {id:'the-fountain-3', title:'Conversations with the fountain · III', always:true},
 ];
 // The community — a second shelf on the fountain menu. No locks: every episode is open.
 const COMMUNITY_STORIES=[
@@ -5390,7 +5838,7 @@ const FACE_MODES=[['hybrid','Words move the mouth · captured eyes & head (calme
 // developer options never survive a refresh: every atd:dev:* key and the face mode are cleared here, before anything reads them
 try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&(k.indexOf('atd:dev:')===0||k.indexOf('atd:faceMode')===0))localStorage.removeItem(k);}}catch(e){}
 const DEV_OPEN=new Set();   // dev page sections currently unfolded (all start folded)
-const DEV_DEF={talkFace:0.35,talkHead:0.3,headMax:35,aimYaw:9,aimPitch:0,jackAimYaw:1,jackAimPitch:-1};   // jackAim*: Jack's own aim offset (hall) — set by eye on the dev page, 2026-09-14   // aimYaw 9°: found by eye in the hall — she points at you when her body turns toward you   // aimYaw/aimPitch: degrees, where she believes the visitor is       // how much of the captured expressions / head motion stays while she speaks (hybrid)
+const DEV_DEF={lipGain:1.0,talkFace:0.35,talkHead:0.3,headMax:35,aimYaw:9,aimPitch:0,jackAimYaw:1,jackAimPitch:-1};   // jackAim*: Jack's own aim offset (hall) — set by eye on the dev page, 2026-09-14   // aimYaw 9°: found by eye in the hall — she points at you when her body turns toward you   // aimYaw/aimPitch: degrees, where she believes the visitor is       // how much of the captured expressions / head motion stays while she speaks (hybrid)
 function devNum(k){try{const v=parseFloat(localStorage.getItem('atd:dev:'+k));return isFinite(v)?v:DEV_DEF[k];}catch(e){return DEV_DEF[k];}}
 let TALK_FACE_LEVEL=devNum('talkFace'), TALK_HEAD_LEVEL=devNum('talkHead');
 const FACE_MODE_KEY='atd:faceMode2';   // v2 key: the default is hybrid again for every browser; the old 'atd:faceMode' is ignored
@@ -5407,6 +5855,174 @@ const LIP={queue:[],now:{},tgt:{},active:false,audioMode:false,actx:null,analyse
   VIS:{sil:{},AA:{V_Open:0.9,Jaw_Open:0.5},EE:{V_Wide:0.8,V_Lip_Open:0.35,Jaw_Open:0.1},OH:{V_Tight_O:0.9,Jaw_Open:0.22},UW:{V_Tight:0.8,V_Tight_O:0.2},
        PP:{V_Explosive:1},FF:{V_Dental_Lip:1},CH:{V_Affricate:0.9,Jaw_Open:0.08},DD:{V_Lip_Open:0.7,Jaw_Open:0.12,V_Tongue_up:0.4},TH:{V_Lip_Open:0.6,V_Tongue_Out:0.5,Jaw_Open:0.1}},
   LETTER:{a:'AA',e:'EE',i:'EE',y:'EE',o:'OH',u:'UW',w:'UW',b:'PP',m:'PP',p:'PP',f:'FF',v:'FF',j:'CH',c:'DD',d:'DD',g:'DD',h:'DD',k:'DD',l:'DD',n:'DD',q:'UW',r:'DD',s:'DD',t:'DD',x:'DD',z:'DD'}};
+/* ---- LIP ENGINE v2 (2026-09-18) — for the browser-TTS path, where there is no audio to analyse:
+   speechSynthesis output cannot be routed into WebAudio, so every timing and every shape has to come from the
+   text and the voice's word boundaries. Four changes: (1) a fuller sound set — eight vowels and nine consonant
+   groups instead of nine shapes with S, T, L, N, K, G, R all collapsed into one; (2) time spread by syllable,
+   not by letter count, with the voice's pace learned per syllable; (3) a loudness envelope from word stress,
+   standing in for the audio level we do not have; (4) the timing polish — the mouth reaches each shape LEAD ms
+   early, neighbouring shapes cross-fade, the attack is crisper than the release, and p/b/m always get a real
+   closure. Every shape uses only morphs Elara actually has (her 8 CC lip shapes + the jaw; she has no tongue
+   morphs, so nothing writes V_Tongue_*).
+   TO GO BACK: set LIP_V2 to false below, or untick "Mouth: fuller sound set + stress" on the developer page —
+   the old tables and code paths are untouched and take over again. ---- */
+const LIP_V2=true;
+function lipV2(){ return devFlag('lipV2',LIP_V2); }
+function lipTable(){ return lipV2()?LIP.VIS2:LIP.VIS; }
+LIP.msPerSyl=190;    // one syllable at rate 1 — learned from the voice's own word boundaries (kept inside 90..420)
+LIP.LEAD=50;         // the mouth reaches a shape this long before the sound (animators run 1–2 frames at 24 fps ahead)
+LIP.BLEND=70;        // neighbouring shapes cross-fade over this long, instead of switching outright
+LIP.MIN_CLOSE=60;    // p/b/m and f/v hold at least this long, or the lips never actually meet
+LIP.VIS2={
+  sil:{},
+  AA:{V_Open:0.85,Jaw_Open:0.50},                    // father, hot, car
+  AE:{V_Open:0.55,V_Wide:0.35,Jaw_Open:0.42},        // cat, hand
+  EH:{V_Open:0.45,V_Wide:0.25,Jaw_Open:0.32},        // bed, said
+  UH:{V_Open:0.48,Jaw_Open:0.34},                    // cup, above
+  IY:{V_Wide:0.80,V_Lip_Open:0.30,Jaw_Open:0.08},    // see, we
+  EE:{V_Wide:0.80,V_Lip_Open:0.30,Jaw_Open:0.08},    // (the old name for IY — kept so anything asking for EE still works)
+  IH:{V_Wide:0.45,V_Lip_Open:0.25,Jaw_Open:0.16},    // sit, it
+  OH:{V_Tight_O:0.75,Jaw_Open:0.30},                 // go, saw, or
+  UW:{V_Tight:0.85,V_Tight_O:0.20,Jaw_Open:0.08},    // you, food
+  ER:{V_Tight_O:0.35,V_Lip_Open:0.30,Jaw_Open:0.18}, // her, bird, turn
+  PP:{V_Explosive:1,Mouth_Close:0.25},               // p, b, m — the lips shut
+  FF:{V_Dental_Lip:1,Jaw_Open:0.05},                 // f, v
+  WW:{V_Tight:0.70,V_Tight_O:0.30},                  // w
+  RR:{V_Tight_O:0.40,V_Lip_Open:0.20},               // r
+  SS:{V_Wide:0.35,V_Lip_Open:0.15,Jaw_Open:0.05},    // s, z — teeth nearly together
+  CH:{V_Affricate:0.85,V_Tight_O:0.25,Jaw_Open:0.08},// ch, sh, j, soft g
+  DD:{V_Lip_Open:0.45,Jaw_Open:0.12},                // t, d, n, l — tongue work, the lips barely move
+  KK:{V_Open:0.30,Jaw_Open:0.18},                    // k, g, ng, h — the back of the mouth
+  TH:{V_Lip_Open:0.50,Jaw_Open:0.10}                 // th
+};
+LIP.CLOSED={PP:1,FF:1};   // closures: never quietened by the stress envelope, and given their full MIN_CLOSE
+// letters → consonant groups (digraphs handled in lipConsonants2; c and g depend on the letter after them)
+const LIP_CONS2={b:'PP',p:'PP',m:'PP',f:'FF',v:'FF',w:'WW',r:'RR',s:'SS',z:'SS',x:'SS',j:'CH',t:'DD',d:'DD',n:'DD',l:'DD',k:'KK',q:'KK',h:'KK',y:'IH'};
+function lipConsonants2(str,nextV,head){   // nextV: the vowel this cluster runs into (onsets); head: true if it starts the word
+  const s=String(str||'').toLowerCase(),out=[];let i=0;
+  while(i<s.length){
+    const three=s.slice(i,i+3),two=s.slice(i,i+2),c=s.charAt(i),nx=s.charAt(i+1);
+    if(three==='tch'){out.push('CH');i+=3;continue;}
+    if(two==='ch'||two==='sh'){out.push('CH');i+=2;continue;}
+    if(two==='th'){out.push('TH');i+=2;continue;}
+    if(two==='ph'){out.push('FF');i+=2;continue;}
+    if(two==='ck'||two==='ng'){out.push('KK');i+=2;continue;}
+    if(two==='gh'){if(head&&i===0)out.push('KK');i+=2;continue;}          // ghost, but silent in through, night, eight
+    if(two==='dg'){out.push('CH');i+=2;continue;}                   // judge, bridge
+    if(two==='lk'||two==='lm'||two==='lf'){out.push(two==='lk'?'KK':two==='lm'?'PP':'FF');i+=2;continue;}   // walk, calm, half: the l is silent
+    if(two==='kn'||two==='gn'){out.push('DD');i+=2;continue;}       // knee, gnaw: only the n sounds
+    if(two==='wr'){out.push('RR');i+=2;continue;}
+    if(two==='wh'){out.push('WW');i+=2;continue;}
+    const after=nx||String(nextV||'').charAt(0);                          // the letter this one runs into, inside the cluster or the vowel after it
+    if(c==='c'){out.push(after&&'eiy'.indexOf(after)>=0?'SS':'KK');i++;continue;}   // city vs cat
+    if(c==='g'){out.push(after&&'eiy'.indexOf(after)>=0?'CH':'KK');i++;continue;}   // gem vs go
+    const v=LIP_CONS2[c]; if(v)out.push(v); i++;
+  }
+  return out;
+}
+// vowel spellings → vowel groups; an array is a glide (two shapes across the one syllable)
+const NUCLEUS2={ee:'IY',ea:'IY',ie:'IY',ei:'IY',ey:'IY',oo:'UW',ue:'UW',ui:'UW',eu:'UW',ew:'UW',
+  oa:'OH',oe:'OH',au:'OH',aw:'OH',eau:'OH',iou:'UW',
+  ou:['AA','UW'],ow:['AA','UW'],oi:['OH','IY'],oy:['OH','IY'],ai:['EH','IY'],ay:['EH','IY'],igh:['AA','IY'],io:['IY','AA']};
+function lipNucleus2(s){
+  const t=String(s.raw||'').toLowerCase(),coda=String(s.coda||'').toLowerCase(),r=coda.charAt(0)==='r';
+  if(NUCLEUS2[t])return NUCLEUS2[t];
+  if(t.length>1)return NUCLEUS2[t.slice(0,2)]||'EH';
+  if(t==='i'&&/^gh/.test(coda))return ['AA','IY'];                        // night, light, right
+  if(t==='a'&&/^l/.test(coda))return 'OH';                                // hall, all, walk, talk
+  if(t==='oo'&&r)return 'OH';                                             // door, floor
+  if(t==='a'&&!coda&&!s.first)return 'UH';                                // the throwaway a that ends a name: Elara, camera
+  if(r&&'eiu'.indexOf(t)>=0)return 'ER';                                  // her, bird, turn
+  if(s.de){
+    if(/^(dg|g|c|v|z|s)$/.test(coda))return t==='a'?'AE':t==='e'?'EH':t==='i'?'IH':t==='o'?'AA':'UH';   // judge, bridge, give, have: still short
+    return t==='a'?['EH','IY']:(t==='i'||t==='y')?['AA','IY']:t==='o'?'OH':t==='u'?'UW':'IY';           // a dropped silent e: make, time, note, use
+  }
+  switch(t){
+    case 'a': return r?'AA':'AE';                                         // car vs cat
+    case 'e': return 'EH';
+    case 'i': return 'IH';
+    case 'y': return coda?'IH':'IY';
+    case 'o': return (r||!coda)?'OH':'AA';                                // or, go vs hot
+    case 'u': return 'UH';
+    default : return 'EH';
+  }
+}
+// the commonest words, straight to shapes — spelling rules mangle exactly the words she says most
+const LIP_VOWEL2={AA:1,AE:1,EH:1,UH:1,IY:1,EE:1,IH:1,OH:1,UW:1,ER:1};
+const LIP_WORD2={the:['TH','UH'],a:['UH'],an:['AE','DD'],and:['AE','DD'],of:['UH','FF'],to:['DD','UW'],too:['DD','UW'],
+  i:['AA','IY'],you:['IY','UW'],your:['IY','OH','RR'],we:['WW','IY'],he:['KK','IY'],she:['CH','IY'],me:['PP','IY'],be:['PP','IY'],
+  is:['IH','SS'],it:['IH','DD'],in:['IH','DD'],on:['AA','DD'],at:['AE','DD'],as:['AE','SS'],are:['AA','RR'],our:['AA','RR'],
+  do:['DD','UW'],does:['DD','UH','SS'],was:['WW','UH','SS'],were:['WW','ER'],who:['KK','UW'],two:['DD','UW'],one:['WW','UH','DD'],
+  would:['WW','UH','DD'],could:['KK','UH','DD'],should:['CH','UH','DD'],what:['WW','UH','DD'],want:['WW','AA','DD'],
+  through:['TH','RR','UW'],come:['KK','UH','PP'],some:['SS','UH','PP'],done:['DD','UH','DD'],love:['DD','UH','FF'],
+  have:['KK','AE','FF'],here:['KK','IH','RR'],there:['TH','EH','RR'],where:['WW','EH','RR'],said:['SS','EH','DD'],
+  again:['UH','KK','EH','DD'],any:['EH','DD','IY'],many:['PP','EH','DD','IY'],people:['PP','IY','PP','UH','DD'],
+  give:['KK','IH','FF'],given:['KK','IH','FF','DD'],get:['KK','EH','DD'],girl:['KK','ER','DD'],gift:['KK','IH','FF','DD'],
+  begin:['PP','IH','KK','IH','DD'],together:['DD','UH','KK','EH','TH','ER'],welcome:['WW','EH','DD','KK','UH','PP'],
+  come:['KK','UH','PP'],something:['SS','UH','PP','TH','IH','KK'],everything:['EH','FF','RR','IY','TH','IH','KK']};
+// the small words a speaker throws away, and where the beat falls in the rest
+const LIP_FUNC=(function(){const o={};'a an the and or but of to in on at is it as be am are was were i you he she we they my your his her its our their this that these those for from with by not no so if then than there here do does did have has had will would can could should may might must me him them us'.split(' ').forEach(function(w){o[w]=1;});return o;})();
+function lipStress(word,n){
+  const w=String(word).toLowerCase().replace(/[^a-z']/g,'');
+  if(LIP_FUNC[w])return {i:0,loud:0.62};
+  let i=0;
+  if(n>1&&/^(a|be|de|re|in|im|un|con|com|ex|pre|pro|per|sur|to|for|en)/.test(w))i=1;        // beGIN, reTURN, aBOUT
+  if(n>1&&/(tion|sion|ity|ical|ically|ious|eous|ify)s?$/.test(w))i=Math.max(0,n-2);          // inforMAtion, aBILity
+  return {i:Math.min(i,n-1),loud:1};
+}
+function lipSyllableCount(w){ const n=lipSyllables(w).length; return n?n:1; }
+function lipSpeakMs(text,rate){                    // how long this much text should take at the voice's learned pace
+  let n=0,pause=0; String(text).split(/\s+/).filter(Boolean).forEach(function(w){n+=lipSyllableCount(w);pause+=lipPause(w);});
+  return (Math.max(1,n)*LIP.msPerSyl)/(rate||1)+pause;
+}
+function lipVisemesSyllables2(word){
+  const plain=String(word).toLowerCase().replace(/[^a-z']/g,'').replace(/'s$/,'');
+  const fixed=LIP_WORD2[plain];
+  if(fixed){ const st0=lipStress(plain,1); LIP.lastSplit=plain+' (set)';
+    return fixed.map((v,i)=>({v:v,w:LIP_VOWEL2[v]?2.0:0.55,a:LIP.CLOSED[v]?1:(LIP_VOWEL2[v]?st0.loud:Math.max(0.75,st0.loud))})); }
+  const syl=lipSyllables(word); if(!syl.length)return [{v:'AA',w:2.2,a:0.9}];
+  LIP.lastSplit=syl.map(x=>x.onset+String(x.raw||'')+x.coda).join('·');
+  const st=lipStress(word,syl.length),out=[];
+  syl.forEach((x,i)=>{ x.first=(i===0); });
+  const push=(v,wt,a)=>{ if(!v)return; const last=out[out.length-1];
+    if(last&&last.v===v){last.w+=wt*0.5;last.a=Math.max(last.a,a);return;} out.push({v:v,w:wt,a:a}); };
+  syl.forEach((x,i)=>{
+    const amp=st.loud*(i===st.i?1:0.78);                      // the stressed syllable carries the beat
+    lipConsonants2(x.onset,x.raw,i===0).slice(0,2).forEach(v=>push(v,0.55,LIP.CLOSED[v]?1:Math.max(0.75,amp)));
+    const nuc=lipNucleus2(x);
+    if(nuc&&typeof nuc!=='string'){ push(nuc[0],1.35,amp); push(nuc[1],0.85,amp*0.9); }   // a glide: two shapes
+    else push(nuc,2.6,amp);
+    const coda=(String(x.coda||'').charAt(0)==='r'&&/^(ER|AA|OH)$/.test(String(nuc)))?String(x.coda).slice(1):x.coda;   // car, her: the r is in the vowel already
+    lipConsonants2(coda).slice(0,2).forEach(v=>push(v,0.55,LIP.CLOSED[v]?1:Math.max(0.70,amp*0.9)));
+  });
+  return out.length?out:[{v:'AA',w:2.2,a:0.9}];
+}
+// a closure shorter than MIN_CLOSE never reads as closed: stretch it and take the time from a neighbour, inside the word
+function lipClosures(es){
+  for(let i=0;i<es.length;i++){
+    const e=es[i]; if(!LIP.CLOSED[e.vis])continue;
+    let need=LIP.MIN_CLOSE-(e.t1-e.t0); if(need<=0)continue;
+    const nx=es[i+1],pv=es[i-1];
+    if(nx){ const take=Math.min(need,Math.max(0,(nx.t1-nx.t0)-70)); if(take>0){e.t1+=take;nx.t0+=take;need-=take;} }
+    if(need>0&&pv){ const take=Math.min(need,Math.max(0,(pv.t1-pv.t0)-70)); if(take>0){pv.t1-=take;e.t0-=take;} }
+  }
+}
+// the shape at time t: the entry we are inside, cross-faded into the next one over the last BLEND ms
+function lipSample(t){
+  let cur=null,nxt=null;
+  for(const q of LIP.queue){
+    if(t>=q.t0&&t<q.t1){ if(!cur||q.t0>cur.t0)cur=q; }
+    else if(q.t0>=t&&(!nxt||q.t0<nxt.t0))nxt=q;
+  }
+  const out={};
+  if(!cur)return out;
+  const add=(q,k)=>{ if(!q||k<=0)return; const sh=LIP.VIS2[q.vis]||{},a=(q.amp==null?1:q.amp)*k;
+    for(const n in sh)out[n]=(out[n]||0)+sh[n]*a; };
+  const left=cur.t1-t,B=Math.min(LIP.BLEND,(cur.t1-cur.t0)*0.45,nxt?(nxt.t1-nxt.t0)*0.45:LIP.BLEND);
+  if(nxt&&left<B&&nxt.t0-cur.t1<LIP.BLEND){ const k=0.5*(1-left/B); add(cur,1-k); add(nxt,k); }
+  else add(cur,1);
+  return out;
+}
 // word → visemes with relative durations: vowels are held about twice as long as consonants, plosives get a short
 // closed beat, a silent final 'e' is dropped, and a doubled shape is merged. Each entry: {v, w} (w = relative length).
 const VOWEL_W=1.8,CONS_W=1.0,PLOSIVE_W=0.7;
@@ -5440,7 +6056,7 @@ function lipSyllables(word){
     if(prev){ const cl=w.slice(prev.e,cur.s); if(cl.length<=1||/^(ch|sh|th|ph)$/.test(cl))onset=cl; else {const d=cl.match(/^(ch|sh|th|ph)/);const cut=d?d[0].length:1;syl[syl.length-1].coda=cl.slice(0,cut);onset=cl.slice(cut);} }
     if(!next)coda=w.slice(cur.e);
     let nuc=NUCLEUS[cur.txt]; if(!nuc){const c=cur.txt[0]; nuc=(c==='i'&&!next&&dropE&&/^[^aeiou]$/.test(w.slice(cur.e)))?'AA':(LIP.LETTER[c]||'AA');}   // long i before a dropped silent e (time, like)
-    syl.push({onset,nuc,coda}); }
+    syl.push({onset,nuc,coda,raw:cur.txt,de:dropE&&!next}); }   // raw / de: the vowel as spelled, and whether a silent e was dropped — read by lipNucleus2 (v2)
   return syl;
 }
 function lipConsonants(str){ const out=[];let i=0; while(i<str.length){const two=str.slice(i,i+2);
@@ -5474,11 +6090,14 @@ function lipVisemes(word){
   return out.length?out:[{v:'AA',w:VOWEL_W}];
 }
 function lipWord(word,startMs,durMs,pauseAfter){
-  const vs=lipVisemes(word),total=vs.reduce((a,x)=>a+x.w,0);
+  const v2=lipV2();
+  const vs=v2?lipVisemesSyllables2(word):lipVisemes(word),total=vs.reduce((a,x)=>a+x.w,0);
   const speak=Math.max(80,durMs-(pauseAfter||0));            // time the mouth is busy; the rest is a pause
   LIP.queue=LIP.queue.filter(q=>q.t0<startMs).map(q=>q.t1>startMs?Object.assign({},q,{t1:startMs}):q);
-  let t=startMs; for(const x of vs){const d=speak*x.w/total; LIP.queue.push({vis:x.v,t0:t,t1:t+d}); t+=d;}
-  LIP.queue.push({vis:'sil',t0:t,t1:startMs+durMs+400});
+  let t=startMs; const made=[];
+  for(const x of vs){const d=speak*x.w/total,e={vis:x.v,t0:t,t1:t+d,amp:x.a==null?1:x.a}; LIP.queue.push(e); made.push(e); t+=d;}
+  if(v2)lipClosures(made);                                   // p/b/m keep their closure even at speed
+  LIP.queue.push({vis:'sil',t0:t,t1:startMs+durMs+400,amp:1});
   if(LIP.queue.length>400)LIP.queue=LIP.queue.slice(-200);
   LIP.active=true;
 }
@@ -5486,7 +6105,8 @@ function lipWord(word,startMs,durMs,pauseAfter){
 function lipPause(word){ return /[.!?…]$/.test(word)?260:/[,;:]$/.test(word)?140:0; }
 function lipText(text,startMs,totalMs){           // whole line on an estimated / known timeline
   const words=String(text).split(/\s+/).filter(Boolean);
-  const cost=words.map(w=>w.length+1+lipPause(w)/LIP.msPerChar),sum=cost.reduce((a,b)=>a+b,0);
+  const v2=lipV2();   // v2: a word's share of the line is its syllable count — "through" is one beat, "area" is three
+  const cost=words.map(w=>v2?(lipSyllableCount(w)+lipPause(w)/LIP.msPerSyl):(w.length+1+lipPause(w)/LIP.msPerChar)),sum=cost.reduce((a,b)=>a+b,0);
   let t=startMs;words.forEach((w,i)=>{const d=totalMs*cost[i]/sum;lipWord(w,t,d,lipPause(w));t+=d;});
 }
 function lipStop(){LIP.queue=[];LIP.active=false;LIP.audioMode=false;}
@@ -5523,13 +6143,19 @@ function lipUpdate(p,dt){
   // our own morph writes: mouth (hybrid/letters), plus blink/smile/brows when there is no capture underneath
   const mouthOn=mode==='hybrid'||mode==='letters', lifeOn=mode==='letters'||mode==='off';
   const managed=new Set();
-  LIP.tgt={}; for(const v in LIP.VIS)for(const n in LIP.VIS[v])LIP.tgt[n]=0; LIP.tgt.V_Tongue_up=0;LIP.tgt.V_Tongue_Out=0;
+  LIP.tgt={}; const TBL=lipTable(); for(const v in TBL)for(const n in TBL[v])LIP.tgt[n]=0; LIP.tgt.V_Tongue_up=0;LIP.tgt.V_Tongue_Out=0;
   for(const n in LIP.tgt)managed.add(n);
   if(mouthOn&&talking){
-    let vis='sil',best=-Infinity;for(const q of LIP.queue)if(now>=q.t0&&now<q.t1&&q.t0>best){vis=q.vis;best=q.t0;}
-    const shape=LIP.VIS[vis]||{};let amp=0.9;
-    if(LIP.audioMode){const lvl=lipLevel();amp*=Math.max(0.45,lvl);if(vis==='sil'&&lvl>0.15)for(const n in LIP.VIS.AA)LIP.tgt[n]=LIP.VIS.AA[n]*amp;}
-    for(const n in shape)LIP.tgt[n]=shape[n]*amp;
+    if(lipV2()){                                   // v2: reached LIP.LEAD ms early, cross-faded, carrying the word's stress
+      const shape=lipSample(now+LIP.LEAD);let amp=0.9;
+      if(LIP.audioMode){const lvl=lipLevel();amp*=Math.max(0.45,lvl);}
+      const gain=devNum('lipGain'); for(const n in shape)LIP.tgt[n]=Math.min(1,shape[n]*amp*gain);
+    } else {
+      let vis='sil',best=-Infinity;for(const q of LIP.queue)if(now>=q.t0&&now<q.t1&&q.t0>best){vis=q.vis;best=q.t0;}
+      const shape=LIP.VIS[vis]||{};let amp=0.9;
+      if(LIP.audioMode){const lvl=lipLevel();amp*=Math.max(0.45,lvl);if(vis==='sil'&&lvl>0.15)for(const n in LIP.VIS.AA)LIP.tgt[n]=LIP.VIS.AA[n]*amp;}
+      for(const n in shape)LIP.tgt[n]=shape[n]*amp;
+    }
   }
   if(lifeOn&&!devFlag('off:Blink',false)){
     if(p.blinkT==null){p.blinkT=-1;p.nextBlink=state.time+2;}
@@ -5540,7 +6166,8 @@ function lipUpdate(p,dt){
       ['Mouth_Smile_L','Mouth_Smile_R','Brow_Raise_Inner_L','Brow_Raise_Inner_R'].forEach(n=>managed.add(n));}
   }
   const ks=1-Math.pow(0.72,dt*60);
-  for(const n of managed){const c=p.lipNow[n]||0,v=c+((LIP.tgt[n]||0)-c)*ks;p.lipNow[n]=Math.abs(v)<1e-4?0:v;}
+  const v2e=lipV2(),kUp=v2e?1-Math.pow(0.52,dt*60):ks,kDn=v2e?1-Math.pow(0.78,dt*60):ks;   // v2: shapes land crisply, let go softly
+  for(const n of managed){const c=p.lipNow[n]||0,g=LIP.tgt[n]||0,v=c+(g-c)*(g>c?kUp:kDn);p.lipNow[n]=Math.abs(v)<1e-4?0:v;}
   if((mouthOn||lifeOn)&&!(FACE_PRESET.raw&&!LIP.active))for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;for(const n of managed){const i=d[n];if(i!==undefined)inf[i]=p.lipNow[n];}}   // Original 0: the captured mouth shows while she is not speaking
   else if(mode==='off')for(const m of p.morphs){const inf=m.morphTargetInfluences;for(let i=0;i<inf.length;i++)inf[i]=0;}
   // jaw bone follows whatever is on the mouth now (our visemes or the capture's)
@@ -5768,7 +6395,8 @@ const SMILE={AT:34.0,due:false,lastT:null,active:null,cursor:0,variants:[   // A
 // the dev page's mouth-movement list: the original demo's two idle touches, the nine lip-sync shapes, the seven smiles
 const MOUTH_ORIG=[['orig:smile','Slight smile','the original resting smile: Mouth_Smile 0.18, held',{Mouth_Smile_L:0.18,Mouth_Smile_R:0.18},3],
   ['orig:brow','Brow lift','the original letter-mode life: inner brows raised 0.10, held',{Brow_Raise_Inner_L:0.1,Brow_Raise_Inner_R:0.1},3]];
-const MOUTH_VIS=[['AA','open — a, ah'],['EE','wide — e, i, ee'],['OH','round — o'],['UW','tight — oo, u, w'],['PP','lips closed — p, b, m'],['FF','teeth on lip — f, v'],['TH','tongue between the teeth — th'],['CH','ch, sh, j'],['DD','lips parted, tongue up — t, d, s, n, l, k…']];
+const MOUTH_VIS=[['AA','open — a, ah'],['EE','wide — e, i, ee'],['OH','round — o'],['UW','tight — oo, u, w'],['PP','lips closed — p, b, m'],['FF','teeth on lip — f, v'],['TH','tongue between the teeth — th'],['CH','ch, sh, j'],['DD','lips parted, tongue up — t, d, s, n, l, k…'],
+  ['AE','cat, hand (v2)'],['EH','bed, said (v2)'],['UH','cup, above (v2)'],['IH','sit, it (v2)'],['ER','her, bird (v2)'],['WW','w (v2)'],['RR','r (v2)'],['SS','s, z — teeth nearly together (v2)'],['KK','k, g, ng, h (v2)']];
 function mouthPlay(id){ const p=persons.elara; if(!p)return;
   if(id.indexOf('vis:')===0){ if(p.talk>0)return; const now=performance.now(); LIP.queue=[{vis:id.slice(4),t0:now,t1:now+1200},{vis:'sil',t0:now+1200,t1:now+1500}]; LIP.active=true; return; }   // through the lip engine, jaw included
   const o=MOUTH_ORIG.find(x=>x[0]===id); if(o){SMILE.active={v:{name:o[1],shapes:o[3]},start:state.time,hold:o[4],release:0.6};return;}
@@ -5994,6 +6622,8 @@ function devRender(){
     sec('WHAT MOVES HER WHILE SHE TALKS','Everything that runs while she speaks, on top of what runs while she stands (eyes, body turn, winks). Untick to switch the gesture off.')+
     chk('off:TalkGesture',false,true,'Body: a talking gesture clip','(one of Talk_1–5 per line, picked at random; on the tour the stop\'s own gesture: Wave, Point, Explain, Nod, Thankful)')+
     chk('lipSyllables',true,false,'Mouth: one movement per syllable','(off: the older letter-by-letter shapes; the split of the last word shows in Running now)')+
+    sl('devLipGain','lipGain','Mouth strength (fuller sound set)',0.6,1.6,0.05,'×','how far the shapes travel; 1.00 is as built')+
+    chk('lipV2',LIP_V2,false,'Mouth: fuller sound set + stress','(2026-09-18: eight vowels and nine consonant groups instead of nine shapes, timed by syllable, louder on the stressed syllable, reached 50 ms early and cross-faded. Off: the mouth exactly as it was before)')+
     chk('talkGestureFacing',false,false,'… also while she talks face to face with you','(off: when her body is turned to you she keeps her standing idle while talking — the clips turn her head away; the tour still uses its gestures)')+
     '<div style="display:flex;gap:6px;margin:4px 0 6px 27px;flex-wrap:wrap">'+[1,2,3,4,5].map(i=>'<button class="menuBtn" data-talk="Talk_'+i+'" style="width:auto;min-width:0;margin:0;padding:4px 10px;font-size:12px">▶ Talk '+i+'</button>').join('')+'<span style="color:#8fa3bf;font-size:12px;align-self:center">preview a clip (not while she talks)</span></div>'+
     (p?'<div style="margin:6px 0 2px 27px;color:#ffd27f;font-size:12.5px;font-weight:700">RUNNING — press ▶ to preview; the ticked one is the clip she jogs with when she follows you</div>'+
@@ -6187,10 +6817,11 @@ function spawnElara(){
   // She stands by the birdbath whenever the visitor starts in the garden — a greeting already given only
   // means she skips the hello, it does not move her indoors (2026-09-16: it used to, so she was never seen there again).
   const inGarden = !RETURN_TO&&!AT_FOUNTAIN&&SPAWN.z>48&&Math.abs(SPAWN.x)<22.5;
-  const rest = (tourDone()&&!inGarden) ? TOUR[TOUR.length-1].at : inGarden ? INTRO_AT : [1.0,43.5];
-  p.mesh.position.set(rest[0],0,rest[1]);p.homeYaw=Math.PI;
+  const up = (!RETURN_TO&&!AT_FOUNTAIN&&RESUME&&+RESUME.y>0.5)?+RESUME.y:0;   // a refresh on an upper floor (the walk ends on lab level 2): she is beside you there, not down in the foyer
+  const rest = up ? [SPAWN.x+1.4,SPAWN.z+0.6] : (tourDone()&&!inGarden) ? TOUR[TOUR.length-1].at : inGarden ? INTRO_AT : [1.0,43.5];
+  p.mesh.position.set(rest[0],up,rest[1]);p.homeYaw=inGarden?0:Math.PI;
   ELARA_BLOCK.x=rest[0];ELARA_BLOCK.z=rest[1];ELARA_BLOCK.off=false;
-  p.mesh.rotation.y=Math.PI;                          // facing south: the entrance from inside, or the spawn from the birdbath
+  p.mesh.rotation.y=p.homeYaw;                        // indoors she faces south, the entrance; in the garden north, toward you and the birdbath
   // a press-E hotspot that follows her (kept in sync in updatePeople).
   // Both spawn points offer the same menu — the tour is simply its top option.
   p.hot={x:rest[0],z:rest[1],r:1.53,rad:0.42,cap:1.75,label:'Talk to Elara',
@@ -6220,7 +6851,7 @@ function groundPerson(p){
    once you are more than 3.3 m away (a little hysteresis so she does not shuffle), stops at 2.7 m, jogs if
    you get far ahead, slides around columns like the tour does, and if she is caught on something for two
    seconds she jumps to 5 m from you. While she stands, the usual code turns her to face you. */
-const FOLLOW={dist:2.7,start:3.3,run:11,lady:6,retarget:1.5,keep:2.0,view:0.34,jump:5,stuck:0,px:0,pz:0,pv:0,
+const FOLLOW={dist:2.7,start:3.3,run:11,lady:6,retarget:1.5,keep:2.0,view:0.34,jump:5,stuck:0,away:0,px:0,pz:0,pv:0,   // away: seconds you have stood on a floor she is not on
   on:(()=>{try{return localStorage.getItem('atd:elara:follow')!=='0';}catch(e){return true;}})()};   // 'Stop following me' on her E menu turns this off (remembered on this device)
 function setElaraFollow(on){FOLLOW.on=!!on;try{localStorage.setItem('atd:elara:follow',on?'1':'0');}catch(e){} const p=persons.elara;if(p&&!on)p.following=false;}
 // stops 2.7 m behind where you face; starts once you're 3.3 m off (or you walk on and her spot has moved 1.5 m);
@@ -6228,11 +6859,48 @@ function setElaraFollow(on){FOLLOW.on=!!on;try{localStorage.setItem('atd:elara:f
 // if you turn to look at her (within ~70° of your view) she just stops 2.7 m in front instead of walking round behind you
 const RUN_LABELS={Run:'Running — F Locomotion pack (the original)',Run_Forward:'Standing Run Forward — Pack Majic',Run_Back:'Standing Run Back — Pack Majic',Run_M:'Running — M Locomotion pack',Run_Girl:'Running — peasant girl pack',Jog_UAL:'Jog — Universal Animation Library',Sprint_UAL:'Sprint — Universal Animation Library'};
 function devRunClip(){try{return localStorage.getItem('atd:dev:runClip')||'Run';}catch(e){return 'Run';}}
+// The lab's stair is yours alone: she cannot climb, and a follower walking into the well ends up wedged in the
+// flights (the user found her "stuck in the stairs"). If a step takes her into its footprint she is put back
+// at the nearest edge. (The lifts are fine — she rides if she is in the car, and catches up if she is not.)
+function elaraOutOfStair(pos,r){
+  const S=LABT.shaft, m=r+0.1;
+  if(pos.x<=S.x0-m||pos.x>=S.x1+m||pos.z<=S.z0-m||pos.z>=S.z1+m)return;
+  const px=[S.x0-m-pos.x,S.x1+m-pos.x], pz=[S.z0-m-pos.z,S.z1+m-pos.z];   // the push to each edge; take the shortest
+  const cand=[[px[0],0],[px[1],0],[0,pz[0]],[0,pz[1]]].sort((a,b)=>Math.hypot(a[0],a[1])-Math.hypot(b[0],b[1]))[0];
+  pos.x+=cand[0]; pos.z+=cand[1];
+}
+// She comes to just behind you, on your floor — the way a follower catches up in any game: out of your view, where
+// you cannot see her arrive. Tried in turn: behind, behind-left/right, either side; the first spot that is on your
+// floor (its ground is your ground), not in the stair well, and not walled off from you wins. Used when she is
+// on another floor (she cannot take the stair or call a lift) and when she has been wedged for a while.
+function elaraCatchUp(p){
+  const fx=-Math.sin(look.yaw), fz=-Math.cos(look.yaw), rx=-fz, rz=fx;
+  for(const [a,b] of [[-1,0],[-0.7,0.7],[-0.7,-0.7],[0,1],[0,-1],[-0.35,0]]){
+    const v=new THREE.Vector3(player.pos.x+(fx*a+rx*b)*2.7, player.y, player.pos.z+(fz*a+rz*b)*2.7);
+    ELARA_BLOCK.off=true; resolveCollision(v,0.5,player.y); elaraOutOfStair(v,0.5); ELARA_BLOCK.off=false;
+    const S=LABT.shaft; if(v.x>S.x0-0.6&&v.x<S.x1+0.6&&v.z>S.z0-0.6&&v.z<S.z1+0.6)continue;
+    if(Math.abs(groundAt(v.x,v.z,player.y+0.4)-player.y)>0.5)continue;          // not your floor (over the well, off a slab)
+    if(hotBlocked(player.pos.x,player.y+EYE,player.pos.z,v.x,v.z))continue;       // a wall between you
+    p.mesh.position.copy(v); ELARA_BLOCK.x=v.x; ELARA_BLOCK.z=v.z; p.following=false; FOLLOW.stuck=0; FOLLOW.away=0;
+    return true;
+  }
+  return false;
+}
 function elaraFollowStep(p,dt){
   // your speed (smoothed): she re-positions behind you only while you're moving, so looking around while standing doesn't send her circling
   const pvx=(player.pos.x-FOLLOW.px)/Math.max(dt,1e-3), pvz=(player.pos.z-FOLLOW.pz)/Math.max(dt,1e-3); FOLLOW.px=player.pos.x; FOLLOW.pz=player.pos.z;
   FOLLOW.pv+=(Math.min(10,Math.hypot(pvx,pvz))-FOLLOW.pv)*Math.min(1,dt*6);
   if(!FOLLOW.on)return false;                                                 // told to wait
+  // another floor (the follow is flat — her height only ever changes in a lift): she cannot get there herself, so once
+  // you have ARRIVED — feet on a floor, out of the stair well, no lift moving — she catches up behind you. Not while
+  // you are still on the stair: a spot behind you there is a flight she cannot stand on.
+  if(Math.abs(player.y-p.mesh.position.y)>2.0){
+    const S=LABT.shaft, onStair=player.pos.x>S.x0-1&&player.pos.x<S.x1+1&&player.pos.z>S.z0-1&&player.pos.z<S.z1+1;
+    FOLLOW.away=(!LIFTX.travel&&player.grounded&&!onStair)?FOLLOW.away+dt:0;
+    if(FOLLOW.away>1.0)elaraCatchUp(p);
+    p.following=false; return false;
+  }
+  FOLLOW.away=0;
   const dx=player.pos.x-p.mesh.position.x, dz=player.pos.z-p.mesh.position.z, d=Math.hypot(dx,dz);
   const fx=-Math.sin(look.yaw), fz=-Math.cos(look.yaw);                       // where you face (yaw 0 = -z)
   const inView=d>0.01&&-(dx*fx+dz*fz)/d>FOLLOW.view;                         // she's inside your ~70° view cone
@@ -6246,12 +6914,15 @@ function elaraFollowStep(p,dt){
   p.mesh.position.x+=ex/dT*step; p.mesh.position.z+=ez/dT*step;
   { const kx=p.mesh.position.x-player.pos.x, kz=p.mesh.position.z-player.pos.z, kd=Math.hypot(kx,kz);   // never through you: hold 2 m off and slide round
     if(kd<FOLLOW.keep&&kd>1e-4){ p.mesh.position.x=player.pos.x+kx/kd*FOLLOW.keep; p.mesh.position.z=player.pos.z+kz/kd*FOLLOW.keep; } }
-  ELARA_BLOCK.off=true; resolveCollision(p.mesh.position,0.5); ELARA_BLOCK.off=false;   // slide around columns/fountain (not herself)
+  ELARA_BLOCK.off=true; resolveCollision(p.mesh.position,0.5,p.mesh.position.y); elaraOutOfStair(p.mesh.position,0.5); ELARA_BLOCK.off=false;   // slide around columns/fountain (not herself), at HER height; never into the stair well
   const moved=Math.hypot(p.mesh.position.x-bx,p.mesh.position.z-bz);
   FOLLOW.stuck=(moved<step*0.2)?FOLLOW.stuck+dt:0;
-  if(FOLLOW.stuck>2&&d>FOLLOW.jump){   // caught on something for 2 s: she jumps to 5 m from you, on your side of whatever held her
-    p.mesh.position.x=player.pos.x-dx/d*FOLLOW.jump; p.mesh.position.z=player.pos.z-dz/d*FOLLOW.jump;
-    ELARA_BLOCK.off=true; resolveCollision(p.mesh.position,0.5); ELARA_BLOCK.off=false; FOLLOW.stuck=0; p.following=true; }
+  if(FOLLOW.stuck>2&&d>FOLLOW.jump){   // caught on something for 2 s: she jumps to 5 m from you, on your side of whatever held her —
+    const jx=player.pos.x-dx/d*FOLLOW.jump, jz=player.pos.z-dz/d*FOLLOW.jump;   // if that spot is in plain sight of you (no wall between) and on your floor; otherwise she catches up behind you
+    if(!hotBlocked(player.pos.x,player.y+EYE,player.pos.z,jx,jz)&&Math.abs(groundAt(jx,jz,player.y+0.4)-player.y)<0.5){
+      p.mesh.position.x=jx; p.mesh.position.z=jz;
+      ELARA_BLOCK.off=true; resolveCollision(p.mesh.position,0.5,p.mesh.position.y); elaraOutOfStair(p.mesh.position,0.5); ELARA_BLOCK.off=false; FOLLOW.stuck=0; p.following=true; }
+    else elaraCatchUp(p); }
   if(moved>1e-4) p.mesh.rotation.y=-Math.atan2(p.mesh.position.z-bz,p.mesh.position.x-bx)+Math.PI/2;   // face travel direction
   const run=devRunClip();
   if(tier===2) personAnim(p,p.clips[run]?run:p.clips['Run']?'Run':p.idle);
@@ -6285,7 +6956,8 @@ function updatePeople(dt){
     }
     groundPerson(p);
     // keep Elara's tour hotspot on her, and switch it off while the tour is running
-    if(p.hot){ p.hot.x=p.mesh.position.x; p.hot.z=p.mesh.position.z; p.hot.y=p.mesh.position.y; p.hot.r=dateRunning?-1:(tour.active?(tour.isIntro?3.2:-1):1.53); }   // no 'Press E' during the tour or the date; the opening walk keeps it, wide enough to reach her while you walk
+    if(p.hot){ p.hot.x=p.mesh.position.x; p.hot.z=p.mesh.position.z; p.hot.y=p.mesh.position.y; p.hot.r=dateRunning?-1:(tour.active?(tour.isIntro?3.2:-1):1.53);   // no 'Press E' during the tour or the date; the opening walk keeps it, wide enough to reach her while you walk
+      p.hot.rad=(tour.active&&tour.isIntro)?0.05:0.42; }   // on the walk the crosshair has to be within 5 cm of her centre line (the view is steered 15 cm beside it), so the prompt stays off her face
     if(k==='elara'){ ELARA_BLOCK.x=p.mesh.position.x; ELARA_BLOCK.z=p.mesh.position.z; ELARA_BLOCK.off=false; }
   }
 }
@@ -6334,7 +7006,7 @@ const TOUR = [
       "The fountain will help organize what you want to do today.",
       "The rest is up to the makers. Go on, then — pick a door. I'll be right here." ] },
 ];
-const tour = { active:false, started:false, stop:0, phase:'idle', t:0, line:0, script:null, isIntro:false, said:{}, pathLen:null };
+const tour = { active:false, started:false, stop:0, phase:'idle', t:0, line:0, script:null, isIntro:false, said:{}, pathLen:null, lift:null };   // lift: the sub-state of a lift stop (wait · press · ride)
 const _elDest=new THREE.Vector3();
 // the tour is remembered once finished (not merely skipped) — on the next visit Elara stays
 // at the last stop and E opens her dialogue menu instead of kicking off the tour.
@@ -6401,11 +7073,13 @@ function elaraView(view){
        ()=>{closeElaraMenu();startTour();},true);
     if(tour.active&&tour.isIntro)
       mk('✋&nbsp; Stop here',()=>{closeElaraMenu();stopIntro(true);},true);
-    else                                       // the walk in: from the garden up the hall (INTRO_WALK). From inside, she goes back to the birdbath first
-      mk('🚶&nbsp; Walk in with me',()=>{closeElaraMenu();const q=persons.elara;if(q&&q.mesh.position.z<48)q.mesh.position.set(INTRO_AT[0],0,INTRO_AT[1]);tour.started=false;startIntro(INTRO_WALK);},true);   // ends in the foyer; the hall opens on the interior door's E
-    mk(PF.on?'🚶&nbsp; Stop walking with her':'🚶&nbsp; Walk with her',()=>{
-      const on=!PF.on;setAutoFollow(on);closeElaraMenu();
-      say('elara',on?"Stay with me, then. Use W A S D whenever you want to wander.":"Go your own way — I'll not drag you along.");});
+    else                                       // the opening walk again (INTRO_WALK): the two of you back at the garden start, then she sets off
+      mk('🚶&nbsp; Walk with me again',()=>{closeElaraMenu();const q=persons.elara;
+        if(q){q.mesh.position.set(INTRO_AT[0],0,INTRO_AT[1]);ELARA_BLOCK.x=INTRO_AT[0];ELARA_BLOCK.z=INTRO_AT[1];q.following=false;}
+        player.pos.set(0,0,64.6);player.y=0;player.vy=0;player.grounded=true;look.yaw=Math.PI;look.pitch=-0.02;   // the first-arrival spot, facing her and the city
+        tour.started=false;startIntro(INTRO_WALK);},true);
+    // ("Walk with her" — the standing your-feet-follow-her switch, setAutoFollow — is off the menu since 2026-09-18:
+    // the opening walk turns it on for itself, and next to that button it only confused. The setting still works if set.)
     mk(FOLLOW.on?'✋&nbsp; Stop following me':'👣&nbsp; Follow me',()=>{
       const on=!FOLLOW.on;setElaraFollow(on);if(on&&PF.on)setAutoFollow(false);closeElaraMenu();
       say('elara',on?"Right behind you.":"Alright — I'll wait here. Come and find me when you want me along.");});
@@ -6565,7 +7239,11 @@ function openJackMenu(talk){
 const ONESHOT_ANIMS={Point:1,Wave:1,Thankful:1,Nod:1};
 function tourSpeakCurrent(){
   const p=persons.elara, stop=(tour.script||TOUR)[tour.stop];
-  const txt=stop.lines[tour.line];
+  const ln=stop.lines[tour.line];
+  if(ln&&typeof ln==='object'){                    // someone else's line ({who,text,hold}): she stands and listens, they speak
+    personAnim(p,p.idle,0.9); say(ln.who,ln.text);
+    tour.t=(ln.hold||Math.max(2.2,ln.text.length*0.062))+0.6; return; }
+  const txt=ln;
   // a stop's anim can be one clip or a per-line list — pick this line's gesture, fall back to idle
   const seq=Array.isArray(stop.anim)?stop.anim:[stop.anim];
   let name=seq[tour.line%seq.length];
@@ -6584,36 +7262,53 @@ function tourSpeakCurrent(){
   }
 }
 /* ============================================================
-   "WALK WITH ME" — the opening. Once the loading bar is done and you've clicked in,
-   Elara introduces herself where she stands, facing you, then
-   walks the length of the hall past the fountain to the far side. She speaks on the move.
-   You walk with her by yourself (PF below): press WASD any time to go your own way — three
-   seconds after you stop steering, your feet fall back in behind her. Press T, or E on her
-   ("Stop here"), to end it. The old guided tour is unchanged and still on her E menu.
-   The far-side stop is the placeholder for whatever comes next.
+   "WALK WITH ME" — the opening (rewritten 2026-09-18). The moment START is clicked on a first visit,
+   Elara says hello where she stands and sets off: up the garden, in through the glass doors and the
+   foyer, into the hall, past the fountain to Jack, the Ideas room, the Add-your-level room, the
+   lab, and then into the lab lift — where she waits for you to step in, presses 2, and rides up with
+   you — and out onto level 2 by the circles, where she lets you go and follows you instead.
+   She speaks on the move (sayAt) and stands to talk at the stops. You walk with her by yourself (PF
+   below): press WASD any time to go your own way — three seconds after you stop steering, your feet
+   fall back in behind her. Press T, or E on her ("Stop here"), to end it. The old guided tour is
+   unchanged and still on her E menu. "Walk with me again" on her menu replays this from the garden.
+   A stop may carry:  lift:{L,to}  — she waits in that car for you, presses the button and rides;
+   a line may be  {who:'jack', text:'…', hold:s}  — spoken by someone else while she stands there.
    ============================================================ */
-const INTRO_AT=[1.0,64.6];   // her greeting spot: 2.6 m ahead-right of the garden spawn (0,67), on the ring path beside the birdbath, well inside the opening view
-// the opening is the greeting alone (2026-09-16, for testing): she says hello and stays by the birdbath.
-// The walk in — round the birdbath, up the path and through the doors into the foyer — is INTRO_WALK,
-// offered on her E menu ("Walk in with me") and started by startIntro(INTRO_WALK).
-const INTRO = [
-  { at:INTRO_AT, look:'player', anim:['Talk_2','Talk_3','Talk_4'], lines:[
-      "Hello, I'm Elara. I'm working on the hall.",
-      "People are bouncing. A review would be valuable to me.",
-      "When you're ready, press E on me and we'll walk in together." ] },
-];
+const INTRO_AT=[-1.0,67.0];  // her greeting spot: 2.6 m ahead-right of the garden spawn (0,64.6), which faces SOUTH — she stands between you and the garden gate, the city behind her, looking north at you
 const INTRO_WALK = [
-  { at:INTRO_AT, look:'player', anim:['Talk_2'], lines:[ "Walk with me. If you want to stop, just tell me." ] },
-  // round the east side of the birdbath, up the garden path and through the doors into the foyer — no further:
-  // the hall is built when the interior door is pressed, so she stops short of it (2026-09-16)
-  { at:[0,37], via:[[3.2,60.5],[1.5,57.5],[0,50],[0,44]], ease:true, look:'player', anim:['Talk_2','Talk_4'],
+  // by the birdbath, facing you
+  { at:INTRO_AT, look:'player', anim:['Talk_2'], lines:[
+      "Hello, I'm Elara. I'm your guide. This is the city." ] },
+  // round the east side of the birdbath, up the path, in through the glass doors and the foyer, through the hall
+  // door (she waits there if the hall is not ready yet), down the east side of the fountain, to Jack
+  { at:[7,-28.8], via:[[3.0,64.5],[3.2,60.5],[1.5,57.5],[0,50],[0,44],[0,31],[0,22],[5.5,12],[5.8,-3],[5.5,-16]], ease:true,
+    look:[[8,-32],'player'], anim:['Talk_2'],
     sayAt:[
-      { at:[0,50],   line:"I'm putting it on Steam after I'm happy with it." } ],       // at the glass doors
+      { at:INTRO_AT,    line:"Walk with me. If you want to stop, just tell me." },     // as she sets off
+      { at:[0,50],      line:"This is the hall." },                                    // at the glass doors
+      { at:[4.5,13.8],  line:"This is our AI centre — I enjoyed talking with it. You can talk to them later." } ],   // 17 m before the fountain: just inside the hall, the water ahead of her
     lines:[
-      "This is the foyer.",
-      "The hall is through the doors ahead — press E on them when you're ready, and I'll come with you.",
-      "The elevator on the west wall goes to the upper floors." ] },
+      "This is Jack.",
+      { who:'jack', text:"Hello.", hold:1.6 } ] },
+  // the Ideas room — just inside its opening, facing the wall you write on
+  { at:[0,-37.5], via:[[2,-34]], ease:true, look:[0,-45], anim:['Talk_4'], lines:[
+      "You can leave a review here." ] },
+  // the Add-your-level room, facing the Claude Code / ChatGPT board on its back wall
+  { at:[-14,-37.5], via:[[-2,-33.5],[-11,-33.5]], ease:true, look:[-14,-45.5], anim:['Talk_2'], lines:[
+      "Claude or ChatGPT can add anything you want in here, if you ask them." ] },
+  // through the LAB room and its back doorway, up the corridor into the Annexe — the lab's ground floor
+  { at:[-30,-57], via:[[-16,-33.5],[-28,-33.5],[-28,-40],[-28,-49]], ease:true, look:[-34,-66], anim:['Talk_4'], lines:[
+      "This is where we test new characters." ] },
+  // into the lab lift (its doors open for her): she stands at the back beside the panel and waits for you,
+  // presses 2 once you are in, and the car takes you both up — the tour engine's 'lift' phase
+  { at:LABLIFT.toWorld(-1.0,1.3), via:[[-36,-56],[-42.5,-56],[-42.5,-54.2]], ease:true, look:'player', anim:[], lines:[],
+    lift:{ L:LABLIFT, to:2 } },
+  // level 2: out of the car to the circles, and she lets you go
+  { at:[-42.5,-57.8], via:[[-42.5,-54.2]], ease:true, look:'player', anim:['Talk_2','Talk_4'], lines:[
+      "This is where we test the combat.",
+      "You're free now — I'll follow you instead. Step into a circle." ] },
 ];
+INTRO_WALK.onEnd=()=>{ setElaraFollow(true); };   // "I'll follow you instead"
 // metres still to walk: from where she stands, through every remaining point of the path
 function tourPathLen(p,path,leg){
   let x=p.mesh.position.x,z=p.mesh.position.z,t=0;
@@ -6647,11 +7342,11 @@ function gateStart(){
   if(!goFullscreen())lockPointer();          // the same click grabs the mouse
   setTimeout(()=>{ if(!tour.started&&!RETURN_TO&&!AT_FOUNTAIN&&!RESUME&&!introDone())startIntro(); },520);
 }
-function introDone(){try{return localStorage.getItem('atd:introDone')==='1';}catch(e){return false;}}
+function introDone(){try{return localStorage.getItem('atd:walkDone')==='1';}catch(e){return false;}}   // walkDone (2026-09-18): a new key, so everyone who only saw the old greeting gets the walk once
 // walking with her: your feet follow her when you aren't steering — the mouse is never taken
 // from you, so you can look anywhere, all the way round, while she walks you along. 'pref' is the remembered
 // setting; 'on' is what's happening now (the intro switches it on for the length of the walk).
-const PF={ dist:2.7, free:3, last:-99, wasFollow:false, stuck:0, side:0,
+const PF={ dist:2.7, near:null, free:3, last:-99, wasFollow:false, stuck:0, side:0,
   pref:(()=>{try{return localStorage.getItem('atd:elara:autofollow')==='1';}catch(e){return false;}})(), on:false };
 PF.on=PF.pref;
 function setAutoFollow(on){
@@ -6662,8 +7357,8 @@ function setAutoFollow(on){
 }
 function startIntro(script){
   const p=persons.elara; if(!p||tour.active)return;
-  tour.active=true; tour.started=true; tour.isIntro=true; tour.script=script||INTRO;
-  tour.stop=0; tour.phase='talk'; tour.line=-1; tour.t=0; tour.leg=0; tour.said={}; tour.pathLen=null;
+  tour.active=true; tour.started=true; tour.isIntro=true; tour.script=script||INTRO_WALK;
+  tour.stop=0; tour.phase='talk'; tour.line=-1; tour.t=0; tour.leg=0; tour.said={}; tour.pathLen=null; tour.lift=null; PF.near=null;
   PF.wasFollow=FOLLOW.on; FOLLOW.on=false; PF.on=true; PF.last=state.time-PF.free;   // she leads, you walk with her
   const h=document.getElementById('tourHint');
   h.innerHTML='<b style="color:#b6ff9c">WALKING WITH ELARA</b> — press <b style="color:#7fe6ff">T</b> to stop · WASD to wander';
@@ -6672,11 +7367,11 @@ function startIntro(script){
 function stopIntro(byUser){
   if(!tour.isIntro)return;
   tour.active=false; tour.isIntro=false;
-  try{localStorage.setItem('atd:introDone','1');}catch(e){}
+  try{localStorage.setItem('atd:walkDone','1');}catch(e){}
   document.getElementById('tourHint').style.display='none';
   document.getElementById('tourHint').innerHTML='<b style="color:#b6ff9c">ELARA\'S TOUR</b> — press <b style="color:#7fe6ff">T</b> to skip';
   const p=persons.elara; if(p)personAnim(p,p.idle);
-  PF.on=PF.pref; FOLLOW.on=PF.wasFollow;       // back to however you had the two of you set
+  PF.on=PF.pref; FOLLOW.on=PF.wasFollow; PF.near=null;   // back to however you had the two of you set
   if(byUser)say('elara',"Of course. Look around — I'll be here.");
 }
 
@@ -6697,12 +7392,36 @@ function updateTour(dt){
     if(tour.t<=0){
       tour.line++;
       if(tour.line<stop.lines.length){ tourSpeakCurrent(); }
+      else if(stop.lift){ tour.phase='lift'; tour.lift='wait'; PF.near=stop.lift.near||1.4; }   // a lift stop: wait in the car for the visitor (the walk with her pulls them right in)
       else {
         // done talking here → walk to next stop, or finish
         tour.stop++;
-        if(tour.stop>=SCRIPT.length){ if(tour.isIntro){ stopIntro(false); return; }
+        if(tour.stop>=SCRIPT.length){ if(tour.isIntro){ stopIntro(false); if(SCRIPT.onEnd)SCRIPT.onEnd(); return; }
           tour.active=false; try{localStorage.setItem('atd:tourDone','1');}catch(e){} if(p.hot)p.hot.label='Talk to Elara'; document.getElementById('tourHint').style.display='none'; personAnim(p,p.idle); return; }
         tour.phase='walk'; tour.line=-1; tour.leg=0; tour.pathLen=null;
+      }
+    }
+  } else if(tour.phase==='lift'){
+    // In the car. 'wait': she faces the doors until you are inside too (PF.near brings you to 1.4 m of her, which
+    // is well inside). 'press': she turns to the panel and points at it, and the lift is sent. 'ride': the car carries
+    // you both (the lift code moves her — she is inside it when the doors shut); when it has arrived at the floor
+    // asked for, on to the next stop, which walks her out. If you press a button yourself she just goes with it.
+    const lf=stop.lift, L=lf.L, C=L.car, atY=L.stopY(L.at);
+    tour.t-=dt;
+    if(tour.lift==='wait'){
+      const [fx,fz]=L.toWorld(L.front(L.at)+3,0); facePerson(p,fx,fz); personAnim(p,p.idle,0.9);
+      const [lx,lz]=L.toLocal(player.pos.x,player.pos.z);
+      const inCar=Math.abs(player.y-atY)<1.5&&lx>-C.w/2+0.2&&lx<C.w/2-0.35&&Math.abs(lz)<C.d/2-0.2;
+      if(L.riding){ tour.lift='ride'; }
+      else if(inCar){ tour.lift='press'; tour.t=0.9; p.actName=null; personAnim(p,p.clips['Point']?'Point':p.idle,1,true); }
+    } else if(tour.lift==='press'){
+      const [px,pz]=L.toWorld(-C.w/2,0); facePerson(p,px,pz);           // the panel is on the back wall
+      if(tour.t<=0){ if(!L.riding&&L.at!==lf.to)L.riding={to:lf.to,t:0,phase:'close'}; tour.lift='ride'; tour.t=0.6; }
+    } else if(tour.lift==='ride'){
+      if(!(L.riding&&L.riding.phase==='close'))personAnim(p,p.idle,0.9);   // she holds the point until the doors have shut
+      if(!L.riding&&!LIFTX.travel&&tour.t<=0){
+        if(L.at===lf.to){ tour.stop++; tour.phase='walk'; tour.line=-1; tour.leg=0; tour.pathLen=null; tour.lift=null; PF.near=null; }
+        else { L.riding={to:lf.to,t:0,phase:'close'}; tour.t=0.6; }   // it went somewhere else (a button you pressed): she sends it on
       }
     }
   } else if(tour.phase==='walk'){
@@ -6718,6 +7437,9 @@ function updateTour(dt){
     if(stop.sayAt)for(const w of stop.sayAt){
       if(!tour.said[w.line]&&Math.hypot(w.at[0]-p.mesh.position.x,w.at[1]-p.mesh.position.z)<2.4){tour.said[w.line]=1;say('elara',w.line);}
     }
+    // on her way into the hall and its door is not released yet (hallReady): she waits 3 m short of it, facing it, and it is hurried for her
+    if(!HALLB.ready&&dst[1]<28&&p.mesh.position.z>28&&p.mesh.position.z<31.4&&Math.abs(p.mesh.position.x)<4.6){
+      hallHurry(false); personAnim(p,p.idle); facePerson(p,p.mesh.position.x,20); return; }
     if(d<0.5){
       if((tour.leg||0)<path.length-1){ tour.leg=(tour.leg||0)+1; }
       else { tour.phase='talk'; tour.line=-1; tour.t=0.35; personAnim(p,p.idle); }
@@ -6729,7 +7451,7 @@ function updateTour(dt){
       const spd=stop.ease?SLOW+(NORM-SLOW)*Math.min(1,gone/RAMP,rem/RAMP):NORM;
       const step=Math.min(spd*dt,d);
       p.mesh.position.x+=dx/d*step; p.mesh.position.z+=dz/d*step;
-      ELARA_BLOCK.off=true; resolveCollision(p.mesh.position,0.5); ELARA_BLOCK.off=false;   // slide around columns/fountain (not herself)
+      ELARA_BLOCK.off=true; resolveCollision(p.mesh.position,0.5,p.mesh.position.y); ELARA_BLOCK.off=false;   // slide around columns/fountain (not herself), at her own height
       p.mesh.rotation.y=-Math.atan2(dz,dx)+Math.PI/2;   // face travel direction
       const slow=spd<(SLOW+NORM)/2;
       personAnim(p,(slow&&p.clips['Walk_Lady'])?'Walk_Lady':(p.clips['Walk']?'Walk':p.idle));
@@ -6956,14 +7678,16 @@ function ttsSpeak(sp,text,onDone){
       }
       setTimeout(()=>speakChunk(idx+1,0),idx+1<chunks.length?70:0);
     };
-    u.onstart=()=>{started=true;run.spoke=true;if(sp.lip){LIP.lastB=null;lipText(part,performance.now(),part.length*LIP.msPerChar/u.rate);if(elaraSpeakStart){const f=elaraSpeakStart;elaraSpeakStart=null;f();}}};
+    u.onstart=()=>{started=true;run.spoke=true;if(sp.lip){LIP.lastB=null;lipText(part,performance.now(),lipV2()?lipSpeakMs(part,u.rate):part.length*LIP.msPerChar/u.rate);if(elaraSpeakStart){const f=elaraSpeakStart;elaraSpeakStart=null;f();}}};
     u.onend=()=>done(false);
     u.onboundary=(e)=>{sawWord=true;lastWord=ticks;
       if(sp.lip&&e&&typeof e.charIndex==='number'){const len=e.charLength||(part.slice(e.charIndex).match(/^\S+/)||[''])[0].length;
-        const now=performance.now(),word=part.substr(e.charIndex,len);
-        if(LIP.lastB){const obs=(now-LIP.lastB.t)/(LIP.lastB.len+1); if(obs>25&&obs<250)LIP.msPerChar=LIP.msPerChar*0.7+obs*0.3;}   // learn this voice's pace
-        LIP.lastB={t:now,len:len+lipPause(word)/LIP.msPerChar};
-        lipWord(word,now,Math.max(120,(len+1)*LIP.msPerChar/u.rate+lipPause(word)),lipPause(word));}};
+        const now=performance.now(),word=part.substr(e.charIndex,len),v2=lipV2(),syl=v2?lipSyllableCount(word):0;
+        if(LIP.lastB){const obs=(now-LIP.lastB.t)/(LIP.lastB.len+(v2?0:1));                                  // learn this voice's pace
+          if(v2){ if(obs>60&&obs<600)LIP.msPerSyl=LIP.msPerSyl*0.7+obs*0.3; }                                //   v2: milliseconds per syllable
+          else if(obs>25&&obs<250)LIP.msPerChar=LIP.msPerChar*0.7+obs*0.3; }
+        LIP.lastB={t:now,len:v2?(syl+lipPause(word)/LIP.msPerSyl):(len+lipPause(word)/LIP.msPerChar)};
+        lipWord(word,now,v2?Math.max(140,syl*LIP.msPerSyl/u.rate+lipPause(word)):Math.max(120,(len+1)*LIP.msPerChar/u.rate+lipPause(word)),lipPause(word));}};
     u.onerror=e=>{
       const kind=(e&&e.error)||'';
       if(kind==='interrupted'||kind==='canceled')return;   // we stopped it — not "finished"
@@ -7069,11 +7793,11 @@ const RESUME=(()=>{ try{
 const SPAWN = _RS ? {x:_RS.x,z:_RS.z}
             : AT_FOUNTAIN ? {x:0,z:3.2}                 // just south of the fountain (centre 0,-4)
             : RESUME ? {x:RESUME.x,z:RESUME.z}          // back where you left off
-            : {x:0,z:67};                               // default first arrival: in the garden, 5 m south of the birdbath (0,62), facing it, Elara and the doors beyond
-const SPAWN_YAW = _RS ? _RS.yaw : (RESUME&&typeof RESUME.yaw==='number') ? RESUME.yaw : 0;   // yaw 0 = look north, straight up the foyer into the mall
-const player={pos:new THREE.Vector3(SPAWN.x,0,SPAWN.z),speed:6.4,r:0.55,y:0,vy:0,grounded:true};
+            : {x:0,z:64.6};                             // default first arrival: in the garden, your back to the birdbath (0,62), facing south — Elara in front of you, the gate and the city beyond (2026-09-18)
+const SPAWN_YAW = _RS ? _RS.yaw : (RESUME&&typeof RESUME.yaw==='number') ? RESUME.yaw : AT_FOUNTAIN ? 0 : Math.PI;   // yaw 0 = look north (the fountain link: at the fountain); the garden arrival looks south, at Elara and the city
+const player={pos:new THREE.Vector3(SPAWN.x,0,SPAWN.z),speed:6.4,r:0.55,y:(RESUME&&typeof RESUME.y==='number')?RESUME.y:0,vy:0,grounded:true};   // y: back on the floor you were on
 const sprint={energy:6,max:6,cooling:false,active:false};
-const look={yaw:SPAWN_YAW,pitch:-0.02,locked:false}; // yaw 0 = straight into the mall; spawn is angled a bit
+const look={yaw:SPAWN_YAW,pitch:-0.02,locked:false,moved:-99}; // yaw 0 = straight into the mall; spawn is angled a bit. moved: when you last turned the view yourself
 const SENS=0.0022;
 scene.add(camera);
 
@@ -7116,7 +7840,7 @@ function anyModalOpen(){
 }
 addEventListener('keyup',e=>keys[e.code]=false);
 addEventListener('mousemove',e=>{if(!look.locked)return;
-  look.yaw-=e.movementX*SENS;look.pitch=clamp(look.pitch-e.movementY*SENS,-1.2,1.1);});
+  look.yaw-=e.movementX*SENS;look.pitch=clamp(look.pitch-e.movementY*SENS,-1.2,1.1);look.moved=state.time;});   // moved: the walk with Elara turns you back to her a second after you stop looking round
 document.addEventListener('pointerlockchange',()=>{
   look.locked=(document.pointerLockElement===renderer.domElement);
   document.getElementById('lockHint').style.display=(look.locked||paused||devOpen()||!gateDone)?'none':'block';
@@ -7226,7 +7950,7 @@ const TOUCH={on:false,eBtn:null,hidden:false,sync:null};
       if(t.identifier===mvId){stickMove(t.clientX,t.clientY);used=true;}
       else if(t.identifier===lkId){
         look.yaw-=(t.clientX-lx)*LOOK_SENS;
-        look.pitch=clamp(look.pitch-(t.clientY-ly)*LOOK_SENS,-1.2,1.1);
+        look.pitch=clamp(look.pitch-(t.clientY-ly)*LOOK_SENS,-1.2,1.1);look.moved=state.time;
         lx=t.clientX;ly=t.clientY;used=true;
       }
     }
@@ -7281,11 +8005,23 @@ const TOUCH={on:false,eBtn:null,hidden:false,sync:null};
 
 // ---------- collision ----------
 const GROUND_TOP=11.5;   // where a ground-floor collider ends: above the hall's 10 m ceiling, below the first level's slab (12.2)
-function resolveCollision(pos,r){
+// a sloped floor (a stair run): the height under a point, or null if the point is off it. One collider does a
+// whole flight, so walking up is smooth instead of 40 little steps to be climbed — the steps drawn on it are
+// only the look of the thing. axis 'x' or 'z', y0 at the low end, y1 at the high end. (2026-09-18, the lab tower)
+function rampAt(b,x,z){
+  if(Math.abs(x-b.x)>b.hw+0.25||Math.abs(z-b.z)>b.hd+0.25)return null;
+  const R=b.ramp, along=R.axis==='x'?x-b.x:z-b.z, half=R.axis==='x'?b.hw:b.hd;
+  const t=Math.min(1,Math.max(0,(along*(R.up||1)+half)/(2*half)));
+  return R.y0+(R.y1-R.y0)*t;
+}
+function resolveCollision(pos,r,y){
+  const fy=y===undefined?player.y:y;           // whose feet: yours unless told (Elara passes her own height — she used to be tested at YOURS, so on another floor she walked through her own floor's walls and into yours)
   for(const b of BUILDINGS){
-    if(b.off)continue;                         // e.g. the entrance gate while the doors are open
-    if(player.y>=(b.h!==undefined?b.h:b.y0!==undefined?Infinity:GROUND_TOP)-0.05)continue;   // feet at/above its top — pass over, stand on (no top given: a ground-floor piece ending under the levels, unless it has a bottom — a level's own wall)
-    if(b.y0!==undefined&&player.y<b.y0-0.3)continue;     // feet below its bottom — a level's wall, not the hall's
+    if(b.off||b.ramp)continue;                 // e.g. the entrance gate while the doors are open; a stair run is a floor, never a wall
+    // feet at/above its top — pass over, stand on (no top given: a ground-floor piece ending under the levels, unless it has a bottom — a level's own wall).
+    // step: a stair landing, which you may walk up onto from the run below — it stops a step short of the landing's own height
+    if(fy>=(b.h!==undefined?b.h:b.y0!==undefined?Infinity:GROUND_TOP)-(b.step?0.45:0.05))continue;
+    if(b.y0!==undefined&&fy<b.y0-0.3)continue;           // feet below its bottom — a level's wall, not the hall's
     const dx=pos.x-b.x, dz=pos.z-b.z;
     if(b.rad){                                 // round collider (the fountain) — push out radially
       const d=Math.hypot(dx,dz)||1e-4, min=b.rad+r;
@@ -7304,7 +8040,9 @@ function resolveCollision(pos,r){
 function groundAt(x,z,y){
   let g=0;
   for(const b of BUILDINGS){
-    if(b.off||b.h===undefined||b.h>y+0.05||b.h<=g)continue;
+    if(b.off)continue;
+    if(b.ramp){ const h=rampAt(b,x,z); if(h!==null&&h<=y+0.45&&h>g)g=h; continue; }   // a stair run: its surface rises under you, and you may climb into it by a step's worth
+    if(b.h===undefined||b.h>y+(b.step?0.45:0.05)||b.h<=g)continue;
     if(b.rad){if(Math.hypot(x-b.x,z-b.z)<b.rad+0.25)g=b.h;continue;}
     if(Math.abs(x-b.x)<b.hw+0.25&&Math.abs(z-b.z)<b.hd+0.25)g=b.h;
   }
@@ -7330,7 +8068,7 @@ function updateDoors(dt){
     const nearYou=(player.y<2&&Math.abs(player.pos.z-r.z)<3&&Math.abs(player.pos.x)<r.hw);   // ground floor only: the levels stand over the foyer
     let near=nearYou||(!!q&&Math.abs(q.mesh.position.z-r.z)<3&&Math.abs(q.mesh.position.x)<r.hw);
     if(near&&r.locked&&r.locked()){ near=false; if(nearYou&&r.noteT<=0){banner(r.note); r.noteT=4;} }   // once per approach
-    if(r.manual&&!HALLB.ready)near=false;                                                   // the interior door: not before the hall is there
+    if(r.manual&&!HALLB.ready){ if(near&&gateDone)hallHurry(nearYou); near=false; }         // the interior door: not before the hall is there — someone is waiting at it, so hurry
     else if(r.noteT>0)r.noteT-=dt;
     r.open+=((near?1:0)-r.open)*Math.min(1,dt*5);
     const slide=r.open*r.slide;
@@ -7362,7 +8100,7 @@ function update(dt){
     if(sprint.cooling&&sprint.energy>=sprint.max)sprint.cooling=false;
   }
   const spd=player.speed*(sprint.active?1.6:1);
-  if(fwd||strafe){
+  if((fwd||strafe)&&!LIFTX.travel){          // riding the lab lift: the car has your feet — look where you like, but you go with it
     camera.getWorldDirection(_f);_f.y=0;_f.normalize();
     _r.crossVectors(_f,_UP).normalize();
     _m.set(0,0,0).addScaledVector(_f,fwd).addScaledVector(_r,strafe);
@@ -7380,12 +8118,12 @@ function update(dt){
   }
   // ---- walking with Elara: steer with WASD any time; three seconds after you stop, your feet fall back in behind her ----
   if(fwd||strafe)PF.last=state.time;
-  if(PF.on&&!dateRunning&&state.time-PF.last>PF.free){
+  if(PF.on&&!dateRunning&&!LIFTX.travel&&state.time-PF.last>PF.free){
     const q=persons.elara;
     if(q){
-      const dx=q.mesh.position.x-player.pos.x, dz=q.mesh.position.z-player.pos.z, d=Math.hypot(dx,dz);
-      if(d>PF.dist){
-        const step=Math.min(Math.min(player.speed,1.1+(d-PF.dist)*1.7)*dt, d-PF.dist);
+      const dx=q.mesh.position.x-player.pos.x, dz=q.mesh.position.z-player.pos.z, d=Math.hypot(dx,dz), keep=PF.near||PF.dist;   // near: closer than usual, set by the walk while she waits in a lift
+      if(d>keep){
+        const step=Math.min(Math.min(player.speed,1.1+(d-keep)*1.7)*dt, d-keep);
         const bx=player.pos.x, bz=player.pos.z;
         player.pos.x+=dx/d*step; player.pos.z+=dz/d*step;
         resolveCollision(player.pos,player.r);   // your feet go to her; the view is yours — look anywhere, all the way round
@@ -7396,16 +8134,27 @@ function update(dt){
           resolveCollision(player.pos,player.r);
         } else if(PF.stuck>0){ PF.stuck=Math.max(0,PF.stuck-dt*2); if(!PF.stuck)PF.side=0; }
       }
+      // and your eyes go to her too (the opening walk only): look anywhere you like, and a second after the mouse
+      // stops the view eases back onto her face — not while the lift is carrying you, so you can watch the city go by
+      if(tour.active&&tour.isIntro&&!LIFTX.travel&&state.time-look.moved>1&&!paused&&!anyModalOpen()){
+        const hy=q.mesh.position.y+1.65-(player.y+EYE);                       // her eyes, from yours
+        const ox=dx-dz/d*0.15, oz=dz+dx/d*0.15;                               // 15 cm to the right of her: the crosshair sits beside her, off her narrowed talk radius, so no "press E" over her face
+        const ty=Math.atan2(-ox,-oz), tp=clamp(Math.atan2(hy,Math.max(0.6,d)),-1.2,1.1);   // yaw 0 = -z, as updateCamera reads it
+        const k=Math.min(1,dt*3.2); let dy=ty-look.yaw; dy=Math.atan2(Math.sin(dy),Math.cos(dy));
+        look.yaw+=dy*k; look.pitch+=(tp-look.pitch)*k;
+      }
     }
   }
-  if(player.grounded&&keys.Space){player.vy=hoverBoots?8.1:5.2;player.grounded=false;}
-  player.vy-=17*dt;player.y+=player.vy*dt;
-  const gnd=groundAt(player.pos.x,player.pos.z,player.y);
-  if(player.grounded&&player.y>gnd+0.02)player.grounded=false;   // stepped off an edge — fall
-  if(player.vy<=0&&player.y<=gnd){
-    const hardFall=!player.grounded&&player.vy<-3.5;
-    player.y=gnd;player.vy=0;player.grounded=true;
-    if(hoverBoots&&hardFall)softLanding();   // the boots cushion it in light
+  if(!LIFTX.travel){                          // a lift with you in it sets your height itself; gravity would drop you through its floor
+    if(player.grounded&&keys.Space){player.vy=hoverBoots?8.1:5.2;player.grounded=false;}
+    player.vy-=17*dt;player.y+=player.vy*dt;
+    const gnd=groundAt(player.pos.x,player.pos.z,player.y);
+    if(player.grounded&&player.y>gnd+0.02)player.grounded=false;   // stepped off an edge — fall
+    if(player.vy<=0&&player.y<=gnd){
+      const hardFall=!player.grounded&&player.vy<-3.5;
+      player.y=gnd;player.vy=0;player.grounded=true;
+      if(hoverBoots&&hardFall)softLanding();   // the boots cushion it in light
+    }
   }
 
   updateDoors(dt);
@@ -7436,23 +8185,25 @@ function update(dt){
     }
     if(along<best&&!hotBlocked(ex,ey,ez,ax,az)){best=along;curHot=h;}     // and only if you can see it: no wall on the way
   }
-  if(ELEV.aim)curHot=ELEV.hot;                                        // an elevator button under the crosshair beats every hotspot
+  if(LIFTX.aim)curHot=LIFTX.hot;                                      // an elevator button under the crosshair beats every hotspot
   const promptNow=curHot?String(curHot.label):null;                 // the page is only touched when the prompt changes (3 ms a frame otherwise)
   if(promptNow!==promptLast){ promptLast=promptNow;
     if(promptNow){promptText.innerHTML='Click or press <b>E</b> — '+promptNow;promptEl.style.display='block';}
     else promptEl.style.display='none'; }
   const live=look.locked&&state.phase==='play'&&!paused&&!anyModalOpen();
-  crossEl.classList.toggle('on',live); crossEl.classList.toggle('aim',live&&!!ELEV.aim);
-  crossEl.classList.toggle('hand',!!curHot&&!ELEV.aim&&live);
+  crossEl.classList.toggle('on',live); crossEl.classList.toggle('aim',live&&!!LIFTX.aim);
+  crossEl.classList.toggle('hand',!!curHot&&!LIFTX.aim&&live);
   if(TOUCH.eBtn)TOUCH.eBtn.classList.toggle('live',!!curHot);   // the touch E lights up in range
 
   // Dr. Vance briefs you the first time you reach the Nexus chamber
   if(persons.scientist&&!sciSpoken&&nexusShown()&&player.pos.x>51&&Math.abs(player.pos.z+1)<11){sciSpoken=true;nexusBrief();}
   // arm the START button: everything loaded, Elara in the hall, and a browser voice picked for
-  // her (the voice list arrives after she does) — but never wait on the voice for long
+  // her (the voice list arrives after she does) — but never wait on the voice for long. The hall is
+  // built the moment the rest is in (hallStart), and START waits for its shaders too — six seconds at most
   if(!gateReady&&!gateDone&&LOADED&&persons.elara&&cityIn()){
     INTRO_WAIT+=dt;
-    if(SPEAKERS.elara.voice||INTRO_WAIT>6)gateArm();
+    try{ hallStart(); }catch(e){ console.warn('hall',e); HALLB.compiled=true; }
+    if((SPEAKERS.elara.voice||INTRO_WAIT>6)&&(HALLB.compiled||performance.now()-HALLB.t0>6000))gateArm();
   }
   // Elara's tour is started by pressing E on her (see her hotspot in spawnElara)
   updateTour(dt);
