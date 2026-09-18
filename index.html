@@ -1893,7 +1893,7 @@ LABT.contents={
     const empty=(n)=>()=>banner('Lab level 2, circle '+n+' — empty. Nothing is hung on it yet.');
     const c0=LABT.circleAt(0), c1=LABT.circleAt(1), c2=LABT.circleAt(2);
     labCircle(Y,c0[0],c0[1],0xff9f6a,'Spawn the nightmare boss — they shoot at it','level 2 · circle 1 — step in',
-      ()=>gunsSpawnBoss(()=>banner('The nightmare — Elara and Jack turn and shoot')),true);   // the developer page's own, on a floor instead, and it starts as you walk in
+      ()=>gunsSpawnBoss(null,true),true);   // the developer page's own, on a floor instead; it starts as you walk in, and `all` makes it run every clip the file has
     labCircle(Y,c1[0],c1[1],0x7fe6ff,'Circle 2 — empty','level 2 · nothing on it yet',empty(2));
     labCircle(Y,c2[0],c2[1],0x7fe6ff,'Circle 3 — empty','level 2 · nothing on it yet',empty(3));
   },
@@ -2059,7 +2059,8 @@ function feetUpdate(dt){
    ============================================================ */
 const GUNS={hold:false,state:null,queue:[],scene:null,mount:null,info:null,clip:null,shooters:[],fx:[],
   boss:null,bossSrc:null,bossState:null,bossQueue:[]};
-const GUN_STATS={dmg:1,every:0.8,range:45,maxLean:35,holster:2.0,bossHp:40,bossH:2.6,bossAt:11};
+const GUN_STATS={dmg:1,every:0.8,range:45,maxLean:35,holster:2.0,bossHp:40,bossH:2.6,bossAt:11,
+  bossSpeed:2.2,bossStop:2.8,bossSwing:1.3,bossTaunt:6};   // it comes at you at 2.2 m/s, stops 2.8 m off and swings every ~1.3–2.2 s; a taunt on the way every 6–10 s
 function gunsStatus(){
   return 'Pistol '+(GUNS.state||'not loaded yet')+' · holding: '+(GUNS.shooters.filter(G=>G.draw>0.4).map(G=>G.key).join(', ')||'nobody')+
     ' · nightmare: '+(GUNS.boss?(GUNS.boss.dying?'bursting':GUNS.boss.hp+' / '+GUN_STATS.bossHp):(GUNS.bossState==='loading'?'loading':'none'));
@@ -2137,7 +2138,79 @@ function gunsBossAnim(B,name,once){
   if(B.act&&B.act!==a)B.act.crossFadeTo(a,0.25,false);
   a.play(); B.act=a; B.once=!!once;
 }
-function gunsSpawnBoss(done){
+// The file's seven takes, in the order the parade plays them. Its own names are Spanish (CreadorDeMu's
+// Mu Online rip) — the English is what the banner says. Idle is not in the list: it is what it falls back to.
+const BOSS_CLIPS=[['Poder','Power'],['Ataque','Attack'],['Ataque2','Attack 2'],['Risa','Laugh'],['Victoria','Victory'],['Caminando','Walk']];
+// `all` (the level 2 circle, 2026-09-18): it plays every clip the GLB has, once each, naming them as it goes,
+// then keeps drawing on the whole set at random instead of only laughing. The developer page's own spawn is
+// unchanged — a roar, then its idle and the occasional laugh.
+function gunsBossParade(B){
+  const row=B.parade[B.parI++]; if(!row)return;
+  banner('Nightmare · '+row[1]+' ('+row[0]+') — '+B.parI+' of '+B.parade.length);
+  // the walk is last, and it is not played on the spot: it hands over to the roaming below, which sets off
+  // for somewhere and plays this same clip looping — so the parade ends with it actually walking away
+  if(row[0]==='Caminando'){ B.once=false; B.laughT=GUN_STATS.bossTaunt; gunsBossAnim(B,'Idle'); return; }   // hands over to the hunt, which walks it at you
+  gunsBossAnim(B,row[0],true);
+}
+/* ---- it walks (2026-09-18) — Caminando is a real walk now, not a stride on the spot. Every step is tested
+   against groundAt at ITS OWN height and against the colliders, which is what keeps it on lab level 2 and out
+   of the stair well and the lift bay: it can never walk off a floor or into a wall. ---- */
+const _bv=new THREE.Vector3();
+function gunsBossFree(x,z,y){
+  if(Math.abs(groundAt(x,z,y+0.4)-y)>0.5)return false;                 // not the floor it is standing on
+  _bv.set(x,0,z); ELARA_BLOCK.off=true; resolveCollision(_bv,0.85,y); ELARA_BLOCK.off=false;
+  return Math.hypot(_bv.x-x,_bv.z-z)<0.02;                             // a wall, a column, the car — something is there
+}
+/* ---- it comes for you (2026-09-18, asked for): it walks straight at the visitor, follows them wherever they
+   go on that floor, and swings at them from 2.8 m — every attack the file has, over and over, with a roar or a
+   laugh thrown in on the way. IT DOES NO DAMAGE: nothing here touches the player, and it never reaches them —
+   it stops short and swings at the air, so it only looks murderous. Elara and Jack are shooting it the whole
+   time, which is what actually ends it. It cannot follow you off its own floor: take the lift or the stair and
+   it is left behind, standing where it lost you. ---- */
+const BOSS_HITS=['Ataque','Ataque2'], BOSS_TAUNTS=['Risa','Poder','Victoria'];
+function gunsBossHunt(B,dt){
+  const y=B.grp.position.y;
+  const clip=B.act?B.act.getClip().name:'';
+  const hold=(n)=>{ if(clip!==n)gunsBossAnim(B,n); };
+  if(Math.abs(player.y-y)>2){ hold('Idle'); B.face=undefined; return; }        // you went up or down: it has lost you
+  const dx=player.pos.x-B.grp.position.x, dz=player.pos.z-B.grp.position.z, d=Math.hypot(dx,dz);
+  const stop=GUN_STATS.bossStop;
+  B.chase=B.chase?(d>stop):(d>stop+0.9);                                       // hysteresis: walking in and swinging never flicker back and forth as you edge away
+  if(B.chase){
+    if(d>5&&(B.laughT-=dt)<=0){ B.laughT=GUN_STATS.bossTaunt+Math.random()*4;  // a roar on the way in — only from a distance; up close it swings instead
+      gunsBossAnim(B,BOSS_TAUNTS[(Math.random()*BOSS_TAUNTS.length)|0],true); return; }
+    const step=Math.min(GUN_STATS.bossSpeed*dt,Math.max(0.01,d-stop*0.9));
+    const ux=dx/d, uz=dz/d;
+    for(const turn of [0,0.5,-0.5,1.0,-1.0,1.6,-1.6]){                          // straight at you, then round whatever is in the way
+      const c=Math.cos(turn), s=Math.sin(turn), vx=ux*c-uz*s, vz=ux*s+uz*c;
+      const nx=B.grp.position.x+vx*step, nz=B.grp.position.z+vz*step;
+      if(!gunsBossFree(nx,nz,y))continue;
+      B.grp.position.x=nx; B.grp.position.z=nz; B.face=Math.atan2(vx,vz); hold('Caminando'); return;
+    }
+    hold('Idle'); B.face=undefined; return;                                     // hemmed in: it stands and glares at you
+  }
+  B.face=undefined;                                                             // in reach: it turns on you and swings
+  if((B.strikeT-=dt)<=0){ B.strikeT=GUN_STATS.bossSwing+Math.random()*0.9;
+    const pick=Math.random()<0.85?BOSS_HITS[(B.swap=!B.swap)?0:1]:BOSS_TAUNTS[(Math.random()*BOSS_TAUNTS.length)|0];
+    gunsBossAnim(B,pick,true); return; }
+  hold('Idle');
+}
+// Where it arrives: 11 m in front of you if that spot will hold it, otherwise the nearest one that will.
+// (Before 2026-09-18 it was put 11 m ahead whatever was there — from the level 2 circle that is inside the
+//  lift bay, so it stood in a wall on a floor eleven metres below and could never walk anywhere.)
+function gunsBossSpot(){
+  const y=player.y, ex=player.pos.x, ez=player.pos.z;
+  for(const d of [GUN_STATS.bossAt,9,7,5.5,4.5])
+    for(const turn of [0,0.35,-0.35,0.7,-0.7,1.05,-1.05,1.6,-1.6,2.2,-2.2,Math.PI]){
+      const a=look.yaw+Math.PI+turn;                                            // yaw 0 = -z: this is the way you face, swept either side
+      const x=ex-Math.sin(a)*d, z=ez-Math.cos(a)*d;
+      if(!gunsBossFree(x,z,y))continue;
+      if(hotBlocked(ex,y+1.6,ez,x,z))continue;                                  // and you can see it from here
+      return [x,z];
+    }
+  return [ex,ez];                                                               // nowhere at all: on top of you, which at least is a floor
+}
+function gunsSpawnBoss(done,all){
   if(GUNS.boss&&!GUNS.boss.dying){ done&&done(); return; }
   gunsLoad();
   gunsLoadBoss(()=>{
@@ -2150,14 +2223,15 @@ function gunsSpawnBoss(done){
       if(o.material)o.material=o.material.clone(); });
     const inner=new THREE.Group(); inner.rotation.y=Math.PI/2; inner.add(model);    // the file's facing knob, as Fountain Keeper has it
     const grp=new THREE.Group(); grp.add(inner);
-    const fx=-Math.sin(look.yaw), fz=-Math.cos(look.yaw);
-    grp.position.set(player.pos.x+fx*GUN_STATS.bossAt,player.y||0,player.pos.z+fz*GUN_STATS.bossAt);
-    grp.rotation.y=Math.atan2(-fx,-fz);                                              // facing you
+    const spot=gunsBossSpot();
+    grp.position.set(spot[0],player.y||0,spot[1]);
+    grp.rotation.y=Math.atan2(player.pos.x-spot[0],player.pos.z-spot[1]);             // facing you
     scene.add(grp); zoneTag(grp,0);
     { const sets=warmSets(grp); for(const bits of sets)warmDraw([grp],bits); }
-    const B=GUNS.boss={grp,model,mixer:new THREE.AnimationMixer(model),clips:S.clips,hp:GUN_STATS.bossHp,dying:0,act:null,once:false,laughT:7};
-    gunsBossAnim(B,'Poder',true);                                                    // a power-up roar on arrival
-    banner('The nightmare — close the developer page to watch them shoot it');
+    const B=GUNS.boss={grp,model,mixer:new THREE.AnimationMixer(model),clips:S.clips,hp:GUN_STATS.bossHp,dying:0,act:null,once:false,laughT:7,parade:null,parI:0,strikeT:0.6,swap:false,face:undefined};
+    if(all){ B.parade=BOSS_CLIPS.filter(r=>S.clips[r[0]]); gunsBossParade(B); }       // every clip in the file, once each
+    else { gunsBossAnim(B,'Poder',true);                                             // a power-up roar on arrival
+      banner('The nightmare — close the developer page to watch them shoot it'); }
     done&&done();
   });
 }
@@ -2182,9 +2256,10 @@ function gunsUpdate(dt){
     B.mixer.update(dt);
     if(B.dying){ B.dying+=dt; B.grp.scale.setScalar(Math.max(0.001,1-B.dying/0.6)); if(B.dying>=0.6)gunsRemoveBoss(); }
     else {
-      if(B.once&&B.act&&!B.act.isRunning())gunsBossAnim(B,'Idle');
-      B.laughT-=dt; if(B.laughT<=0){ B.laughT=9+Math.random()*6; gunsBossAnim(B,'Risa',true); }
-      const wy=Math.atan2(player.pos.x-B.grp.position.x,player.pos.z-B.grp.position.z);
+      const parading=!!(B.parade&&B.parI<B.parade.length);
+      if(B.once&&B.act&&!B.act.isRunning()){ if(parading)gunsBossParade(B); else gunsBossAnim(B,'Idle'); }   // each one-shot runs into the next; Idle holds between them
+      if(!parading&&!B.once)gunsBossHunt(B,dt);                        // it comes for you between the gestures, never in the middle of one
+      const wy=(B.face!==undefined)?B.face:Math.atan2(player.pos.x-B.grp.position.x,player.pos.z-B.grp.position.z);   // walking: the way it goes; otherwise you
       B.grp.rotation.y+=Math.atan2(Math.sin(wy-B.grp.rotation.y),Math.cos(wy-B.grp.rotation.y))*Math.min(1,dt*2);
     }
   }
