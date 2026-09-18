@@ -156,7 +156,7 @@
 
 <div id="hud">
   <div id="cross"><svg class="dotSvg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><circle class="ring" cx="12" cy="12" r="6.5"/></svg><svg class="handSvg" viewBox="0 0 24 24"><path d="M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></svg></div>
-  <div id="prompt"><span id="promptText">Press <b>E</b></span></div>
+  <div id="prompt"><span id="promptText"></span></div>
   <div id="subtitle"></div>
   <div id="banner"></div>
   <div id="fade"></div>
@@ -1910,7 +1910,7 @@ function buildLabLights(){
    no face), the shirt decimated from 787k vertices to 40k; tools/gltf/export-outfit.py made it.
    An outfit says which of her own pieces to hide (by material name) and which borrowed ones to show.
    ============================================================ */
-const OUTFIT_FILES=['assets/people/elara_secretary.glb?v=3',      // bump when a file is rebuilt: browsers cache a GLB by its URL
+const OUTFIT_FILES=['assets/people/elara_secretary.glb?v=4',   // v4 (2026-09-19): the skirt and underwear carry her body's skin weights, so her thighs no longer come through the skirt on a walk      // bump when a file is rebuilt: browsers cache a GLB by its URL
                     'assets/people/elara_hair.glb?v=1'];
 const HER_OWN=/Cat_Suit|Female_knee_boots|THD_Gloves/;               // the cat look, piece by piece — hair is not part of it
 const HER_HAIR=/BunHair/;                                            // the bun the model comes with
@@ -2221,7 +2221,10 @@ function gunsSpawnBoss(done,all){
     model.traverse(o=>{ if(!o.isMesh)return; o.frustumCulled=false;
       if(!o.isSkinnedMesh&&o.material&&(o.material.opacity===0||/HPBar/i.test(o.material.name||''))){ o.visible=false; return; }   // its own flare quads and health bar
       if(o.material)o.material=o.material.clone(); });
-    const inner=new THREE.Group(); inner.rotation.y=Math.PI/2; inner.add(model);    // the file's facing knob, as Fountain Keeper has it
+    // The model faces +z (measured 2026-09-19: hips and shoulders within 0–8° of +z in every clip, the walk's toes 1°),
+    // and this group turns its +z at the target — so no knob. Fountain Keeper's π/2 is right THERE only: its groups
+    // aim +x at the target (-atan2(dz,dx)). Copied here it had the nightmare 90° off, swinging past your side.
+    const inner=new THREE.Group(); inner.add(model);
     const grp=new THREE.Group(); grp.add(inner);
     const spot=gunsBossSpot();
     grp.position.set(spot[0],player.y||0,spot[1]);
@@ -4993,7 +4996,7 @@ function escHtml(s){return (s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','
 const TASKS={
   chronos1:{place:'chronos',title:'Complete Chronos Court — mission 1',done:()=>chronosDone(1)},
   chronos2:{place:'chronos',title:'Complete Chronos Court — mission 2',done:()=>chronosDone(2),avail:()=>chronosDone(1)},
-  crypt:   {place:'crypt',  title:'Join the Garrison and stop the invasion',done:()=>fountainDone()},
+  crypt:   {place:'crypt',  title:'Defend the hall',done:()=>fountainDone()},   // renamed 2026-09-19 (was "Join the Garrison and stop the invasion") — it is Jack's "Defend the hall" now
   rally1:  {place:'rally',  title:'Win Rally stage 1 — Cliffhanger',   done:()=>rallyDone(1)},
   rally2:  {place:'rally',  title:'Win Rally stage 2 — Forest meander',done:()=>rallyDone(2),avail:()=>rallyDone(1)},
   hex1:    {place:'velocity',title:'Complete Velocity — Cityscape, casual',done:()=>hexDone(1)},
@@ -5041,7 +5044,8 @@ function defaultObj(){
   }catch(e){}
   return DEFAULT_OBJ_MISSION;
 }
-function loadObjs(){try{return JSON.parse(localStorage.getItem('atd:objectives')||'[]').filter(o=>o&&o.task);}catch(e){return[];}}   // task-less entries (old format) are dropped
+function loadObjs(){try{return JSON.parse(localStorage.getItem('atd:objectives')||'[]').filter(o=>o&&o.task)
+  .map(o=>{ const t=TASKS[o.task]; if(t){ o.title=t.title; o.place=t.place; } return o; });}catch(e){return[];}}   // task-less entries (old format) are dropped; a saved row takes its task's CURRENT title, so a rename reaches objectives already tracked
 function saveObjs(o){try{localStorage.setItem('atd:objectives',JSON.stringify(o));}catch(e){}}
 function activeObjs(){                               // what the mini-map shows
   const a=loadObjs().filter(o=>o.tracked&&!taskDone(o));
@@ -5515,7 +5519,7 @@ document.getElementById('nbClose').onclick=()=>closeFountainPanel();
 // thing to do pays a little. Pay is collected automatically (once per task) whenever
 // the Work panel or the Shop is opened. Credits are spent in the Shop tab.
 const WORK={
-  crypt:   {job:'Join the Garrison and stop the invasion', pay:200},
+  crypt:   {job:'Defend the hall', pay:200},
   delivery:{job:'Delivery Run — drive the routes, hand the package over on foot', pay:200},
   cerebro: {job:'Listening shift — staff the Cerebro dome, hear the week\'s voices', pay:200}
 };
@@ -8271,7 +8275,7 @@ function update(dt){
   if(LIFTX.aim)curHot=LIFTX.hot;                                      // an elevator button under the crosshair beats every hotspot
   const promptNow=curHot?String(curHot.label):null;                 // the page is only touched when the prompt changes (3 ms a frame otherwise)
   if(promptNow!==promptLast){ promptLast=promptNow;
-    if(promptNow){promptText.innerHTML='Click or press <b>E</b> — '+promptNow;promptEl.style.display='block';}
+    if(promptNow){promptText.innerHTML=promptNow;promptEl.style.display='block';}   // just the action (2026-09-19: the "Click or press E —" in front of it is gone, asked for)
     else promptEl.style.display='none'; }
   const live=look.locked&&state.phase==='play'&&!paused&&!anyModalOpen();
   crossEl.classList.toggle('on',live); crossEl.classList.toggle('aim',live&&!!LIFTX.aim);
