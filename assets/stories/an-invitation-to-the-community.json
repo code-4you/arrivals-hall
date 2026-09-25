@@ -1,0 +1,74 @@
+{
+  "id": "an-invitation-to-the-community",
+  "title": "An Invitation to the Community",
+  "subtitle": "Nobody recruits anyone. A friend put your name on the map.",
+  "stage": "room",
+
+  "characters": {
+    "FRIEND": {
+      "base": "woman",
+      "variant": 3,
+      "tint": "#7fc9a2",
+      "height": 1.7,
+      "label": "The Friend",
+      "labelColor": "#b6ff9c",
+      "voice": { "gender": "female", "pitch": 1.05, "rate": 0.97 },
+      "at": [-0.8, -0.2],
+      "face": "VISITOR"
+    },
+    "VISITOR": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#8fa3bf",
+      "height": 1.76,
+      "label": "The Visitor",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "male", "pitch": 0.95, "rate": 1.0 },
+      "at": [0.9, 0.1],
+      "face": "FRIEND"
+    }
+  },
+
+  "customObject": {
+    "name": "the application map",
+    "description": "a phone propped on the table, projecting a small map of named neighbourhoods — one home held open, glowing amber",
+    "at": [0.0, -1.5],
+    "glow": "#5fe0c8",
+    "parts": [
+      { "shape": "box", "size": [0.9, 0.72, 0.5], "pos": [0, 0.36, 0], "color": "#2a3040", "metal": 0.6 },
+      { "shape": "box", "size": [0.34, 0.66, 0.05], "pos": [0, 0.9, 0.1], "rot": [-0.35, 0, 0], "color": "#101826", "metal": 0.7 },
+      { "shape": "cone", "size": [0.9, 1.1], "pos": [0, 1.75, 0], "color": "#5fe0c8", "opacity": 0.08, "additive": true, "open": true },
+      { "shape": "box", "size": [1.5, 0.92, 0.04], "pos": [0, 2.15, 0], "color": "#0d1a26", "opacity": 0.85 },
+      { "shape": "box", "size": [0.2, 0.14, 0.02], "pos": [-0.45, 2.3, 0.03], "color": "#5fe0c8", "emissive": 0.8 },
+      { "shape": "box", "size": [0.26, 0.16, 0.02], "pos": [0.1, 2.05, 0.03], "color": "#9fd8ff", "emissive": 0.7 },
+      { "shape": "box", "size": [0.18, 0.12, 0.02], "pos": [0.45, 2.38, 0.03], "color": "#b6ff9c", "emissive": 0.7, "bob": 0.02 },
+      { "shape": "sphere", "size": [0.045], "pos": [0.18, 2.32, 0.04], "color": "#ffd27f", "emissive": 1.3, "bob": 0.03 }
+    ]
+  },
+
+  "script": [
+    { "note": "A small rented room, evening. Rain on the glass. A knock — a real one, at the real door. An old friend, in town for one night." },
+    { "who": "VISITOR", "text": "You picked a bad month to visit. Rent went up again, the job means nothing, and everyone I know lives an hour away.", "file": "invite_01.mp3" },
+    { "who": "FRIEND", "text": "That's actually why I came. I moved — eight months ago. I wanted to tell you in person, not through a screen.", "file": "invite_02.mp3" },
+    { "who": "VISITOR", "text": "Moved where?", "file": "invite_03.mp3" },
+    { "who": "FRIEND", "text": "A place where you choose your neighbours.", "file": "invite_04.mp3" },
+    { "who": "VISITOR", "text": "Get real.", "file": "invite_05.mp3" },
+    { "note": "She props her phone on the table. A small map rises off it — neighbourhoods with names, little lit homes." },
+    { "who": "FRIEND", "text": "By application — like any social app. You say who you want near. Groups can choose other groups. And you're placed on the map close to the people you chose — not wherever a vacancy happens to be.", "file": "invite_06.mp3" },
+    { "who": "VISITOR", "text": "So who invited you in? Who runs it?", "file": "invite_07.mp3" },
+    { "who": "FRIEND", "text": "Nobody invited me. Nobody recruits anyone — there's no belief to sign and no landlord to please. Rules of conduct, not of belief. I applied, I named three people I already trusted, and the map made room.", "file": "invite_08.mp3" },
+    { "who": "FRIEND", "text": "That's the part every other place was missing: there is always room kept free. Space held open on purpose — so the people you choose can actually come.", "file": "invite_09.mp3" },
+    { "who": "VISITOR", "text": "There's always a catch. A guru. A creed. Something.", "file": "invite_10.mp3" },
+    { "who": "FRIEND", "text": "If it were that, could I do this? — leave any day I like, and walk out with my home's value in my pocket. You own from day one. Rent doesn't exist there. The door out is honest, which is exactly why nobody uses it.", "file": "invite_11.mp3" },
+    { "who": "VISITOR", "text": "I can't afford to own anything. I can't even afford this room.", "file": "invite_12.mp3" },
+    { "who": "FRIEND", "text": "The floor there is a shell that costs nothing — no price, no rent. No one falls below it. You finish the inside with your own hands, and your time becomes your deposit. Or pay a home off at about a third of your income until it's yours. How we built them that cheap is a story of its own.", "file": "invite_13.mp3" },
+    { "who": "VISITOR", "text": "Why are you telling me all this?", "file": "invite_14.mp3" },
+    { "who": "FRIEND", "text": "Because the application asks one question that matters: who do you want near? …I put your name.", "file": "invite_15.mp3" },
+    { "pause": 1.4 },
+    { "who": "VISITOR", "text": "…You chose me?", "file": "invite_16.mp3" },
+    { "who": "FRIEND", "text": "Months ago. There's a home held open four doors from mine. It stays open — that's what the free space is for. Nobody's rushing you.", "file": "invite_17.mp3" },
+    { "who": "FRIEND", "text": "It's the three things we used to talk about in this exact room — see your friends more often, a home you can afford, things to do. It's a disgrace, not being able to choose the people you live around. Is all it ever was.", "file": "invite_18.mp3" },
+    { "who": "FRIEND", "text": "It's your choice. It has to be. That's the entire idea — choosing.", "file": "invite_19.mp3" },
+    { "note": "He pulls the map closer. Named neighbourhoods. One amber home, held open, four doors from a name he knows. After a while, he starts typing names of his own." }
+  ]
+}

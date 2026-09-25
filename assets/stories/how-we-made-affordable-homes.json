@@ -1,0 +1,77 @@
+{
+  "id": "how-we-made-affordable-homes",
+  "title": "How We Made the Affordable Homes",
+  "subtitle": "The land, the shells, and the third of an income.",
+  "stage": "plaza",
+  "stageTint": "#3a4252",
+
+  "characters": {
+    "NEIGHBOR": {
+      "base": "elder",
+      "variant": 1,
+      "tint": "#c9855f",
+      "height": 1.68,
+      "label": "A Neighbor",
+      "labelColor": "#ffd27f",
+      "voice": { "gender": "male", "pitch": 0.88, "rate": 0.95 },
+      "at": [-1.0, -0.3],
+      "face": "VISITOR"
+    },
+    "VISITOR": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#8fa3bf",
+      "height": 1.76,
+      "label": "The Visitor",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "male", "pitch": 0.95, "rate": 1.0 },
+      "at": [0.9, 0.3],
+      "face": "NEIGHBOR"
+    }
+  },
+
+  "customObject": {
+    "name": "an unfinished shell",
+    "description": "the frame of a home — posts, beams, one wall panel, and the water and power lines stubbed in, waiting for an owner's hands",
+    "at": [0.1, -1.9],
+    "glow": "#ffd27f",
+    "parts": [
+      { "shape": "box", "size": [0.16, 2.3, 0.16], "pos": [-1.2, 1.15, -0.7], "color": "#8a7d5a" },
+      { "shape": "box", "size": [0.16, 2.3, 0.16], "pos": [1.2, 1.15, -0.7], "color": "#8a7d5a" },
+      { "shape": "box", "size": [0.16, 2.3, 0.16], "pos": [-1.2, 1.15, 0.7], "color": "#8a7d5a" },
+      { "shape": "box", "size": [0.16, 2.3, 0.16], "pos": [1.2, 1.15, 0.7], "color": "#8a7d5a" },
+      { "shape": "box", "size": [2.6, 0.14, 1.6], "pos": [0, 2.36, 0], "color": "#8a7d5a" },
+      { "shape": "box", "size": [1.1, 1.9, 0.08], "pos": [-0.7, 0.95, -0.66], "color": "#a8a29a" },
+      { "shape": "cylinder", "size": [0.05, 0.5], "pos": [0.5, 0.25, -0.6], "color": "#5fd0f0", "emissive": 0.9 },
+      { "shape": "cylinder", "size": [0.05, 0.42], "pos": [0.72, 0.21, -0.6], "color": "#ffd27f", "emissive": 0.9 },
+      { "shape": "cylinder", "size": [0.05, 0.34], "pos": [0.94, 0.17, -0.6], "color": "#b6ff9c", "emissive": 0.8 },
+      { "shape": "box", "size": [0.9, 0.5, 0.6], "pos": [0.9, 0.25, 0.5], "color": "#6b5232" }
+    ]
+  },
+
+  "script": [
+    { "note": "The build court at the garden's edge. The frame of a home stands half-raised — pipes and wires stubbed in at the base, a numbered kit crate beside it." },
+    { "who": "VISITOR", "text": "The slip said 'hands wanted at the frames.' I should warn you — I've never built anything.", "file": "homes_01.mp3" },
+    { "who": "NEIGHBOR", "text": "Nobody has, their first morning. The kit is numbered, the plan is drawn, the inspector comes at four. Walk in, take a plan, raise a room, get paid. Any hour you like — the frames don't keep office hours.", "file": "homes_02.mp3" },
+    { "who": "VISITOR", "text": "Who's this one for?", "file": "homes_03.mp3" },
+    { "who": "NEIGHBOR", "text": "Whoever the map places next. There's always a home kept free here — always. Every other rule leans on that one.", "file": "homes_04.mp3" },
+    { "who": "VISITOR", "text": "What I still don't understand is the price. Where I come from, the cheapest homes inflated faster than my savings could grow. They take away the cheap options first.", "file": "homes_05.mp3" },
+    { "who": "NEIGHBOR", "text": "Because you were bidding on land, son. That was the first thing we learned: it was never the building — it's the land. Here the land sits in a trust and it is not for sale. You own the home standing on it. Never the dirt underneath.", "file": "homes_06.mp3" },
+    { "who": "VISITOR", "text": "So nobody can sit on an empty place and wait for the price to rise.", "file": "homes_07.mp3" },
+    { "who": "NEIGHBOR", "text": "Holding for the rise gets taxed until there's no point to it. Two ways to make money out of space here, and only two: make new space, or make a space better. Housing should be like food — in ample supply. Nobody bids against you for bread.", "file": "homes_08.mp3" },
+    { "who": "VISITOR", "text": "And this one? It's just a frame and some pipes.", "file": "homes_09.mp3" },
+    { "who": "NEIGHBOR", "text": "That's a shell — and that's the second thing. Water, power, sewer stubbed in at the block. The owner runs them into the rooms themselves, puts a meter on, and every hour of that work is theirs — your time becomes your deposit. Best deal there is for someone with more time than money. I had nothing else when I came.", "file": "homes_10.mp3" },
+    { "who": "VISITOR", "text": "And if someone has nothing at all? No time, no money, no strength for it?", "file": "homes_11.mp3" },
+    { "who": "NEIGHBOR", "text": "Then they start with a room, not a house. A room you pay off is an asset — the month you can't work, you still own the place you sleep. Nobody here falls out the bottom onto the street. When the room's paid, start on the next. A lounge of your own. That part isn't about housing at all — it's about dignity.", "file": "homes_12.mp3" },
+    { "who": "VISITOR", "text": "And a whole home? What does that cost a person?", "file": "homes_13.mp3" },
+    { "who": "NEIGHBOR", "text": "About a third of your income until it's paid off — then it's yours to keep or pass on. And more going toward it never feels like rent going up, because every dollar lands in your own equity. Leave whenever you like: the home's revalued when you go — what you paid, what you improved, photos to prove it. Never a bubble.", "file": "homes_14.mp3" },
+    { "who": "NEIGHBOR", "text": "Even the moving is honest. Two hundred years ago the fee for changing homes was one percent — a filing fee. They grew it into months of a working life. Here it's a signature. People move toward their people, whenever life asks it.", "file": "homes_15.mp3" },
+    { "who": "VISITOR", "text": "So where did it start? Who paid for the first ones?", "file": "homes_16.mp3" },
+    { "who": "NEIGHBOR", "text": "A cheap block nobody wanted, a couple of hours from anywhere. We told each other the worst that could happen was ending up with a piece of land. The first homes were shells and salvage. Visible, occupied homes first — the arguments came after, and lost.", "file": "homes_17.mp3" },
+    { "pause": 1.2 },
+    { "note": "The Visitor rests a hand on the frame. The stubbed pipes glow faintly, waiting." },
+    { "who": "VISITOR", "text": "So every wall standing in this place is somebody's deposit.", "file": "homes_18.mp3" },
+    { "who": "NEIGHBOR", "text": "And this one can be yours, if you want it. Take the plan. Raise it well.", "file": "homes_19.mp3" },
+    { "note": "He opens the crate. The plan is numbered, the parts are counted, and the afternoon is his." }
+  ]
+}

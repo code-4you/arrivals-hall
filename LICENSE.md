@@ -49,7 +49,7 @@ contribution.
 
 ## Third-party work inside the hall keeps its own licence
 
-- Elara's body, face capture and standing capture — "Cat Woman", "Facial animation of a
+- Elara's body, face capture and standing capture — "Elara", "Facial animation of a
   sexy girl" and "Dahlia" by patromes (Sketchfab), CC BY 4.0. These may be reused under
   that licence with attribution to patromes; this notice does not restrict them.
 - Gesture and idle animations — Mixamo (Adobe): included only as baked into this game; not

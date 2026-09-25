@@ -1,0 +1,83 @@
+{
+  "id": "welcome-to-the-garden",
+  "title": "Welcome to the Garden",
+  "subtitle": "Moving day. The community, already made — and how it works.",
+  "stage": "garden",
+
+  "characters": {
+    "GUIDE": {
+      "base": "woman",
+      "variant": 3,
+      "tint": "#7fc9a2",
+      "height": 1.7,
+      "label": "The Friend",
+      "labelColor": "#b6ff9c",
+      "voice": { "gender": "female", "pitch": 1.05, "rate": 0.97 },
+      "at": [-1.2, -0.1],
+      "face": "VISITOR"
+    },
+    "VISITOR": {
+      "base": "man",
+      "variant": 2,
+      "tint": "#8fa3bf",
+      "height": 1.76,
+      "label": "The Visitor",
+      "labelColor": "#9fd8ff",
+      "voice": { "gender": "male", "pitch": 0.95, "rate": 1.0 },
+      "at": [0.1, 0.5],
+      "face": "NEIGHBOR"
+    },
+    "NEIGHBOR": {
+      "base": "elder",
+      "variant": 1,
+      "tint": "#c9855f",
+      "height": 1.68,
+      "label": "A Neighbor",
+      "labelColor": "#ffd27f",
+      "voice": { "gender": "male", "pitch": 0.88, "rate": 0.95 },
+      "at": [1.25, -0.6],
+      "face": "VISITOR"
+    }
+  },
+
+  "customObject": {
+    "name": "the commons board",
+    "description": "a wide wooden board hung with softly glowing slips — the work the place thinks it needs",
+    "at": [0.1, -1.9],
+    "glow": "#ffd27f",
+    "parts": [
+      { "shape": "box", "size": [0.12, 2.0, 0.12], "pos": [-0.95, 1.0, 0], "color": "#5a4326" },
+      { "shape": "box", "size": [0.12, 2.0, 0.12], "pos": [0.95, 1.0, 0], "color": "#5a4326" },
+      { "shape": "box", "size": [2.1, 1.15, 0.08], "pos": [0, 1.42, 0], "color": "#6b5232" },
+      { "shape": "box", "size": [0.18, 0.24, 0.03], "pos": [-0.7, 1.55, 0.06], "color": "#ffd27f", "emissive": 0.9 },
+      { "shape": "box", "size": [0.18, 0.24, 0.03], "pos": [-0.2, 1.32, 0.06], "color": "#9fd8ff", "emissive": 0.8 },
+      { "shape": "box", "size": [0.18, 0.24, 0.03], "pos": [0.35, 1.6, 0.06], "color": "#b6ff9c", "emissive": 0.8 },
+      { "shape": "box", "size": [0.18, 0.24, 0.03], "pos": [0.72, 1.28, 0.06], "color": "#ffd27f", "emissive": 0.7 }
+    ]
+  },
+
+  "script": [
+    { "note": "Moving day. Morning in a garden between small houses — his friend walking beside him, four doors from her own. A wide wooden board hangs between two posts, dressed in glowing slips of paper." },
+    { "who": "VISITOR", "text": "The map said this area's called the Garden. Who named it that?", "file": "garden_01.mp3" },
+    { "who": "GUIDE", "text": "The people living here did — every area names itself. This one reached back twenty-three centuries for it: a man bought a cheap house outside the city, brought his friends to live near, and made sure everyone had something to do.", "file": "garden_02.mp3" },
+    { "who": "GUIDE", "text": "A home you can afford. Friends close by. Work worth doing. We didn't invent the three things — we just stopped pretending they were optional.", "file": "garden_03.mp3" },
+    { "note": "An older man is pinning a fresh slip to the board. It brightens under his hand." },
+    { "who": "NEIGHBOR", "text": "Morning. You're the new pair of hands? Board's fresh — best time to look.", "file": "garden_04.mp3" },
+    { "who": "VISITOR", "text": "What is it?", "file": "garden_05.mp3" },
+    { "who": "NEIGHBOR", "text": "Everything this place thinks it needs, posted by whoever noticed it. You pick what you feel is needed — nobody assigns you. It pays in what we have. Sometimes money. Always standing.", "file": "garden_06.mp3" },
+    { "who": "VISITOR", "text": "Anyone can post? So if I see something wrong here, I don't file a complaint with somebody who never visits —", "file": "garden_07.mp3" },
+    { "who": "NEIGHBOR", "text": "You post it. Or you fix it, and post that you fixed it. Power over what's around you — that's half of what peace is.", "file": "garden_08.mp3" },
+    { "who": "GUIDE", "text": "The houses came the same way. We told the design engines what we could spend and how we wanted to live — near each other, small, warm — and they drew a hundred versions until one felt like ours. Nobody here lives in lack. Lack was a design fault.", "file": "garden_09.mp3" },
+    { "note": "A soft bell. The garden stills. No one gathers — each settles where they are: a porch, a bench, a room of their own." },
+    { "who": "VISITOR", "text": "And this part? The bell?", "file": "garden_10.mp3" },
+    { "who": "GUIDE", "text": "The quiet hour — each of us in our own place. You settle the body, take the mind off the noise, and put it on the life you intend — grateful for it, before breakfast. Some call it meditation, some call it prayer. No one is graded, and no one is gathered.", "file": "garden_11.mp3" },
+    { "who": "VISITOR", "text": "You all really believe this holds? A place run on noticing things and sitting quietly?", "file": "garden_12.mp3" },
+    { "who": "NEIGHBOR", "text": "It holds the way a garden holds — by devotion. You give it your thought, you accept living in a place that was made for it, and it feeds you back. Skip the devotion and it's just housing.", "file": "garden_13.mp3" },
+    { "who": "GUIDE", "text": "This place was made for the ones who fell through the gaps of normal society — and for the ones who were looking for more. It will bring all of you to a new understanding and value of life. A vision that inspires you to live on planet earth.", "file": "garden_14.mp3" },
+    { "pause": 1.2 },
+    { "who": "VISITOR", "text": "All of me. …Where do I start?", "file": "garden_15.mp3" },
+    { "who": "NEIGHBOR", "text": "Board.", "file": "garden_16.mp3" },
+    { "who": "GUIDE", "text": "Welcome to the Garden.", "file": "garden_17.mp3" },
+    { "note": "He lifts a slip from the board. It brightens in his hand." }
+  ]
+}
