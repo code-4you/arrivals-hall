@@ -868,6 +868,62 @@ function box(x,y,z,w,h,d,mat,collide){
   if(collide)BUILDINGS.push({x,z,hw:w/2,hd:d/2,h:y+h});
   return m;
 }
+// Surfaces you stand ON that sit a little above the floor a person's feet are planted at: the flats' own floor on level 3
+// (6 cm up), the rugs and window boards there (5 cm), the atrium's glass (4 cm). Registered as they are built; groundPerson
+// and the guest followers look straight down onto them and lift the body by what they find (2026-09-25: feet were under them)
+const FOOT_SURF=[]; const _ftRay=new THREE.Raycaster(), _ftO=new THREE.Vector3(), _ftD=new THREE.Vector3(0,-1,0); _ftRay.layers.enableAll();   // (a level's floor is on that level's zone layer)
+function surfaceLift(x,z,baseY){
+  if(!FOOT_SURF.length)return 0;
+  _ftO.set(x,baseY+0.6,z); _ftRay.set(_ftO,_ftD); _ftRay.near=0; _ftRay.far=0.9;
+  let best=0; for(const h of _ftRay.intersectObjects(FOOT_SURF,false)){ const l=h.point.y-baseY; if(l>0.004&&l<=0.25&&l>best)best=l; }
+  return best;
+}
+// How far a body's geometry hangs below its lowest foot bone — a sole, a boot. Optimus: 3.5 cm, Jack: 3 cm; planted by
+// the bone alone, they stood in the floor by that much. Capped, so a stray helper quad under a model cannot float it.
+const _spV=new THREE.Vector3(), FOOT_RE=/(ToeBase|Foot|Toe)/i;
+// The feet's own geometry: skinned vertices weighted to a foot or toe bone, or rigid parts hung under one — collected
+// once per body (footVertexSet), so their lowest point in the CURRENT pose is cheap to find again (footLowest). The sole
+// pad is that point's distance under the lowest foot bone, re-measured ten times a second (solePadNow): a flat-soled body
+// then stands on the floor whatever its idle does with a heel. Only bodies that ask for it (sole:true — Optimus, Jack):
+// Elara's shoes are cut for a raised heel while her clips keep the foot flat, so her heel tip sits under the floor with
+// the ball of the foot on it, and lifting her to the shoe's lowest point would float her toes — she keeps the bone plant.
+function footVertexSet(root){
+  root.updateWorldMatrix(true,true); const set=[];
+  root.traverse(m=>{ if(!m.isMesh||!m.geometry||!m.geometry.attributes.position)return;
+    for(let o=m;o;o=o.parent)if(o.visible===false)return;
+    const g=m.geometry, n=g.attributes.position.count, si=m.isSkinnedMesh?g.attributes.skinIndex:null, sw=m.isSkinnedMesh?g.attributes.skinWeight:null, bones=(m.isSkinnedMesh&&m.skeleton)?m.skeleton.bones:null;
+    if(si&&sw&&bones){ const idx=[];
+      for(let i=0;i<n;i++){ for(let k=0;k<4;k++){ const w=k===0?sw.getX(i):k===1?sw.getY(i):k===2?sw.getZ(i):sw.getW(i); if(w<0.1)continue;
+        const b=bones[k===0?si.getX(i):k===1?si.getY(i):k===2?si.getZ(i):si.getW(i)]; if(b&&FOOT_RE.test(b.name)){ idx.push(i); break; } } }
+      if(idx.length)set.push({m,idx:Int32Array.from(idx)}); }
+    else { let under=false; for(let o=m;o;o=o.parent)if(o.isBone&&FOOT_RE.test(o.name)){under=true;break;} if(under)set.push({m,idx:null}); } });
+  return set;
+}
+function footLowest(set){
+  let minV=Infinity;
+  for(const {m,idx} of set){ const a=m.geometry.attributes.position, n=idx?idx.length:a.count, st=n>6000?2:1;
+    // boneTransform answers in the mesh's own space through bindMatrixInverse, which only the renderer's matrix pass
+    // (updateMatrixWorld) refreshes — mid-frame, after the body was moved, it still holds the last drawn place, and the
+    // sole came out lower by exactly that move. Refresh it here (the SkinnedMesh override does), then go to world
+    if(m.isSkinnedMesh)m.updateMatrixWorld(true);
+    for(let j=0;j<n;j+=st){ const i=idx?idx[j]:j; if(m.isSkinnedMesh)m.boneTransform(i,_spV).applyMatrix4(m.matrixWorld); else _spV.fromBufferAttribute(a,i).applyMatrix4(m.matrixWorld); if(_spV.y<minV)minV=_spV.y; } }
+  return minV;
+}
+function solePadNow(feet,set){
+  let minB=Infinity; for(const b of feet){ b.getWorldPosition(_spV); if(_spV.y<minB)minB=_spV.y; }
+  const minV=footLowest(set);
+  return (isFinite(minB)&&isFinite(minV))?Math.min(0.08,Math.max(0,minB-minV)):0;
+}
+// a guest with feet bones (sole:true — Jack) is planted every frame the way groundPerson plants a person: the lowest
+// foot bone, less its sole pad, goes to the target height (his floor, or the surface found over it). Incremental, so it
+// corrects from wherever his group is
+function guestPlant(g,target){
+  if(!g.feet||!g.feet.length||!g.grp)return; g.grp.updateWorldMatrix(true,true);
+  if(!(g.fset&&g.fset.length)&&state.time-(g.fsetAt||-9)>1){ g.fsetAt=state.time; g.fset=footVertexSet(g.root); }   // his pieces were still hidden when he loaded (warmGuest shows them one a frame): look again each second
+  if(g.fset&&g.fset.length&&state.time-(g.padAt||0)>0.1){ g.padAt=state.time; g.pad=solePadNow(g.feet,g.fset); }
+  let minB=Infinity; for(const b of g.feet){ b.getWorldPosition(_spV); if(_spV.y<minB)minB=_spV.y; }
+  if(isFinite(minB))g.grp.position.y+=target-(minB-(g.pad||0));
+}
 function emissiveStrip(x,y,z,w,h,d,color,intensity){
   const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),
     new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:intensity||1.3,roughness:0.4}));
@@ -1260,7 +1316,7 @@ function buildHall(now){
       normalMap:tex('floor/floor_normal.jpg',6.2,5.5,false),
       roughness:0.5,metalness:0.3,transparent:true,opacity:MOBILE?0.9:0.66});
     const gloss=new THREE.Mesh(new THREE.PlaneGeometry(36,32),glossMat);
-    gloss.rotation.x=-Math.PI/2;gloss.position.set(0,0.04,-4);worldGroup.add(gloss);
+    gloss.rotation.x=-Math.PI/2;gloss.position.set(0,0.04,-4);worldGroup.add(gloss); FOOT_SURF.push(gloss);   // 4 cm up: feet on it, not in it (2026-09-25)
     // trim border so the glossy zone reads as a deliberate inlay, not a seam
     emissiveStrip(0,0.03,-20,36.3,0.04,0.16,0x7fe6ff,0.7);
     emissiveStrip(0,0.03,12,36.3,0.04,0.16,0x7fe6ff,0.7);
@@ -1583,12 +1639,12 @@ const GUESTS=[
   // him turned toward whoever is near. No stubble, no gun; Elara's neutral standing idle on his body.
   // the same Jack again, upstairs on lab level 2, where circle 1 calls the nightmare up: gy is the floor he
   // stands on, so he loads when you reach THAT floor and not when you cross the same spot below (2026-09-18)
-  {id:'jack2',   file:'jack_hall.glb',          name:'JACK',         cx:-31,cz:-63, gy:LABT.Y[1], col:0xffd27f, yaw:Math.PI, plain:true, gun:true, share:true,
+  {id:'jack2',   file:'jack_hall.glb',          name:'JACK',         cx:-31,cz:-63, gy:LABT.Y[1], col:0xffd27f, yaw:Math.PI, sole:true, plain:true, gun:true, share:true,
    hide:/Beard_Transparency|pistolLow/, bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Male'}, lookAt:14, gaze:true,
    speaks:["Elara sent me up. Stand in the first circle and something turns up.",
            "When it does, we shoot it. Stand back a little.",
            "Three floors above this one are still empty."]},
-  {id:'jack',    file:'jack_hall.glb',          name:'JACK',         cx:  8,cz:-32, col:0xffd27f, yaw:Math.PI, after:'start', quiet:true, plain:true, gun:true, share:true,   // share: one parse and one set of textures for both Jacks (guestSource)
+  {id:'jack',    file:'jack_hall.glb',          name:'JACK',         cx:  8,cz:-32, col:0xffd27f, yaw:Math.PI, sole:true, after:'start', quiet:true, plain:true, gun:true, share:true,   // share: one parse and one set of textures for both Jacks (guestSource)
    hide:/Beard_Transparency|pistolLow/, bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Male'}, lookAt:14, gaze:true, aimKey:'jackAim',   // Idle_Male: the ActorCore male idle (library no. 10), merged into elara.glb; aimKey: his aim offset sliders on the dev page
    follow:{walk:'Walk',run:'Run_M'},   // he can be told to come along (2026-09-25): his walk and run from the same file as his idle — see guestFollower
    speaks:["Hello. I'm Jack. Elara asked me to keep an eye on this end of the hall.",
@@ -2730,6 +2786,13 @@ function loadGuest(g){
     grp.position.set(g.cx,foot+(g.gy||0),g.cz);   // CC3 exports stand on their own origin; gy lifts one onto a lab floor
     grp.rotation.y=g.yaw||0;
     worldGroup.add(grp);
+    if(g.sole){                                                // his soles hang below his foot bones (Jack, 2026-09-25): planted every frame like a person — sole on the floor, or on the surface found over it
+      g.feet=[]; root.traverse(o=>{ if(o.isBone&&/(ToeBase|Foot)(_\d+)?$/i.test(o.name))g.feet.push(o); });
+      grp.updateMatrixWorld(true); g.fset=g.feet.length?footVertexSet(root):[]; g.pad=g.fset.length?solePadNow(g.feet,g.fset):0; g.padAt=state.time; g.yBase=grp.position.y; g.surf=0;
+      animated.push({update(dt){ if(g.follower||state.phase!=='play'||paused)return;   // (once he follows, his follower hook does this itself)
+        g.surfT=(g.surfT||0)-dt; if(g.surfT<=0){ g.surfT=0.1; g.surf=surfaceLift(grp.position.x,grp.position.z,g.yBase); }
+        guestPlant(g,g.yBase+g.surf); }});
+    }
     // up the lab tower he belongs to his floor's zone. Left on the hall's layer (what worldGroup hands down), the
     // floors never drew him: only his pistol and his prompt showed on level 2 (2026-09-20)
     if(g.gy!==undefined){ const zn=zoneAt(g.cx,g.cz,g.gy+1); if(zn.charAt(0)==='k')zoneTag(grp,10+(+zn.slice(1))); }
@@ -3735,7 +3798,7 @@ function buildApartments(Y,zn,B){
   // ---- the corridor along the back, with a window at either end ----
   put((XW+XE)/2,0,ZC,XE-XW+0.6,H,T,M.corr,true);
   put((XW+XE)/2,0,ZC+0.12,XE-XW,0.12,0.03,M.skirt);
-  put((XW+XE)/2,0.03,33,XE-XW,0.02,1.9,M.runner);
+  FOOT_SURF.push(put((XW+XE)/2,0.03,33,XE-XW,0.02,1.9,M.runner));   // (FOOT_SURF: feet stand on the rug, 5 cm up, not in it — 2026-09-25)
   for(let x=-40;x<=40;x+=8)emissiveStrip(x,Y+H-0.07,33,1.4,0.06,0.42,0xfff4e6,0.5);
   for(let x=-38;x<=42;x+=11){ put(x-0.52,1.13,ZC+0.09,1.04,0.74,0.03,M.door); put(x-0.44,1.21,ZC+0.1,0.88,0.58,0.03,M.art); }
   // ---- the bays ----
@@ -3750,22 +3813,23 @@ function buildApartments(Y,zn,B){
       // own wall — carry them on to it, or bedroom, living room and hall run into one another along the
       // window. Warm, like the ceiling strip: what they meet is baked, not lit.
       for(const mz of [-1.26,5.28])put((y.x0+7.19)+(y.mir?-mz:mz),0,45.02,0.12,H,1.56,M.wallWarm,true);
-      put((y.x0+y.x1)/2,0.03,45.0,w,0.02,1.6,M.board);             // and the floor under the whole strip, 1 cm under the model's own
+      FOOT_SURF.push(put((y.x0+y.x1)/2,0.03,45.0,w,0.02,1.6,M.board));   // and the floor under the whole strip, 1 cm under the model's own (FOOT_SURF: stood on)
       aptModel(Y,zn,(src)=>{ const g=src.clone(true);
         g.rotation.y=Math.PI/2; if(y.mir)g.scale.z=-1;           // balcony to the glass; mirrored, the door changes sides
         g.position.set(y.x0+7.19,Y+0.03,GZ); worldGroup.add(g); zoneTag(g,zn);   // 3 cm over the level's stone: any less and the two floors fight
+        g.traverse(o=>{ if(o.isMesh&&o.name.indexOf('SM_Floor')===0)FOOT_SURF.push(o); });   // its floor is 6 cm over the level's: feet are planted on it (FOOT_SURF), not on the stone under it
         const fd=g.getObjectByName('APT_FRONTDOOR'); if(fd)aptDoorWatch(fd); });
     }
     else if(y.lobby){
       put(-11.07,0,ZB+T/2,3.14,HL,T,M.wall,true); put(-3.12,0,ZB+T/2,2.76,HL,T,M.wall,true);   // its back wall, with a 5 m opening onto the corridor
       put(-7,H+0.15,ZB+T/2,5,HL-H-0.15,T,M.wall);
-      put(-5.6,0.03,41.6,6.4,0.02,6.4,M.runner);
+      FOOT_SURF.push(put(-5.6,0.03,41.6,6.4,0.02,6.4,M.runner));
       for(const px of [-12.1,-2.3]){ put(px,0,36.2,0.7,0.5,0.7,M.pot,true); put(px,0.5,36.2,0.55,0.75,0.55,M.leaf); }
       put(-4.2,0,37.4,1.6,0.42,0.5,M.wood,true); put(-4.2,0.42,37.65,1.6,0.5,0.1,M.wood);      // a bench to wait on
       emissiveStrip(-8,Y+HL-0.09,40,2.6,0.08,2.6,0xfff4e6,0.42); emissiveStrip(-3,Y+HL-0.09,44,2.6,0.08,2.6,0xfff4e6,0.42);
     }
     else {                                                       // an entrance hall: a slot between two flats, a window at the end of it
-      put((y.x0+y.x1)/2,0.03,41,w-0.3,0.02,12,M.runner);
+      FOOT_SURF.push(put((y.x0+y.x1)/2,0.03,41,w-0.3,0.02,12,M.runner));
       emissiveStrip((y.x0+y.x1)/2,Y+H-0.07,37,1.2,0.06,0.42,0xfff4e6,0.5);
       emissiveStrip((y.x0+y.x1)/2,Y+H-0.07,43.6,1.2,0.06,0.42,0xfff4e6,0.5);
       put(y.x0+0.42,0,44.9,0.55,0.5,0.55,M.pot,true); put(y.x0+0.42,0.5,44.9,0.45,0.85,0.45,M.leaf);   // something at the window end — against the wall, or it blocks a 2.4 m hall on its own
@@ -4541,7 +4605,7 @@ function loadOptimus(){
     else { p.mesh.position.set(OPTIMUS.x,0,OPTIMUS.z); p.mesh.rotation.y=OPTIMUS.yaw; }   // he faces +Z as the engine expects, and updatePeople turns him to you within 10 m
     persons.optimus=p;
     p.block={x:OPTIMUS.x,z:OPTIMUS.z,hw:0.45,hd:0.40,h:OPTIMUS_H}; BUILDINGS.push(p.block);   // you walk round him, not through him — and it goes where he goes (updatePeople)
-    p.blockH=OPTIMUS_H;
+    p.blockH=OPTIMUS_H; p.sole=true;                                           // planted sole-down (groundPerson): his toe joint sits 3.5 cm above the sole
     p.spot=hotspot(OPTIMUS.x,OPTIMUS.z,2.4,'Ask Optimus',()=>openFountainAtWater('optimus'),{y:OPTIMUS_H*0.72,rad:0.6,cap:OPTIMUS_H});   // kept: the prompt goes with him too
     // he can be told to come along (2026-09-25, asked for): 'Follow me, Optimus' on that menu, remembered on this device. His
     // Walk and Run are the model's own; the slow approach inside 6 m is the walk at two thirds speed (he has no Walk_Lady)
@@ -7693,12 +7757,14 @@ function spawnElara(){
 // feet float. Fix: every frame, plant the lowest foot bone on the floor (simple foot IK).
 const _footV=new THREE.Vector3();
 function groundPerson(p){
-  if(!p.feet){p.feet=[];p.inner.traverse(o=>{if(o.isBone&&/(ToeBase|Foot)(_\d+)?$/i.test(o.name))p.feet.push(o);});}
+  if(!p.feet){p.feet=[];p.inner.traverse(o=>{if(o.isBone&&/(ToeBase|Foot)(_\d+)?$/i.test(o.name))p.feet.push(o);}); p.pad=0;
+    if(p.sole&&p.feet.length){ p.fset=footVertexSet(p.inner); p.padAt=-1; } }   // sole:true (Optimus): the sole under the lowest of those bones, re-measured below
+  if(p.fset&&p.fset.length&&state.time-p.padAt>0.1){ p.padAt=state.time; p.pad=solePadNow(p.feet,p.fset); }
   if(!p.feet.length)return;
   p.inner.updateWorldMatrix(true,true);
   let minY=Infinity;
   for(const b of p.feet){b.getWorldPosition(_footV);if(_footV.y<minY)minY=_footV.y;}
-  if(isFinite(minY))p.inner.position.y-=minY-p.mesh.position.y;      // lowest foot → the floor she stands on (world y=0, or a level's height: planted at 0 she was under a level's floor, unseen)
+  if(isFinite(minY))p.inner.position.y-=(minY-(p.pad||0))-(p.mesh.position.y+(p.lift||0));      // lowest foot, sole and all → the floor it stands on (world y=0, or a level's height), or the surface found over that floor (p.lift: a rug, the flats' floor, the atrium glass)
 }
 /* ---- FOLLOW: a companion trails the visitor 2.7 m behind whenever the tour is not running. Elara always has;
    since 2026-09-25 Jack and Optimus can be told to as well, each from their own E menu ('Follow me' / 'Stay here',
@@ -7881,14 +7947,18 @@ function guestFollower(g,bg,root,grp,mx){
     fl:{on:followPref(g.id,false),stuck:0,away:0,gave:null},
     block:{x:grp.position.x,z:grp.position.z,rad:0.02,off:false},          // as Elara's: small on purpose, you can stand right up to him
     tier(t,spd){ const run=t===2&&acts.run; guestBody(g,run||acts.walk,spd/(run?4.58:1.79)); }};   // at the pace he is moved: 1.79 / 4.58 m/s is what the walk / run covers on his body at timeScale 1 (measured 2026-09-25)
-  BUILDINGS.push(p.block); g.follower=p; FOLLOWERS.push(p);
+  BUILDINGS.push(p.block); g.follower=p; FOLLOWERS.push(p); p.yBase=grp.position.y; p.yOut=NaN; p.surf=0;   // yBase: the floor the follow logic moves him on; yOut: the y this hook last wrote (planted: soles on yBase, or on the surface found over it)
   if(p.fl.on)zoneTag(grp,0);                                                // told to follow before a reload: drawn from every zone, as when he was told
   animated.push({update(dt){
     if(state.phase!=='play'||paused)return;                                 // as updatePeople: frozen with the pause menu
     const talking=p.talk>0; if(talking)p.talk-=dt;                          // say('jack') sets it: he stands to talk, as she does
+    if(grp.position.y===p.yOut)grp.position.y=p.yBase;                      // back on the floor itself for the follow logic (a y set by someone else — a lift ride — already is that)
     const walked=!talking&&!g.gunOut&&followStep(p,dt);
     if(!walked&&!g.gunOut&&g.bodyAction!==acts.idle)guestBody(g,acts.idle,1);   // done walking (or the gun just went away on a walk): his idle again
     g.walking=walked;
+    p.yBase=grp.position.y;                                                 // where the logic left him: his floor
+    p.liftT=(p.liftT||0)-dt; if(p.liftT<=0){ p.liftT=0.1; p.surf=surfaceLift(grp.position.x,grp.position.z,p.yBase); }
+    guestPlant(g,p.yBase+(p.surf||0)); p.yOut=grp.position.y;              // soles on that floor, or on the rug / flat floor / glass found over it
     g.cx=grp.position.x; g.cz=grp.position.z;                               // his turn-to-you is measured from here
     if(g.hot){ g.hot.x=g.cx; g.hot.z=g.cz; g.hot.y=grp.position.y; }        // and his prompt is on him, on his floor
     p.block.x=g.cx; p.block.z=g.cz; p.block.y0=grp.position.y-0.4; p.block.h=grp.position.y+1.9; p.block.off=false;
@@ -7926,6 +7996,7 @@ function updatePeople(dt){
       else if(k==='elara'){ if(p.previewUntil&&state.time<p.previewUntil){} else {p.previewUntil=0;elaraIdle(p,dt);} }   // neutral idle (or a dev-page clip preview)
       else personAnim(p,p.idle,0.9);
     }
+    if(FOOT_SURF.length){ p.liftT=(p.liftT||0)-dt; if(p.liftT<=0){ p.liftT=0.1; p.lift=surfaceLift(p.mesh.position.x,p.mesh.position.z,p.mesh.position.y); } }   // a rug, the flats' floor, the atrium glass under it (looked for ten times a second)
     groundPerson(p);
     // keep Elara's tour hotspot on her, and switch it off while the tour is running
     if(p.hot){ p.hot.x=p.mesh.position.x; p.hot.z=p.mesh.position.z; p.hot.y=p.mesh.position.y; p.hot.r=dateRunning?-1:(tour.active?(tour.isIntro?3.2:-1):1.53);   // no 'Press E' during the tour or the date; the opening walk keeps it, wide enough to reach her while you walk
