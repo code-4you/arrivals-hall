@@ -4654,9 +4654,8 @@ function buildBlindspotsKiosk(){
 // (#why / #get-real) and its door marks atd:blindspots:<id> done on the way out.
 function blindspotsConvoDone(id){try{return localStorage.getItem('atd:blindspots:'+id)==='1';}catch(e){return false;}}
 function launchBlindspots(n){
-  try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('blindspots:'+n);
-  location.href='https://lightsmithforge.linkpc.net/blindspots/index.html'+(n===2?'#get-real':'#why');
+  leaveFor('https://lightsmithforge.linkpc.net/blindspots/index.html'+(n===2?'#get-real':'#why'),{'atd:fromHub':'1'});
 }
 
 // Cerebro (the former Forge room) — the walk-in listening dome: what people said
@@ -4696,9 +4695,8 @@ function buildCerebroKiosk(){
   hotspot(cx,cz+sz*1.7,2.8,'Cerebro — hear the week',()=>launchCerebro(),{x:cx,y:1.4,z:cz+sz*0.2,rad:1.2});   // aim: the screen
 }
 function launchCerebro(){                                  // from lab level 4's circle (2026-09-25); 'cerebro' brings you back beside that circle (RETURN_SPAWN)
-  try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','cerebro');}catch(e){}
   trackPlay('cerebro:1');
-  location.href='https://lightsmithforge.linkpc.net/cerebro/index.html';
+  leaveFor('https://lightsmithforge.linkpc.net/cerebro/index.html',{'atd:fromHub':'1','atd:returnTo':'cerebro'});
 }
 
 /* ============================================================
@@ -4878,12 +4876,25 @@ function goGame(url,ss){
     +(ss?'&ss='+encodeURIComponent(JSON.stringify(ss)):'');
   location.href='https://lightsmithforge.linkpc.net/account/go.html?'+q;
 }
+// Leaving for a game on the live site (2026-09-25). The hall people play is the GitHub Pages copy, and a game on
+// lightsmithforge cannot read that page's sessionStorage — so from any copy of the hall the launch goes through
+// account/go.html on lightsmithforge (goGame above), which plants the hand-off there and continues to the game. On the
+// live site itself, and on localhost where the game is next door, the entries are set here and the page just goes.
+// The door strings stay written as ../cerebro/index.html and so on: make-arrivals-zip.ps1 rewrites those literals to
+// the live site for the GitHub copy, and that absolute address is exactly what makes relayFor choose the relay there.
+const LIVE_ORIGIN='https://lightsmithforge.linkpc.net';
+function relayFor(url){ return (!/linkpc\.net|lightsmithforge/i.test(location.hostname)&&url.indexOf(LIVE_ORIGIN+'/')===0)?url:null; }
+function leaveFor(url,ss){
+  ss=ss||{};
+  if(relayFor(url)){ goGame(url,ss); return; }
+  try{ for(const k in ss)sessionStorage.setItem(k,String(ss[k])); }catch(e){}
+  location.href=url;
+}
 
 /* ---------- THE HALLWYL — a warm door out of the sci-fi, into 1899 ---------- */
 function launchHallwyl(){
-  try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('hallwyl:1');
-  location.href='https://lightsmithforge.linkpc.net/the_hallwyl/index.html';
+  leaveFor('https://lightsmithforge.linkpc.net/the_hallwyl/index.html',{'atd:fromHub':'1'});
 }
 function buildHallwylDoor(){
   const R=ROOMS.find(r=>r.id==='hallwyl');
@@ -5466,14 +5477,13 @@ function refreshVaultUI(){
 // Quick Stories — the listening room. Deep-links straight to one story by its id;
 // 'atd:fromHub' makes that page show a "back to the mall" button so it isn't a dead end.
 function launchStory(id){
-  try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('stories:'+id);
-  location.href='https://lightsmithforge.linkpc.net/quick-stories/#'+id;
+  leaveFor('https://lightsmithforge.linkpc.net/quick-stories/#'+id,{'atd:fromHub':'1'});
 }
 function launchStoriesIndex(){                       // the whole listening room — always open
-  try{sessionStorage.setItem('atd:fromHub','1');}catch(e){}
   trackPlay('stories:index');
-  location.href='https://lightsmithforge.linkpc.net/quick-stories/';
+  const u='https://lightsmithforge.linkpc.net/quick-stories/';                                   // (its own statement: the GitHub build matches this literal + ';')
+  leaveFor(u,{'atd:fromHub':'1'});
 }
 // The fountain unlocks in order, like the Chronos gate. Story 1 is ALWAYS open (the way in);
 // each later part stays locked until you've FINISHED the one before it (heard in Quick Stories,
@@ -8741,8 +8751,17 @@ function saySequence(who,lines,onDone){
 /* ============================================================
    PLAYER + INPUT
    ============================================================ */
-// returning from a game? spawn near that room and skip the intro (set by the game's launcher).
-const RETURN_TO=(()=>{try{const v=sessionStorage.getItem('atd:returnTo');if(v)sessionStorage.removeItem('atd:returnTo');return v;}catch(e){return null;}})();
+// returning from a game? spawn near that room and skip the intro (set by the game's launcher). Since 2026-09-25 the games
+// come back to the GitHub Pages copy of the hall — the one people play, where their save lives — and, being on another
+// site, hand their answers over in the address instead of sessionStorage: ?returnTo=<room>&done=<keys this visit
+// finished, comma-separated>. Known keys are written here exactly as the game would have on its own site, and the two
+// parameters are then taken off the address so a refresh does not replay them (accountSync strips ?k= the same way).
+const URLQ=(()=>{ const r={returnTo:null,done:[]};
+  try{ const q=new URLSearchParams(location.search); r.returnTo=q.get('returnTo')||null; r.done=(q.get('done')||'').split(',').filter(Boolean);
+    if(q.has('returnTo')||q.has('done')){ q.delete('returnTo'); q.delete('done'); const s=q.toString(); history.replaceState(null,'',location.pathname+(s?'?'+s:'')+location.hash); } }catch(e){}
+  return r; })();
+for(const k of URLQ.done){ if(/^(atd:(cerebro|blindspots|fountainkeeper|story|chronos|rally|hexgl):[\w.-]+|delivery:done:[\w.-]+)$/.test(k)){ try{ if(!localStorage.getItem(k))localStorage.setItem(k,'1'); }catch(e){} } }
+const RETURN_TO=URLQ.returnTo||(()=>{try{const v=sessionStorage.getItem('atd:returnTo');if(v)sessionStorage.removeItem('atd:returnTo');return v;}catch(e){return null;}})();
 // deep link: /hub/index.html#the-fountain drops you standing at the atrium fountain, facing it.
 const AT_FOUNTAIN=(()=>{try{return ['the-fountain','fountain'].includes((location.hash||'').replace(/^#/,''));}catch(e){return false;}})();
 /* ============================================================
@@ -8904,8 +8923,12 @@ function ep1End(mark){                                            // mark: it co
   ep1Hint(null);
   FOLLOW.on=EP1.wasFollow!==undefined?EP1.wasFollow:FOLLOW.on; EP1.wasFollow=undefined; FOLLOW.lead=null;   // Elara as you had her (following, unless told not to)
   const e=persons.elara; if(e)e.faceAt=null;
-  const o=persons.optimus; if(o){ o.fl.lead=null; o.faceAt=null; }                                          // the other two stay with you (this visit), as they set off
-  const gg=ep1Jack(); if(gg&&gg.follower){ gg.follower.fl.lead=null; gg.faceAt=null; }
+  // the other two stay with you as they set off — and, once they have set off (stage 3, the walk to the lift), that is
+  // remembered on this device like the menu's 'Follow me' (setFollow), so a refresh brings them back beside you instead
+  // of leaving Optimus at his spot in the hall and Jack at his (the user saw exactly that, 2026-09-25)
+  const keep=mark&&EP1.stage>=3;
+  const o=persons.optimus; if(o){ o.fl.lead=null; o.faceAt=null; if(keep)setFollow(o,true); }
+  const gg=ep1Jack(); if(gg&&gg.follower){ gg.follower.fl.lead=null; gg.faceAt=null; if(keep)setFollow(gg.follower,true); }
   const door=ep1Door(); if(door)door.hold=false;
   refreshMiniObjs();
 }
@@ -9439,9 +9462,9 @@ document.getElementById('mClose').onclick=()=>{document.getElementById('missionM
 
 // Trigger Rally stage select — Cliffhanger unlocks Forest meander; progress persists (localStorage)
 function rallyDone(n){try{return localStorage.getItem('atd:rally:'+n)==='1';}catch(e){return false;}}
-function launchRally(trackId){try{sessionStorage.setItem('hubTrack',trackId);}catch(e){}
+function launchRally(trackId){
   trackPlay('rally:'+trackId);
-  location.href='https://lightsmithforge.linkpc.net/TriggerRally-racing-game/server/public/';}
+  leaveFor('https://lightsmithforge.linkpc.net/TriggerRally-racing-game/server/public/',{hubTrack:trackId});}
 function openRallySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const d1=rallyDone(1),d2=rallyDone(2);
@@ -9481,9 +9504,9 @@ document.getElementById('bsClose').onclick=()=>{document.getElementById('blindsp
 // Its app.js reads sessionStorage.hubTrack and jumps straight into that track; the on-foot
 // map shows a "Return to the hub" button when launched this way.
 function deliveryDone(id){try{return !!localStorage.getItem('delivery:done:'+id);}catch(e){return false;}}
-function launchDelivery(trackId){try{sessionStorage.setItem('hubTrack',trackId);}catch(e){}
+function launchDelivery(trackId){
   trackPlay('delivery:'+trackId);
-  location.href='https://lightsmithforge.linkpc.net/delivery/server/public/';}
+  leaveFor('https://lightsmithforge.linkpc.net/delivery/server/public/',{hubTrack:trackId});}
 function openDeliverySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const tag=(t,c)=>' <span style="color:'+c+';font-size:12px;letter-spacing:.12em">'+t+'</span>';
@@ -9498,9 +9521,9 @@ document.getElementById('delivClose').onclick=()=>{document.getElementById('deli
 
 // HexGL level select — one track (Cityscape) at two difficulties; Hard unlocks after Casual
 function hexDone(n){try{return localStorage.getItem('atd:hexgl:'+n)==='1';}catch(e){return false;}}
-function launchHex(diff){try{sessionStorage.setItem('hubHex','1');sessionStorage.setItem('hubHexDiff',String(diff));}catch(e){}
+function launchHex(diff){
   trackPlay('hexgl:'+(diff+1));
-  location.href='https://lightsmithforge.linkpc.net/HexGL-racing-game/index.html';}
+  leaveFor('https://lightsmithforge.linkpc.net/HexGL-racing-game/index.html',{hubHex:'1',hubHexDiff:String(diff)});}
 function openVelocitySelect(){
   document.exitPointerLock&&document.exitPointerLock();
   const d1=hexDone(1),d2=hexDone(2);
@@ -9525,9 +9548,8 @@ document.getElementById('hexClose').onclick=()=>{document.getElementById('veloci
 //  ../fountain-keeper/riftkeeper-backup.html and ../rift-keeper_2/.)
 function fountainDone(){try{return localStorage.getItem('atd:fountainkeeper:1')==='1';}catch(e){return false;}}
 function launchRiftKeeper(){
-  try{sessionStorage.setItem('atd:fromHub','1');sessionStorage.setItem('atd:returnTo','stranger');}catch(e){}
   trackPlay('fountainkeeper:1');
-  location.href='https://lightsmithforge.linkpc.net/fountain-keeper/index.html';
+  leaveFor('https://lightsmithforge.linkpc.net/fountain-keeper/index.html',{'atd:fromHub':'1','atd:returnTo':'stranger'});
 }
 
 // ---------- Vault modal wiring (account keys — see the ACCOUNT block above) ----------
