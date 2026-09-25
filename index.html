@@ -4601,15 +4601,17 @@ function loadOptimus(){
     PEOPLE.models.optimus={scene:gl.scene,clips};
     const p=makePerson('optimus',{h:OPTIMUS_H});if(!p)return;
     p.walkNat=(nat.Walk||1.5)*p.inner.scale.x; p.runNat=(nat.Run||4)*p.inner.scale.x;   // m/s in the world: what each clip's stride covers at timeScale 1
+    const on=!EP1_DUE&&followPref('optimus',true);                          // following is the default (2026-09-25: all three follow unless told to stay); not during Episode 1's wait — the scene says when
     if(EP1_DUE){ p.mesh.position.set(EP1.robot[0],EP1.Y(),EP1.robot[1]); p.mesh.rotation.y=EP1.robot[2]; }   // Episode 1: in the flat with you from the first frame
-    else { p.mesh.position.set(OPTIMUS.x,0,OPTIMUS.z); p.mesh.rotation.y=OPTIMUS.yaw; }   // he faces +Z as the engine expects, and updatePeople turns him to you within 10 m
+    else if(on){ const [bx,bz]=besideYou(1); p.mesh.position.set(bx,player.y,bz); p.mesh.rotation.y=look.yaw; }   // already with you: behind you, on your floor — not at his post by the fountain
+    else { p.mesh.position.set(OPTIMUS.x,0,OPTIMUS.z); p.mesh.rotation.y=OPTIMUS.yaw; }   // told to stay: his post. He faces +Z as the engine expects, and updatePeople turns him to you within 10 m
     persons.optimus=p;
-    p.block={x:OPTIMUS.x,z:OPTIMUS.z,hw:0.45,hd:0.40,h:OPTIMUS_H}; BUILDINGS.push(p.block);   // you walk round him, not through him — and it goes where he goes (updatePeople)
+    p.block={x:p.mesh.position.x,z:p.mesh.position.z,hw:0.45,hd:0.40,h:OPTIMUS_H}; BUILDINGS.push(p.block);   // you walk round him, not through him — and it goes where he goes (updatePeople)
     p.blockH=OPTIMUS_H; p.sole=true;                                           // planted sole-down (groundPerson): his toe joint sits 3.5 cm above the sole
-    p.spot=hotspot(OPTIMUS.x,OPTIMUS.z,2.4,'Ask Optimus',()=>openFountainAtWater('optimus'),{y:OPTIMUS_H*0.72,rad:0.6,cap:OPTIMUS_H});   // kept: the prompt goes with him too
-    // he can be told to come along (2026-09-25, asked for): 'Follow me, Optimus' on that menu, remembered on this device. His
-    // Walk and Run are the model's own; the slow approach inside 6 m is the walk at two thirds speed (he has no Walk_Lady)
-    p.fl={on:!EP1_DUE&&followPref('optimus',false),stuck:0,away:0,gave:null}; p.side=1;   // (not during Episode 1's wait: the scene says when)
+    p.spot=hotspot(p.mesh.position.x,p.mesh.position.z,2.4,'Ask Optimus',()=>openFountainAtWater('optimus'),{y:OPTIMUS_H*0.72,rad:0.6,cap:OPTIMUS_H});   // kept: the prompt goes with him too
+    // he can be told to come along (2026-09-25, asked for): 'Follow me, Optimus' / 'Stay here, Optimus' on that menu, remembered on this
+    // device. His Walk and Run are the model's own; the slow approach inside 6 m is the walk at two thirds speed (he has no Walk_Lady)
+    p.fl={on,stuck:0,away:0,gave:null}; p.side=1;
     p.tier=(t,spd)=>{ const run=t===2; personAnim(p,run?'Run':'Walk'); if(p.act)p.act.timeScale=spd/(run?p.runNat:p.walkNat); };   // the clip's stride at the speed he is moved: no sliding feet
     FOLLOWERS.push(p);
   },undefined,()=>{});
@@ -7781,6 +7783,11 @@ const FOLLOW={dist:2.7,start:3.3,run:11,lady:6,retarget:1.5,keep:2.0,view:0.34,j
 const FOLLOWERS=[];                                                        // Elara, Optimus, Jack — each as it arrives
 const FOLLOW_SEATS=[[-0.3,0.75],[-1.2,-1.35],[-1.2,1.5]];                 // where they stand in a lift car (its axes: +x the way out), you at (-0.2,-0.3)
 function followPref(key,dflt){ try{ const v=localStorage.getItem('atd:'+key+':follow'); return v===null?dflt:v==='1'; }catch(e){ return dflt; } }
+// where a companion stands when it appears already following you (a reload, a return from a game): its spot behind you,
+// as followStep places it — not its old post across the hall (2026-09-25: the user found Optimus back at the fountain and
+// Jack by the Ideas room after a reload, because following was not the default and Episode 1 had already been seen)
+function besideYou(side){ const fx=-Math.sin(look.yaw), fz=-Math.cos(look.yaw), sd=(side||0)*1.1;
+  return [player.pos.x-fx*FOLLOW.dist-fz*sd, player.pos.z-fz*FOLLOW.dist+fx*sd]; }
 function setFollow(p,on){ p.fl.on=!!on; try{localStorage.setItem('atd:'+p.key+':follow',on?'1':'0');}catch(e){} if(!on)p.following=false;
   if(on&&p.g)zoneTag(p.mesh,0); }                                          // a guest lives on the hall's layer: once he follows he is drawn from every zone, as Elara is
 function setElaraFollow(on){FOLLOW.on=!!on;try{localStorage.setItem('atd:elara:follow',on?'1':'0');}catch(e){} const p=persons.elara;if(p&&!on)p.following=false;}
@@ -7944,9 +7951,11 @@ function guestFollower(g,bg,root,grp,mx){
     const c=splitClip(remapClip(src,bg.scene,root,'Body_'+k),'Body_'+k,false); if(c.tracks.length)acts[k]=mx.clipAction(c); }
   if(!acts.walk){ console.warn(g.name+': no walk would map — he cannot follow'); return; }
   const p={key:g.id,g,mesh:grp,yawOff:g.restYaw,talk:0,following:false,side:-1,
-    fl:{on:followPref(g.id,false),stuck:0,away:0,gave:null},
+    fl:{on:followPref(g.id,true),stuck:0,away:0,gave:null},                  // following is the default (2026-09-25: all three follow unless told to stay)
     block:{x:grp.position.x,z:grp.position.z,rad:0.02,off:false},          // as Elara's: small on purpose, you can stand right up to him
     tier(t,spd){ const run=t===2&&acts.run; guestBody(g,run||acts.walk,spd/(run?4.58:1.79)); }};   // at the pace he is moved: 1.79 / 4.58 m/s is what the walk / run covers on his body at timeScale 1 (measured 2026-09-25)
+  if(p.fl.on&&!EP1_DUE){ const [bx,bz]=besideYou(p.side); grp.position.x=bx; grp.position.z=bz; grp.position.y=player.y;   // already with you: behind you, on your floor — not at his post by the Ideas room (Episode 1 places him itself)
+    g.cx=bx; g.cz=bz; p.block.x=bx; p.block.z=bz; if(g.hot){ g.hot.x=bx; g.hot.z=bz; g.hot.y=player.y; } }
   BUILDINGS.push(p.block); g.follower=p; FOLLOWERS.push(p); p.yBase=grp.position.y; p.yOut=NaN; p.surf=0;   // yBase: the floor the follow logic moves him on; yOut: the y this hook last wrote (planted: soles on yBase, or on the surface found over it)
   if(p.fl.on)zoneTag(grp,0);                                                // told to follow before a reload: drawn from every zone, as when he was told
   animated.push({update(dt){
