@@ -5588,7 +5588,7 @@ let fountainAtWater=false;
 // talk — the conversation is started and you are free to walk"). Picking one closes the menu; the lines come through
 // say(), on the subtitle line, one at a time, and the rest of the hall carries on. Declared up here: the menu code below reads it.
 const FTALK={active:false,gen:null,cur:undefined,t:0,clock:0,id:null,line:null};
-const FTALK_VOICES='https://lightsmithforge.linkpc.net/quick-stories/assets/voices/';   // the listening room's recordings (make-arrivals-zip.ps1 points this at the live site for the GitHub copy)
+const FTALK_VOICES='stories/';   // the conversations' recordings, in the hub itself: assets/voices/stories/<id>/ (copied from the listening room 2026-09-28, asked for — so the GitHub copy serves them from GitHub, not the live site)
 function openFountainStories(){ fountainAtWater?openFountainAtWater():openMenu('fountain'); }
 let fountainFrom=null;                                   // 'optimus' when it was his E that opened it: his own 'Follow me' heads the list then (2026-09-25)
 function openFountainAtWater(from){
@@ -5753,7 +5753,7 @@ function renderOrganiserProfile(){
 }
 // ---- the fountain's voices. The conversation series used to play HERE, in a panel at the water that held you until it
 // ended; since 2026-09-27 it plays while you walk (FTALK, below), with the same mp3s the listening room uses
-// (quick-stories/assets/voices/<id>/). Finishing one still writes 'atd:story:<id>', as the listening room does.
+// (copied into the hub's assets/voices/stories/<id>/ on 2026-09-28). Finishing one still writes 'atd:story:<id>', as the listening room does.
 let fAudio=null,fSeq=null;
 function stopFountainVoices(){
   fSeq=null;
