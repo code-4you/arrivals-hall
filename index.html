@@ -5847,10 +5847,10 @@ function counselWalk(text){
 function* counselScript(text){
   let data=null, back=false;
   caption('… the organizer is listening …',20);                      // Gemini takes a few seconds: you are walking already
-  counselFetch(text).then(d=>{data=d;back=true;},()=>{back=true;});
+  counselFetch(text,true).then(d=>{data=d;back=true;},()=>{back=true;});   // profileOnly: no Ideas board (2026-09-28, asked for)
   yield ()=>back||FTALK.t>45;
   if(!data)data=counselFallback();
-  counselRecord(text,data);                                           // kept as the app's panel keeps it: the profile note, and the Ideas board when it is a new need
+  counselRecord(text,data,false);                                     // onto the profile only — the Organiser Room's PROFILES board; never the Ideas board (2026-09-28, asked for)
   for(const L of data.conversation||[]){ if(L&&L.text)yield* ftalkSay(/ELARA/i.test(L.speaker||'')?'elara':'custodian',String(L.text)); }
   if(data.note)caption('✎ Added to your profile — '+data.note,7);
 }
@@ -6395,7 +6395,7 @@ function counselFallback(){ return {conversation:[
       {speaker:'ELARA',text:'I hear you. Saying it out loud already counts for something.'},
       {speaker:'CUSTODIAN',text:'Sit with the water a moment — and when you are ready, we will look at your list together.'}],
       note:'',communityChange:false,organiserPlan:''}; }
-async function counselFetch(text){
+async function counselFetch(text,profileOnly){       // profileOnly (Optimus's, 2026-09-28): a new need is noted for the organiser on the profile, not put on the Ideas board — so the reply must not say it was
   if(ecSource===null){
     try{ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000);}
     catch(e){ecSource='(page source unavailable)';}
@@ -6406,7 +6406,7 @@ async function counselFetch(text){
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:GEMINI_MODEL,
       systemInstruction:{parts:[{text:
-        'You write a short spoken counselling conversation for The Arrivals Hall — a 3D mall that is the arrivals hall of an AI community. CUSTODIAN is the fountain\'s calm male intelligence; ELARA is the warm guide, acting as counselor. A visitor came to the counselling corner and said: "'+text.replace(/"/g,'\'')+'". Their "things to do" wish list, top priority first: '+wishes.replace(/"/g,'\'')+'. Write 4 to 6 alternating lines (ELARA first) that listen, reflect gently and practically, connect to their wish list where it genuinely helps, and end with ONE small concrete step. The step may be one of the PAID WORK jobs here, which pay well — if you recommend one, say how much it pays (key = job, pay in credits): '+Object.keys(WORK).map(k=>k+' = '+WORK[k].job+', pays '+WORK[k].pay).join('; ').replace(/"/g,'\'')+' (other finished activities pay a small '+SMALL_PAY+' credits). Also decide: does what they said reveal a need that nothing existing here covers — for example, they are thirsty and there is no water dispenser anywhere here? If so, one line should say it has been added to the community Ideas board as something to make, and that the organiser will see it today. No medical claims; if the visitor sounds in crisis, gently suggest talking with someone they trust or a professional. Respond with STRICT JSON only, no markdown fences: {"conversation":[{"speaker":"ELARA","text":"..."},{"speaker":"CUSTODIAN","text":"..."}],"note":"one or two short sentences for their organiser / counselor profile — what was discussed and the recommended action","communityChange":true or false,"organiserPlan":"one or two short sentences of practical, real-world suggestions telling an organiser what to set up — empty string if nothing new is needed"}. Each line under 35 words, plain speech for a voice synthesizer. Page source for grounding — what actually exists here:\n'+ecSource}]},
+        'You write a short spoken counselling conversation for The Arrivals Hall — a 3D mall that is the arrivals hall of an AI community. CUSTODIAN is the fountain\'s calm male intelligence; ELARA is the warm guide, acting as counselor. A visitor came to the counselling corner and said: "'+text.replace(/"/g,'\'')+'". Their "things to do" wish list, top priority first: '+wishes.replace(/"/g,'\'')+'. Write 4 to 6 alternating lines (ELARA first) that listen, reflect gently and practically, connect to their wish list where it genuinely helps, and end with ONE small concrete step. The step may be one of the PAID WORK jobs here, which pay well — if you recommend one, say how much it pays (key = job, pay in credits): '+Object.keys(WORK).map(k=>k+' = '+WORK[k].job+', pays '+WORK[k].pay).join('; ').replace(/"/g,'\'')+' (other finished activities pay a small '+SMALL_PAY+' credits). Also decide: does what they said reveal a need that nothing existing here covers — for example, they are thirsty and there is no water dispenser anywhere here? '+(profileOnly?'If so, one line should say it has been noted on their profile for the organiser, who will see it today. ':'If so, one line should say it has been added to the community Ideas board as something to make, and that the organiser will see it today. ')+'No medical claims; if the visitor sounds in crisis, gently suggest talking with someone they trust or a professional. Respond with STRICT JSON only, no markdown fences: {"conversation":[{"speaker":"ELARA","text":"..."},{"speaker":"CUSTODIAN","text":"..."}],"note":"one or two short sentences for their organiser / counselor profile — what was discussed and the recommended action","communityChange":true or false,"organiserPlan":"one or two short sentences of practical, real-world suggestions telling an organiser what to set up — empty string if nothing new is needed"}. Each line under 35 words, plain speech for a voice synthesizer. Page source for grounding — what actually exists here:\n'+ecSource}]},
       contents:[{role:'user',parts:[{text:text}]}]})});
     const j=await r.json();
     let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
@@ -6418,9 +6418,9 @@ async function counselFetch(text){
 }
 // what was said is kept: a note on the organiser / counselor profile — and a need nothing here covers goes onto the
 // community Ideas board, with the real-world suggestion for the organiser attached
-function counselRecord(text,data){
+function counselRecord(text,data,toIdeas){           // toIdeas false (Optimus's): the profile only — the Organiser Room's PROFILES board shows the note and the organiser's suggestion
   const l=loadCounsel();l.push({text:text,note:data.note||'',plan:data.organiserPlan||'',at:new Date().getTime()});saveCounsel(l);
-  if(data.communityChange){
+  if(data.communityChange&&toIdeas!==false){
     const ideaText=text+(data.organiserPlan?' — organiser: '+data.organiserPlan:'');
     const il=loadIdeas();il.push({text:ideaText,t:new Date().getTime()});saveIdeas(il);
     api({a:'idea',text:ideaText}).then(()=>{if(ideasWallRefresh)ideasWallRefresh();});
