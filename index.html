@@ -5674,7 +5674,7 @@ function buildFountainList(){
   // counselling — talks WITH your things-to-do list; its notes land on the profile
   const cn=document.createElement('button');cn.className='menuBtn';
   cn.style.cssText='width:100%;margin:7px 0;min-width:0;border-left-color:var(--teal)';
-  cn.innerHTML='🗨&nbsp; Counselling';
+  cn.innerHTML='🗨&nbsp; Counselling / talk to organizer';   // (renamed 2026-09-28, asked for)
   cn.onclick=()=>openCounsel();
   list.appendChild(cn);
   // homes and work — the flow that used to live on Elara's menu
@@ -6621,7 +6621,7 @@ function appendQuestButtons(host){
     b.onclick=()=>{resetFountainPanels();buildFountainList();fn();};
     box.appendChild(b);
   };
-  mk('🗨&nbsp; Counselling','var(--teal)',openCounsel);
+  mk('🗨&nbsp; Counselling / talk to organizer','var(--teal)',openCounsel);   // (renamed 2026-09-28, asked for)
   mk('☑&nbsp; Things to do (ask anything)','var(--amber)',openTodo);
   mk('⌂&nbsp; Find a home','var(--green)',openFindHome);
   mk('💡&nbsp; Submit your ideas','var(--cyan)',()=>openIdeas('fountain'));
