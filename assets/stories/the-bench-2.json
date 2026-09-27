@@ -1,0 +1,74 @@
+{
+  "id": "the-bench-2",
+  "title": "The Bench · The Deposit",
+  "subtitle": "A different night, a different pair — the town that emptied, and the deposit that keeps running away.",
+  "stage": "garden",
+
+  "characters": {
+    "TOMAS": {
+      "base": "elder",
+      "variant": 3,
+      "tint": "#7a6a54",
+      "height": 1.73,
+      "label": "Tomas",
+      "labelColor": "#ffd9a0",
+      "voice": { "prefer": ["david", "george", "male"], "pitch": 0.88, "rate": 0.92 },
+      "at": [-0.75, 0],
+      "face": "JUN"
+    },
+    "JUN": {
+      "base": "man",
+      "variant": 4,
+      "tint": "#4f7c8c",
+      "height": 1.7,
+      "label": "Jun",
+      "labelColor": "#9fd8ff",
+      "voice": { "prefer": ["mark", "male"], "pitch": 1.1, "rate": 1.02 },
+      "at": [0.75, 0],
+      "face": "TOMAS"
+    }
+  },
+
+  "customObject": {
+    "name": "a park bench",
+    "description": "the same worn wooden bench under the lamps — someone has carved something small on the back rail",
+    "at": [0, -1.15],
+    "parts": [
+      { "shape": "box", "size": [2.2, 0.14, 0.6], "pos": [0, 0.5, 0], "color": "#5a4326", "rough": 0.9 },
+      { "shape": "box", "size": [2.2, 0.66, 0.12], "pos": [0, 0.9, -0.26], "color": "#5a4326", "rough": 0.9 },
+      { "shape": "box", "size": [0.14, 0.5, 0.5], "pos": [-0.92, 0.25, 0], "color": "#3a2c1a" },
+      { "shape": "box", "size": [0.14, 0.5, 0.5], "pos": [0.92, 0.25, 0], "color": "#3a2c1a" },
+      { "shape": "box", "size": [0.22, 0.05, 0.02], "pos": [0.55, 1.05, -0.2], "color": "#c9a85f", "emissive": 0.25 }
+    ]
+  },
+
+  "script": [
+    { "note": "The night garden again. A weeknight this time. An older man and a younger one — neighbours of the sort who only ever talk at the bus stop, finally sitting down." },
+    { "who": "JUN", "text": "You don't have to keep me company, Tomas. I'm just doing my maths. I do it out here so I don't do it at the kitchen table in front of my wife.", "file": "ben2_01.mp3" },
+    { "who": "TOMAS", "text": "Deposit maths?", "file": "ben2_02.mp3" },
+    { "who": "JUN", "text": "Deposit maths.", "file": "ben2_03.mp3" },
+    { "who": "TOMAS", "text": "How far off?", "file": "ben2_04.mp3" },
+    { "who": "JUN", "text": "Three years. Which is what I said three years ago. It's the only number I know that doesn't go down when you pay it. We save, the prices climb, the goalposts jog away at exactly our speed. It's beautifully calibrated. Like it was designed.", "file": "ben2_05.mp3" },
+    { "who": "TOMAS", "text": "Mm. I owned a house once. Whole house. You'd have hated the town, though — everyone said it was nowhere. Mill town. When the mill went, the work went, and the town emptied out like a bath.", "file": "ben2_06.mp3" },
+    { "who": "JUN", "text": "That's where you're from? You never said.", "file": "ben2_07.mp3" },
+    { "who": "TOMAS", "text": "Nobody asks an old man where he's from, they ask him to keep the noise down. — Here's the thing though. That nowhere town. When my roof came off in the storm of ninety-one, I had eleven men on it by Saturday. I didn't hire them. I knew them. I'd been on their roofs.", "file": "ben2_08.mp3" },
+    { "who": "JUN", "text": "Eleven. I've got four hundred contacts in this phone and I couldn't raise two of them for a roof.", "file": "ben2_09.mp3" },
+    { "who": "TOMAS", "text": "And I've got no mill and no town. So between us we make one whole life, eh?", "file": "ben2_10.mp3" },
+    { "pause": 1.4 },
+    { "who": "JUN", "text": "That's the trade nobody names. You move to where the work is, and the work is real — but everyone around you is a stranger with headphones in. My street is full at night and empty in every way that counts. I know the delivery times of my neighbours better than their names.", "file": "ben2_11.mp3" },
+    { "who": "TOMAS", "text": "In the mill town, work was scarce and people weren't. Here, people are scarce and work isn't. Some clerk somewhere decided those were the only two products on the shelf.", "file": "ben2_12.mp3" },
+    { "who": "JUN", "text": "So which do you pick?", "file": "ben2_13.mp3" },
+    { "who": "TOMAS", "text": "You don't pick. That's my point, lad. Picking between work and people is like picking between food and water. A place that makes you choose is a badly built place.", "file": "ben2_14.mp3", "face": "camera" },
+    { "pause": 1.2 },
+    { "who": "JUN", "text": "My cousin and I ran the numbers once — joke numbers, beer numbers. If four households pooled deposits, we clear a whole building in the cheap end of town in under two years. Everyone said the same thing: 'never buy with people'. Then everyone went home alone to keep renting from a stranger who owns forty doors.", "file": "ben2_15.mp3" },
+    { "who": "TOMAS", "text": "'Never buy with people.' We used to RAISE BARNS with people. Half the world got built by four families and a shared ladder, and one bad century talked us all out of it.", "file": "ben2_16.mp3" },
+    { "who": "JUN", "text": "You'd need the right people. That's the whole game, isn't it. Not the deposit. The people. Choosing them — instead of getting whoever the rent gods send.", "file": "ben2_17.mp3" },
+    { "note": "Tomas turns, slowly, and squints at the back rail of the bench — at a small carving, recent, the varnish still pale in the cut." },
+    { "who": "TOMAS", "text": "Heh. Look at that. Someone's carved on the rail here. 'M and D — people first.' Vandalism, technically.", "file": "ben2_18.mp3", "face": "customObject" },
+    { "who": "JUN", "text": "…Whoever they are, they had this exact conversation on this exact bench. That's either a coincidence or a queue.", "file": "ben2_19.mp3" },
+    { "who": "TOMAS", "text": "Then put our initials down for the queue. Bring the beer numbers on Sunday — the real ones, not the joke ones. I've got forty years of knowing how a town dies. Be useful to help build one that doesn't.", "file": "ben2_20.mp3" },
+    { "who": "JUN", "text": "Sunday. And Tomas — ask me where I'm from, sometime. Nobody's asked me either.", "file": "ben2_21.mp3" },
+    { "who": "TOMAS", "text": "Sunday, then. Two questions on the agenda.", "file": "ben2_22.mp3", "face": "camera" },
+    { "note": "The lamps hum. Two more initials join the rail before they leave — scratched shallow, easy to deny, impossible to unsee." }
+  ]
+}
