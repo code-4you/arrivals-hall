@@ -2597,6 +2597,7 @@ function storyStart(id,c,Y){
   if(STORY.active)storyEnd();                                  // another circle (or the same one) while one plays: that one stops and this one starts (asked for, 2026-09-25)
   if(typeof EP1!=='undefined'&&EP1.active)ep1End(true);      // a story ends Episode 1 where it stands (it counts as seen), as her walk does — it used to refuse, which read as "Not while that is on" with no reason (2026-09-25)
   if(DRILL.active){ banner('The drill is still running — give it a moment'); return; }
+  if(FTALK.active)ftalkStop();                                   // a fountain conversation you were walking with gives way to the story (one conversation at a time)
   const e=persons.elara, o=persons.optimus, g=ep1Jack(), j=g&&g.follower;
   if(!e||!o||!j){ banner((!j?'Jack':!o?'Optimus':'Elara')+' is not here yet — try again in a moment'); return; }
   STORY.active=true; STORY.id=id; STORY.gen=storyScript(id,c,Y,{elara:e,jack:j,optimus:o}); STORY.cur=undefined; storyNext();
@@ -2662,6 +2663,7 @@ animated.push({update(dt){
 function drillStart(Y,zn,c){
   if(DRILL.active){ banner('The drill is running'); return; }
   if(!PEOPLE.models.optimus){ banner('Optimus is not here yet — try again in a moment'); return; }
+  if(FTALK.active)ftalkStop();                                   // the drill's orders are not talked over by a fountain conversation
   gunsLoad(); DRILL.active=true; DRILL.Y=Y; DRILL.phase='setup'; DRILL.gen=drillScript(Y,zn,c); DRILL.cur=undefined; drillNext();
 }
 animated.push({update(dt){
@@ -5571,6 +5573,11 @@ const COMMUNITY_STORIES=[
 // E at the basin uses the original floating water menu; C uses the menu card. Story-end
 // refreshes and the todo/what dialogs route back to whichever one the player came from.
 let fountainAtWater=false;
+// The fountain's conversations play while you walk (2026-09-27, asked for: "the same as Elara's topics and Jack's Just
+// talk — the conversation is started and you are free to walk"). Picking one closes the menu; the lines come through
+// say(), on the subtitle line, one at a time, and the rest of the hall carries on. Declared up here: the menu code below reads it.
+const FTALK={active:false,gen:null,cur:undefined,t:0,clock:0,id:null,line:null};
+const FTALK_VOICES='https://lightsmithforge.linkpc.net/quick-stories/assets/voices/';   // the listening room's recordings (make-arrivals-zip.ps1 points this at the live site for the GitHub copy)
 function openFountainStories(){ fountainAtWater?openFountainAtWater():openMenu('fountain'); }
 let fountainFrom=null;                                   // 'optimus' when it was his E that opened it: his own 'Follow me' heads the list then (2026-09-25)
 function openFountainAtWater(from){
@@ -5594,6 +5601,13 @@ function buildFountainList(){
   list.style.display='';                                           // questions return once nothing is playing
   document.getElementById('fPlayer').style.display='none';
   const tag=(t,c)=>' <span style="color:'+c+';font-size:12px;letter-spacing:.1em">'+t+'</span>';
+  if(FTALK.active){                                                // a conversation is playing while you walk: it is stopped from here — at the water, on Optimus's E, or the app (C)
+    const st=document.createElement('button');st.className='menuBtn';
+    st.style.cssText='width:100%;margin:7px 0 12px;min-width:0;border-left-color:var(--amber)';
+    st.innerHTML='■&nbsp; Stop the conversation';
+    st.onclick=()=>{ ftalkStop(); if(fountainAtWater)closeFountainWater(true); else buildFountainList(); };
+    list.appendChild(st);
+  }
   // AT the water (E at the fountain): only the conversation series, plus a door into the app
   if(fountainAtWater){
     const op=persons.optimus;                                      // from Optimus's own E: he can come along, or stay by the water (2026-09-25)
@@ -5611,10 +5625,18 @@ function buildFountainList(){
       if(!open)return;                                   // locked parts stay hidden until earned
       const b=document.createElement('button');b.className='menuBtn';
       b.style.cssText='width:100%;margin:7px 0;min-width:0';
-      b.innerHTML='▶&nbsp; '+s.title+(done?tag('✓ heard','#b6ff9c'):tag(i===0?'start here':'unlocked','#7fe6ff'));
+      b.innerHTML='▶&nbsp; '+s.title+((FTALK.active&&FTALK.id===s.id)?tag('playing','#ffd27f'):done?tag('✓ heard','#b6ff9c'):tag(i===0?'start here':'unlocked','#7fe6ff'));   // (picking another, or this one again, starts it over the one playing)
       b.onclick=()=>playFountainStory(s.id);
       list.appendChild(b);
     });
+    if(fountainFrom==='optimus'){                                  // Optimus's own (2026-09-27): counselling as a talk you walk with — and not the fountain app, which is the basin's and C's
+      const cb=document.createElement('button');cb.className='menuBtn';
+      cb.style.cssText='width:100%;margin:14px 0 0;min-width:0;border-left-color:var(--teal)';
+      cb.innerHTML='🗨&nbsp; Counselling / talk to organizer';
+      cb.onclick=()=>counselForm(list);
+      list.appendChild(cb);
+      return;
+    }
     const app=document.createElement('button');app.className='menuBtn';
     app.style.cssText='width:100%;margin:14px 0 0;min-width:0;border-left-color:var(--amber)';
     app.innerHTML='▤&nbsp; Open the fountain app';
@@ -5713,46 +5735,114 @@ function renderOrganiserProfile(){
   // them on every repaint of this column so edits (↑ ✎ ✕) never lose them
   try{if(document.getElementById('workPanel').style.display==='block')appendQuestButtons(host);}catch(e){}
 }
-// ---- in-place fountain playback: the conversations speak HERE, using the same mp3s
-// the listening room uses (../quick-stories/assets/voices/<id>/). Finishing one still
-// writes 'atd:story:<id>' so the unlock chain and the listening room stay in sync.
+// ---- the fountain's voices. The conversation series used to play HERE, in a panel at the water that held you until it
+// ended; since 2026-09-27 it plays while you walk (FTALK, below), with the same mp3s the listening room uses
+// (quick-stories/assets/voices/<id>/). Finishing one still writes 'atd:story:<id>', as the listening room does.
 let fAudio=null,fSeq=null;
 function stopFountainVoices(){
   fSeq=null;
   if(fAudio){try{fAudio.pause();}catch(e){} fAudio=null;}
-  try{stopSpeech();}catch(e){try{speechSynthesis.cancel();}catch(_){}}
-  try{if(_curVoice)_curVoice.pause();}catch(e){}
+  if(!ftalkOnAir()){                                               // (a conversation you are walking with is not a menu's to silence: menus opening and closing leave it playing)
+    try{stopSpeech();}catch(e){try{speechSynthesis.cancel();}catch(_){}}
+    try{if(_curVoice)_curVoice.pause();}catch(e){}
+  }
   const p=document.getElementById('fPlayer');if(p)p.style.display='none';
   const l=document.getElementById('fountainList');if(l)l.style.display='';   // bring the questions back
 }
-async function playFountainStory(id){
-  stopFountainVoices();
+// Start one: the menu closes and you are free to walk. Another conversation, or this one again, replaces the one playing;
+// the level-5 story circles give way to it and it gives way to them (storyStart), and it waits for the lab drill to finish
+function playFountainStory(id){
+  if(DRILL.active){ banner('The drill is still running — give it a moment'); return; }
+  ftalkStop();
+  if(STORY.active)storyEnd();
   trackPlay('fountain:'+id);
-  document.getElementById('fountainList').style.display='none';   // only the playing conversation, no other questions
-  const player=document.getElementById('fPlayer'),who=document.getElementById('fWho'),cap=document.getElementById('fCaption');
-  player.style.display='block';who.textContent='';cap.textContent='… the water gathers its voice …';
-  let story;
-  try{story=await (await fetch('local/quick-stories/stories/'+id+'.json')).json();}
-  catch(e){cap.textContent='The fountain is quiet — the conversation could not be reached.';return;}
-  const chars=story.characters||{};
-  const lines=(story.script||[]).filter(l=>l.file&&l.text);
-  const token={};fSeq=token;let i=0;
-  function next(){
-    if(fSeq!==token)return;
-    if(i>=lines.length){
-      try{localStorage.setItem('atd:story:'+id,'1');}catch(e){}
-      who.textContent='';cap.textContent='— the water settles —';fAudio=null;
-      setTimeout(()=>{if(fSeq===token)openFountainStories();},1600);   // refresh ✓/unlock states
-      return;
-    }
-    const L=lines[i++];
-    who.textContent=(chars[L.who]&&chars[L.who].label)||L.who||'';
-    cap.textContent=L.text;cap.scrollTop=0;
-    const a=new Audio('https://lightsmithforge.linkpc.net/quick-stories/assets/voices/'+id+'/'+L.file);
-    fAudio=a;a.onended=next;a.onerror=next;
-    a.play().catch(next);
-  }
-  next();
+  closeFountainWater(true);
+  FTALK.active=true; FTALK.id=id; FTALK.line=null; FTALK.gen=ftalkScript(id); FTALK.cur=undefined; FTALK.t=0; ftalkNext();
+}
+function ftalkOnAir(){ return !!(FTALK.active&&FTALK.line&&subEl.textContent.indexOf(FTALK.line.slice(0,24))>=0); }   // its line is the one on the subtitle
+function ftalkStop(){
+  if(!FTALK.active)return;
+  const air=ftalkOnAir();
+  FTALK.active=false; FTALK.gen=null; FTALK.cur=undefined; FTALK.id=null; FTALK.line=null;
+  if(air){ try{stopSpeech();}catch(e){} try{if(_curVoice)_curVoice.pause();}catch(e){} subEl.style.opacity='0'; }   // silenced only when it is what you are hearing
+}
+function ftalkNext(){ if(!FTALK.gen)return; const r=FTALK.gen.next(); if(r.done){ FTALK.gen=null; FTALK.active=false; FTALK.id=null; FTALK.line=null; return; } FTALK.cur=r.value; FTALK.t=0; }
+function* ftalkScript(id){
+  let data=null, failed=false;
+  fetch('local/quick-stories/stories/'+id+'.json').then(r=>r.json()).then(j=>{data=j;}).catch(()=>{failed=true;});
+  yield ()=>!!data||failed||FTALK.t>12;
+  if(!data){ banner('The fountain is quiet — the conversation could not be reached.'); return; }
+  const lines=(data.script||[]).filter(l=>l.file&&l.text&&l.who);       // its spoken lines (the stage notes are the listening room's)
+  for(const L of lines)VOICE_FILES[L.text]=FTALK_VOICES+id+'/'+L.file;   // say() plays the recording for those words
+  for(const L of lines){ const k=String(L.who).toLowerCase(); yield* ftalkSay(SPEAKERS[k]?k:'system',L.text); }   // CUSTODIAN, VISITOR
+  try{localStorage.setItem('atd:story:'+id,'1');}catch(e){}             // heard to the end: ✓ on the menu, and in the listening room
+  caption('— the water settles —',3);
+}
+// One line, and heard. It waits until nobody else is mid-sentence before it starts, and if something cuts in — someone
+// speaks over it, or it is silenced part-way — it is said again once things have been quiet for a moment (twice at most),
+// as the story circles' lines are (storySay). A companion who speaks up mid-conversation simply gets a turn.
+function* ftalkSay(who,text){
+  let done=false, tries=0, t0=0, quiet=-1; const key=text.slice(0,24), est=Math.max(1.6,text.length*0.062);
+  const busy=()=>{ let s=false; try{ s=speechSynthesis.speaking; }catch(e){} return s||!!(_curVoice&&!_curVoice.paused&&!_curVoice.ended); };
+  const calm=(secs)=>{ if(busy()){ quiet=-1; return false; } if(quiet<0)quiet=FTALK.clock; return FTALK.clock-quiet>=secs; };
+  const start=()=>{ done=false; tries++; t0=FTALK.clock; quiet=-1; FTALK.line=text; say(who,text,()=>{done=true;}); };
+  yield ()=>calm(0.35)||FTALK.t>20;
+  start();
+  yield ()=>{
+    if(done)return true;
+    const el=FTALK.clock-t0, mine=subEl.textContent.indexOf(key)>=0, a=VOICE_CACHE[VOICE_FILES[text]];
+    if(!mine){ if(a&&!a.paused&&!a.ended){ try{a.pause();}catch(e){} }   // someone else has the floor: this line steps back (a browser voice does not stop a recording — the two talked at once, 2026-09-27)
+      if(!calm(1.2))return false; if(tries<3){ start(); return false; } return true; }   // …and once they are done, it is said again
+    if(narrationOn&&a&&a===_curVoice&&a.paused&&!a.ended&&a.currentTime>0.2&&el>1.2){ if(!calm(1.2))return false; if(tries<3){ start(); return false; } return true; }   // silenced part-way: again
+    if(a&&a.ended&&el>1.2&&!busy())return true;                            // over ('ended' can reach an older listener when a line was said twice)
+    return el>est*2+10; };                                                // a safety net
+  yield 0.45;
+}
+animated.push({update(dt){                                                // its clock: frozen with the pause menu, as the hall is
+  if(!FTALK.active||!FTALK.gen||paused||state.phase!=='play')return;
+  FTALK.t+=dt; FTALK.clock+=dt; const c=FTALK.cur;
+  if(typeof c==='number'){ if(FTALK.t>=c)ftalkNext(); }
+  else if(typeof c==='function'){ let ok=false; try{ ok=c(); }catch(err){ console.warn('fountain talk',err); ok=true; } if(ok)ftalkNext(); }
+  else ftalkNext();
+}});
+// Optimus's "Counselling / talk to organizer" (2026-09-27, asked for): the app's counselling, started the way the fountain's
+// conversations are — you say what is on your mind in his menu, the menu goes, and the reply is spoken while you walk:
+// Elara's half in her own voice with her lips moving (say('elara')), the Custodian's half from the fountain. It is one
+// of FTALK's conversations, so it shares their rules: one at a time, others get a turn, stopped from the same menus.
+function counselForm(list){
+  list.innerHTML='';
+  const box=document.createElement('div');
+  box.style.cssText='margin:7px 0 0;padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.3);border-left:3px solid var(--teal);border-radius:0 10px 10px 0';
+  box.innerHTML='<div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin-bottom:8px">Counselling / talk to organizer</div>'
+    +'<div style="font-size:14px;color:#c3d0e2;margin-bottom:10px">Say what is on your mind. The organizer listens, and looks at your things to do.</div>';
+  const row=document.createElement('div'); row.style.cssText='display:flex;gap:8px';
+  const inp=document.createElement('input'); inp.placeholder="What's on your mind…";
+  inp.style.cssText='pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.35);border-radius:8px';
+  const go=document.createElement('button'); go.className='menuBtn'; go.style.cssText='min-width:0;margin:0;padding:9px 18px'; go.textContent='Talk';
+  const send=()=>{ const t=inp.value.trim(); if(!t){ inp.focus(); return; } counselWalk(t); };
+  go.onclick=send; inp.addEventListener('keydown',e=>{ if(e.code==='Enter'||e.key==='Enter')send(); });
+  row.appendChild(inp); row.appendChild(go); box.appendChild(row); list.appendChild(box);
+  const back=document.createElement('button'); back.className='menuBtn back'; back.style.cssText='margin-top:12px'; back.textContent='◂ Back';
+  back.onclick=()=>buildFountainList();
+  list.appendChild(back);
+  setTimeout(()=>{ try{ inp.focus(); }catch(e){} },50);
+}
+function counselWalk(text){
+  if(DRILL.active){ banner('The drill is still running — give it a moment'); return; }
+  ftalkStop();
+  if(STORY.active)storyEnd();
+  closeFountainWater(true);
+  FTALK.active=true; FTALK.id='counsel'; FTALK.line=null; FTALK.gen=counselScript(text); FTALK.cur=undefined; FTALK.t=0; ftalkNext();
+}
+function* counselScript(text){
+  let data=null, back=false;
+  caption('… the organizer is listening …',20);                      // Gemini takes a few seconds: you are walking already
+  counselFetch(text).then(d=>{data=d;back=true;},()=>{back=true;});
+  yield ()=>back||FTALK.t>45;
+  if(!data)data=counselFallback();
+  counselRecord(text,data);                                           // kept as the app's panel keeps it: the profile note, and the Ideas board when it is a new need
+  for(const L of data.conversation||[]){ if(L&&L.text)yield* ftalkSay(/ELARA/i.test(L.speaker||'')?'elara':'custodian',String(L.text)); }
+  if(data.note)caption('✎ Added to your profile — '+data.note,7);
 }
 // ---- "What are you": the document opens in a scrollable pane and the fountain
 // reads a short summary of it aloud (browser voice — no mp3 for this one).
@@ -5767,6 +5857,7 @@ const WHAT_SUMMARY=WHAT_SUMMARY_PARTS.join(' ');
 function openWhatAreYou(){
   if(menuPage)closeMenu(false);          // the document floats over the mall, not inside the menu card
   document.getElementById('fountainModal').style.display='none';   // fountainAtWater stays set → routes back
+  ftalkStop();                           // the fountain reads its document now: a conversation playing gives way
   stopFountainVoices();
   document.body.classList.add('qOpen');
   const f=document.getElementById('whatFrame');
@@ -6285,12 +6376,13 @@ function closeFountainPanel(){
   buildFountainList();               // repaint — new notes show on the profile
   if(menuPage==='fountain'&&!fountainAtWater)openWork();   // the card returns to the quest view
 }
-async function cnSubmit(){
-  const inp=document.getElementById('cnIn'),text=inp.value.trim();if(!text)return;
-  inp.value='';
-  const talk=document.getElementById('cnTalk'),who=document.getElementById('cnWho'),cap=document.getElementById('cnCap'),nt=document.getElementById('cnNote');
-  talk.style.display='block';nt.style.display='none';who.textContent='';cap.textContent='… the water listens …';
-  const tok=++_dlgTok;
+// The counselling request — shared by the app's panel (cnSubmit, below) and Optimus's walk-and-talk (counselWalk,
+// 2026-09-27): Gemini writes a short spoken ELARA / CUSTODIAN exchange, grounded in this page and your things to do.
+function counselFallback(){ return {conversation:[
+      {speaker:'ELARA',text:'I hear you. Saying it out loud already counts for something.'},
+      {speaker:'CUSTODIAN',text:'Sit with the water a moment — and when you are ready, we will look at your list together.'}],
+      note:'',communityChange:false,organiserPlan:''}; }
+async function counselFetch(text){
   if(ecSource===null){
     try{ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000);}
     catch(e){ecSource='(page source unavailable)';}
@@ -6308,22 +6400,29 @@ async function cnSubmit(){
     out=out.replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
     data=JSON.parse(out);
   }catch(e){}
-  if(tok!==_dlgTok)return;
-  if(!data||!data.conversation||!data.conversation.length){
-    data={conversation:[
-      {speaker:'ELARA',text:'I hear you. Saying it out loud already counts for something.'},
-      {speaker:'CUSTODIAN',text:'Sit with the water a moment — and when you are ready, we will look at your list together.'}],
-      note:'',communityChange:false,organiserPlan:''};
-  }
+  if(!data||!data.conversation||!data.conversation.length)data=counselFallback();
+  return data;
+}
+// what was said is kept: a note on the organiser / counselor profile — and a need nothing here covers goes onto the
+// community Ideas board, with the real-world suggestion for the organiser attached
+function counselRecord(text,data){
   const l=loadCounsel();l.push({text:text,note:data.note||'',plan:data.organiserPlan||'',at:new Date().getTime()});saveCounsel(l);
-  // a need nothing here covers goes onto the community Ideas board, with the
-  // real-world suggestion for the organiser attached
   if(data.communityChange){
     const ideaText=text+(data.organiserPlan?' — organiser: '+data.organiserPlan:'');
     const il=loadIdeas();il.push({text:ideaText,t:new Date().getTime()});saveIdeas(il);
     api({a:'idea',text:ideaText}).then(()=>{if(ideasWallRefresh)ideasWallRefresh();});
     if(ideasWallRefresh)ideasWallRefresh();
   }
+}
+async function cnSubmit(){
+  const inp=document.getElementById('cnIn'),text=inp.value.trim();if(!text)return;
+  inp.value='';
+  const talk=document.getElementById('cnTalk'),who=document.getElementById('cnWho'),cap=document.getElementById('cnCap'),nt=document.getElementById('cnNote');
+  talk.style.display='block';nt.style.display='none';who.textContent='';cap.textContent='… the water listens …';
+  const tok=++_dlgTok;
+  const data=await counselFetch(text);
+  if(tok!==_dlgTok)return;
+  counselRecord(text,data);
   if(data.note){nt.style.display='block';nt.textContent='✎ Added to your profile — '+data.note+(data.organiserPlan?' ↳ organiser: '+data.organiserPlan:'');}
   playDialogue(data.conversation,tok,'cnWho','cnCap');
 }
@@ -8524,6 +8623,7 @@ const SPEAKERS={
   instructor:{voice:null,pitch:0.9,rate:1.0, color:'#ff9f6a',name:'INSTRUCTOR',gender:'male'},   // the voice over the lab's combat drill (2026-09-25)
   custodian:{voice:null,pitch:0.9, rate:0.94,color:'#7fe6ff',name:'CUSTODIAN',gender:'male'},
   you:      {voice:null,pitch:1.0, rate:1.0, color:'#ffd27f',name:'YOU',      gender:'male'},
+  visitor:  {voice:null,pitch:1.05,rate:1.0, color:'#ffd27f',name:'VISITOR',  gender:'male'},   // the other half of the fountain's conversations (FTALK, 2026-09-27); the Custodian above is the fountain
   scientist:{voice:null,pitch:0.85,rate:0.98,color:'#7fb4ff',name:'DR. VANCE',gender:'male'},
   stranger: {voice:null,pitch:0.88,rate:0.96,color:'#c8d8ff',name:'THE STRANGER',gender:'male'},   // the Soldier in front of the Theater (buildTheaterScene)
   elsa:     {voice:null,pitch:1.12,rate:1.0, color:'#ffb6e0',name:'ELSA',     gender:'female'},
@@ -8613,6 +8713,7 @@ function assignVoices(){
   SPEAKERS.elara.voice    =chosenVoice('elara')||pickBest('female');   // the dev-page pick wins when that voice exists here
   SPEAKERS.custodian.voice=pickBest('male');
   SPEAKERS.you.voice      =pickBest('male');
+  SPEAKERS.visitor.voice  =SPEAKERS.you.voice;          // only heard if a recording will not load
   SPEAKERS.scientist.voice=SPEAKERS.custodian.voice;   // same voice, distinct pitch — never robotic David
   SPEAKERS.jack.voice     =chosenVoice('jack')||SPEAKERS.custodian.voice;   // likewise: the best male voice the machine has, at his own pitch
   SPEAKERS.optimus.voice  =chosenVoice('optimus')||SPEAKERS.custodian.voice;   // and the robot, lower still
@@ -8794,7 +8895,7 @@ function say(who,text,onDone){
   if(file){
     stopSpeech();
     if(_curVoice){try{_curVoice.pause();}catch(_){}}
-    const a=VOICE_CACHE[file]||(VOICE_CACHE[file]=new Audio('assets/voices/'+file));
+    const a=VOICE_CACHE[file]||(VOICE_CACHE[file]=new Audio((/^(https?:|\.\.\/)/.test(file)?'':'assets/voices/')+file));   // a full address, or one next door (the fountain's conversations are the listening room's recordings), is taken as it is
     try{a.currentTime=0;}catch(_){}
     a.volume=1;_curVoice=a;
     if(onDone)a.addEventListener('ended',onDone,{once:true});
@@ -9078,7 +9179,8 @@ addEventListener('keydown',e=>{
       }
       sel.style.display='none';lockPointer();
     }
-    else toggleMenu();
+    else if(menuPage){ if(performance.now()-LOCKX.escAt>400)closeMenu(false); }   // (not the same Esc that just opened it, in a browser that also hands the page that key)
+    else openMenu('fountain');                         // Esc opens the fountain app page, as C does (2026-09-27: it was the controls page; the touch menu button still opens those)
   }
 });
 function anyModalOpen(){
@@ -9088,8 +9190,17 @@ function anyModalOpen(){
 addEventListener('keyup',e=>keys[e.code]=false);
 addEventListener('mousemove',e=>{if(!look.locked)return;
   look.yaw-=e.movementX*SENS;look.pitch=clamp(look.pitch-e.movementY*SENS,-1.2,1.1);look.moved=state.time;});   // moved: the walk with Elara turns you back to her a second after you stop looking round
+// Esc (2026-09-27, asked for): the one press that frees the mouse opens the fountain app page, as C does — not the
+// "Click to start" card. The browser keeps that first Esc for itself, so the page only hears the lock end. It counts only
+// when the visitor let go: the game's own releases (every menu and modal frees the mouse first — exitPointerLock is
+// wrapped to mark them) and switching windows (the page loses focus) leave things as they were.
+const LOCKX={self:-1e9,escAt:-1e9};
+if(document.exitPointerLock){ const ex=document.exitPointerLock; document.exitPointerLock=function(){ LOCKX.self=performance.now(); return ex.apply(document,arguments); }; }
 document.addEventListener('pointerlockchange',()=>{
+  const was=look.locked;
   look.locked=(document.pointerLockElement===renderer.domElement);
+  if(was&&!look.locked&&performance.now()-LOCKX.self>800&&gateDone&&state.phase==='play'&&!paused&&!menuPage&&!anyModalOpen()&&!devOpen()&&!TOUCH.on
+     &&document.hasFocus()&&document.visibilityState==='visible'){ LOCKX.escAt=performance.now(); openMenu('fountain'); }
   document.getElementById('lockHint').style.display=(look.locked||paused||devOpen()||!gateDone)?'none':'block';
 });
 // every click-to-start takes the page fullscreen again if it isn't already
