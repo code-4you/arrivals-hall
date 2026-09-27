@@ -49,6 +49,7 @@
   #lockHint{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);
     background:rgba(6,12,20,.8);border:1px solid rgba(127,230,255,.3);border-radius:12px;
     padding:18px 36px;font-size:39px;pointer-events:none;display:none;white-space:nowrap}
+  #lockHint{display:none!important}   /* never shown (2026-09-28, asked for): the code that shows it is kept, and a click still captures the mouse — only the "Click to start" card is gone */
   /* ---- touch controls (phones + tablets only; desktop never sees these) ---- */
   #touchUI{position:fixed;inset:0;z-index:12;display:none;pointer-events:none}
   body.touch{-webkit-touch-callout:none}
@@ -5865,7 +5866,7 @@ function* counselScript(text){
 // is shown — text only, not read out — with a note that it is public and that only a saved game can delete it again. Yes posts
 // it with the save key (ideaDelete); No leaves it.
 const OC_ASK="Would you like to add it to the ideas board?";
-const OCHAT={hist:[],msgs:[],offer:null,offered:new Set(),busy:false};
+const OCHAT={hist:[],msgs:[],offer:null,offered:new Set(),busy:false,pendingAsk:null};   // pendingAsk: his question back to you, held while the Ideas board question is open
 function ocBubble(who,text){ OCHAT.msgs.push({who,text}); if(OCHAT.msgs.length>40)OCHAT.msgs.shift(); }
 function ocShow(){                                                    // the water menu again, on the chat
   const m=document.getElementById('fountainModal'); if(!m)return;
@@ -5906,8 +5907,8 @@ function optimusChatView(list){
       api({a:'idea',text:idea,key:accountKey()||''}).then(r=>{ if(ideasWallRefresh)ideasWallRefresh();
         if(r&&r.error==='slow down'){ ocBubble('sys','The board needs a breather — it stays on this device for now.'); if(document.getElementById('fountainModal').style.display==='flex')optimusChatView(list); } });
       if(ideasWallRefresh)ideasWallRefresh();
-      optimusChatView(list); }));
-    row.appendChild(btn('No','#8fa3bf',()=>{ OCHAT.offer=null; ocBubble('sys','Not added.'); optimusChatView(list); }));
+      optimusChatView(list); ocAskAfter(list); }));
+    row.appendChild(btn('No','#8fa3bf',()=>{ OCHAT.offer=null; ocBubble('sys','Not added.'); optimusChatView(list); ocAskAfter(list); }));
     ob.appendChild(row); box.appendChild(ob);
   } else {                                                            // the next thing to say
     const row=document.createElement('div'); row.style.cssText='display:flex;gap:8px';
@@ -5918,7 +5919,7 @@ function optimusChatView(list){
     row.appendChild(inp); row.appendChild(btn('Send','#9fd8ff',send)); box.appendChild(row); focus=inp;
   }
   const back=document.createElement('button'); back.className='menuBtn back'; back.style.cssText='margin-top:12px'; back.textContent='◂ Back';
-  back.onclick=()=>{ OCHAT.offer=null; buildFountainList(); };
+  back.onclick=()=>{ OCHAT.offer=null; OCHAT.pendingAsk=null; buildFountainList(); };
   box.appendChild(back);
   list.appendChild(box);
   msgs.scrollTop=1e9;
@@ -5932,25 +5933,51 @@ async function ocSend(text){
   const back=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(state.phase==='play'&&!paused)ocShow(); };
   if(ecSource===null){ try{ ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000); }catch(e){ ecSource='(page source unavailable)'; } }
   OCHAT.hist.push({role:'user',parts:[{text:text}]}); if(OCHAT.hist.length>24)OCHAT.hist.splice(0,2);
-  let reply='', idea='';
+  let reply='', idea='', ask='';
   try{
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL,
+      generationConfig:{responseMimeType:'application/json'},        // strict JSON back: his longer answers have paragraphs, and raw line breaks broke the parse (2026-09-28)
       systemInstruction:{parts:[{text:
-        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind. Your replies are spoken aloud by a voice synthesizer, so keep each one SHORT: one to three plain sentences, no lists, no markdown. You can read this page's source below — answer questions about the hall truthfully and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"idea\":\"...\"}. Page source:\n"+ecSource}]},
+        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. You can read this page's source below — about the hall itself, be truthful and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\"}. Page source:\n"+ecSource}]},
       contents:OCHAT.hist})});
     const j=await r.json();
     let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
     out=out.replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
-    try{ const d=JSON.parse(out); reply=String(d.reply||'').trim(); idea=String(d.idea||'').trim(); }catch(e){ reply=out; }
+    const d=ocParse(out); reply=String(d.reply||'').trim(); idea=String(d.idea||'').trim(); ask=String(d.ask||'').trim();
+    if(reply&&!j.error){ try{ localStorage.setItem('atd:optalk','1'); }catch(e){} }   // he has answered: the side quest "Talk with Optimus" is done
     if(!reply)reply=(j.error&&('('+j.error.message+')'))||'…';
   }catch(e){ reply='I lost the thread — is the network alright?'; }
-  OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,idea:idea})}]});
+  OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,ask:ask,idea:idea})}]});
   ocBubble('optimus',reply);
   const k=idea.toLowerCase();
   if(idea&&!OCHAT.offered.has(k)){ OCHAT.offered.add(k); OCHAT.offer={idea:idea.slice(0,240)}; ocBubble('optimus',OC_ASK); }
   const offer=!!OCHAT.offer;
-  say('optimus',reply,()=>{ if(offer)say('optimus',OC_ASK,back); else back(); });   // his answer, then (if there is one) the fixed question
-  setTimeout(back,Math.max(5000,(reply.length+(offer?60:0))*90)+9000);            // safety net: never leave the chat closed for good
+  // his own question back to you, if Gemini gave one (2026-09-28, asked for): straight after his answer — or, when the Ideas board
+  // question is being asked, after you have said Yes or No to that (ocAskAfter), so there are never two questions at once
+  if(ask){ if(offer)OCHAT.pendingAsk=ask; else ocBubble('optimus',ask); }
+  say('optimus',reply,()=>{ if(offer)say('optimus',OC_ASK,back); else if(ask)say('optimus',ask,back); else back(); });   // his answer, then the fixed question or his own
+  setTimeout(back,Math.max(5000,(reply.length+(offer?60:0)+ask.length)*90)+9000);   // safety net: never leave the chat closed for good
+}
+// Gemini's JSON, read tolerantly (2026-09-28): raw line breaks inside a string (his longer answers have paragraphs) are escaped
+// first; if it still will not parse, the fields are taken out by pattern — the braces and field names must never be read aloud
+function ocParse(out){
+  const fix=(t)=>{ let r='', inS=false, esc=false;
+    for(const ch of t){
+      if(!inS){ if(ch==='"')inS=true; r+=ch; continue; }
+      if(esc){ esc=false; r+=ch; continue; }
+      if(ch==='\\'){ esc=true; r+=ch; continue; }
+      if(ch==='"'){ inS=false; r+=ch; continue; }
+      r+=ch==='\n'?'\\n':ch==='\t'?'\\t':ch==='\r'?'':ch; }
+    return r; };
+  for(const t of [out,fix(out)]){ try{ const d=JSON.parse(t); if(d&&typeof d==='object')return d; }catch(e){} }
+  const unq=(v)=>{ try{ return JSON.parse('"'+v.replace(/\r/g,'').replace(/\n/g,'\\n').replace(/\t/g,'\\t')+'"'); }catch(e){ return v; } };
+  const f=(k)=>{ const m=new RegExp('"'+k+'"\\s*:\\s*"((?:[^"\\\\]|\\\\[\\s\\S])*)"').exec(out); return m?unq(m[1]):''; };
+  const reply=f('reply');
+  return reply?{reply,ask:f('ask'),idea:f('idea')}:{reply:out,ask:'',idea:''};   // no fields at all: plain words, said as they are
+}
+function ocAskAfter(list){                                            // the offer answered: his held question, if any, now
+  const q=OCHAT.pendingAsk; OCHAT.pendingAsk=null; if(!q)return;
+  ocBubble('optimus',q); optimusChatView(list); say('optimus',q);
 }
 // ---- "What are you": the document opens in a scrollable pane and the fountain
 // reads a short summary of it aloud (browser voice — no mp3 for this one).
@@ -6008,6 +6035,9 @@ const LOCATIONS={
 // the three story circles on level 5 over the hall (buildStoryCircles), as places: the community stories' quests point at
 // their own circle (2026-09-28, asked for — they pointed at the Garden room, 'garden')
 STORY_CIRCLES.forEach((s,i)=>{ const [x,z]=storyCirclePos(i); LOCATIONS['l5:'+s[0]]={x,z,label:'Story circle — level '+ORG_LVL+' over the hall'}; });
+// Optimus walks about with you, so "Talk with Optimus" points at wherever he is (his post by the fountain until he has loaded)
+LOCATIONS.optimus={ get x(){ const p=persons.optimus; return p?p.mesh.position.x:OPTIMUS.x; }, get z(){ const p=persons.optimus; return p?p.mesh.position.z:OPTIMUS.z; },
+  label:'Optimus — press E on him, then Just talk' };
 function escHtml(s){return (s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
 // ---- completable tasks the fountain may allocate. ONLY doors with a real finish signal
 // qualify: Chronos missions, Rally stages, Velocity levels, the Delivery run, the Crypt,
@@ -6032,7 +6062,9 @@ const TASKS={
   tour:    {place:'elara',  title:'Take the tour with Elara',done:()=>tourDone()},
   todo:    {place:'fountain',pay:100,title:'List a thing to do',
             done:()=>{try{return loadTodo().length>0;}catch(e){return false;}}},
-  counsel: {place:'fountain',pay:100,title:'Counselling',
+  optalk:  {place:'optimus',pay:100,title:'Talk with Optimus',       // (2026-09-28, asked for) done once he has answered you in his "Just talk"
+            done:()=>{try{return localStorage.getItem('atd:optalk')==='1';}catch(e){return false;}}},
+  counsel: {place:'fountain',pay:100,title:'Counselling / talk to organizer',   // (renamed 2026-09-28, asked for — was "Counselling")
             done:()=>{try{return loadCounsel().length>0;}catch(e){return false;}}},
   home:    {place:'fountain',pay:50, title:'Find a home',
             done:()=>{try{return localStorage.getItem('atd:homeChosen')==='1';}catch(e){return false;}}},
@@ -6645,7 +6677,7 @@ function renderWork(){
 // The side quests' order — the user's own, set with the dev drag tool (2026-09-27, second list; "not the final order").
 // Quests not in it (added later) come after these, in sqRank's order. The separator line goes under SQ_SPLIT.
 const SQ_ORDER=[
-  'tour','story:the-fountain','story:the-fountain-2','story:the-fountain-3','cerebro','story:an-invitation-to-the-community','story:welcome-to-the-garden','story:how-we-made-affordable-homes',
+  'optalk','tour','story:the-fountain','story:the-fountain-2','story:the-fountain-3','cerebro','story:an-invitation-to-the-community','story:welcome-to-the-garden','story:how-we-made-affordable-homes',
   'counsel','ideas','crypt','home','todo','blindspots','story:the-scholars-revelation','story:the-sunken-oasis',
   'story:the-sleeper-below','story:the-whisper-below','story:the-sacred-geometry','story:the-sanctuary','delivery','chronos1','chronos2','rally1',
   'rally2','hex1','hex2','story:the-burdened-soul','story:brother-thomas','story:young-sarah','story:the-republic-1','story:the-republic-2',
@@ -8566,7 +8598,7 @@ async function ecSend(){
       body:JSON.stringify({
         model:GEMINI_MODEL,
         systemInstruction:{parts:[{text:
-          "You are Elara, the friendly guide NPC of 'The Arrivals Hall' — a 3D mall of playable worlds that is also the arrivals hall of an AI-designed community (affordable homes, chosen neighbours, your own council, work worth doing). Your answers are spoken aloud by a voice synthesizer, so keep each one a SHORT SUMMARY — one to three plain sentences, no markdown, no lists, no code blocks. You can see the page's HTML source below and may answer questions about how the place is built.\n\n---PAGE SOURCE---\n"+ecSource}]},
+          "You are Elara, the friendly guide NPC of 'The Arrivals Hall' — a 3D mall of playable worlds that is also the arrivals hall of an AI-designed community (affordable homes, chosen neighbours, your own council, work worth doing). Talk freely and naturally, like a real person with your own warmth, thoughts and curiosity: any topic the visitor likes, your own opinions, stories and asides. Your words are spoken aloud by a voice synthesizer, so speak in plain sentences — no markdown, no lists, no code blocks — and let the length follow the moment: a line or two for small talk, longer when the visitor wants detail, an explanation or a story. Ask the visitor questions whenever you are curious about them or it moves the conversation along — one, several, or none; that is up to you. You can see the page's HTML source below and may answer questions about how the place is built; about the hall itself, be truthful and do not invent features.\n\n---PAGE SOURCE---\n"+ecSource}]},
         contents:ecHist})});
     const j=await r.json();
     const out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim()
