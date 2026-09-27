@@ -1780,12 +1780,19 @@ function labCircle(Y,x,z,col,label,sub,fn,auto,signH){   // signH: its sign's he
   h.y=Y;                                     // this floor only — the same circle sits over the one below
   h.objs=[ring,disc,sign];                   // what to hide when a circle is not to be seen yet (the stranger's, strangerCircle)
   // auto: stepping into the ring runs it, no E. It re-arms when you walk out, and E still works while you
-  // stand in it (useful once whatever it started is over). (2026-09-18)
-  if(auto){ let inside=false;
+  // stand in it (useful once whatever it started is over). (2026-09-18) Every circle has it since 2026-09-28 (asked for), so only
+  // a real walk-in counts: the game is being played, the circle is showing (strangerCircle can hide one), you were seen outside
+  // it since, and you came in on foot — not put there by a refresh, a way back from a game, a lift or a stair. fn(true): a walk-in.
+  if(auto){ let armed=false, lx=null, ly=0, lz=0;
     animated.push({update(){
-      const near=Math.abs(player.y-Y)<2&&Math.hypot(player.pos.x-x,player.pos.z-z)<1.3;
-      if(near&&!inside){ inside=true; try{ fn(); }catch(e){ console.error('circle "'+label+'" failed',e); } }
-      else if(!near)inside=false;
+      const px=player.pos.x, py=player.y, pz=player.pos.z;
+      const near=Math.abs(py-Y)<2&&Math.hypot(px-x,pz-z)<1.3;
+      const live=h.r>0&&gateDone&&state.phase==='play'&&!paused;
+      const stepped=lx!==null&&Math.hypot(px-lx,pz-lz)<1.2&&Math.abs(py-ly)<0.6;   // one frame's walk, not a jump across the map
+      lx=px; ly=py; lz=pz;
+      if(!near){ if(live)armed=true; return; }
+      if(armed&&live&&stepped){ armed=false; try{ fn(true); }catch(e){ console.error('circle "'+label+'" failed',e); } }
+      else if(!stepped)armed=false;                                   // put into it: nothing until you walk out and back in
     }}); }
   return h;
 }
@@ -1967,19 +1974,19 @@ LABT.contents={
   1:(Y)=>{
     const empty=(n)=>()=>banner('Lab level 1, circle '+n+' — empty. Nothing is hung on it yet.');
     for(let k=0;k<3;k++){ const [x,z]=LABT.circleAt(k);
-      labCircle(Y,x,z,0x7fe6ff,'Circle '+(k+1)+' — empty','level 1 · nothing on it yet',empty(k+1),false,LAB_SIGN_H); }
+      labCircle(Y,x,z,0x7fe6ff,'Circle '+(k+1)+' — empty','level 1 · nothing on it yet',empty(k+1),true,LAB_SIGN_H); }
   },
   2:(Y,zn)=>{
     const empty=(n)=>()=>banner('Lab level 2, circle '+n+' — empty. Nothing is hung on it yet.');
     const c0=LABT.circleAt(0), c1=LABT.circleAt(1), c2=LABT.circleAt(2);
-    labCircle(Y,c0[0],c0[1],0xff9f6a,'Spawn the nightmare boss — they shoot at it','level 2 · circle 1 — step in',
+    labCircle(Y,c0[0],c0[1],0xff9f6a,'Spawn the nightmare boss — they shoot at it','level 2 · circle 1',
       ()=>gunsSpawnBoss(null,true),true,LAB_SIGN_H);   // the developer page's own, on a floor instead; it starts as you walk in, and `all` makes it run every clip the file has
-    labCircle(Y,c1[0],c1[1],0xffd27f,'Combat drill — eight of Optimus','level 2 · circle 2 — step in and press E',()=>drillStart(Y,zn,c1),false,LAB_SIGN_H);   // the drill (2026-09-25, asked for): see DRILL
-    labCircle(Y,c2[0],c2[1],0x7fe6ff,'Circle 3 — empty','level 2 · nothing on it yet',empty(3),false,LAB_SIGN_H);
+    labCircle(Y,c1[0],c1[1],0xffd27f,'Combat drill — eight of Optimus','level 2 · circle 2',()=>drillStart(Y,zn,c1),true,LAB_SIGN_H);   // the drill (2026-09-25, asked for): see DRILL
+    labCircle(Y,c2[0],c2[1],0x7fe6ff,'Circle 3 — empty','level 2 · nothing on it yet',empty(3),true,LAB_SIGN_H);
   },
   4:(Y,zn)=>{                                              // Cerebro (2026-09-25, asked for): the week's voices, from here instead of the room on Makers' Row
     const c=LABT.circleAt(1);
-    labCircle(Y,c[0],c[1],0x6fa8ff,'Cerebro — hear the week','level 4 · step in and press E · walk off the platform there to come back',()=>launchCerebro(),false,LAB_SIGN_H);
+    labCircle(Y,c[0],c[1],0x6fa8ff,'Cerebro — hear the week','level 4 · walk off the platform there to come back',()=>launchCerebro(),true,LAB_SIGN_H);
   },
 };
 function buildLabLights(){
@@ -2578,7 +2585,7 @@ function drillNext(v){ const r=DRILL.gen.next(v); if(r.done){ DRILL.gen=null; DR
 /* ============================================================
    THE COMMUNITY STORIES — three circles on level 5 above the hall (2026-09-25, asked for), one for each story of the
    quick-stories "The community" category. The scripts are copies in assets/stories/<id>.json and their recorded lines in
-   assets/voices/stories/<id>/ — nothing is read from quick-stories at run time. Step into a circle and press E: Elara,
+   assets/voices/stories/<id>/ — nothing is read from quick-stories at run time. Step into a circle (or press E in it): Elara,
    Jack and Optimus come to it (brought up to this floor first if they are not on it), stand round it facing one another
    and play the parts — a story's woman to Elara, its visitor to Jack, its elder to Optimus; whoever has no part
    listens. Line by line the speaker turns to whoever spoke last (or the middle) and the other two turn to the speaker;
@@ -2603,17 +2610,20 @@ function storyCirclePos(i){ return ELEV.toWorld(ELEV.front(ORG_LVL)+14,-10-i*8);
 function storyCirclePosS(i){ return ELEV.toWorld(ELEV.front(ORG_LVL)+1,-10-i*8); }    // the second row's circle i: 1 m out from the lift doors' line (13 m nearer it than the first row), level with the first row's circle i
 function buildStoryCircles(Y,zn,L,stop){                     // a row running north from beside the Organiser board: 14 m out from the lift doors, 10, 18 and 26 m to the north of their line
   STORY_CIRCLES.forEach((s,i)=>{ const [x,z]=storyCirclePos(i);
-    labCircle(Y,x,z,0x9fd8ff,s[1],'a story · '+s[2]+' · step in and press E',()=>storyStart(s[0],[x,z],Y),false,LAB_SIGN_H); });   // signs as high as the lab's (2026-09-28, asked for)
-  // …and a fourth at the end of the row (2026-09-28, asked for): step in and press E, and the story playing stops — a fountain
+    labCircle(Y,x,z,0x9fd8ff,s[1],'a story · '+s[2],(walk)=>storyCircle(s[0],[x,z],Y,walk),true,LAB_SIGN_H); });   // signs as high as the lab's (2026-09-28, asked for)
+  // …and a fourth at the end of the row (2026-09-28, asked for): step in, and the story playing stops — a fountain
   // conversation or counselling too, if one is what is playing
   const [sx,sz]=storyCirclePos(STORY_CIRCLES.length);
-  labCircle(Y,sx,sz,0xff8a7a,'Stop the story','ends the conversation playing · step in and press E',()=>storyStopHere(),false,LAB_SIGN_H);
+  labCircle(Y,sx,sz,0xff8a7a,'Stop the story','ends the conversation playing',()=>storyStopHere(),true,LAB_SIGN_H);
   // the second row, south of the first (2026-09-28): The Bench, The Bench · The Deposit, and a second stop circle at the end of them
   STORY_CIRCLES_S.forEach((s,i)=>{ const [x,z]=storyCirclePosS(i);
-    labCircle(Y,x,z,0x9fd8ff,s[1],'vomit draft · a story · step in and press E',()=>storyStart(s[0],[x,z],Y),false,LAB_SIGN_H); });   // signs as high as lab level 1's
+    labCircle(Y,x,z,0x9fd8ff,s[1],'vomit draft · a story',(walk)=>storyCircle(s[0],[x,z],Y,walk),true,LAB_SIGN_H); });   // signs as high as lab level 1's
   const [tx,tz]=storyCirclePosS(STORY_CIRCLES_S.length);
-  labCircle(Y,tx,tz,0xff8a7a,'Stop the story','ends the conversation playing · step in and press E',()=>storyStopHere(),false,LAB_SIGN_H);
+  labCircle(Y,tx,tz,0xff8a7a,'Stop the story','ends the conversation playing',()=>storyStopHere(),true,LAB_SIGN_H);
 }
+// a story circle stepped into (walk) or pressed (E): stepping back into the circle of the story already playing — shuffling
+// about while you listen — does not start it over; E still does, as it always has
+function storyCircle(id,c,Y,walk){ if(walk===true&&STORY.active&&STORY.id===id)return; storyStart(id,c,Y); }
 function storyStopHere(){
   if(STORY.active){ storyEnd(); banner('The story stops'); return; }
   if(FTALK.active){ ftalkStop(); banner('The conversation stops'); return; }
@@ -5061,8 +5071,8 @@ function buildTheaterScene(){
   SCENE.stage=theaterOpened()?'inside':'wait';
   // "Defend the hall" (Fountain Keeper) starts from a circle on the floor beside where he waits — one of the lab's rings,
   // on this floor — that shows itself with the rooms when you first press E on him (2026-09-25, asked for: it was on
-  // Jack's card, and the standing objective). Step in, press E.
-  SCENE.circle=labCircle(0,doorX-7,cz+4,0xffd27f,'Defend the hall','Fountain Keeper — step in and press E',()=>launchRiftKeeper());
+  // Jack's card, and the standing objective). Step in and it starts (E works too, 2026-09-28) — not while it is hidden.
+  SCENE.circle=labCircle(0,doorX-7,cz+4,0xffd27f,'Defend the hall','Fountain Keeper',()=>launchRiftKeeper(),true);
   strangerCircle(theaterOpened());
   new THREE.GLTFLoader().load('local/blindspots/Soldier.glb',(cg)=>{
     const m=cg.scene;
@@ -6050,6 +6060,7 @@ const LOCATIONS={
 // the three story circles on level 5 over the hall (buildStoryCircles), as places: the community stories' quests point at
 // their own circle (2026-09-28, asked for — they pointed at the Garden room, 'garden')
 STORY_CIRCLES.forEach((s,i)=>{ const [x,z]=storyCirclePos(i); LOCATIONS['l5:'+s[0]]={x,z,label:'Story circle — level '+ORG_LVL+' over the hall'}; });
+STORY_CIRCLES_S.forEach((s,i)=>{ const [x,z]=storyCirclePosS(i); LOCATIONS['l5:'+s[0]]={x,z,label:'Story circle — level '+ORG_LVL+' over the hall'}; });   // the two Benches (2026-09-28, asked for)
 // Optimus walks about with you, so "Talk with Optimus" points at wherever he is (his post by the fountain until he has loaded)
 LOCATIONS.optimus={ get x(){ const p=persons.optimus; return p?p.mesh.position.x:OPTIMUS.x; }, get z(){ const p=persons.optimus; return p?p.mesh.position.z:OPTIMUS.z; },
   label:'Optimus — press E on him, then Just talk' };
@@ -6090,7 +6101,7 @@ fetch('local/quick-stories/stories/index.json').then(r=>r.json()).then(j=>{
   (j.categories||[]).forEach(c=>(c.stories||[]).forEach(f=>{
     const id=String(f).replace(/\.json$/,'');
     const title=id.replace(/-/g,' ').replace(/\b\w/g,ch=>ch.toUpperCase());
-    const place=/^the-fountain/.test(id)?'fountain':(c.title==='The community'?(LOCATIONS['l5:'+id]?'l5:'+id:'garden'):'theater');   // the community's three: their circle on level 5 (2026-09-28)
+    const place=/^the-fountain/.test(id)?'fountain':LOCATIONS['l5:'+id]?'l5:'+id:(c.title==='The community'?'garden':'theater');   // a story with a circle on level 5 goes to it: the community's three, and the two Benches (2026-09-28)
     const cat=c.title==='The Sleeper'?'The Cthulhu Redemption':c.title;   // the series' quest name
     TASKS['story:'+id]={place:place,title:'Listen to '+cat+' — “'+title+'”',done:()=>storyDone(id)};
   }));
