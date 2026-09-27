@@ -5640,8 +5640,13 @@ function buildFountainList(){
       list.appendChild(b);
     });
     if(fountainFrom==='optimus'){                                  // Optimus's own (2026-09-27): counselling as a talk you walk with — and not the fountain app, which is the basin's and C's
+      const jt=document.createElement('button');jt.className='menuBtn';   // …and a chat with him (2026-09-28): OCHAT
+      jt.style.cssText='width:100%;margin:14px 0 0;min-width:0;border-left-color:#9fd8ff';
+      jt.innerHTML='💬&nbsp; Just talk';
+      jt.onclick=()=>optimusChatView(list);
+      list.appendChild(jt);
       const cb=document.createElement('button');cb.className='menuBtn';
-      cb.style.cssText='width:100%;margin:14px 0 0;min-width:0;border-left-color:var(--teal)';
+      cb.style.cssText='width:100%;margin:7px 0 0;min-width:0;border-left-color:var(--teal)';
       cb.innerHTML='🗨&nbsp; Counselling / talk to organizer';
       cb.onclick=()=>counselForm(list);
       list.appendChild(cb);
@@ -5853,6 +5858,99 @@ function* counselScript(text){
   counselRecord(text,data,false);                                     // onto the profile only — the Organiser Room's PROFILES board; never the Ideas board (2026-09-28, asked for)
   for(const L of data.conversation||[]){ if(L&&L.text)yield* ftalkSay(/ELARA/i.test(L.speaker||'')?'elara':'custodian',String(L.text)); }
   if(data.note)caption('✎ Added to your profile — '+data.note,7);
+}
+// Optimus's "Just talk" (2026-09-28, asked for): a chat like Elara's — you type, he answers aloud (Gemini, grounded in this page)
+// and the box comes back for the next thing. When what you say holds something for the community, Gemini also hands back an
+// idea: he then asks, in a fixed line (not Gemini's), whether to add it to the Ideas board, and the exact text that would go up
+// is shown — text only, not read out — with a note that it is public and that only a saved game can delete it again. Yes posts
+// it with the save key (ideaDelete); No leaves it.
+const OC_ASK="Would you like to add it to the ideas board?";
+const OCHAT={hist:[],msgs:[],offer:null,offered:new Set(),busy:false};
+function ocBubble(who,text){ OCHAT.msgs.push({who,text}); if(OCHAT.msgs.length>40)OCHAT.msgs.shift(); }
+function ocShow(){                                                    // the water menu again, on the chat
+  const m=document.getElementById('fountainModal'); if(!m)return;
+  document.exitPointerLock&&document.exitPointerLock();
+  fountainAtWater=true; fountainFrom='optimus';
+  document.body.classList.add('qOpen');
+  document.getElementById('fountainSlot').appendChild(document.getElementById('fountainContent'));
+  document.getElementById('fPlayer').style.display='none';
+  const list=document.getElementById('fountainList'); list.style.display='';
+  optimusChatView(list);
+  m.style.display='flex';
+}
+function optimusChatView(list){
+  list.innerHTML='';
+  if(!OCHAT.msgs.length)ocBubble('optimus',"I'm listening.");
+  const box=document.createElement('div'); box.style.cssText='margin:7px 0 0;text-align:left';
+  box.innerHTML='<div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#9fd8ff;margin-bottom:8px">Just talk — Optimus</div>';
+  const msgs=document.createElement('div');
+  msgs.style.cssText='pointer-events:auto;max-height:220px;overflow-y:auto;margin:0 0 10px;padding:10px 12px;background:rgba(10,18,30,.6);border:1px solid rgba(159,216,255,.25);border-radius:10px;font-size:14px;line-height:1.55;color:#dfe9f5';
+  for(const m of OCHAT.msgs){ const d=document.createElement('div'); d.style.margin='2px 0';
+    d.innerHTML=m.who==='you'?'<span style="color:#ffd27f">You:</span> '+escHtml(m.text)
+      :m.who==='optimus'?'<span style="color:#9fd8ff">Optimus:</span> '+escHtml(m.text):'<i style="color:#8fa3bf">'+escHtml(m.text)+'</i>';
+    msgs.appendChild(d); }
+  box.appendChild(msgs);
+  const btn=(label,col,fn)=>{ const b=document.createElement('button'); b.className='menuBtn'; b.textContent=label;
+    b.style.cssText='min-width:0;margin:0;padding:8px 16px;border-left-color:'+col; b.onclick=fn; return b; };
+  let focus=null;
+  if(OCHAT.offer){                                                    // the offer: his fixed question, the exact text, the note, Yes / No
+    const o=OCHAT.offer, ob=document.createElement('div');
+    ob.style.cssText='padding:12px 14px;margin:0 0 8px;background:rgba(10,18,30,.72);border:1px solid rgba(255,210,127,.45);border-radius:10px';
+    ob.innerHTML='<div style="color:#ffd27f;font-size:14px;margin-bottom:6px">Would you like to add it to the Ideas board?</div>'
+      +'<div style="color:#eaf4ff;font-size:14px;line-height:1.5;margin:0 0 8px;padding:8px 10px;border-left:3px solid #ffd27f;background:rgba(0,0,0,.25)">“'+escHtml(o.idea)+'”</div>'
+      +'<div style="color:#8fa3bf;font-size:12px;line-height:1.5;margin-bottom:10px">It will be public — everyone can read the Ideas board. You can delete it later only if you save your game (menu → Save game keeps your key).</div>';
+    const row=document.createElement('div'); row.style.cssText='display:flex;gap:8px';
+    row.appendChild(btn('✓ Yes, add it','#b6ff9c',()=>{ const idea=o.idea; OCHAT.offer=null;
+      const l=loadIdeas(); l.push({text:idea,t:Date.now()}); saveIdeas(l);
+      ocBubble('sys','Added to the Ideas board.'); banner('Added to the Ideas board');
+      api({a:'idea',text:idea,key:accountKey()||''}).then(r=>{ if(ideasWallRefresh)ideasWallRefresh();
+        if(r&&r.error==='slow down'){ ocBubble('sys','The board needs a breather — it stays on this device for now.'); if(document.getElementById('fountainModal').style.display==='flex')optimusChatView(list); } });
+      if(ideasWallRefresh)ideasWallRefresh();
+      optimusChatView(list); }));
+    row.appendChild(btn('No','#8fa3bf',()=>{ OCHAT.offer=null; ocBubble('sys','Not added.'); optimusChatView(list); }));
+    ob.appendChild(row); box.appendChild(ob);
+  } else {                                                            // the next thing to say
+    const row=document.createElement('div'); row.style.cssText='display:flex;gap:8px';
+    const inp=document.createElement('input'); inp.placeholder='Say something to Optimus…';
+    inp.style.cssText='pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(159,216,255,.35);border-radius:8px';
+    const send=()=>{ const t=inp.value.trim(); if(!t||OCHAT.busy){ inp.focus(); return; } ocSend(t); };
+    inp.addEventListener('keydown',e=>{ if(e.code==='Enter'||e.key==='Enter')send(); });
+    row.appendChild(inp); row.appendChild(btn('Send','#9fd8ff',send)); box.appendChild(row); focus=inp;
+  }
+  const back=document.createElement('button'); back.className='menuBtn back'; back.style.cssText='margin-top:12px'; back.textContent='◂ Back';
+  back.onclick=()=>{ OCHAT.offer=null; buildFountainList(); };
+  box.appendChild(back);
+  list.appendChild(box);
+  msgs.scrollTop=1e9;
+  if(focus)setTimeout(()=>{ try{ focus.focus(); }catch(e){} },50);
+}
+async function ocSend(text){
+  if(OCHAT.busy)return; OCHAT.busy=true;
+  ocBubble('you',text);
+  const m=document.getElementById('fountainModal'); m.style.display='none'; document.body.classList.remove('qOpen');   // out of the way while he answers
+  let backed=false;
+  const back=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(state.phase==='play'&&!paused)ocShow(); };
+  if(ecSource===null){ try{ ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000); }catch(e){ ecSource='(page source unavailable)'; } }
+  OCHAT.hist.push({role:'user',parts:[{text:text}]}); if(OCHAT.hist.length>24)OCHAT.hist.splice(0,2);
+  let reply='', idea='';
+  try{
+    const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL,
+      systemInstruction:{parts:[{text:
+        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind. Your replies are spoken aloud by a voice synthesizer, so keep each one SHORT: one to three plain sentences, no lists, no markdown. You can read this page's source below — answer questions about the hall truthfully and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"idea\":\"...\"}. Page source:\n"+ecSource}]},
+      contents:OCHAT.hist})});
+    const j=await r.json();
+    let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
+    out=out.replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
+    try{ const d=JSON.parse(out); reply=String(d.reply||'').trim(); idea=String(d.idea||'').trim(); }catch(e){ reply=out; }
+    if(!reply)reply=(j.error&&('('+j.error.message+')'))||'…';
+  }catch(e){ reply='I lost the thread — is the network alright?'; }
+  OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,idea:idea})}]});
+  ocBubble('optimus',reply);
+  const k=idea.toLowerCase();
+  if(idea&&!OCHAT.offered.has(k)){ OCHAT.offered.add(k); OCHAT.offer={idea:idea.slice(0,240)}; ocBubble('optimus',OC_ASK); }
+  const offer=!!OCHAT.offer;
+  say('optimus',reply,()=>{ if(offer)say('optimus',OC_ASK,back); else back(); });   // his answer, then (if there is one) the fixed question
+  setTimeout(back,Math.max(5000,(reply.length+(offer?60:0))*90)+9000);            // safety net: never leave the chat closed for good
 }
 // ---- "What are you": the document opens in a scrollable pane and the fountain
 // reads a short summary of it aloud (browser voice — no mp3 for this one).
@@ -6324,7 +6422,7 @@ async function tdSubmit(){
   if(data.communityChange){
     const ideaText=text+(data.organiserPlan?' — organiser: '+data.organiserPlan:'');
     const il=loadIdeas();il.push({text:ideaText,t:new Date().getTime()});saveIdeas(il);
-    api({a:'idea',text:ideaText}).then(()=>{if(ideasWallRefresh)ideasWallRefresh();});
+    api({a:'idea',text:ideaText,key:accountKey()||''}).then(()=>{if(ideasWallRefresh)ideasWallRefresh();});
     if(ideasWallRefresh)ideasWallRefresh();
   }
   // allocate the task: the model's pick if it is a real open task, else the first open one
@@ -6423,7 +6521,7 @@ function counselRecord(text,data,toIdeas){           // toIdeas false (Optimus's
   if(data.communityChange&&toIdeas!==false){
     const ideaText=text+(data.organiserPlan?' — organiser: '+data.organiserPlan:'');
     const il=loadIdeas();il.push({text:ideaText,t:new Date().getTime()});saveIdeas(il);
-    api({a:'idea',text:ideaText}).then(()=>{if(ideasWallRefresh)ideasWallRefresh();});
+    api({a:'idea',text:ideaText,key:accountKey()||''}).then(()=>{if(ideasWallRefresh)ideasWallRefresh();});
     if(ideasWallRefresh)ideasWallRefresh();
   }
 }
@@ -6738,10 +6836,34 @@ function saveIdeas(l){try{localStorage.setItem('atd:ideas',JSON.stringify(l.slic
 let ideasWallRefresh=null;                       // set by buildIdeasWall so a new idea repaints the wall
 let wishBoardRefresh=null;                       // set by buildWishBoard so a new wish repaints the board
 let ideasFrom=null;                              // 'fountain' routes the close back to the fountain menu
+// items: plain texts (this device's), or the server's rows {id,text,mine} — yours get a delete (2026-09-28, asked for: people can
+// delete their own ideas only; the server checks the save key the idea was written under)
 function renderIdeaList(items,src){
   const el=document.getElementById('ideaList');
-  el.innerHTML='<div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8fa3bf;margin-bottom:4px">'+src+'</div>'
-    +(items.length?items.map(t=>'• '+escHtml(String(t))).join('<br>'):'<span style="opacity:.7">the wall is blank — write the first idea</span>');
+  el.innerHTML='<div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8fa3bf;margin-bottom:4px">'+src+'</div>';
+  if(!items.length){ el.insertAdjacentHTML('beforeend','<span style="opacity:.7">the wall is blank — write the first idea</span>'); return; }
+  for(const it of items){
+    const t=(it&&typeof it==='object')?String(it.text||''):String(it), row=document.createElement('div');
+    row.innerHTML='• '+escHtml(t);
+    if(it&&typeof it==='object'&&it.mine&&it.id){
+      const b=document.createElement('button'); b.textContent='✕ delete'; b.title='Delete your idea from the board';
+      b.style.cssText='pointer-events:auto;margin-left:8px;font-size:11px;padding:1px 8px;border-radius:6px;cursor:pointer;background:none;border:1px solid rgba(255,138,122,.5);color:#ff8a7a';
+      let armed=false, tm=null;
+      b.onclick=()=>{ if(!armed){ armed=true; b.textContent='sure? ✕'; tm=setTimeout(()=>{ armed=false; b.textContent='✕ delete'; },3000); return; }
+        clearTimeout(tm); ideaDelete(it.id,t,b); };
+      row.appendChild(b);
+    }
+    el.appendChild(row);
+  }
+}
+function ideasLive(){ api({a:'ideas',key:accountKey()||''}).then(r=>{ if(r&&r.ok&&r.rows)renderIdeaList(r.rows,'all players · live'); }); }
+function ideaDelete(id,text,btn){
+  const st=document.getElementById('ideaStatus'); if(btn){ btn.disabled=true; btn.textContent='…'; }
+  api({a:'ideadel',id,key:accountKey()||''}).then(r=>{
+    if(r&&r.ok){ saveIdeas(loadIdeas().filter(x=>(x&&x.text||x)!==text)); st.textContent='Deleted from the board.'; if(ideasWallRefresh)ideasWallRefresh(); }
+    else st.textContent=(r&&r.error==='not yours')?'Only the saved game that wrote it can delete it.':'It could not be deleted just now — try again.';
+    ideasLive();
+  });
 }
 function openIdeas(from){
   ideasFrom=from||null;
@@ -6751,7 +6873,7 @@ function openIdeas(from){
   document.body.classList.add('qOpen');
   document.getElementById('ideaStatus').textContent='';
   renderIdeaList(loadIdeas().slice().reverse().map(x=>x.text||x),'from this device');
-  api({a:'ideas'}).then(r=>{if(r&&r.ok&&r.rows)renderIdeaList(r.rows.map(x=>x.text||x),'all players · live');});
+  ideasLive();
   document.getElementById('ideasModal').style.display='flex';
   setTimeout(()=>{try{document.getElementById('ideaIn').focus();}catch(e){}},50);
 }
@@ -6769,9 +6891,9 @@ function ideaSubmit(){
   inp.value='';
   st.textContent='On the wall.';
   renderIdeaList(loadIdeas().slice().reverse().map(x=>x.text||x),'from this device');
-  api({a:'idea',text}).then(r=>{
+  api({a:'idea',text,key:accountKey()||''}).then(r=>{
     if(r&&r.ok){st.textContent='On the wall — for everyone.';
-      api({a:'ideas'}).then(q=>{if(q&&q.ok&&q.rows)renderIdeaList(q.rows.map(x=>x.text||x),'all players · live');});}
+      ideasLive();}
     else if(r&&r.error==='slow down')st.textContent='The wall needs a breather — try again in an hour.';
     else st.textContent='On the wall here — the live board could not be reached.';
     if(ideasWallRefresh)ideasWallRefresh();
