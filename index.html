@@ -128,6 +128,17 @@
     border:1px solid rgba(127,230,255,.3);border-radius:8px;padding:6px 14px}
   .mnav .mClose:hover{background:rgba(30,80,130,.55)}
   .mpage{flex:1;min-height:0;overflow-y:auto;padding:2px}
+  /* the Privacy / terms page (2026-09-28) */
+  .pvDoc{max-width:760px;margin:0 auto;font-size:13.5px;line-height:1.6;color:#cfe0f2;background:rgba(8,16,28,.6);
+    border:1px solid rgba(127,230,255,.22);border-radius:10px;padding:16px 20px;text-align:left}
+  .pvDoc h3{margin:16px 0 4px;font-size:13px;letter-spacing:.06em;color:#ffd27f;text-transform:uppercase}
+  .pvDoc p{margin:6px 0}
+  .pvDoc ul{margin:6px 0;padding-left:20px}
+  .pvDoc li{margin:4px 0}
+  .pvDoc a{color:var(--cyan);pointer-events:auto;cursor:pointer}
+  .pvDoc .pvWhy{color:#8fa3bf}
+  .pvDoc .menuBtn{width:100%;min-width:0;margin:10px 0 2px;font-size:15px;border-left-color:#ff8a7a}
+  .pvDoc .pvNote{font-size:12.5px;color:#8fa3bf;margin:0 0 6px}
   /* the big F11 button */
   #fsBtn{pointer-events:auto;cursor:pointer;font:inherit;margin-top:14px;
     display:flex;align-items:center;gap:16px;min-width:260px;
@@ -211,6 +222,7 @@
       <button id="tab-save">Save game</button>
       <button id="tab-controls">Controls</button>
       <button id="tab-credits">Credits</button>
+      <button id="tab-privacy">Privacy / terms</button>
       <button class="mClose" id="menuClose">✕&nbsp;Close (Esc)</button>
     </div>
 
@@ -373,6 +385,55 @@
         Built by <a href="https://mvandiermen.com/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Michael van Diermen</a>, designed and written with <span style="color:#b6ff9c">Claude</span> (<a href="https://www.anthropic.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Anthropic</a>). Location scan — “The Hallwyl Museum 1st Floor Combined” by <a href="https://sketchfab.com/models/f74eefe9f1cd4a2795a689451e723ee9" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Thomas Flynn</a>, from originals by The Hallwyl Museum (Hallwylska museet) / Erik Lernestål — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">CC&nbsp;BY&nbsp;4.0</a>. Characters via Mixamo &amp; ReadyPlayer.me. Built on <a href="https://threejs.org" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Three.js</a> · voices — browser text-to-speech with recorded lines to come.
       </div>
       <button class="menuBtn" id="ctContact" style="width:100%;min-width:0;margin-top:12px;border-left-color:var(--amber)">✉ &nbsp;Contact us — help with your project, or submit a game</button>
+      </div>
+    </div>
+
+    <!-- PAGE · PRIVACY / TERMS (2026-09-28, asked for): what the hall keeps and why, who else gets it, how long — and how
+         to delete it (api a:'forget'; the buttons are wired under the Contact button's handler, pvForget) -->
+    <div class="mpage" id="page-privacy" style="display:none">
+      <div class="pvDoc">
+        <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em">PRIVACY &amp; TERMS</div>
+        <div style="font-size:12px;color:#8fa3bf">Last updated 28 September 2026</div>
+        <p>The Arrivals Hall is a free, experimental game made by <a href="https://mvandiermen.com/" target="_blank" rel="noopener">Michael van Diermen</a>. This page says what the hall keeps about you, why, who else gets it and for how long — and how to delete it.</p>
+
+        <h3>Use at your own risk</h3>
+        <p>The hall is free and comes as it is. It may change, break, go offline or lose your progress, and we can’t promise otherwise. You use it at your own risk: to the extent the law allows, we accept no liability for any loss or damage that comes from using it.</p>
+        <p>Elara, Optimus and the counselling are an AI (Google’s Gemini). Their answers can be wrong, and counselling here is not professional advice or therapy. If you are in danger or in crisis, contact your local emergency services.</p>
+
+        <h3>What we keep, and why</h3>
+        <ul>
+          <li><b>Your save</b> — a save key and your progress: missions, stories heard, doors opened, credits and what you add in the fountain app. <span class="pvWhy">Why: so you can keep playing, here or on another device.</span></li>
+          <li><b>Your profile for the organiser / counselor</b> — your things-to-do list, counselling notes and neighbours preference. <span class="pvWhy">Why: so the organiser can read it and help you. Only the organiser can see it.</span></li>
+          <li><b>Ideas you post</b> — shown to everyone on the Ideas board. <span class="pvWhy">Why: that is what the board is for. They are kept with your save so you can delete your own.</span></li>
+          <li><b>What you ask Elara, and her replies</b> — seen only by the organiser. <span class="pvWhy">Why: to learn what people want from the hall.</span></li>
+          <li><b>Visits</b> — your IP address, the country and region it comes from, when you were here and which rooms you spent time in. <span class="pvWhy">Why: to stop abuse — limits are counted per address, for example 60 AI chats an hour — and to count visitors by place. The boards show places, never IP addresses.</span></li>
+          <li><b>Messages</b> you send with Contact us — your name, link and message. <span class="pvWhy">Why: to reply to you.</span></li>
+          <li><b>On your own device</b> — your browser keeps your progress, settings and where you last stood. That stays on your device.</li>
+        </ul>
+        <p>We don’t sell any of it, and we don’t use it for advertising.</p>
+
+        <h3>Who else gets it</h3>
+        <ul>
+          <li><b>Google (Gemini)</b> gets the words of your chats with Elara and Optimus and your counselling text, to write the replies. They pass through our server, so Google does not get your IP address. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API terms</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy policy</a></li>
+          <li><b>ip-api.com</b> gets your IP address from our server, to look up its country and region (Cerebro also looks up your city). <a href="https://ip-api.com/docs/legal" target="_blank" rel="noopener">ip-api.com legal</a></li>
+          <li><b>Where it runs</b> — our server at lightsmithforge.linkpc.net keeps the data; GitHub hosts the hall’s pages; itch.io and Game Jolt show it in a frame if you play it there. Like any website, they see your IP address when you visit.</li>
+          <li><b>Code, a font and music</b> load from other sites (jsDelivr, cdnjs, threejs.org, OpenGameArt), which see your IP address when your browser fetches them.</li>
+        </ul>
+
+        <h3>How long we keep it</h3>
+        <p>As long as the hall is running — you could come back after a long time and want to carry on where you left off. Old data may be removed after some years.</p>
+
+        <h3>How it is protected</h3>
+        <p>The private boards need the organiser’s login, save keys are too long to guess, and the connection is encrypted (https). But nothing on the internet is perfectly secure: to the extent the law allows, we are not liable for loss or misuse of data in a breach or an attack.</p>
+
+        <h3>Delete your data</h3>
+        <p>Your save key and this browser prove the data is yours. Deleting can’t be undone.</p>
+        <button class="menuBtn" id="pvDelProfile">✕&nbsp; Delete my profile for the organiser / counselor</button>
+        <div class="pvNote">Removes your things-to-do list, counselling notes and neighbours preference — from this device, from your save and from the organiser.</div>
+        <button class="menuBtn" id="pvDelAll">✕&nbsp; Delete everything and start again</button>
+        <div class="pvNote">Removes your save and all its progress, your profile, the ideas and wishes you wrote, what you asked Elara and the record of this visit — then the hall starts fresh on this device.</div>
+        <div id="pvStatus" style="min-height:20px;font-size:13px;margin:8px 0"></div>
+        <p>Play on more than one device? Delete on each of them. For anything else — older records, or messages you sent — use <a id="pvContact">Contact us</a> and say what to remove (add your save key if you have one).</p>
       </div>
     </div>
   </div>
@@ -6255,7 +6316,7 @@ setInterval(()=>{
   if(on){refreshMiniObjs();drawMall(document.getElementById('miniMap'),false);}   // completions show up live
 },220);
 // ---- the menu (M / C / Esc): one card, four pages — map, fountain, controls, credits
-const MENU_PAGES=['fountain','map','shop','save','controls','credits'];
+const MENU_PAGES=['fountain','map','shop','save','controls','credits','privacy'];
 let menuPage=null;                                 // which page is up, or null when the menu is closed
 function openMenu(page){
   document.exitPointerLock&&document.exitPointerLock();
@@ -6443,7 +6504,7 @@ async function tdSubmit(){
   inp.value='';
   const t=loadTodo();t.push({text:text,at:Date.now()});saveTodo(t);renderTodo();
   if(wishBoardRefresh)wishBoardRefresh();                            // the Ideas-room board shows it at once
-  api({a:'wish',text}).then(()=>{if(wishBoardRefresh)wishBoardRefresh();});   // and for everyone, once live
+  api({a:'wish',text,key:accountKey()||''}).then(()=>{if(wishBoardRefresh)wishBoardRefresh();});   // and for everyone, once live (with the save key: the Privacy page's delete reaches it)
   const talk=document.getElementById('tdTalk'),who=document.getElementById('tdWho'),cap=document.getElementById('tdCap'),ob=document.getElementById('tdObj');
   talk.style.display='block';ob.style.display='none';who.textContent='';cap.textContent='… the water thinks it over …';
   const tok=++_dlgTok;
@@ -8631,7 +8692,7 @@ async function ecSend(){
       ||(j.error&&('('+j.error.message+')'))||'…';
     ecHist.push({role:'model',parts:[{text:out}]});
     wait.textContent='Elara: '+out;
-    api({a:'asked',vid:visitId(),q:text,ans:out});   // kept for the Organiser Room's ASKED ELARA board
+    api({a:'asked',vid:visitId(),q:text,ans:out,key:accountKey()||''});   // kept for the Organiser Room's ASKED ELARA board (with the save key: the Privacy page's delete reaches it)
     // step out of the way while she answers (her lips move to the words), then come back for the next question
     // read aloud, pipelined: the first sentence plays while the rest is still synthesizing
     const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(out);
@@ -9900,6 +9961,42 @@ document.getElementById('ctContact').onclick=()=>{
   if(menuPage)closeMenu(false);
   openSubmitModal();
 };
+// ---- PRIVACY / TERMS: delete your own data (2026-09-28, asked for). The server asks for proof it is yours — the save
+// key, the profile id and this browser's visit id — and deletes (api a:'forget'); then this device forgets too.
+// Two clicks, like deleting an idea. Nothing local is touched unless the server said yes.
+document.getElementById('pvContact').onclick=()=>{ if(menuPage)closeMenu(false); openSubmitModal(); };
+function pvStatus(t,ok){ const el=document.getElementById('pvStatus'); if(el){ el.textContent=t; el.style.color=ok?'#b6ff9c':'#ffb0a0'; } }
+function pvTwoStep(id,run){
+  const btn=document.getElementById(id), label=btn.innerHTML; let armed=false, t=null;
+  const reset=()=>{ armed=false; btn.innerHTML=label; btn.style.borderLeftColor=''; };
+  btn.onclick=()=>{
+    if(btn.disabled)return;
+    if(!armed){ armed=true; btn.textContent='Are you sure? Click again — this can’t be undone'; btn.style.borderLeftColor='#ffd27f';
+      t=setTimeout(reset,6000); return; }
+    clearTimeout(t); reset(); run(btn);
+  };
+}
+async function pvForget(what,btn){
+  let pid='';try{pid=localStorage.getItem('atd:pid')||'';}catch(e){}
+  btn.disabled=true; pvStatus('Deleting…',true);
+  const r=await api({a:'forget',what,key:accountKey()||'',pid,vids:[visitId()]});
+  btn.disabled=false;
+  if(!(r&&r.ok)){ pvStatus(r?('Nothing was deleted — the server said: '+(r.error||'no'))
+                             :'Could not reach the server — nothing was deleted. Try again, or use Contact us.',false); return; }
+  if(what==='profile'){
+    try{ ['atd:todo','atd:counsel','atd:neighbours'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
+    try{ if(wishBoardRefresh)wishBoardRefresh(); }catch(e){}
+    pvStatus('Your profile for the organiser / counselor is deleted.',true);
+    return;
+  }
+  const wipe=st=>{ try{ const ks=[]; for(let i=0;i<st.length;i++){ const k=st.key(i); if(k&&(k.indexOf('atd:')===0||k.indexOf('delivery:done:')===0))ks.push(k); }
+    ks.forEach(k=>st.removeItem(k)); }catch(e){} };
+  wipe(localStorage); wipe(sessionStorage);                  // no key left, so nothing is pushed back before the reload
+  pvStatus('Everything is deleted. The hall starts again in a moment…',true);
+  setTimeout(()=>location.replace(location.pathname),2500);
+}
+pvTwoStep('pvDelProfile',b=>pvForget('profile',b));
+pvTwoStep('pvDelAll',b=>pvForget('all',b));
 document.getElementById('fsBtn').onclick=()=>{
   if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
   else document.documentElement.requestFullscreen().catch(()=>{});
