@@ -29,6 +29,12 @@
   #hud{position:fixed;inset:0;pointer-events:none}
   #cross{position:fixed;left:50%;top:50%;width:30px;height:30px;margin:-4px 0 0 -14px;pointer-events:none;display:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.85))}   /* screen centre: a dot; the fingertip when something is clickable; a ring when an elevator button is aimed */
   #cross.on{display:block}
+  /* your two hands (2026-09-29): 1 fists · 2 pistol, bottom left */
+  #vmSlots{position:fixed;left:18px;bottom:16px;display:none;gap:16px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:#8fa3bf;text-shadow:0 1px 3px rgba(0,0,0,.95);pointer-events:none}
+  #vmSlots.on{display:flex}
+  #vmSlots span.on{color:var(--cyan)}
+  body.touch #vmSlots,body.qOpen #vmSlots{display:none!important}
   #cross svg{width:100%;height:100%;fill:#fff}
   #cross .handSvg{display:none} #cross.hand .handSvg{display:block} #cross.hand .dotSvg{display:none}
   #cross .dotSvg{transition:transform .12s} #cross .dotSvg .ring{fill:none;stroke:#fff;stroke-width:1.3;opacity:.55}
@@ -167,6 +173,7 @@
 <div id="app"></div>
 
 <div id="hud">
+  <div id="vmSlots"><span data-s="1">1&nbsp; Fists</span><span data-s="2" class="on">2&nbsp; Pistol</span></div>
   <div id="cross"><svg class="dotSvg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><circle class="ring" cx="12" cy="12" r="6.5"/></svg><svg class="handSvg" viewBox="0 0 24 24"><path d="M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></svg></div>
   <div id="prompt"><span id="promptText"></span></div>
   <div id="subtitle"></div>
@@ -344,6 +351,8 @@
           <b style="color:#fff;text-align:right">WASD</b><span>Walk</span>
           <b style="color:#fff;text-align:right">Mouse</b><span>Look around</span>
           <b style="color:#fff;text-align:right">E</b><span>Interact / enter a game</span>
+          <b style="color:#fff;text-align:right">Click</b><span>Shoot or punch — or use what you aim at</span>
+          <b style="color:#fff;text-align:right">1 · 2</b><span>Fists · pistol</span>
           <b style="color:#fff;text-align:right">Shift</b><span>Jog</span>
           <b style="color:#fff;text-align:right">Space</b><span>Jump</span>
           <b style="color:#fff;text-align:right">M</b><span>Map &amp; tracking</span>
@@ -1683,17 +1692,16 @@ const ANNEXE={x0:-76,x1:15,z0:-166,z1:-52,H:7,   // z0 was -118 (2026-09-20): th
 // the four new characters, one to a space, at life size. Their source files run to hundreds of
 // megabytes, so nothing loads until you are actually inside the space.
 const GUESTS=[
-  {id:'luke',    file:'luke_cage_power_man.glb', name:'LUKE CAGE',    cx:-51,cz:-63, col:0xff9f6a},
-  // The same soldier twice, one behind the other, to see what optimizing a bought export costs and saves
-  // (2026-09-18): space 03 is the rebuilt one, space 13 the file exactly as it came. tools/gltf/optimize-swat.js
-  // makes the rebuild — 158 MB → 11.5 MB, 344k → 230k triangles — and says there what went and why it could.
+  {id:'brawler', file:'brawler_optimized.glb', name:'THE BRAWLER',  cx:-51,cz:-63, col:0xff9f6a},   // renamed 2026-09-29 (asked for): no character's name on the signs (Steam)
+  // The soldier rebuilt small (2026-09-18): tools/gltf/optimize-swat.js makes it — 158 MB → 11.5 MB, 344k → 230k
+  // triangles — and says there what went and why it could. Space 13 showed the file exactly as it came beside it until
+  // 2026-09-29, when it was taken out (asked for); swat_blend.glb itself stays — SWAT · UNMASKED wears it.
   {id:'swat_opt',file:'swat_optimized.glb',      name:'SWAT SOLDIER OPTIMIZED', cx:-34,cz:-63, col:0x7fb7ff, sub:'11.5 MB · rebuilt'},
-  {id:'swat',    file:'swat_blend.glb',          name:'ORIGINAL SWAT SOLDIER',  cx:-34,cz:-95, col:0x7fb7ff, sub:'158 MB · as bought'},
   // Jack again, the hall look (no stubble, no gun), wearing the idle / walk / run library one clip at a
   // time: click him (or E) for the next, the number and name show on screen.
-  {id:'jack_looks',file:'jack.glb',              name:'JACK · ANIMATIONS',cx:0,cz:-63, col:0xffd27f, plain:true, hide:/Beard_Transparency|pistolLow/,
+  {id:'jack_looks',file:'jack_hall.glb',share:true,              name:'JACK · ANIMATIONS',cx:0,cz:-63, col:0xffd27f, plain:true, hide:/Beard_Transparency|pistolLow/,
    clipsFrom:'https://lightsmithforge.linkpc.net/junk_lab_files_live/elara_idles.glb', calm:30, lookAt:14, gaze:true},   // calm: standing idles only, arms moving under 30°
-  {id:'scorpion',file:'scorpion.glb',            name:'SCORPION',     cx:-17,cz:-63, col:0x8dff6a},
+  {id:'ninja',   file:'masked_ninja_optimized.glb',            name:'THE MASKED NINJA', cx:-17,cz:-63, col:0x8dff6a},   // renamed 2026-09-29, as above
   // Jack stands in the hall itself, at the north end beside the Ideas board. after:'start' — he is
   // fetched in the background once the START gate is open, never as part of the opening load, and
   // warmed onto the GPU a piece per frame (warmGuest) so his arrival never stalls the game.
@@ -1717,17 +1725,17 @@ const GUESTS=[
    clip:'Idle_Relax', outfits:['cat','secretary','blouse','skirt','under']},   // the keys of OUTFITS, written out: that table is declared further down
   // (spaces 06 and 11 — ELARA · ORIGINAL and ELARA · SECRETARY — were cleared 2026-09-17 for something else; their files are kept)
   // the capture's own character, played from the untrimmed source in the asset library (never copied into the hub)
-  {id:'elara_face',url:SRC+'elara4_facial_animation.glb',  name:'THE FACE CAPTURE',    cx:-51,cz:-79, col:0x9fd8ff, faceYaw:0},
+  {id:'elara_face',url:'assets/people/elara4_facial_animation_optimized.glb',  name:'THE FACE CAPTURE',    cx:-51,cz:-79, col:0x9fd8ff, faceYaw:0},
   // the same swat file again, unmasked, wearing Elara's captured expressions. Only the morph
   // tracks are borrowed, so her own posing emote still drives the body and nothing fights.
-  {id:'swat_face',file:'swat_blend.glb',                   name:'SWAT · UNMASKED',     cx:-34,cz:-79, col:0xc8a0ff,
-   hide:/Balaclava|Helmet/, faceFrom:SRC+'elara4_facial_animation.glb', faceParts:true, alignHead:true,
+  {id:'swat_face',file:'swat_blend_optimized.glb',                   name:'SWAT · UNMASKED',     cx:-34,cz:-79, col:0xc8a0ff,
+   hide:/Balaclava|Helmet/, faceFrom:'assets/people/elara4_facial_animation_optimized.glb', faceParts:true, alignHead:true,
    bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Male'}, lookAt:14, gaze:true, gunAlign:true, headTurn:0.4},   // 2026-09-14: the same idle and turn-to-you as Jack; the rifle follows her forearm
   // Elara's own model with the ActorCore / UE5 idle, walk and run library baked onto her rig.
   // Click her (or press E) to step to the next one; the number and name show on screen.
   // NOTE: the untrimmed elara4 source, not the built model. These clips are baked against elara4's
   // rest pose, and the built model's rest differs enough that the same clips leave her arms out.
-  {id:'elara_clips',url:SRC+'elara4.glb',                   name:'ELARA · TRY IDLES',   cx:  0,cz:-79, col:0x9fe8ff, faceYaw:0,
+  {id:'elara_clips',url:'assets/people/elara4_optimized.glb',                   name:'ELARA · TRY IDLES',   cx:  0,cz:-79, col:0x9fe8ff, faceYaw:0,
    clipsFrom:'https://lightsmithforge.linkpc.net/junk_lab_files_live/elara_idles.glb'},
   // (space 09 — SWAT · RELAX IDLE — was cleared 2026-09-17 as well; swat_blend.glb is kept)
 ];
@@ -2611,12 +2619,13 @@ function* drillSay(text){
     return el>est*2+4; };
   yield 0.3;
 }
-function drillShot(){                                        // a rubber-bullet shot: a sharp crack and a short thump, made on the spot (the fight was silent)
+function drillShot(vol){                                     // a rubber-bullet shot: a sharp crack and a short thump, made on the spot (the fight was silent). vol: 1 unless given (your pistol: half)
+  vol=vol||1;
   try{ const AC=window.AudioContext||window.webkitAudioContext; if(!AC)return; const ctx=DRILL.actx||(DRILL.actx=new AC()); if(ctx.state==='suspended')ctx.resume();
     const t=ctx.currentTime; if(!DRILL.noise){ const b=ctx.createBuffer(1,ctx.sampleRate*0.06,ctx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2); DRILL.noise=b; }
-    const n=ctx.createBufferSource(), f=ctx.createBiquadFilter(), g=ctx.createGain(); n.buffer=DRILL.noise; f.type='bandpass'; f.frequency.value=2400; f.Q.value=0.7; g.gain.value=0.5; n.connect(f).connect(g).connect(ctx.destination); n.start(t);
+    const n=ctx.createBufferSource(), f=ctx.createBiquadFilter(), g=ctx.createGain(); n.buffer=DRILL.noise; f.type='bandpass'; f.frequency.value=2400; f.Q.value=0.7; g.gain.value=0.5*vol; n.connect(f).connect(g).connect(ctx.destination); n.start(t);
     const o=ctx.createOscillator(), og=ctx.createGain(); o.type='sine'; o.frequency.setValueAtTime(180,t); o.frequency.exponentialRampToValueAtTime(50,t+0.08);
-    og.gain.setValueAtTime(0.0001,t); og.gain.exponentialRampToValueAtTime(0.6,t+0.004); og.gain.exponentialRampToValueAtTime(0.0001,t+0.12); o.connect(og).connect(ctx.destination); o.start(t); o.stop(t+0.14);
+    og.gain.setValueAtTime(0.0001,t); og.gain.exponentialRampToValueAtTime(0.6*vol,t+0.004); og.gain.exponentialRampToValueAtTime(0.0001,t+0.12); o.connect(og).connect(ctx.destination); o.start(t); o.stop(t+0.14);
   }catch(e){} }
 function* drillScript(Y,zn,c){
   const bots=drillBots(Y,zn,c); if(bots.length<8){ banner('Optimus could not be copied'); return; }
@@ -2772,6 +2781,298 @@ animated.push({update(dt){
   else if(typeof c==='function'){ let ok=false; try{ ok=c(); }catch(err){ console.warn('drill',err); ok=true; } if(ok)drillNext(); }
   else drillNext();
 }});
+
+/* ============================================================
+   YOUR ARMS — JACK'S BODY, HIS PISTOL, YOUR FISTS (2026-09-29, asked for)
+   First person, you have Jack's body: his own arms and hands at the bottom of the view. 2 (the default) is his pistol,
+   1 is fists. A left click shoots or punches — unless the crosshair is on something you can use (the E prompt): then
+   the click uses it, as it always has. What they hurt is only what is there to be fought: the nightmare (lab level 2,
+   circle 1) and the drill's robots while they fight (circle 2). Anywhere else a shot sparks where it lands (the
+   colliders: walls, piers, the floor you stand on); Elara, Jack and Optimus are never hit.
+   The arms are a SkeletonUtils clone of the hall's Jack — the same parse of jack_hall.glb (guestSource), his materials
+   made plain the same way — cut down to the triangles whose skin belongs to the arm, hand and finger bones (sleeves
+   and cuffs come with them), and drawn in a scene of their own after the world with the depth cleared, so they never
+   sink into a wall. The pistol and its stance are the GUNS ones (gunsArm on this clone), the chest turned so the
+   barrel meets the crosshair 20 m out. The fists are posed here: a two-bone reach (shoulder → elbow → fist) and the
+   fingers curled into the palm; a punch sends one fist out and back, right and left in turn. Not on phones and
+   tablets (no click to shoot with there).
+   ============================================================ */
+const VM={state:null,waitT:0,slot:2,scene:null,cam:null,grp:null,root:null,mixer:null,G:null,act:null,B:null,rest:null,fist:null,
+  eye:null,cd:0,recoil:0,swap:0,swapTo:0,punch:null,side:'L',flash:null,flashT:0,fx:[],bob:0,last:null,noise:null,
+  lower:1,idleT:99,pending:null};                              // lower: 0 up … 1 out of sight; idleT: since the last shot, punch or switch
+// idle: after 3 s without a shot or a punch the hands go down out of sight, and come up with the next one; they go down
+// at once while the crosshair is on something you can use (both 2026-09-29, asked for). down/up: how long each takes.
+const VM_STATS={punchEvery:0.42,out:0.1,back:0.2,shotDmg:1,punchBossDmg:2,reach:1.8,bossRad:0.7,botRad:0.45,botH:1.95,swap:0.3,
+  idle:3,down:0.25,up:0.12};
+const VM_ARM=/^CC_Base_[LR]_(Upperarm|UpperarmTwist0\d|Forearm|ForearmTwist0\d|ElbowShareBone|Hand|Thumb\d|Index\d|Mid\d|Ring\d|Pinky\d)$/;
+// where things sit, in the eye's frame (metres: x right, y up, -z ahead)
+const VM_POSE={view:[0.0,-0.02,0.0],                                   // the whole model, off the eye
+  guardR:[0.16,-0.15,-0.42], guardL:[-0.15,-0.14,-0.40],               // the fists up, in front of the chin
+  hitR:[0.02,0.02,-0.7], hitL:[-0.02,0.02,-0.68],                     // a punch, out toward the crosshair (a touch high, so the fist is seen past its sleeve)
+  poleR:[0.3,-1,0.1], poleL:[-0.3,-1,0.1],                              // which way each elbow bends: down, a little out
+  knuckGuard:[0,0.6,-0.8], knuckHit:[0,0.75,-0.65],                    // which way the knuckles lead: up and on in guard; tipped up in a punch, or the fist hides behind its own cuff
+  aim:[0,0,-20],                                                        // where the barrel meets the crosshair
+  flash:[0.005,0.005,-0.005]};                                          // the muzzle flash off the barrel's tip: 5 mm up, 5 mm to your right, 5 mm on (asked for)
+const _vm1=new THREE.Vector3(),_vm2=new THREE.Vector3(),_vm3=new THREE.Vector3(),_vm4=new THREE.Vector3(),_vm5=new THREE.Vector3(),_vm6=new THREE.Vector3(),
+  _vma=new THREE.Vector3(),_vmb=new THREE.Vector3(),_vmc=new THREE.Vector3(),_vmd=new THREE.Vector3(),
+  _vqa=new THREE.Quaternion(),_vqb=new THREE.Quaternion(),_vqc=new THREE.Quaternion();
+function vmStartLoad(){
+  if(VM.state==='loading'||VM.state==='built'||VM.state==='failed')return; VM.state='loading';
+  guestSource({file:'jack_hall.glb',share:true},gl=>{ try{ vmBuild(gl); }catch(e){ console.warn('arms',e); VM.state='failed'; } },()=>{ VM.state='failed'; });
+}
+function vmBuild(gl){
+  const root=THREE.SkeletonUtils.clone(gl.scene);
+  plainGuest(root); dressGuest(root);
+  root.traverse(o=>{ if(o.isMesh&&o.material&&/Beard_Transparency|pistolLow/.test(o.material.name||''))o.visible=false; });
+  root.updateMatrixWorld(true);
+  let hb=null; root.traverse(o=>{ if(o.isBone&&/^CC_Base_Head/.test(o.name))hb=o; });
+  const hy=hb?hb.getWorldPosition(new THREE.Vector3()).y:1.75;
+  const grp=new THREE.Group(); grp.add(root); grp.scale.setScalar(Math.min(20,Math.max(0.05,GUEST.height/Math.max(0.01,hy+0.12))));   // sized as the hall's Jack is
+  const scn=new THREE.Scene(); scn.add(grp);
+  scn.add(new THREE.HemisphereLight(0xe6eeff,0x4a4038,0.95));
+  const sun=new THREE.DirectionalLight(0xffffff,0.85); sun.position.set(0.5,1,0.7); scn.add(sun);
+  const B={}; root.traverse(o=>{ if(o.isBone){ const n=o.name.replace(/_\d+$/,''); if(!B[n])B[n]=o; } });
+  VM.rest=new Map(); root.traverse(o=>{ if(o.isBone)VM.rest.set(o,o.quaternion.clone()); });   // his rest: the fists start from it every frame
+  vmArmsOnly(root);
+  grp.updateMatrixWorld(true);
+  const eye=new THREE.Vector3(), eL=B.CC_Base_L_Eye, eR=B.CC_Base_R_Eye;
+  if(eL&&eR)eye.addVectors(eL.getWorldPosition(_vm1),eR.getWorldPosition(_vm2)).multiplyScalar(0.5);
+  else if(hb)hb.getWorldPosition(eye).add(_vm1.set(0,0.08,-0.08));
+  const flash=new THREE.Mesh(new THREE.SphereGeometry(0.03,8,6),new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+  flash.visible=false; scn.add(flash);
+  Object.assign(VM,{scene:scn,cam:new THREE.PerspectiveCamera(camera.fov,camera.aspect,0.01,40),grp,root,B,eye,flash,mixer:new THREE.AnimationMixer(root)});
+  vmFistSetup();
+  VM.state='built';
+  vmSetSlot(VM.slot);
+  gunsLoad(()=>{ if(GUNS.state!=='ready'||VM.G)return;
+    const G=gunsArm('you',root,GUEST.height); if(!G)return;
+    G.mount.traverse(o=>{ if(o.isMesh&&o.material)o.material=o.material.clone(); });   // drawn in this scene only
+    for(const m of [G.flash,G.hit]){ scene.remove(m); m.geometry.dispose(); m.material.dispose(); }   // gunsArm's world flashes: this pistol uses VM.flash
+    VM.G=G; VM.act=VM.mixer.clipAction(G.clip); vmSetSlot(VM.slot);
+    try{ renderer.compile(VM.scene,VM.cam); }catch(e){}
+  });
+  try{ renderer.compile(VM.scene,VM.cam); }catch(e){}
+}
+// only what is skinned to the arms: a triangle stays when all three corners belong mostly to an arm, hand or finger bone
+function vmArmsOnly(root){
+  root.traverse(o=>{
+    if(!o.isMesh)return;
+    if(!o.isSkinnedMesh||!o.geometry){ o.visible=false; return; }
+    const g=o.geometry, si=g.attributes.skinIndex, sw=g.attributes.skinWeight, bones=o.skeleton.bones;
+    if(!si||!sw){ o.visible=false; return; }
+    const arm=bones.map(b=>VM_ARM.test((b.name||'').replace(/_\d+$/,''))), get=['getX','getY','getZ','getW'];
+    const n=si.count, isArm=new Uint8Array(n);
+    for(let v=0;v<n;v++){ let best=0,bw=-1; for(let k=0;k<4;k++){ const w=sw[get[k]](v); if(w>bw){ bw=w; best=si[get[k]](v); } } isArm[v]=arm[best]?1:0; }
+    const idx=g.index, groups=g.groups.length?g.groups:[{start:0,count:idx?idx.count:n,materialIndex:0}], out=[], ng=new THREE.BufferGeometry();
+    for(const gr of groups){ const s0=out.length;
+      for(let i=gr.start;i+2<gr.start+gr.count;i+=3){ const a=idx?idx.getX(i):i, b=idx?idx.getX(i+1):i+1, c=idx?idx.getX(i+2):i+2;
+        if(isArm[a]&&isArm[b]&&isArm[c])out.push(a,b,c); }
+      if(out.length>s0)ng.addGroup(s0,out.length-s0,gr.materialIndex); }
+    if(!out.length){ o.visible=false; return; }
+    for(const k in g.attributes)ng.setAttribute(k,g.attributes[k]);
+    for(const k in g.morphAttributes)ng.morphAttributes[k]=g.morphAttributes[k];
+    ng.morphTargetsRelative=g.morphTargetsRelative;
+    ng.setIndex(out); ng.boundingSphere=new THREE.Sphere(new THREE.Vector3(),1e4);
+    o.geometry=ng;
+  });
+}
+// the fists: each arm's bones and lengths, and every finger's curl into the palm (worked out once, from the rest pose)
+function vmFistSetup(){
+  const B=VM.B, wp=b=>b.getWorldPosition(new THREE.Vector3()); VM.fist={};
+  for(const s of ['L','R']){
+    const up=B['CC_Base_'+s+'_Upperarm'], fo=B['CC_Base_'+s+'_Forearm'], ha=B['CC_Base_'+s+'_Hand'];
+    if(!up||!fo||!ha)continue;
+    const F={up,fo,ha,kn:B['CC_Base_'+s+'_Mid1'],L1:wp(up).distanceTo(wp(fo)),L2:wp(fo).distanceTo(wp(ha)),curl:[]};
+    const i1=B['CC_Base_'+s+'_Index1'], p1=B['CC_Base_'+s+'_Pinky1'], m1=B['CC_Base_'+s+'_Mid1'];
+    if(i1&&p1&&m1){
+      // the palm: along the hand × across the knuckles, turned to face in (he rests facing -z, his right to +x: the right palm faces -x)
+      const n=new THREE.Vector3().crossVectors(wp(m1).sub(wp(ha)),wp(i1).sub(wp(p1))).normalize();
+      if((s==='R'&&n.x>0)||(s==='L'&&n.x<0))n.negate();
+      for(const f of ['Index','Mid','Ring','Pinky'])for(let k=1;k<=3;k++){
+        const b=B['CC_Base_'+s+'_'+f+k], c=B['CC_Base_'+s+'_'+f+(k+1)]; if(!b)continue;
+        const dir=(c?wp(c).sub(wp(b)):wp(b).sub(wp(b.parent))).normalize();
+        const axis=new THREE.Vector3().crossVectors(dir,n).normalize().applyQuaternion(b.getWorldQuaternion(new THREE.Quaternion()).invert());
+        F.curl.push({b,q:VM.rest.get(b).clone().multiply(new THREE.Quaternion().setFromAxisAngle(axis,[1.3,1.55,1.1][k-1]))});   // dir turned about dir×n goes toward n: into the palm
+      }
+      // the thumb wraps over the curled index and middle fingers: with the fingers curled, its joints are aimed at the
+      // middle of their second joints, a little toward the palm; that pose (relative to the hand) is kept like the curls
+      for(const c of F.curl)c.b.quaternion.copy(c.q); ha.updateMatrixWorld(true);
+      const t1=B['CC_Base_'+s+'_Thumb1'], t2=B['CC_Base_'+s+'_Thumb2'], t3=B['CC_Base_'+s+'_Thumb3'], i2=B['CC_Base_'+s+'_Index2'], m2=B['CC_Base_'+s+'_Mid2'];
+      if(t1&&t2&&t3&&i2&&m2){
+        const T=wp(i2).add(wp(m2)).multiplyScalar(0.5).addScaledVector(n,0.012);
+        vmAim(t1,t2,T); vmAim(t2,t3,T);
+        for(const b of [t1,t2])F.curl.push({b,q:b.quaternion.clone()});
+      }
+      for(const [b,q] of VM.rest)b.quaternion.copy(q); VM.root.updateMatrixWorld(true);   // back to his rest
+    }
+    VM.fist[s]=F;
+  }
+}
+// two bones: the upper arm to the elbow, the forearm to the fist; the elbow bends toward the pole
+function vmReach(F,target,pole,knuck){
+  const S=F.up.getWorldPosition(_vm1), d=_vm2.subVectors(target,S), L1=F.L1, L2=F.L2;
+  const len=Math.max(0.05,Math.min(d.length(),(L1+L2)*0.999)); d.normalize();
+  const a=(L1*L1-L2*L2+len*len)/(2*len), h=Math.sqrt(Math.max(0,L1*L1-a*a));
+  const perp=_vm3.copy(pole).addScaledVector(d,-pole.dot(d)).normalize();
+  const E=_vm4.copy(S).addScaledVector(d,a).addScaledVector(perp,h), T=_vm6.copy(S).addScaledVector(d,len);
+  vmAim(F.up,F.fo,E); vmAim(F.fo,F.ha,T);
+  if(knuck&&F.kn)vmAim(F.ha,F.kn,_vm6.copy(T).add(knuck));        // the wrist: the knuckles (middle finger's base) lead
+}
+function vmAim(b,child,to){                                    // the least turn that puts `child` on the line from b to `to`
+  const p=b.getWorldPosition(_vma), c=child.getWorldPosition(_vmb);
+  const r=_vqa.setFromUnitVectors(_vmc.subVectors(c,p).normalize(),_vmd.subVectors(to,p).normalize());
+  const wq=b.getWorldQuaternion(_vqb), pq=b.parent.getWorldQuaternion(_vqc);
+  b.quaternion.copy(pq.invert().multiply(r.multiply(wq))); b.updateMatrixWorld(true);
+}
+function vmSetSlot(n){
+  VM.slot=n;
+  if(VM.G)VM.G.mount.visible=(n===2);
+  if(VM.act){ if(n===2){ VM.act.reset(); VM.act.enabled=true; VM.act.setEffectiveWeight(1); VM.act.play(); } else VM.act.stop(); }
+  if(!(n===2&&VM.G)&&VM.rest)for(const [b,q] of VM.rest)b.quaternion.copy(q);   // the fists start from his rest, not from the stance
+}
+function vmSlotsHud(n){ const el=document.getElementById('vmSlots'); if(el)el.querySelectorAll('span').forEach(x=>x.classList.toggle('on',+x.dataset.s===n)); }
+function vmPick(n){                                           // 1 · 2: down, change, up
+  if(VM.state!=='built'||VM.swapTo===n||(VM.slot===n&&!VM.swapTo))return;
+  VM.swap=VM_STATS.swap; VM.swapTo=n; VM.punch=null; VM.idleT=0; vmSlotsHud(n);   // the new hand comes up to be seen, then rests like any other
+}
+function vmUse(){                                              // a click with nothing to use under the crosshair
+  if(VM.state!=='built'||TOUCH.on||VM.swap>0)return;
+  VM.idleT=0;
+  const act=(VM.slot===2&&VM.G)?'shoot':'punch';
+  if(VM.lower>0.15){ VM.pending=act; return; }                  // down out of sight: it comes up first, and the shot or punch goes as it arrives (vmUpdate)
+  if(act==='shoot')vmShoot(); else vmPunch();
+}
+function vmShoot(){                                            // no limit on how fast: every click is a shot (2026-09-29, asked for)
+  VM.recoil=1; VM.flashT=0.05; VM.flash.visible=true;
+  vmSound('shot');
+  const o=camera.getWorldPosition(new THREE.Vector3()), d=new THREE.Vector3(0,0,-1).applyQuaternion(camera.getWorldQuaternion(_vqa)).normalize();
+  const hit=vmRay(o,d,GUN_STATS.range), end=o.clone().addScaledVector(d,hit.t);
+  if(VM.G){ const m=VM.G.mount.localToWorld(VM.G.muzzle.clone()).add(_vm6.fromArray(VM_POSE.flash)); vmStreak(camera.localToWorld(m),end); }   // from the muzzle as you see it
+  if(hit.what==='boss'){ const B=hit.target; B.hp=Math.max(0,B.hp-VM_STATS.shotDmg); vmSpark(end,0.3,0xffb070); if(B.hp<=0&&!B.dying){ B.dying=0.001; banner('The nightmare is gone'); } }
+  else if(hit.what==='bot'){ const T=hit.target; T.hits=(T.hits||0)+1; vmSpark(end,0.25,0xffb070); if(T.hits>=3)drillDown(T); }
+  else if(hit.what==='wall')vmSpark(end,0.1,0xffe6b0);
+}
+function vmPunch(){
+  if(VM.cd>0)return; VM.cd=VM_STATS.punchEvery;
+  VM.side=VM.side==='R'?'L':'R'; VM.punch={s:VM.side,t:0,hit:false}; vmSound('whoosh');
+}
+function vmPunchHit(){                                         // the fist at full stretch: what is in front of you, within reach
+  const o=camera.getWorldPosition(_vm1), d=_vm2.set(0,0,-1).applyQuaternion(camera.getWorldQuaternion(_vqa)).normalize();
+  const B=GUNS.boss;
+  if(B&&!B.dying&&Math.abs(B.grp.position.y-player.y)<4){ const q=B.grp.position, r=rayToBody(o.x,o.y,o.z,d.x,d.y,d.z,q.x,q.y,q.z,GUN_STATS.bossH);
+    if(r.d2<(VM_STATS.bossRad+0.4)**2&&r.t<VM_STATS.reach+VM_STATS.bossRad){ B.hp=Math.max(0,B.hp-VM_STATS.punchBossDmg); vmSpark(o.clone().addScaledVector(d,r.t),0.3,0xffb070); vmSound('thud');
+      if(B.hp<=0&&!B.dying){ B.dying=0.001; banner('The nightmare is gone'); } return; } }
+  if(DRILL.phase==='fight')for(const b of DRILL.bots){ if(b.down)continue; const q=b.mesh.position; if(Math.abs(q.y-player.y)>4)continue;
+    const r=rayToBody(o.x,o.y,o.z,d.x,d.y,d.z,q.x,q.y,q.z,VM_STATS.botH);
+    if(r.d2<(VM_STATS.botRad+0.35)**2&&r.t<VM_STATS.reach+VM_STATS.botRad){ b.hits=(b.hits||0)+1; vmSpark(o.clone().addScaledVector(d,r.t),0.25,0xffb070); vmSound('thud'); if(b.hits>=3)drillDown(b); return; } }
+}
+// what a shot meets first: a wall (or the floor you stand on), the nightmare, or a robot in the drill — never a friend
+function vmRay(o,d,maxT){
+  let best={t:vmWallT(o,d,maxT),what:'wall',target:null}; if(best.t>=maxT)best.what=null;
+  const B=GUNS.boss;
+  if(B&&!B.dying&&Math.abs(B.grp.position.y-player.y)<4){ const q=B.grp.position, r=rayToBody(o.x,o.y,o.z,d.x,d.y,d.z,q.x,q.y,q.z,GUN_STATS.bossH);
+    if(r.d2<VM_STATS.bossRad**2&&r.t<best.t)best={t:r.t,what:'boss',target:B}; }
+  if(DRILL.phase==='fight')for(const b of DRILL.bots){ if(b.down)continue; const q=b.mesh.position; if(Math.abs(q.y-player.y)>4)continue;
+    const r=rayToBody(o.x,o.y,o.z,d.x,d.y,d.z,q.x,q.y,q.z,VM_STATS.botH);
+    if(r.d2<VM_STATS.botRad**2&&r.t<best.t)best={t:r.t,what:'bot',target:b}; }
+  return best;
+}
+function vmWallT(o,d,maxT){                                    // the colliders as boxes (as hotBlocked reads them), and the floor underfoot
+  let best=maxT;
+  if(d.y<-1e-4){ const t=(player.y+0.02-o.y)/d.y; if(t>0&&t<best)best=t; }
+  for(const b of BUILDINGS){
+    if(b.off)continue;
+    const hw=b.hw!==undefined?b.hw:(b.rad||0), hd=b.hd!==undefined?b.hd:(b.rad||0);   // a round one (rad) as the box around it
+    if(!(hw>0&&hd>0))continue;
+    const y0=b.y0||0, y1=b.h!==undefined?b.h:(b.y0!==undefined?y0+12:GROUND_TOP);
+    if(o.x>=b.x-hw&&o.x<=b.x+hw&&o.z>=b.z-hd&&o.z<=b.z+hd&&o.y>=y0&&o.y<=y1)continue;   // standing in it (a doorway): not a wall for this shot
+    let t0=0,t1=best,ok=true;
+    for(const [oa,da,lo,hi] of [[o.x,d.x,b.x-hw,b.x+hw],[o.y,d.y,y0,y1],[o.z,d.z,b.z-hd,b.z+hd]]){
+      if(Math.abs(da)<1e-9){ if(oa<lo||oa>hi){ ok=false; break; } continue; }
+      let ta=(lo-oa)/da, tb=(hi-oa)/da; if(ta>tb){ const x=ta; ta=tb; tb=x; }
+      if(ta>t0)t0=ta; if(tb<t1)t1=tb; if(t0>t1){ ok=false; break; }
+    }
+    if(ok&&t0<best)best=t0;
+  }
+  return best;
+}
+function vmStreak(from,to){
+  const len=from.distanceTo(to); if(len<0.05)return;
+  const m=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.02,len),new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}));
+  m.position.copy(from).lerp(to,0.5); m.lookAt(to); m.frustumCulled=false; scene.add(m); zoneTag(m,0); VM.fx.push({m,t:0.1,t0:0.1});
+}
+function vmSpark(at,r,color){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(r,8,6),new THREE.MeshBasicMaterial({color,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+  m.position.copy(at); m.frustumCulled=false; scene.add(m); zoneTag(m,0); VM.fx.push({m,t:0.12,t0:0.12});
+}
+function vmSound(kind){
+  if(kind==='shot'){ drillShot(0.5); return; }                  // the drill's crack and thump, at half its volume (2026-09-29, asked for)
+  try{ const AC=window.AudioContext||window.webkitAudioContext; if(!AC)return; const ctx=DRILL.actx||(DRILL.actx=new AC()); if(ctx.state==='suspended')ctx.resume();
+    const t=ctx.currentTime;
+    if(!VM.noise){ const b=ctx.createBuffer(1,ctx.sampleRate*0.25|0,ctx.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; VM.noise=b; }
+    if(kind==='whoosh'){ const n=ctx.createBufferSource(), f=ctx.createBiquadFilter(), g=ctx.createGain(); n.buffer=VM.noise; f.type='bandpass'; f.Q.value=1.2;
+      f.frequency.setValueAtTime(500,t); f.frequency.exponentialRampToValueAtTime(1600,t+0.14);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.22,t+0.04); g.gain.exponentialRampToValueAtTime(0.0001,t+0.18);
+      n.connect(f).connect(g).connect(ctx.destination); n.start(t); n.stop(t+0.2); }
+    else { const o=ctx.createOscillator(), g=ctx.createGain(); o.type='sine'; o.frequency.setValueAtTime(140,t); o.frequency.exponentialRampToValueAtTime(55,t+0.1);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.7,t+0.005); g.gain.exponentialRampToValueAtTime(0.0001,t+0.16);
+      o.connect(g).connect(ctx.destination); o.start(t); o.stop(t+0.18); }
+  }catch(e){}
+}
+function vmUpdate(dt){
+  if(!VM.state){ if(gateDone&&!TOUCH.on&&state.phase==='play'){ VM.state='waiting'; VM.waitT=0; } return; }
+  if(VM.state==='waiting'){ VM.waitT+=dt; if(GUEST_SRC['assets/people/jack_hall.glb']||VM.waitT>45)vmStartLoad(); return; }   // the hall's Jack reads the same file just after START: one parse
+  if(VM.state!=='built')return;
+  for(const f of VM.fx){ f.t-=dt; f.m.material.opacity=Math.max(0,f.t/f.t0)*0.9; if(f.t<=0){ scene.remove(f.m); f.m.geometry.dispose(); f.m.material.dispose(); f.dead=true; } }
+  if(VM.fx.some(f=>f.dead))VM.fx=VM.fx.filter(f=>!f.dead);
+  const hud=document.getElementById('vmSlots'); if(hud&&!hud.classList.contains('on')){ hud.classList.add('on'); vmSlotsHud(VM.swapTo||VM.slot); }
+  VM.cd=Math.max(0,VM.cd-dt); VM.recoil=Math.max(0,VM.recoil-dt*7);
+  if(VM.flashT>0){ VM.flashT-=dt; if(VM.flashT<=0)VM.flash.visible=false; }
+  let drop=0;
+  if(VM.swap>0){ VM.swap=Math.max(0,VM.swap-dt); const u=1-VM.swap/VM_STATS.swap; drop=Math.sin(u*Math.PI)*0.4; if(VM.swapTo&&u>=0.5){ vmSetSlot(VM.swapTo); VM.swapTo=0; } }
+  // resting: down after VM_STATS.idle s without a shot or a punch, and at once while the crosshair is on something to use;
+  // up again for the next shot or punch (a click while down waits for the hands to arrive, then goes)
+  VM.idleT+=dt;
+  const down=!!curHot||(!VM.pending&&VM.idleT>VM_STATS.idle);
+  if(curHot){ VM.pending=null; VM.idleT=Math.max(VM.idleT,VM_STATS.idle+0.01); }   // and they stay down after you look away, until the next shot or punch
+  VM.lower=down?Math.min(1,VM.lower+dt/VM_STATS.down):Math.max(0,VM.lower-dt/VM_STATS.up);
+  if(VM.pending&&VM.lower<0.1){ const a=VM.pending; VM.pending=null; VM.idleT=0; if(a==='shoot')vmShoot(); else vmPunch(); }
+  const rest=VM.lower*VM.lower*(3-2*VM.lower); drop+=rest*0.5;
+  // a little sway as you walk
+  const p=player.pos; let sp=0; if(VM.last)sp=Math.hypot(p.x-VM.last.x,p.z-VM.last.z)/Math.max(dt,1e-3); VM.last={x:p.x,z:p.z};
+  const k=Math.min(1,sp/5); VM.bob+=dt*(3+sp*1.3);
+  const V=VM_POSE.view, sx=V[0]+Math.cos(VM.bob*0.5)*0.008*k, sy=V[1]-drop-Math.abs(Math.sin(VM.bob*0.5))*0.008*k, sz=V[2]+VM.recoil*0.035;
+  const g=VM.grp; g.position.set(sx-VM.eye.x,sy-VM.eye.y,sz-VM.eye.z); g.rotation.x=VM.recoil*0.07; g.updateMatrixWorld(true);
+  if(VM.slot===2&&VM.G){
+    VM.mixer.update(dt); VM.root.updateMatrixWorld(true);
+    const G=VM.G; G.mount.localToWorld(_vm1.copy(G.muzzle));
+    _vm2.copy(G.barrel).applyQuaternion(G.mount.getWorldQuaternion(_vqa)).normalize();
+    _vm3.fromArray(VM_POSE.aim).sub(_vm1).normalize();
+    gunsTurnBone(G.spine,_vm2,_vm3,1);                            // the barrel onto the crosshair
+    if(VM.flashT>0)G.mount.localToWorld(VM.flash.position.copy(G.muzzle)).add(_vm4.fromArray(VM_POSE.flash));
+    return;
+  }
+  for(const s of ['R','L']){ const F=VM.fist&&VM.fist[s]; if(!F)continue;   // from his rest: the arm, then the fingers into a fist
+    for(const b of [F.up,F.fo,F.ha])b.quaternion.copy(VM.rest.get(b));
+    for(const c of F.curl)c.b.quaternion.copy(c.q); }
+  VM.root.updateMatrixWorld(true);
+  const P=VM.punch;
+  for(const s of ['R','L']){ const F=VM.fist&&VM.fist[s]; if(!F)continue;
+    const gd=VM_POSE['guard'+s], ht=VM_POSE['hit'+s];
+    let u=0; if(P&&P.s===s){ u=P.t<VM_STATS.out?P.t/VM_STATS.out:Math.max(0,1-(P.t-VM_STATS.out)/VM_STATS.back); u=u*u*(3-2*u); }
+    const breathe=Math.sin(state.time*1.7+(s==='R'?0:1.3))*0.006;
+    _vm5.set(gd[0]+(ht[0]-gd[0])*u+sx, gd[1]+(ht[1]-gd[1])*u+breathe+sy, gd[2]+(ht[2]-gd[2])*u+sz);   // the fists go where the body goes (sway, the swap's dip)
+    const kg=VM_POSE.knuckGuard, kh=VM_POSE.knuckHit;
+    vmReach(F,_vm5,new THREE.Vector3().fromArray(VM_POSE['pole'+s]).normalize(),
+      new THREE.Vector3(kg[0]+(kh[0]-kg[0])*u,kg[1]+(kh[1]-kg[1])*u,kg[2]+(kh[2]-kg[2])*u).normalize().multiplyScalar(0.1));
+  }
+  if(P){ P.t+=dt; if(!P.hit&&P.t>=VM_STATS.out){ P.hit=true; vmPunchHit(); } if(P.t>VM_STATS.out+VM_STATS.back)VM.punch=null; }
+}
+function vmRender(){                                           // after the world: the depth cleared, the arms on top
+  if(VM.state!=='built'||TOUCH.on||state.phase!=='play'||VM.lower>=0.999)return;   // resting out of sight: nothing to draw
+  const c=VM.cam; if(c.fov!==camera.fov||c.aspect!==camera.aspect){ c.fov=camera.fov; c.aspect=camera.aspect; c.updateProjectionMatrix(); }
+  const ac=renderer.autoClear; renderer.autoClear=false; renderer.clearDepth(); renderer.render(VM.scene,c); renderer.autoClear=ac;
+}
 
 const WALKING=/Walk|Run|Jog|Sprint|Catwalk/i;
 const BREASTS=[];
@@ -9498,6 +9799,8 @@ addEventListener('keydown',e=>{
   if(e.code==='Space')e.preventDefault();
   if(e.code==='KeyE'&&state.phase==='play'&&curHot&&!paused&&!anyModalOpen())curHot.fn();
   if(e.code==='KeyT'&&tour.active)skipTour();
+  if((e.code==='Digit1'||e.code==='Numpad1')&&state.phase==='play'&&!paused&&!anyModalOpen())vmPick(1);   // fists
+  if((e.code==='Digit2'||e.code==='Numpad2')&&state.phase==='play'&&!paused&&!anyModalOpen())vmPick(2);   // the pistol
   if(e.code==='KeyM'&&state.phase==='play'&&!tour.active){          // map & objectives
     if(menuPage)(menuPage==='map'?closeMenu(false):openMenu('map'));
     else if(!anyModalOpen())openMenu('map');
@@ -9568,8 +9871,10 @@ addEventListener('mousedown',e=>{
   if(e.button!==0)return;                 // only a LEFT click grabs the pointer / fires hotspots
   if(e.target.closest('#music,.modal,#startGate'))return;
   if(!look.locked){if(!goFullscreen())lockPointer();return;}
-  // every hotspot fires on a plain left click as well as E (the hand crosshair shows when one is in reach)
+  // every hotspot fires on a plain left click as well as E (the hand crosshair shows when one is in reach);
+  // with nothing to use under the crosshair the click shoots or punches (2026-09-29, asked for — see YOUR ARMS)
   if(state.phase==='play'&&curHot&&!paused&&!anyModalOpen())curHot.fn();
+  else if(state.phase==='play'&&!paused&&!anyModalOpen())vmUse();
 });
 // suppress the browser menu over the 3D world only — menus, modals and inputs keep
 // their native right-click (copy / paste in the key and wish fields)
@@ -9912,6 +10217,7 @@ function update(dt){
   updatePeople(dt);
   feetUpdate(dt);                                          // after every mixer: the toes lie flat unless something is walking
   gunsUpdate(dt);                                          // then the pistols: turn, lean onto the target, fire (developer page)
+  vmUpdate(dt);                                            // your arms: pistol or fists (YOUR ARMS)
 }
 function updateCamera(dt){
   camera.position.set(player.pos.x,EYE+player.y,player.pos.z);
@@ -9930,6 +10236,7 @@ function frame(now){
   update(dt);updateCamera(dt);
   if(TOUCH.sync)TOUCH.sync();
   renderer.render(scene,camera);
+  vmRender();                                         // your arms, over the world (YOUR ARMS)
   requestAnimationFrame(frame);
 }
 
