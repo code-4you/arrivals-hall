@@ -6360,6 +6360,7 @@ async function ocSend(text){
   if(OCHAT.busy)return; OCHAT.busy=true;
   ocBubble('you',text);
   const m=document.getElementById('fountainModal'); m.style.display='none'; document.body.classList.remove('qOpen');   // out of the way while he answers
+  try{ const f=document.activeElement; if(f&&f.blur)f.blur(); }catch(e){} lockPointer();   // Send hands the mouse straight back: crosshair and movement, no second click (2026-09-30, asked for); ocShow frees it again when the chat returns
   let backed=false;
   const back=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(state.phase==='play'&&!paused)ocShow(); };
   const away=()=>{ if(backed)return; backed=true; OCHAT.busy=false; };  // (GA) what he did moved you: the chat stays away — E on him to talk again
@@ -9059,7 +9060,10 @@ async function ecSend(){
   const wait=ecBubble(who,'…');
   const modal=document.getElementById('elaraModal');
   modal.style.display='none';ecSpeaking=true;                  // step aside right away; she answers out loud, then the panel returns
-  const back=()=>{ if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ modal.style.display='flex'; setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
+  // the mouse (2026-09-30, asked for): Send hands it straight back — crosshair and movement, no second click — and when the
+  // pane returns it is set free again for the pane (the window stays fullscreen: only the pointer lock is let go)
+  try{inp.blur();}catch(e){} lockPointer();
+  const back=()=>{ if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ modal.style.display='flex'; document.exitPointerLock&&document.exitPointerLock(); setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
   const away=()=>{ ecSpeaking=false; elaraSpeakStart=null; };          // (GA) what they did moved you: the pane stays away — E on them to talk again
   if(ecSource===null){
     try{ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000);}
