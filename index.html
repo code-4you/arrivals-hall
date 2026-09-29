@@ -405,7 +405,7 @@
           <li><b>Your save</b> — a save key and your progress: missions, stories heard, doors opened, credits and what you add in the fountain app. <span class="pvWhy">Why: so you can keep playing, here or on another device.</span></li>
           <li><b>Your profile for the organiser / counselor</b> — your things-to-do list, counselling notes and neighbours preference. <span class="pvWhy">Why: so the organiser can read it and help you. Only the organiser can see it.</span></li>
           <li><b>Ideas you post</b> — shown to everyone on the Ideas board. <span class="pvWhy">Why: that is what the board is for. They are kept with your save so you can delete your own.</span></li>
-          <li><b>What you ask Elara, and her replies</b> — seen only by the organiser. <span class="pvWhy">Why: to learn what people want from the hall.</span></li>
+          <li><b>What you ask Elara or Optimus, and their replies</b> — seen only by the organiser. <span class="pvWhy">Why: to learn what people want from the hall.</span></li>
           <li><b>Visits</b> — your IP address, the country and region it comes from, when you were here and which rooms you spent time in. <span class="pvWhy">Why: to stop abuse — limits are counted per address, for example 60 AI chats an hour — and to count visitors by place. The boards show places, never IP addresses.</span></li>
           <li><b>Messages</b> you send with Contact us — your name, link and message. <span class="pvWhy">Why: to reply to you.</span></li>
           <li><b>On your own device</b> — your browser keeps your progress, settings and where you last stood. That stays on your device.</li>
@@ -431,7 +431,7 @@
         <button class="menuBtn" id="pvDelProfile">✕&nbsp; Delete my profile for the organiser / counselor</button>
         <div class="pvNote">Removes your things-to-do list, counselling notes and neighbours preference — from this device, from your save and from the organiser.</div>
         <button class="menuBtn" id="pvDelAll">✕&nbsp; Delete everything and start again</button>
-        <div class="pvNote">Removes your save and all its progress, your profile, the ideas and wishes you wrote, what you asked Elara and the record of this visit — then the hall starts fresh on this device.</div>
+        <div class="pvNote">Removes your save and all its progress, your profile, the ideas and wishes you wrote, what you asked Elara or Optimus and the record of this visit — then the hall starts fresh on this device.</div>
         <div id="pvStatus" style="min-height:20px;font-size:13px;margin:8px 0"></div>
         <p>Play on more than one device? Delete on each of them. For anything else — older records, or messages you sent — use <a id="pvContact">Contact us</a> and say what to remove (add your save key if you have one).</p>
       </div>
@@ -6034,6 +6034,8 @@ async function ocSend(text){
     if(!reply)reply=(j.error&&('('+j.error.message+')'))||'…';
   }catch(e){ reply='I lost the thread — is the network alright?'; }
   OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,ask:ask,idea:idea})}]});
+  // kept like Elara's (2026-09-29, asked for): the Organiser Room's ASKED ELARA & OPTIMUS board, with his question back and any idea he offered
+  api({a:'asked',vid:visitId(),q:text,ans:reply+(ask?' — '+ask:'')+(idea?' [idea offered: '+idea+']':''),key:accountKey()||'',who:'optimus'});
   ocBubble('optimus',reply);
   const k=idea.toLowerCase();
   if(idea&&!OCHAT.offered.has(k)){ OCHAT.offered.add(k); OCHAT.offer={idea:idea.slice(0,240)}; ocBubble('optimus',OC_ASK); }
@@ -8692,7 +8694,7 @@ async function ecSend(){
       ||(j.error&&('('+j.error.message+')'))||'…';
     ecHist.push({role:'model',parts:[{text:out}]});
     wait.textContent='Elara: '+out;
-    api({a:'asked',vid:visitId(),q:text,ans:out,key:accountKey()||''});   // kept for the Organiser Room's ASKED ELARA board (with the save key: the Privacy page's delete reaches it)
+    api({a:'asked',vid:visitId(),q:text,ans:out,key:accountKey()||'',who:'elara'});   // kept for the Organiser Room's ASKED ELARA & OPTIMUS board (with the save key: the Privacy page's delete reaches it)
     // step out of the way while she answers (her lips move to the words), then come back for the next question
     // read aloud, pipelined: the first sentence plays while the rest is still synthesizing
     const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(out);
