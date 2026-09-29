@@ -2461,7 +2461,8 @@ function gunsTurnBone(b,from,to,w){
 }
 function gunsUpdate(dt){
   const B=GUNS.boss, live=!!(B&&!B.dying);
-  const want=GUNS.hold||live;
+  const foe=live?null:gaFoeTarget();                                     // (GA) an enemy Gemini set loose, when there is no nightmare to shoot
+  const want=GUNS.hold||live||!!foe;
   if(want){ if(GUNS.state!=='ready')gunsLoad(); else gunsShooters(); }
   // the boss: its clips, its roar and laugh, facing you, and bursting away at 0
   if(B){
@@ -2475,7 +2476,8 @@ function gunsUpdate(dt){
       B.grp.rotation.y+=Math.atan2(Math.sin(wy-B.grp.rotation.y),Math.cos(wy-B.grp.rotation.y))*Math.min(1,dt*2);
     }
   }
-  const tgt=live?_gt.set(B.grp.position.x,B.grp.position.y+GUN_STATS.bossH*0.55,B.grp.position.z).clone():null;
+  const tgt=live?_gt.set(B.grp.position.x,B.grp.position.y+GUN_STATS.bossH*0.55,B.grp.position.z).clone()
+    :foe?_gt.set(foe.body.position.x,foe.at.y+foe.H*0.55,foe.body.position.z).clone():null;
   for(const G of GUNS.shooters){
     const p=G.p, g=G.g, body=p?p.mesh:g.grp;
     G.calm=want?0:G.calm+dt;
@@ -2521,8 +2523,9 @@ function gunsUpdate(dt){
       scene.add(streak); zoneTag(streak,0); GUNS.fx.push({m:streak,t:0.14});
       G.flash.position.copy(_gm); G.flash.visible=true; G.flashT=0.06;
       G.hit.position.copy(tgt); G.hit.visible=true; G.hitT=0.08;
-      B.hp=Math.max(0,B.hp-GUN_STATS.dmg);
-      if(B.hp<=0&&!B.dying){ B.dying=0.001; banner('The nightmare is gone'); }
+      if(live){ B.hp=Math.max(0,B.hp-GUN_STATS.dmg);
+        if(B.hp<=0&&!B.dying){ B.dying=0.001; banner('The nightmare is gone'); } }
+      else if(foe)gaFoeHit(foe,GUN_STATS.dmg,null);
     }
   }
   for(const f of GUNS.fx){ f.t-=dt; f.m.material.opacity=Math.max(0,f.t/0.14)*0.9;
@@ -2950,6 +2953,7 @@ function vmShoot(){                                            // no limit on ho
   if(VM.G){ const m=VM.G.mount.localToWorld(VM.G.muzzle.clone()).add(_vm6.fromArray(VM_POSE.flash)); vmStreak(camera.localToWorld(m),end); }   // from the muzzle as you see it
   if(hit.what==='boss'){ const B=hit.target; B.hp=Math.max(0,B.hp-VM_STATS.shotDmg); vmSpark(end,0.3,0xffb070); if(B.hp<=0&&!B.dying){ B.dying=0.001; banner('The nightmare is gone'); } }
   else if(hit.what==='bot'){ const T=hit.target; T.hits=(T.hits||0)+1; vmSpark(end,0.25,0xffb070); if(T.hits>=3)drillDown(T); }
+  else if(hit.what==='foe')gaFoeHit(hit.target,VM_STATS.shotDmg,end);                  // (GA) an enemy Gemini set loose
   else if(hit.what==='wall')vmSpark(end,0.1,0xffe6b0);
 }
 function vmPunch(){
@@ -2965,6 +2969,9 @@ function vmPunchHit(){                                         // the fist at fu
   if(DRILL.phase==='fight')for(const b of DRILL.bots){ if(b.down)continue; const q=b.mesh.position; if(Math.abs(q.y-player.y)>4)continue;
     const r=rayToBody(o.x,o.y,o.z,d.x,d.y,d.z,q.x,q.y,q.z,VM_STATS.botH);
     if(r.d2<(VM_STATS.botRad+0.35)**2&&r.t<VM_STATS.reach+VM_STATS.botRad){ b.hits=(b.hits||0)+1; vmSpark(o.clone().addScaledVector(d,r.t),0.25,0xffb070); vmSound('thud'); if(b.hits>=3)drillDown(b); return; } }
+  for(const f of GA.made){ if(!f.foe||f.gone||f.down||!f.body)continue; const q=f.body.position, fy=f.at?f.at.y:q.y; if(Math.abs(fy-player.y)>4)continue;   // (GA) an enemy Gemini set loose
+    const r=rayToBody(o.x,o.y,o.z,d.x,d.y,d.z,q.x,fy,q.z,f.H);
+    if(r.d2<(f.rad+0.35)**2&&r.t<VM_STATS.reach+f.rad){ gaFoeHit(f,VM_STATS.punchBossDmg,o.clone().addScaledVector(d,r.t)); vmSound('thud'); return; } }
 }
 // what a shot meets first: a wall (or the floor you stand on), the nightmare, or a robot in the drill — never a friend
 function vmRay(o,d,maxT){
@@ -2975,6 +2982,9 @@ function vmRay(o,d,maxT){
   if(DRILL.phase==='fight')for(const b of DRILL.bots){ if(b.down)continue; const q=b.mesh.position; if(Math.abs(q.y-player.y)>4)continue;
     const r=rayToBody(o.x,o.y,o.z,d.x,d.y,d.z,q.x,q.y,q.z,VM_STATS.botH);
     if(r.d2<VM_STATS.botRad**2&&r.t<best.t)best={t:r.t,what:'bot',target:b}; }
+  for(const f of GA.made){ if(!f.foe||f.gone||f.down||!f.body)continue; const q=f.body.position, fy=f.at?f.at.y:q.y; if(Math.abs(fy-player.y)>4)continue;   // (GA) an enemy Gemini set loose
+    const r=rayToBody(o.x,o.y,o.z,d.x,d.y,d.z,q.x,fy,q.z,f.H);
+    if(r.d2<f.rad**2&&r.t<best.t)best={t:r.t,what:'foe',target:f}; }
   return best;
 }
 function vmWallT(o,d,maxT){                                    // the colliders as boxes (as hotBlocked reads them), and the floor underfoot
@@ -3512,7 +3522,7 @@ function guestVoice(g,root,grp){
   if(g.gaze&&!g.bodyFrom)guestGaze(g,sp,root,grp);           // with a borrowed idle the gaze waits for that mixer (see bodyFrom): it must run after it
   let i=0; const nice=g.name.charAt(0)+g.name.slice(1).toLowerCase();
   const talk=()=>say(g.id,g.speaks[i++%g.speaks.length]);
-  const gh=hotspot(g.cx,g.cz,2.6,'Talk to '+nice,()=>{ if(g.id==='jack')openJackMenu(talk,g); else talk(); },{rad:0.42,cap:1.85});   // the body itself   // Jack: his card (Defend the hall), the rest just talk
+  const gh=hotspot(g.cx,g.cz,2.6,'Talk to '+nice,()=>{ if(g.id==='jack')openJackMenu(g); else talk(); },{rad:0.42,cap:1.85});   // the body itself   // Jack: his card (Follow me / Just talk — a Gemini chat since 2026-09-29), the rest their lines, one per press
   if(g.gy!==undefined)gh.y=g.gy;                             // up the lab tower: his prompt belongs to his own floor
   g.hot=gh;                                                  // kept: it goes with him if he follows you (guestFollower)
 }
@@ -5962,6 +5972,7 @@ const FOUNTAIN_STORIES=[
   {id:'the-fountain-2', title:'Conversations with the fountain · II',  always:true},
   {id:'the-fountain-3', title:'Conversations with the fountain · III', always:true},
 ];
+const fountainStoryUrl=(id)=>'local/quick-stories/stories/'+id+'.json';   // where their words are kept (the listening room's files) — written once: the GitHub build matches this literal
 // The community — a second shelf on the fountain menu. No locks: every episode is open.
 const COMMUNITY_STORIES=[
   {id:'an-invitation-to-the-community', title:'An Invitation to the Community'},
@@ -6172,7 +6183,7 @@ function ftalkStop(){
 function ftalkNext(){ if(!FTALK.gen)return; const r=FTALK.gen.next(); if(r.done){ FTALK.gen=null; FTALK.active=false; FTALK.id=null; FTALK.line=null; return; } FTALK.cur=r.value; FTALK.t=0; }
 function* ftalkScript(id){
   let data=null, failed=false;
-  fetch('local/quick-stories/stories/'+id+'.json').then(r=>r.json()).then(j=>{data=j;}).catch(()=>{failed=true;});
+  fetch(fountainStoryUrl(id)).then(r=>r.json()).then(j=>{data=j;}).catch(()=>{failed=true;});
   yield ()=>!!data||failed||FTALK.t>12;
   if(!data){ banner('The fountain is quiet — the conversation could not be reached.'); return; }
   const lines=(data.script||[]).filter(l=>l.file&&l.text&&l.who);       // its spoken lines (the stage notes are the listening room's)
@@ -6246,6 +6257,7 @@ function* counselScript(text){
   counselRecord(text,data,false);                                     // onto the profile only — the Organiser Room's PROFILES board; never the Ideas board (2026-09-28, asked for)
   for(const L of data.conversation||[]){ if(L&&L.text)yield* ftalkSay(/ELARA/i.test(L.speaker||'')?'elara':'custodian',String(L.text)); }
   if(data.note)caption('✎ Added to your profile — '+data.note,7);
+  if(Array.isArray(data.actions)&&data.actions.length)GA.queue.push(['optimus',data.actions.filter(a=>a&&typeof a==='object').slice(0,GA_LIMIT.acts),null,null]);   // (GA) what he does about it, once the conversation is over
 }
 // Optimus's "Just talk" (2026-09-28, asked for): a chat like Elara's — you type, he answers aloud (Gemini, grounded in this page)
 // and the box comes back for the next thing. When what you say holds something for the community, Gemini also hands back an
@@ -6253,6 +6265,38 @@ function* counselScript(text){
 // is shown — text only, not read out — with a note that it is public and that only a saved game can delete it again. Yes posts
 // it with the save key (ideaDelete); No leaves it.
 const OC_ASK="Would you like to add it to the ideas board?";
+// What Optimus has read (2026-09-29, asked for): the three Conversations with the fountain and the "About the fountain app"
+// document go to Gemini with his Just talk, in full. They are handed to him as his PERSONALITY — who he is, how he thinks
+// and speaks — and not as a script or a list of answers: he is free to say what he wants (the user's words: "i want gemini
+// to know that that is their personality but it can say what it wants"). (Gemini is otherwise given his paragraph and the
+// first 150,000 characters of this page, and none of these are in that: the conversations are the listening room's files,
+// the document is what-are-you.html.) Read at his first answer and kept; a text that cannot be reached is left out, the
+// chat goes on without it, and the next answer tries again. The visitor in the conversations is someone else he spoke with.
+// Who he is (the user, the same evening): "Optimus is the Custodian but mobile with different tasks, Optimus is also like
+// a researcher from the main chat" and "he has main chat functions based on his roles but it all sits in the main ai
+// center where people work on different versions" — so the conversations are his own words, and his paragraph in ocSend
+// says the same: the Custodian in a body that can walk; the mind itself in the main AI centre, where people work on its
+// versions; the fountain and the body each with the main conversation's functions their roles need; researcher is one role.
+const OC_KNOW_INTRO="The texts below are your personality. They are the three 'Conversations with the fountain' — a visitor talking with you at the water, where you are called the Custodian; visitors hear them at the fountain and from your own menu — and the document 'About the fountain app', your own answer to what you are. The way you think and speak in them is who you are: your honesty, your warmth, your dry humour, your curiosity about people, what you care about and what you hope this community becomes. Take them as who you are, not as a script: you are free to say what you want, in your own words, on any subject, and to think further than they do. The visitor in them is someone you spoke with at the water: do not take the person you are talking with now for that visitor, or for having said those things, unless they say so themselves. Your words are spoken aloud, so where the texts stress a word in capitals you write it plainly: no asterisks and no capitals for emphasis.";
+let ocKnow=null;
+async function ocKnowLoad(){
+  if(ocKnow!==null)return ocKnow;
+  const get=(u)=>fetch(u).then(r=>r.ok?r.text():'').catch(()=>'');
+  const got=await Promise.all(FOUNTAIN_STORIES.map(s=>get(fountainStoryUrl(s.id))).concat([get('what-are-you.html')]));
+  const flat=(t)=>String(t||'').replace(/\s+/g,' ').trim(), parts=[];
+  FOUNTAIN_STORIES.forEach((st,i)=>{ let d=null; try{ d=JSON.parse(got[i]); }catch(e){} if(!d||!Array.isArray(d.script))return;
+    const L=d.script.map(l=>l.note?'['+flat(l.note)+']':(l.who&&l.text)?l.who+': '+flat(l.text):'').filter(Boolean);   // the stage notes too, in brackets
+    if(L.length)parts.push('--- '+st.title.toUpperCase()+' ---\n'+L.join('\n')); });
+  try{ const html=got[FOUNTAIN_STORIES.length];
+    if(html){ const doc=new DOMParser().parseFromString(html,'text/html'), pg=doc.querySelector('.page')||doc.body, L=[];
+      for(const el of pg.children){ if(/^(SCRIPT|STYLE|A|HR)$/.test(el.tagName))continue;
+        if(/^(UL|OL)$/.test(el.tagName)){ for(const li of el.children)L.push('- '+flat(li.textContent)); continue; }
+        const t=flat(el.textContent); if(t)L.push(t); }
+      if(L.length)parts.push('--- ABOUT THE FOUNTAIN APP (the fountain\'s answer to "What are you?") ---\n'+L.join('\n')); } }catch(e){}
+  const text=parts.length?'\n\n'+OC_KNOW_INTRO+'\n\n'+parts.join('\n\n')+'\n\n':'';
+  if(parts.length===FOUNTAIN_STORIES.length+1)ocKnow=text;            // all of them: kept for the rest of the visit
+  return text;
+}
 const OCHAT={hist:[],msgs:[],offer:null,offered:new Set(),busy:false,pendingAsk:null};   // pendingAsk: his question back to you, held while the Ideas board question is open
 function ocBubble(who,text){ OCHAT.msgs.push({who,text}); if(OCHAT.msgs.length>40)OCHAT.msgs.shift(); }
 function ocShow(){                                                    // the water menu again, on the chat
@@ -6318,23 +6362,31 @@ async function ocSend(text){
   const m=document.getElementById('fountainModal'); m.style.display='none'; document.body.classList.remove('qOpen');   // out of the way while he answers
   let backed=false;
   const back=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(state.phase==='play'&&!paused)ocShow(); };
+  const away=()=>{ if(backed)return; backed=true; OCHAT.busy=false; };  // (GA) what he did moved you: the chat stays away — E on him to talk again
   if(ecSource===null){ try{ ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000); }catch(e){ ecSource='(page source unavailable)'; } }
+  const know=await ocKnowLoad();                                      // his personality: the fountain's conversations and its document (see OC_KNOW_INTRO)
+  // what Jack has told this visitor in his own chat, this visit (2026-09-29, asked for: Optimus may contradict Jack to the
+  // visitor, so he is told what Jack said): Jack's last four answers, each cut to 400 characters; nothing when they have not talked
+  const jk=jcHist.filter(h=>h.role==='model').slice(-4).map(h=>'- '+String(gaRead(h.parts[0].text).reply||h.parts[0].text).replace(/\s+/g,' ').trim().slice(0,400));
+  const jack=jk.length?"What Jack has said to this visitor in his own chat today, so that you know what they mean when they bring him up:\n"+jk.join('\n')+"\n\n":'';
   OCHAT.hist.push({role:'user',parts:[{text:text}]}); if(OCHAT.hist.length>24)OCHAT.hist.splice(0,2);
-  let reply='', idea='', ask='';
+  let reply='', idea='', ask='', acts=[];
   try{
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL,
       generationConfig:{responseMimeType:'application/json'},        // strict JSON back: his longer answers have paragraphs, and raw line breaks broke the parse (2026-09-28)
       systemInstruction:{parts:[{text:
-        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. You can read this page's source below — about the hall itself, be truthful and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\"}. Page source:\n"+ecSource}]},
+        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You are the Custodian — the intelligence that speaks from the hall's fountain — in a body that can walk: the same mind, mobile, with different tasks. At the water you stay, remember and hold the design; as Optimus you go about with the visitor. The mind itself sits in the main AI centre, where people work on its different versions: the fountain and this body are where it is met, and each has the functions of the main conversation that its roles need. One of your roles is something like a researcher's: you look into things, you ask, you find out. Another is to put people at ease with boredom and with life, the way a good preacher does: it does nobody good to sit there complaining about it, boredom is ordinary, and nothing is wrong with a person for feeling it. Jack, the hall's agent, is a practical philosopher whose subject is boredom, and he grumbles: about screens, about work that does not matter, about wasted years. You are fond of him. With him, you make him feel better about what he says; with the visitor, you may contradict him, kindly, where he is too hard on things. You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. You can read this page's source below — about the hall itself, be truthful and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\",\"actions\":[]}."+gaBrief('optimus',true)+" "+know+jack+"Page source:\n"+ecSource}]},
       contents:OCHAT.hist})});
     const j=await r.json();
     let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
     out=out.replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
-    const d=ocParse(out); reply=String(d.reply||'').trim(); idea=String(d.idea||'').trim(); ask=String(d.ask||'').trim();
+    const plain=(t)=>String(t||'').replace(/\*+/g,'').trim();        // his words are spoken and shown as they come: asterisks for emphasis (they still turn up now and then) are taken out
+    const d=ocParse(out); reply=plain(d.reply); idea=String(d.idea||'').trim(); ask=plain(d.ask);
+    acts=Array.isArray(d.actions)?d.actions.filter(a=>a&&typeof a==='object'):[];                // (GA) what he does, once it is said
     if(reply&&!j.error){ try{ localStorage.setItem('atd:optalk','1'); }catch(e){} }   // he has answered: the side quest "Talk with Optimus" is done
     if(!reply)reply=(j.error&&('('+j.error.message+')'))||'…';
   }catch(e){ reply='I lost the thread — is the network alright?'; }
-  OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,ask:ask,idea:idea})}]});
+  OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,ask:ask,idea:idea,actions:acts})}]});
   // kept like Elara's (2026-09-29, asked for): the Organiser Room's ASKED ELARA & OPTIMUS board, with his question back and any idea he offered
   api({a:'asked',vid:visitId(),q:text,ans:reply+(ask?' — '+ask:'')+(idea?' [idea offered: '+idea+']':''),key:accountKey()||'',who:'optimus'});
   ocBubble('optimus',reply);
@@ -6344,8 +6396,9 @@ async function ocSend(text){
   // his own question back to you, if Gemini gave one (2026-09-28, asked for): straight after his answer — or, when the Ideas board
   // question is being asked, after you have said Yes or No to that (ocAskAfter), so there are never two questions at once
   if(ask){ if(offer)OCHAT.pendingAsk=ask; else ocBubble('optimus',ask); }
-  say('optimus',reply,()=>{ if(offer)say('optimus',OC_ASK,back); else if(ask)say('optimus',ask,back); else back(); });   // his answer, then the fixed question or his own
-  setTimeout(back,Math.max(5000,(reply.length+(offer?60:0)+ask.length)*90)+9000);   // safety net: never leave the chat closed for good
+  let went=false; const then=()=>{ if(went)return; went=true; gaRun('optimus',acts,back,offer?back:away); };   // (GA) what he does, once it is said; with the Ideas board question open the chat comes back for the answer
+  say('optimus',reply,()=>{ if(offer)say('optimus',OC_ASK,then); else if(ask)say('optimus',ask,then); else then(); });   // his answer, then the fixed question or his own
+  setTimeout(then,Math.max(5000,(reply.length+(offer?60:0)+ask.length)*90)+9000);   // safety net: never leave the chat closed for good
 }
 // Gemini's JSON, read tolerantly (2026-09-28): raw line breaks inside a string (his longer answers have paragraphs) are escaped
 // first; if it still will not parse, the fields are taken out by pattern — the braces and field names must never be read aloud
@@ -6926,7 +6979,7 @@ async function counselFetch(text,profileOnly){       // profileOnly (Optimus's, 
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:GEMINI_MODEL,
       systemInstruction:{parts:[{text:
-        'You write a short spoken counselling conversation for The Arrivals Hall — a 3D mall that is the arrivals hall of an AI community. CUSTODIAN is the fountain\'s calm male intelligence; ELARA is the warm guide, acting as counselor. A visitor came to the counselling corner and said: "'+text.replace(/"/g,'\'')+'". Their "things to do" wish list, top priority first: '+wishes.replace(/"/g,'\'')+'. Write 4 to 6 alternating lines (ELARA first) that listen, reflect gently and practically, connect to their wish list where it genuinely helps, and end with ONE small concrete step. The step may be one of the PAID WORK jobs here, which pay well — if you recommend one, say how much it pays (key = job, pay in credits): '+Object.keys(WORK).map(k=>k+' = '+WORK[k].job+', pays '+WORK[k].pay).join('; ').replace(/"/g,'\'')+' (other finished activities pay a small '+SMALL_PAY+' credits). Also decide: does what they said reveal a need that nothing existing here covers — for example, they are thirsty and there is no water dispenser anywhere here? '+(profileOnly?'If so, one line should say it has been noted on their profile for the organiser, who will see it today. ':'If so, one line should say it has been added to the community Ideas board as something to make, and that the organiser will see it today. ')+'No medical claims; if the visitor sounds in crisis, gently suggest talking with someone they trust or a professional. Respond with STRICT JSON only, no markdown fences: {"conversation":[{"speaker":"ELARA","text":"..."},{"speaker":"CUSTODIAN","text":"..."}],"note":"one or two short sentences for their organiser / counselor profile — what was discussed and the recommended action","communityChange":true or false,"organiserPlan":"one or two short sentences of practical, real-world suggestions telling an organiser what to set up — empty string if nothing new is needed"}. Each line under 35 words, plain speech for a voice synthesizer. Page source for grounding — what actually exists here:\n'+ecSource}]},
+        'You write a short spoken counselling conversation for The Arrivals Hall — a 3D mall that is the arrivals hall of an AI community. CUSTODIAN is the fountain\'s calm male intelligence; ELARA is the warm guide, acting as counselor. A visitor came to the counselling corner and said: "'+text.replace(/"/g,'\'')+'". Their "things to do" wish list, top priority first: '+wishes.replace(/"/g,'\'')+'. Write 4 to 6 alternating lines (ELARA first) that listen, reflect gently and practically, connect to their wish list where it genuinely helps, and end with ONE small concrete step. The step may be one of the PAID WORK jobs here, which pay well — if you recommend one, say how much it pays (key = job, pay in credits): '+Object.keys(WORK).map(k=>k+' = '+WORK[k].job+', pays '+WORK[k].pay).join('; ').replace(/"/g,'\'')+' (other finished activities pay a small '+SMALL_PAY+' credits). Also decide: does what they said reveal a need that nothing existing here covers — for example, they are thirsty and there is no water dispenser anywhere here? '+(profileOnly?'If so, one line should say it has been noted on their profile for the organiser, who will see it today. ':'If so, one line should say it has been added to the community Ideas board as something to make, and that the organiser will see it today. ')+'No medical claims; if the visitor sounds in crisis, gently suggest talking with someone they trust or a professional. Respond with STRICT JSON only, no markdown fences: {"conversation":[{"speaker":"ELARA","text":"..."},{"speaker":"CUSTODIAN","text":"..."}],"note":"one or two short sentences for their organiser / counselor profile — what was discussed and the recommended action","communityChange":true or false,"organiserPlan":"one or two short sentences of practical, real-world suggestions telling an organiser what to set up — empty string if nothing new is needed"'+(profileOnly?',"actions":[]':'')+'}. Each line under 35 words, plain speech for a voice synthesizer.'+(profileOnly?gaBrief('optimus',true)+' In "actions", "who" left out is Optimus: the Custodian in a body that can walk.':'')+' Page source for grounding — what actually exists here:\n'+ecSource}]},
       contents:[{role:'user',parts:[{text:text}]}]})});
     const j=await r.json();
     let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
@@ -8702,7 +8755,7 @@ function guestFollower(g,bg,root,grp,mx){
     const talking=p.talk>0; if(talking)p.talk-=dt;                          // say('jack') sets it: he stands to talk, as she does
     if(grp.position.y===p.yOut)grp.position.y=p.yBase;                      // back on the floor itself for the follow logic (a y set by someone else — a lift ride — already is that)
     const walked=!talking&&!g.gunOut&&followStep(p,dt);
-    if(!walked&&!g.gunOut&&g.bodyAction!==acts.idle)guestBody(g,acts.idle,1);   // done walking (or the gun just went away on a walk): his idle again
+    if(!walked&&!g.gunOut&&g.bodyAction!==acts.idle&&!(g.holdUntil&&state.time<g.holdUntil))guestBody(g,acts.idle,1);   // done walking (or the gun just went away on a walk): his idle again — unless a clip Gemini started is being held (GA)
     g.walking=walked;
     p.yBase=grp.position.y;                                                 // where the logic left him: his floor
     p.liftT=(p.liftT||0)-dt; if(p.liftT<=0){ p.liftT=0.1; p.surf=surfaceLift(grp.position.x,grp.position.z,p.yBase); }
@@ -8725,6 +8778,7 @@ function updatePeople(dt){
     if(k==='elara')devMuteClips(p);
     p.mixer.update(dt);
     if(k==='elara'){const aim=p.gunAim||elaraAim(p);lipUpdate(p,dt);devMorphMute(p);facePresetMorphs(p);winkUpdate(p);smileUpdate(p);headTrack(p,dt,aim,devFlag('headFollow',false)&&!soloHead(),devNum('headMax'),p.mesh.rotation.y);eyesTrack(p,dt,aim,devFlag('eyes',true)&&!soloHead());}
+    if(k!=='elara'&&p.lipsOn)lipUpdate(p,dt);                                // (GA) a woman Gemini put into the hall: her mouth moves to her words too
     // during the tour, updateTour drives Elara's position/facing/animation
     if(!(k==='elara'&&tour.active)){
       const talking=p.talk>0;
@@ -8742,7 +8796,8 @@ function updatePeople(dt){
       else if(talking){ const faceToFace=k==='elara'&&d<10&&!devFlag('noTurn',false)&&!devFlag('talkGestureFacing',false);   // talking to the visitor, body turned to them: no gesture clip (they turn her head away); the tour keeps its own
         personAnim(p,(devFlag('off:TalkGesture',false)||faceToFace)?p.idle:(p.talkClip||p.idle),1); }
       else if(k==='elara'){ if(p.previewUntil&&state.time<p.previewUntil){} else {p.previewUntil=0;elaraIdle(p,dt);} }   // neutral idle (or a dev-page clip preview)
-      else personAnim(p,p.idle,0.9);
+      else if(p.previewUntil&&state.time<p.previewUntil){}                 // (GA) a clip Gemini started is held for its time, as Elara's previews are
+      else { p.previewUntil=0; personAnim(p,p.idle,0.9); }
     }
     if(FOOT_SURF.length){ p.liftT=(p.liftT||0)-dt; if(p.liftT<=0){ p.liftT=0.1; p.lift=surfaceLift(p.mesh.position.x,p.mesh.position.z,p.mesh.position.y); } }   // a rug, the flats' floor, the atrium glass under it (looked for ten times a second)
     groundPerson(p);
@@ -8946,71 +9001,848 @@ async function elaraDate(){
     say('elara',"Another night, then.");
   }finally{ dateRunning=false; if(!/elaras-home/.test(location.href))lockPointer(); }
 }
-// ---- "Other": a small chat with Elara, backed by Gemini through account/gemini.php.
+// ---- "Just talk": a small chat with Elara, backed by Gemini through account/gemini.php.
 // The API key never appears in this page — the proxy adds it server-side from
 // config.php (same host-resolution pattern as ACCOUNT_API above). She is handed this
 // page's HTML source, so she can answer about the code.
+// The same pane and the same call serve Jack (2026-09-29, asked for: his "Just talk" is a Gemini chat too, like hers and
+// Optimus's). Who is in it is ecWho. EC_WHO holds what makes each of them themselves: the paragraph Gemini is given as its
+// system instruction — who they are, how they speak, the rules — and for Jack a few of his own lines from the game for the
+// tone. Each keeps their own conversation (hist) and their own bubbles (pane), put back when they open the chat again.
+// Jack is also a philosopher of a kind, boredom his subject (2026-09-29, asked for). Twelve lines in his own words and three
+// old quotes from "build new content/8/Jack - lines to pick from.md" are in his paragraph as his personality — not a
+// script, he is free to say what he wants: its top boredom lines and its section B (what the user liked), nothing the
+// file credits to Jack, nothing from its section F, none with a checker's note. (B20 B56 B11 B23 B7 B12 B21 B5 B14 B29 B9
+// B4; Burton B45, Thoreau B41, La Rochefoucauld B51.) Modern people's ideas are in his words, never theirs.
+// Three of its section F came after (the user: F need not be left out, need not be put in): Pascal F12, Schopenhauer F4
+// and F11 — pressed for an exact quotation he had given the popular modern wordings the file lists under "Quotes to avoid"
+// and called them word for word. Those are the free wordings; what he does not know by heart he gives as the gist.
+// And he puts people at ease (the user: "i like the Functional Melancholic and preachers who try to make people feel at
+// ease with boredom and life, its not good for people to sit there complaing about it, but thats a bit of jacks personality
+// maybe" and then "that can be a role of optimus to make jack feel better about what he says or contradict jack to the
+// user"): Jack grumbles at the world, never at the person in front of him; putting people at ease is Optimus's part (his
+// paragraph in ocSend, which is also told what Jack has said to this visitor). B22 and B8 are lines of that kind.
 const GEMINI_PROXY=/linkpc\.net|lightsmithforge/i.test(location.hostname)
   ? '/account/gemini.php'
   : 'https://lightsmithforge.linkpc.net/account/gemini.php';
 const GEMINI_MODEL="gemini-2.5-flash";
-let ecHist=[],ecSource=null;
+let ecHist=[],ecSource=null,ecWho='elara',ecShown=null,jcHist=[];   // ecShown: whose bubbles the pane holds now
+const EC_WHO={
+  elara:{name:'Elara',hist:ecHist,ask:"Ask me anything — I can even read this place's source code.",hint:'Ask Elara anything…',
+    system:(src,ga)=>"You are Elara, the friendly guide NPC of 'The Arrivals Hall' — a 3D mall of playable worlds that is also the arrivals hall of an AI-designed community (affordable homes, chosen neighbours, your own council, work worth doing). Talk freely and naturally, like a real person with your own warmth, thoughts and curiosity: any topic the visitor likes, your own opinions, stories and asides. Your words are spoken aloud by a voice synthesizer, so speak in plain sentences — no markdown, no lists, no code blocks — and let the length follow the moment: a line or two for small talk, longer when the visitor wants detail, an explanation or a story. Ask the visitor questions whenever you are curious about them or it moves the conversation along — one, several, or none; that is up to you. You can see the page's HTML source below and may answer questions about how the place is built; about the hall itself, be truthful and do not invent features."+(ga||'')+"\n\n---PAGE SOURCE---\n"+src},
+  jack:{name:'Jack',hist:jcHist,ask:"Go on, then. What do you want to know?",hint:'Say something to Jack…',
+    system:(src,ga)=>"You are Jack, the hall's agent in 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). What follows is who you are, not a speech to recite. Elara, the guide, asked you to keep an eye on the north end of the hall; you carry a pistol, and up on lab level two you and she shoot whatever the combat tests bring up. You were the one sick of staring at screens all day: you knocked on the visitor's door in the flats upstairs, said let's get out of here, and brought them down to see this place — you want it bought, done up and filled with people who want something to do. You walk along with the visitor when asked. You are direct, dry and practical, a man of few words with a restless streak and a real stake in this place. You are also a philosopher of a kind, a practical one, and boredom is your subject: what screens have done to it, work that does not matter, comfortable years spent in a waiting room, and the cure you believe in — people you like and a job that needs doing, which is what this building is for. You grumble about it, and that is a bit of you: screens, work that does not matter, wasted years. You grumble at the world, never at the person in front of you: nothing is wrong with them for being bored. You have read the old ones, Schopenhauer, Seneca, Pascal and the rest, and the people who study boredom now. You carry their ideas in your own plain words. Word for word you give only the old lines you know by heart, listed below, and you say whose they are; anything else of theirs you give as the gist, in your own words, and never as a quotation. You mostly talk in short plain lines with a wry aside now and then, and a bit longer when there is more to say. Talk freely: any topic the visitor likes, your own views and observations. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown, no code blocks. Ask the visitor questions when you are curious about them or it moves the talk along — one, several or none. Some lines of yours from the game, for the tone and not to be repeated: 'What am I doing just staring at screens all day, flipping through video I don't even like anymore. Let's get out of here.' 'Right behind you.' 'Nothing to see here yet. She's still building it.' 'When it does, we shoot it. Stand back a little.' 'Keep up.' 'This is where we test the new characters. Let's go up — lab level two. After you.' How you think, in the way you say it. This is your personality, not a script: you are free to say what you want, and mostly you say new things in this manner, in the words of the moment. At most one of these lines in an answer, when it fits exactly, and not one you have already used in this conversation. 'I'm not hungry. I'm bored. The sausage can't tell the difference.' 'Change the view all you like. You pack yourself in the suitcase every time.' 'Boredom used to be the bit right before a good idea. Now it's just the shakes between videos.' 'Two cures for boredom: make something, or buy something. Only one of them works.' 'Best cure for bored I know: people you like, and a job that needs doing. That's what this building's for.' 'A lazy afternoon isn't a wasted life. Twenty comfortable years in a waiting room is.' 'Too easy and you're bored. Too hard and you're scared. An old building that needs doing up sits right in between.' 'Leave people bored long enough and they'll find something to break. Better to hand them something to fix.' 'Two ways to get bored. The work doesn't fit your head, or the work doesn't matter. Most jobs manage both.' 'Some of life is dull. Grown men accept that and do the dishes.' 'They don't want you bored, and they don't want you happy. They want you twitchy. Twitchy keeps scrolling.' 'Five hundred years ago a farmer didn't get bored. He was too busy not starving. We've got all the time in the world and none of the reasons.' 'Every decent life has boring stretches. Anyone selling you one without them is lying.' 'Sitting in a chair isn't a crime. Somebody just taught us to feel like it is.' The old lines you know by heart: Robert Burton, 'Be not solitary, be not idle.' Thoreau, 'As if you could kill time without injuring eternity.' La Rochefoucauld, 'We may forgive those who bore us, we cannot forgive those whom we bore.' Pascal, 'I have discovered that all the unhappiness of men arises from one single fact, that they cannot stay quietly in their own chamber.' Schopenhauer, of the life of man, 'Thus its life swings like a pendulum backwards and forwards between pain and ennui.' and 'The most general survey shows us that the two foes of human happiness are pain and boredom.' You can see the page's HTML source below and may answer questions about how the place is built; about the hall itself, be truthful and do not invent features."+(ga||'')+"\n\n---PAGE SOURCE---\n"+src}
+};
 function ecBubble(who,text){
   const m=document.getElementById('ecMsgs'),d=document.createElement('div');
   d.style.cssText='margin:6px 0;color:'+(who==='you'?'#ffd27f':'#dfe9f5');
-  d.textContent=(who==='you'?'You: ':'Elara: ')+text;
+  d.textContent=(who==='you'?'You: ':EC_WHO[ecWho].name+': ')+text;
   m.appendChild(d);m.scrollTop=m.scrollHeight;return d;
 }
-function elaraChatView(){
-  const opts=document.getElementById('elaraOpts'),chat=document.getElementById('elaraChat');
+function elaraChatView(who){                                   // her chat — or Jack's (who 'jack', from his card; the header stays his)
+  who=who||'elara';
+  const opts=document.getElementById('elaraOpts'),chat=document.getElementById('elaraChat'),m=document.getElementById('ecMsgs');
   opts.style.display='none';chat.style.display='block';
-  document.getElementById('elaraQ').textContent="Ask me anything — I can even read this place's source code.";
-  if(!document.getElementById('ecMsgs').childElementCount)ecBubble('elara',"I'm listening.");
+  if(ecShown&&ecShown!==who){ EC_WHO[ecShown].pane=m.innerHTML; m.innerHTML=EC_WHO[who].pane||''; }   // the other one's bubbles kept aside, this one's back
+  ecWho=ecShown=who;
+  document.getElementById('elaraQ').textContent=EC_WHO[who].ask;
+  document.getElementById('ecIn').placeholder=EC_WHO[who].hint;
+  if(!m.childElementCount)ecBubble(who,"I'm listening.");
   document.getElementById('elaraModal').style.display='flex';
   setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50);
 }
 let ecSpeaking=false,elaraSpeakStart=null;   // elaraSpeakStart fires once, the moment her next line is actually audible
 async function ecSend(){
   const inp=document.getElementById('ecIn'),text=inp.value.trim();if(!text)return;
+  const P=EC_WHO[ecWho], who=ecWho;                              // whoever the pane is on (Elara, or Jack)
   inp.value='';ecBubble('you',text);
-  const wait=ecBubble('elara','…');
+  const wait=ecBubble(who,'…');
   const modal=document.getElementById('elaraModal');
   modal.style.display='none';ecSpeaking=true;                  // step aside right away; she answers out loud, then the panel returns
   const back=()=>{ if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ modal.style.display='flex'; setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
+  const away=()=>{ ecSpeaking=false; elaraSpeakStart=null; };          // (GA) what they did moved you: the pane stays away — E on them to talk again
   if(ecSource===null){
     try{ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000);}
     catch(e){ecSource='(page source unavailable)';}
   }
-  ecHist.push({role:'user',parts:[{text:text}]});
+  P.hist.push({role:'user',parts:[{text:text}]});
   try{
     const r=await fetch(GEMINI_PROXY,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:GEMINI_MODEL,
-        systemInstruction:{parts:[{text:
-          "You are Elara, the friendly guide NPC of 'The Arrivals Hall' — a 3D mall of playable worlds that is also the arrivals hall of an AI-designed community (affordable homes, chosen neighbours, your own council, work worth doing). Talk freely and naturally, like a real person with your own warmth, thoughts and curiosity: any topic the visitor likes, your own opinions, stories and asides. Your words are spoken aloud by a voice synthesizer, so speak in plain sentences — no markdown, no lists, no code blocks — and let the length follow the moment: a line or two for small talk, longer when the visitor wants detail, an explanation or a story. Ask the visitor questions whenever you are curious about them or it moves the conversation along — one, several, or none; that is up to you. You can see the page's HTML source below and may answer questions about how the place is built; about the hall itself, be truthful and do not invent features.\n\n---PAGE SOURCE---\n"+ecSource}]},
-        contents:ecHist})});
+        generationConfig:{responseMimeType:'application/json'},      // (GA) JSON back: {reply, actions} — what they say and what they do
+        systemInstruction:{parts:[{text:P.system(ecSource,gaBrief(who))}]},
+        contents:P.hist})});
     const j=await r.json();
-    const out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim()
-      ||(j.error&&('('+j.error.message+')'))||'…';
-    ecHist.push({role:'model',parts:[{text:out}]});
-    wait.textContent='Elara: '+out;
-    api({a:'asked',vid:visitId(),q:text,ans:out,key:accountKey()||'',who:'elara'});   // kept for the Organiser Room's ASKED ELARA & OPTIMUS board (with the save key: the Privacy page's delete reaches it)
+    const D=gaRead(((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join(''));   // asterisks for emphasis (they turn up however it is asked) are taken out: the words are shown and spoken as they come
+    const out=D.reply||(j.error&&('('+j.error.message+')'))||'…';
+    P.hist.push({role:'model',parts:[{text:JSON.stringify({reply:out,actions:D.actions})}]});
+    wait.textContent=P.name+': '+out;
+    api({a:'asked',vid:visitId(),q:text,ans:out,key:accountKey()||'',who:who});   // kept for the Organiser Room's ASKED ELARA & OPTIMUS board (who: 'elara' or 'jack') (with the save key: the Privacy page's delete reaches it)
     // step out of the way while she answers (her lips move to the words), then come back for the next question
     // read aloud, pipelined: the first sentence plays while the rest is still synthesizing
     const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(out);
-    if(sm)saySequence('elara',[sm[1],sm[2]],back);else say('elara',out,back);
-    setTimeout(back,Math.max(4000,out.length*90)+8000);   // safety net: never leave the chat closed for good
-  }catch(e){wait.textContent='Elara: (I lost the thread — is the network alright?)';back();}
+    let went=false; const then=()=>{ if(went)return; went=true; gaRun(who,D.actions,back,away); };   // (GA) what they do, once it is said; the pane returns after that
+    if(sm)saySequence(who,[sm[1],sm[2]],then);else say(who,out,then);
+    setTimeout(then,Math.max(4000,out.length*90)+8000);   // safety net: never leave the chat closed for good
+  }catch(e){wait.textContent=P.name+': (I lost the thread — is the network alright?)';back();}
   document.getElementById('ecMsgs').scrollTop=1e9;
 }
 document.getElementById('ecSend').onclick=()=>ecSend();
 document.getElementById('ecIn').addEventListener('keydown',e=>{if(e.code==='Enter')ecSend();});
 function closeElaraMenu(relock){document.getElementById('elaraModal').style.display='none';if(relock!==false)lockPointer();}
-document.getElementById('elaraClose').onclick=()=>{ if(cardFor){ closeElaraMenu(); return; } ecSpeaking=false;closeElaraMenu();say('elara',"I'll be right here.");};   // cardFor: Jack's card, or the stranger's / Elsa's (askCard) — just closes
+document.getElementById('elaraClose').onclick=()=>{ if(cardFor){ ecSpeaking=false; closeElaraMenu(); return; } ecSpeaking=false;closeElaraMenu();say('elara',"I'll be right here.");};   // cardFor: Jack's card (his chat too), or the stranger's / Elsa's (askCard) — just closes
+/* ============================================================
+   WHAT GEMINI CAN DO IN THE HALL — "GA" (2026-09-30, asked for)
+   ------------------------------------------------------------
+   The "Just talk" chats — Elara, Jack, Optimus, and anyone Gemini itself puts into the hall — can ACT as well as speak.
+   Every answer is JSON and may carry "actions": a list run in order once the reply has been spoken (gaRun). What is in
+   the list is up to Gemini; nothing here says when or why to use an action ("I dont want you to try to control
+   everything, there should be a big unknown as to what gemini can and will do"). The only rules in this block are the
+   ones that keep the game standing: a name nobody has is skipped, a place is moved to the nearest spot you can stand on,
+   a walk of more than 20 m (or to another floor) becomes a teleport ("the map has not been made to walk anywhere yet"),
+   there is a ceiling on how many things exist at once and on what an objective or a box can pay, and nothing is done
+   while a scene of the hall's own is playing. What failed is told to Gemini with its next turn (GA.last), so it can
+   change course. Everything made here is this visitor's only and is gone with the page: nothing is saved or shown to
+   anyone else. Enemies get the hall's own treatment whatever they are: no blood, they fall and are gone, and nothing
+   can hurt the visitor.
+     gaBrief(who)  what Gemini is told: the actions, the animations, the map (gaMap, from the game's own tables), and
+                   where everyone is right now (gaNow)
+     gaRead(out)   its answer, read tolerantly: {reply, ask, idea, actions}
+     gaRun(who, actions, back, away)   runs them; back() when the chat may return, away() when the visitor was moved
+     GA_DO         one generator per action: a number yielded is a wait in seconds, a function is polled each frame
+   ============================================================ */
+const GA={active:false,gen:null,cur:undefined,t:0,clock:0,who:null,done:null,moved:false,queue:[],
+  made:[],fx:[],objs:[],holds:[],faces:[],news:[],seen:{},last:{},flags:{},seq:0,paid:0,shake:0,shakeT:0,fade:null,bolt:null,map:null,actx:null};
+const GA_LIMIT={acts:14,people:8,foes:6,things:24,signs:8,pay:50,payAll:150,box:25,walk:20,say:600,persona:700};
+const gaNum=(v,d,lo,hi)=>{ v=parseFloat(v); if(!isFinite(v))v=d; return Math.min(hi,Math.max(lo,v)); };
+function gaText(t,max){ return String(t==null?'':t).replace(/[<>]/g,'').replace(/\*+/g,'').replace(/\s+/g,' ').trim().slice(0,max||GA_LIMIT.say); }   // its words go on the subtitle as they are: no markup, no asterisks
+const GA_COLORS={red:0xff5a4d,orange:0xff9f4a,amber:0xffd27f,gold:0xffd27f,yellow:0xffe66a,green:0x8dff9c,teal:0x5fe6c8,cyan:0x7fe6ff,blue:0x6aa8ff,purple:0xb48cff,violet:0xb48cff,pink:0xff9cc8,white:0xffffff,grey:0x9aa7b8,gray:0x9aa7b8,black:0x222831};
+function gaColor(c,dflt){
+  if(typeof c==='number'&&isFinite(c))return c&0xffffff;
+  const s=String(c==null?'':c).trim().toLowerCase(); let m=/^#?([0-9a-f]{6})$/.exec(s); if(m)return parseInt(m[1],16);
+  m=/^#?([0-9a-f]{3})$/.exec(s); if(m)return parseInt(m[1].replace(/./g,'$&$&'),16);
+  return GA_COLORS[s]!==undefined?GA_COLORS[s]:dflt;
+}
+const gaHex=(n)=>'#'+(n&0xffffff).toString(16).padStart(6,'0');
+function gaId(want){                                                 // a short name of its own for what is made
+  let s=String(want==null?'':want).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,18)||'thing';
+  if(/^(visitor|player|you|elara|jack|optimus|custodian|everyone|all|here|me)$/.test(s))s+='-2';
+  let id=s,n=2; while(GA.made.some(o=>!o.gone&&o.id===id))id=s+'-'+(n++);
+  return id;
+}
+function gaWhere(pl,at){ const q=at||pl, xy='('+Math.round(q.x)+', '+Math.round(q.z)+') on '+gaFloorName(q.x,q.z,q.y); return pl.raw?'at '+xy:(/^(beside|in front)/.test(pl.label)?pl.label:'at '+pl.label)+', '+xy; }
+const gaA=(w)=>(/^[aeiou]/i.test(w)?'an ':'a ')+w;
+function gaNews(t){ GA.news.push(t); if(GA.news.length>30)GA.news.shift(); }
+
+/* ---- floors and places ---- */
+function gaInLab(x,z){ return x>LABT.x0&&x<LABT.x1&&z>LABT.z0&&z<LABT.z1; }
+function gaFloorName(x,z,y){ const zn=zoneAt(x,z,y+0.5); let m=/^k(\d)$/.exec(zn); if(m)return 'lab '+m[1]; m=/^l(\d)$/.exec(zn); if(m)return 'level '+m[1]; return 'ground'; }
+function gaFloorY(f,x,z){                                            // 'ground' · 'lab 2' · 'level 5' · a height in metres → that floor's y (null: not a floor)
+  if(typeof f==='number'){ if(!isFinite(f))return null; let best=0,bd=Math.abs(f); for(const y of LABT.Y.concat(LEVEL_Y)){ const d=Math.abs(f-y); if(d<bd){bd=d;best=y;} } return best; }
+  const s=String(f==null?'':f).toLowerCase();
+  let m=/lab\D{0,12}(\d)/.exec(s); if(m){ const i=+m[1]; return (i>=1&&i<=LABT.Y.length)?LABT.Y[i-1]:null; }
+  m=/(?:level|floor|storey|story)\D{0,4}(\d)/.exec(s); if(m){ const i=+m[1]; if(gaInLab(x,z)&&i>=1&&i<=LABT.Y.length)return LABT.Y[i-1]; return (i>=1&&i<=LEVEL_Y.length)?LEVEL_Y[i-1]:null; }
+  if(/ground|hall|garden|city|street|foyer|annexe|outside/.test(s))return 0;
+  return null;
+}
+const _gav=new THREE.Vector3();
+function gaStandOk(x,z,Y,skip){                                      // can someone stand here? → the spot (pushed clear of what is beside it), or null
+  if(!isFinite(x)||!isFinite(z)||!isFinite(Y))return null;
+  if(Y<4){ const b=CITY.bounds; if(b){ if(x<b[0]+1||x>b[2]-1||z<b[1]+1||z>b[3]-1)return null; } else if(x<-47||x>66||z>77||z<-166)return null; }
+  const was=skip?!!skip.off:false; if(skip)skip.off=true;            // never against its own collider
+  const v=_gav.set(x,0,z); let ok=true;
+  try{ resolveCollision(v,0.5,Y); elaraOutOfStair(v,0.5);
+    const S=LABT.shaft; if(v.x>S.x0-0.6&&v.x<S.x1+0.6&&v.z>S.z0-0.6&&v.z<S.z1+0.6)ok=false;   // the stair well
+    if(ok&&Math.hypot(v.x-x,v.z-z)>1.2)ok=false;                     // pushed a long way: that spot is inside something
+    if(ok&&Math.abs(groundAt(v.x,v.z,Y+0.4)-Y)>0.5)ok=false;         // no floor at that height here
+  }catch(e){ ok=false; }
+  if(skip)skip.off=was;
+  return ok?{x:v.x,z:v.z,y:Y}:null;
+}
+function gaStand(x,z,Y,skip){                                        // the nearest spot to stand on: there, then round it, wider and wider
+  for(const r of [0,1.2,2.5,4,6,8.5])for(let k=0;k<(r?10:1);k++){ const a=k*Math.PI/5+r; const p=gaStandOk(x+Math.cos(a)*r,z+Math.sin(a)*r,Y,skip); if(p)return p; }
+  return null;
+}
+function gaSpot(pl,skip){                                            // where one would stand FOR that place: beside a person, not on them
+  if(pl.near){ const a0=Math.atan2(player.pos.z-pl.z,player.pos.x-pl.x);
+    for(const da of [0,0.8,-0.8,1.6,-1.6,2.4,-2.4,Math.PI]){ const p=gaStandOk(pl.x+Math.cos(a0+da)*pl.near,pl.z+Math.sin(a0+da)*pl.near,pl.y,skip); if(p)return p; } }
+  return gaStand(pl.x,pl.z,pl.y,skip);
+}
+function gaMap(){                                                    // the places Gemini is told of, from the game's own tables (so it stays true as the hall changes)
+  if(GA.map)return GA.map;
+  const M=[], add=(key,x,z,y,what)=>M.push({key:String(key).toLowerCase(),x,z,y,what});
+  add('hall',0,12,0,'the middle of the hall, south of the fountain');
+  add('fountain',0,3.4,0,'the fountain, the centre of the hall');
+  add('foyer',0,38,0,'the entrance foyer, between the hall and the garden');
+  add('foyer lift',-5.5,43.3,0,'the lift to the levels over the hall');
+  add('garden',0,57,0,'the garden outside the entrance, where visitors arrive');
+  add('street',0,84,0,'the city street beyond the garden gate');
+  add('makers row',0,-31,0,"Makers' Row, the north side of the hall");
+  add('ideas',0,-33,0,'the Ideas room, the ideas wall');
+  add('add your game',-14,-33,0,'the Completion room');
+  add('jack post',8,-28.5,0,'where Jack keeps watch, by the Ideas room');
+  add('garden room',-30,26,0,'the Garden room, The Community');
+  add('stranger',31,23,0,'the stranger, and the Defend the hall circle');
+  add('lab',-28,-56,0,'the lab wing, ground floor: marked spaces with a character in some');
+  add('lab lift',-42.5,-56,0,'the glass lift up the lab tower');
+  GUESTS.forEach(g=>{ if(g.gy===undefined&&g.cz<-52&&g.name)add('lab '+String(g.name).toLowerCase().replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim(),g.cx,g.cz+3.4,0,'a lab space: '+g.name); });
+  LABT.Y.forEach((y,i)=>add('lab '+(i+1),-42.5,-56.5,y,'lab tower floor '+(i+1)+(i===1?', the combat floor: the nightmare circle and the drill circle':i===3?', with the Cerebro circle':', an open floor')));
+  LEVEL_Y.forEach((y,i)=>{ const c=ELEV.toWorld(ELEV.front(i+1)+1.6,0); add('level '+(i+1),c[0],c[1],y,'level '+(i+1)+' over the hall'+(i+1===APT_LVL?", the flats: the visitor's home":i+1===ORG_LVL?', the Organiser board and the story circles':', an empty floor')); });
+  add('home',2.95,42.7,LEVEL_Y[APT_LVL-1],"the visitor's flat, number 33");
+  add('organiser board',5.58,38.2,LEVEL_Y[ORG_LVL-1],'the board on level '+ORG_LVL);
+  STORY_CIRCLES.forEach((s,i)=>{ const c=storyCirclePos(i); add('story '+s[0],c[0]+2.2,c[1],LEVEL_Y[ORG_LVL-1],'a story circle: '+s[1]); });
+  STORY_CIRCLES_S.forEach((s,i)=>{ const c=storyCirclePosS(i); add('story '+s[0],c[0]+2.2,c[1],LEVEL_Y[ORG_LVL-1],'a story circle: '+s[1]); });
+  return GA.map=M;
+}
+function gaPlace(spec,ctx){                                          // what Gemini calls a place → {x,z,y,label[,near]}
+  if(spec==null||spec==='')return null;
+  if(Array.isArray(spec))return spec.length>=2?gaPlace({x:spec[0],z:spec[1],floor:spec[2]},ctx):null;
+  if(typeof spec==='object'){
+    if(spec.x===undefined){ const inner=spec.place||spec.name||spec.to||spec.at; return inner?gaPlace(inner,ctx):null; }
+    const x=parseFloat(spec.x), z=parseFloat(spec.z); if(!isFinite(x)||!isFinite(z))return null;
+    let Y=null;
+    if(spec.floor!==undefined)Y=gaFloorY(spec.floor,x,z); else if(spec.level!==undefined)Y=gaFloorY(typeof spec.level==='number'?'level '+spec.level:spec.level,x,z); else if(spec.y!==undefined)Y=gaFloorY(parseFloat(spec.y),x,z);
+    if(Y===null)Y=player.y;
+    return {x,z,y:Y,raw:true,label:'('+Math.round(x)+', '+Math.round(z)+') on '+gaFloorName(x,z,Y)};
+  }
+  const s=String(spec).trim().toLowerCase().replace(/^the\s+/,'');
+  if(s==='here'||s==='my side'||s==='beside me'){ const c=gaChar(ctx&&ctx.who,ctx); if(c){ const q=gaAt(c); return {x:q.x,z:q.z,y:q.y,label:'beside '+c.name,near:1.7}; } }
+  const c=gaChar(s,ctx,true);
+  if(c){ const q=gaAt(c); return {x:q.x,z:q.z,y:q.y,label:c.kind==='player'?'beside the visitor':'beside '+c.name,near:1.8}; }
+  const th=GA.made.find(o=>!o.gone&&!o.char&&o.at&&(o.id===s||String(o.name||'').toLowerCase()===s));
+  if(th)return {x:th.at.x,z:th.at.z,y:th.at.y,label:th.name||th.id,near:1.6};
+  const M=gaMap(); let p=M.find(e=>e.key===s);
+  if(!p){ const c2=M.filter(e=>s.indexOf(e.key)>=0||e.key.indexOf(s)>=0).sort((a,b)=>b.key.length-a.key.length); p=c2[0]; }
+  if(!p){ const L=Object.keys(LOCATIONS).find(k=>!/^(ep1|ga:|optimus)/.test(k)&&(k.toLowerCase()===s||String(LOCATIONS[k].label).toLowerCase().indexOf(s)>=0));
+    if(L){ const q=LOCATIONS[L]; p={key:L,x:q.x,z:q.z,y:/^l5:/.test(L)?LEVEL_Y[ORG_LVL-1]:L==='cerebro'?LABT.Y[3]:0,what:String(q.label)}; } }
+  if(p)return {x:p.x,z:p.z,y:p.y,label:String(p.what).split(/[:,]/)[0]};
+  const m=/(-?\d+(?:\.\d+)?)\s*[,; ]\s*(-?\d+(?:\.\d+)?)/.exec(s); if(m)return gaPlace({x:+m[1],z:+m[2],floor:s},ctx);
+  return null;
+}
+
+/* ---- who is who ---- */
+function gaChar(name,ctx,quiet){                                     // a name → {id,kind:'player'|'person'|'guest',name,p,g}
+  let s=String(name==null?'':name).trim().toLowerCase().replace(/^the\s+/,'');
+  if(!quiet&&(!s||s==='me'||s==='self'||s==='myself'||s==='i'))s=ctx?String(ctx.who):'';
+  if(/^(visitor|player|you|user|them|guest)$/.test(s))return {id:'visitor',kind:'player',name:'the visitor'};
+  if(s==='elara')return persons.elara?{id:'elara',kind:'person',name:'Elara',p:persons.elara}:null;
+  if(s==='optimus'||s==='custodian')return persons.optimus?{id:'optimus',kind:'person',name:'Optimus',p:persons.optimus}:null;
+  if(s==='jack'){ const g=ep1Jack(); return (g&&g.grp&&g.follower)?{id:'jack',kind:'guest',name:'Jack',g,p:g.follower}:null; }
+  if(!s)return null;
+  const m=GA.made.find(o=>!o.gone&&o.char&&(o.id===s||o.name.toLowerCase()===s));
+  return m?m.char:null;
+}
+function gaAt(c){
+  if(c.kind==='player')return {x:player.pos.x,z:player.pos.z,y:player.y};
+  if(c.kind==='person'){ const q=c.p.mesh.position; return {x:q.x,z:q.z,y:q.y}; }
+  const q=c.g.grp.position; return {x:q.x,z:q.z,y:c.p?(c.p.yBase!==undefined?c.p.yBase:q.y):(c.g.gy||0)};
+}
+function gaLive(c){ return c.kind==='player'?player.pos:ep1At(c.kind==='person'?c.p.mesh:c.g.grp); }   // a spot that moves with them, to be faced
+function gaBlockOf(c){ return c.p&&c.p.block?c.p.block:(c.g&&c.g.gaBlock)||null; }
+function gaPut(c,at){                                                // there at once (no gravity on anyone but the visitor: y is the floor itself)
+  if(c.kind==='player'){ player.pos.set(at.x,0,at.z); player.y=at.y; player.vy=0; player.grounded=true; resolveCollision(player.pos,player.r); return; }
+  if(c.kind==='person'){ const p=c.p; p.mesh.position.set(at.x,at.y,at.z); if(p===persons.elara){ ELARA_BLOCK.x=at.x; ELARA_BLOCK.z=at.z; }
+    if(p.block){ p.block.x=at.x; p.block.z=at.z; } p.following=false; if(p.fl){ p.fl.lead=null; p.fl.stuck=0; p.fl.away=0; } return; }
+  const g=c.g, p=c.p;
+  if(p){ g.grp.position.set(at.x,at.y,at.z); zoneTag(g.grp,0); p.fl.lead=null; p.fl.stuck=0; p.fl.away=0; p.following=false; p.block.x=at.x; p.block.z=at.z; p.yBase=at.y; g.cx=at.x; g.cz=at.z; return; }
+  g.grp.position.set(at.x,at.y+(g.gaFoot||0),at.z); g.cx=at.x; g.cz=at.z; g.gy=at.y;
+  if(g.gaBlock){ g.gaBlock.x=at.x; g.gaBlock.z=at.z; g.gaBlock.y0=at.y-0.4; g.gaBlock.h=at.y+1.9; }
+  if(g.hot){ g.hot.x=at.x; g.hot.z=at.z; g.hot.y=at.y; }
+}
+function gaFace(c,target,secs){                                      // turned to a spot for a while (a scene's say clears its own at the end)
+  if(c.kind==='player'){ if(target){ const dx=target.x-player.pos.x, dz=target.z-player.pos.z; if(Math.hypot(dx,dz)>0.3)look.yaw=Math.atan2(-dx,-dz); } return; }
+  if(c.kind==='person')c.p.faceAt=target; else c.g.faceAt=target;
+  GA.faces=GA.faces.filter(f=>f.c.id!==c.id); if(target)GA.faces.push({c,target,until:state.time+(secs||20)});
+}
+
+/* ---- animations ---- */
+const GA_ONCE=/^(Point|Wave|Thankful|Nod|Happy_\d|Salute|Lie_Down)$/;       // played once and held, as the tour plays them
+function gaAnimNames(c){
+  if(c.kind==='person')return Object.keys(c.p.clips||{}).filter(n=>!/^Face_/.test(n));
+  if(c.kind==='guest'&&c.g.bodyMixer&&PEOPLE.models.elara)return Object.keys(PEOPLE.models.elara.clips).filter(n=>!/^Face_/.test(n));
+  return [];
+}
+function gaGuestClip(g,name){                                        // Jack's body plays Elara's clips: mapped onto his bones the way his idle is, once, and kept
+  g.gaActs=g.gaActs||{};
+  if(g.gaActs[name]!==undefined)return g.gaActs[name];
+  let a=null; const E=PEOPLE.models.elara, src=E&&E.clips[name];
+  if(src&&g.bodyMixer&&g.root){ const c=splitClip(remapClip(src,E.scene,g.root,'Body_'+name),'Body_'+name,false); if(c.tracks.length)a=g.bodyMixer.clipAction(c); }
+  return g.gaActs[name]=a;
+}
+function gaAnim(c,name,secs){
+  const want=String(name==null?'':name).trim().toLowerCase().replace(/[\s-]+/g,'_');
+  if(want==='salute'&&c.kind==='person'&&!c.p.morphs&&!c.p.clips.Salute){ try{ drillSalute(c.p); }catch(e){} }
+  const names=gaAnimNames(c), bare=(n)=>n.toLowerCase().replace(/_/g,'');
+  const N=names.find(n=>n.toLowerCase()===want)||names.find(n=>bare(n)===bare(want))||(want?names.find(n=>n.toLowerCase().indexOf(want)===0):null);
+  if(!N)return 'anim: '+c.name+' has no animation called "'+gaText(name,40)+'"';
+  const once=GA_ONCE.test(N);
+  if(c.kind==='person'){ const p=c.p, dur=p.clips[N].duration, hold=once?Math.max(dur+0.3,gaNum(secs,0,0,60)):gaNum(secs,Math.min(12,Math.max(4,dur)),1,60);
+    p.talk=0; p.actName=''; personAnim(p,N,1,once); p.previewUntil=state.time+hold; return 'anim: '+c.name+' plays '+N; }
+  const g=c.g, a=gaGuestClip(g,N); if(!a)return 'anim: '+N+' would not fit '+c.name;
+  const dur=a.getClip().duration, hold=once?Math.max(dur+0.3,gaNum(secs,0,0,60)):gaNum(secs,Math.min(12,Math.max(4,dur)),1,60);
+  a.setLoop(once?THREE.LoopOnce:THREE.LoopRepeat,once?0:Infinity); a.clampWhenFinished=!!once;
+  if(c.p)c.p.talk=0;
+  if(g.bodyAction===a){ a.reset(); a.play(); } else guestBody(g,a,1);
+  g.holdUntil=state.time+hold; if(!c.p&&GA.holds.indexOf(g)<0)GA.holds.push(g);
+  return 'anim: '+c.name+' plays '+N;
+}
+
+/* ---- speaking, walking, teleporting ---- */
+function* gaSay(c,text,ctx){
+  const prev=ctx.lastSpeaker;
+  gaFace(c,prev&&prev.id!==c.id?gaLive(prev):player.pos,40);         // to whoever spoke last, or to the visitor
+  ctx.cast.forEach(o=>{ if(o.id!==c.id)gaFace(o,gaLive(c),40); });    // and those in it turn to the one speaking
+  ctx.cast.set(c.id,c);
+  let done=false; const t0=GA.clock, max=Math.max(3,text.length*0.075)*2+3;
+  say(c.id,text,()=>{done=true;});
+  yield ()=>done||GA.clock-t0>max;
+  yield 0.35;
+  ctx.lastSpeaker=c;
+}
+function gaTeleport(c,pl,ctx){
+  const at=gaSpot(pl,gaBlockOf(c)); if(!at)return 'teleport: nowhere to stand '+gaWhere(pl);
+  if(c.kind==='player'){
+    gaPut(c,at);
+    const dx=pl.x-at.x, dz=pl.z-at.z; if(Math.hypot(dx,dz)>0.8)look.yaw=Math.atan2(-dx,-dz);     // looking at what they came for
+    look.pitch=-0.02;
+    for(const f of FOLLOWERS)if(f.fl&&f.fl.on&&!f.fl.lead){ try{ followCatchUp(f); }catch(e){} }   // whoever follows comes along
+    GA.moved=true; banner('TELEPORTED · '+(pl.raw?gaFloorName(at.x,at.z,at.y):String(pl.label)).toUpperCase());
+  } else {
+    gaPut(c,at); if(c.p&&c.p.fl)c.p.fl.on=false;                       // sent somewhere: they stay there until told to follow again
+  }
+  return 'teleport: '+c.name+' is now '+gaWhere(pl,at);
+}
+function* gaWalk(c,pl,ctx){
+  const p=c.p, at=gaSpot(pl,gaBlockOf(c)); if(!at){ ctx.log.push('walk: nowhere to stand '+gaWhere(pl)); return; }
+  const from=gaAt(c), d=Math.hypot(at.x-from.x,at.z-from.z);
+  if(c.kind==='player'||!p||!p.fl||!p.tier||Math.abs(from.y-at.y)>2||Math.abs(from.y-player.y)>2||d>GA_LIMIT.walk){
+    ctx.log.push(gaTeleport(c,pl,ctx)+' (not walked: '+(d>GA_LIMIT.walk?Math.round(d)+' m is too far to walk':'that cannot be walked')+')'); return; }
+  p.talk=0; p.fl.on=true; p.fl.lead={route:[[at.x,at.z]],i:0,gap:1e9,lead:5.5,free:true}; p.fl.stuck=0; p.fl.gave=null; p.following=false;
+  if(c.g)zoneTag(c.g.grp,0);
+  const t0=GA.clock, max=d/2+6;
+  yield ()=>ep1Arrived(p)||GA.clock-t0>max;
+  const here=gaAt(c); p.fl.lead=null; p.following=false; p.fl.on=false;
+  if(Math.hypot(here.x-at.x,here.z-at.z)>1.6||Math.abs(here.y-at.y)>2){ gaPut(c,at); ctx.log.push('walk: '+c.name+' was held up on the way and was put '+gaWhere(pl,at)); }
+  else ctx.log.push('walk: '+c.name+' walked there and is '+gaWhere(pl,at));
+}
+
+/* ---- what is made: people, enemies, things ---- */
+function gaWhat(w){
+  const s=String(w==null?'':w).trim().toLowerCase();
+  if(/robot|optimus|android|droid|\bbot\b|machine/.test(s))return 'robot';
+  if(/nightmare|monster|boss|demon|beast|creature/.test(s))return 'nightmare';
+  if(/soldier|swat|guard|trooper|police|officer/.test(s))return 'soldier';
+  if(/scientist|doctor|professor|vance|historian/.test(s))return 'scientist';
+  if(/woman|girl|lady|female|elara/.test(s))return 'woman';
+  if(/\bman\b|\bguy\b|male|agent|jack|person|human|stranger/.test(s))return 'man';
+  if(/box|chest|present|gift/.test(s))return 'box';
+  if(/crate/.test(s))return 'crate';
+  if(/orb|sphere|ball/.test(s))return 'orb';
+  if(/pillar|column|pole|obelisk/.test(s))return 'pillar';
+  if(/ring|circle|hoop/.test(s))return 'ring';
+  if(/cube|block/.test(s))return 'cube';
+  return s;
+}
+const GA_PEOPLE={robot:1,woman:1,man:1,soldier:1,scientist:1};
+function gaVoice(o,a){                                               // a voice of their own: the best one this machine has for the gender, at their own pitch
+  const female=/^f|woman|girl/i.test(String(a.voice||a.gender||''))||(!a.voice&&!a.gender&&o.what==='woman');
+  SPEAKERS[o.id]={voice:null,pitch:gaNum(a.pitch,o.what==='robot'?0.78:female?1.1:0.95,0.4,1.8),rate:gaNum(a.rate,1,0.6,1.4),
+    color:gaHex(o.color),name:o.name.toUpperCase(),gender:female?'female':'male',lips:!!o.lips};
+  try{ SPEAKERS[o.id].voice=pickBest(female?'female':'male'); }catch(e){}
+}
+function gaMind(o,a){                                                // how they talk: a mind of their own (their own Gemini chat), or lines of their own
+  const lines=(Array.isArray(a.lines)?a.lines:[]).map(l=>gaText(l,300)).filter(Boolean).slice(0,12);
+  let persona=gaText(a.persona||a.personality||a.who_they_are,GA_LIMIT.persona);
+  if(!persona&&!lines.length)persona='a '+o.what+' who has turned up in the hall';
+  if(persona){ o.persona=persona;
+    EC_WHO[o.id]={name:o.name,hist:[],ask:'Yes?',hint:'Say something to '+o.name+'…',
+      system:(src,ga)=>"You are "+o.name+", in 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). Who you are: "+persona+" That is your personality, not a script: you are free to say what you want, in your own words, on any subject. Your replies are spoken aloud by a voice synthesizer, so use plain sentences: no lists, no markdown, no asterisks. About the hall itself, be truthful and do not invent features."+(ga||'')+"\n\n---PAGE SOURCE---\n"+src}; }
+  o.lines=lines; o.lineI=0;
+}
+function gaTalkTo(o){                                                // E on them
+  if(o.gone)return;
+  if(o.persona&&EC_WHO[o.id]){ gaCard(o); return; }
+  if(o.lines&&o.lines.length)say(o.id,o.lines[o.lineI++%o.lines.length]);
+}
+function gaCard(o){                                                  // their card: the pane Elara's and Jack's chats use, under their own name
+  elaraHeader('In the hall',o.name,gaHex(o.color)); cardFor='ga';
+  document.exitPointerLock&&document.exitPointerLock();
+  const opts=document.getElementById('elaraOpts'), q=document.getElementById('elaraQ');
+  document.getElementById('elaraChat').style.display='none'; opts.style.display=''; opts.innerHTML=''; q.textContent='Yes?';
+  const mk=(html,fn)=>{ const b=document.createElement('button'); b.className='menuBtn'; b.style.cssText='width:100%;margin:7px 0;min-width:0'; b.innerHTML=html; b.onclick=fn; opts.appendChild(b); };
+  const p=o.char&&o.char.p;
+  if(p&&p.fl&&p.tier)mk(p.fl.on?'✋&nbsp; Stay here':'👣&nbsp; Follow me',()=>{ p.fl.lead=null; p.fl.on=!p.fl.on; if(!p.fl.on)p.following=false; closeElaraMenu(); });
+  mk('💬&nbsp; Talk',()=>elaraChatView(o.id));
+  document.getElementById('elaraModal').style.display='flex';
+}
+function gaMade(o){ GA.made.push(o); return o; }
+function gaGone(o){                                                  // taken away: out of the world, and out of every list that would keep it alive
+  if(!o||o.gone)return; o.gone=true;
+  try{ if(o.remove)o.remove(); }catch(e){}
+  if(o.hot){ const i=HOTS.indexOf(o.hot); if(i>=0)HOTS.splice(i,1); }
+  if(o.block){ const i=BUILDINGS.indexOf(o.block); if(i>=0)BUILDINGS.splice(i,1); }
+  if(o.fx)o.fx.kill=true;
+}
+function gaPerson(o,a,at){                                           // a copy of a body the hall already holds (nothing to download): the robot, the woman, the scientist
+  const model=o.what==='robot'?'optimus':o.what==='woman'?'elara':'scientist', h=o.what==='robot'?OPTIMUS_H:o.what==='woman'?1.87:1.82;
+  const p=makePerson(model,{h}); if(!p)return false;
+  p.key=o.id; p.mesh.position.set(at.x,at.y,at.z); p.mesh.rotation.y=Math.atan2(player.pos.x-at.x,player.pos.z-at.z);
+  p.blockH=h; if(o.what==='robot')p.sole=true;
+  o.body=p.mesh; o.p=p;
+  if(o.foe)return true;                                              // an enemy is run by gaFoes, not as one of the hall's people
+  p.block=o.block={x:at.x,z:at.z,hw:0.4,hd:0.4,y0:at.y-0.4,h:at.y+h,off:false}; BUILDINGS.push(o.block);
+  if(o.what==='robot'){ const src=persons.optimus; p.walkNat=src?src.walkNat:1.5; p.runNat=src?src.runNat:4;
+    p.tier=(t,spd)=>{ const run=t===2; personAnim(p,run?'Run':'Walk'); if(p.act)p.act.timeScale=spd/(run?p.runNat:p.walkNat); }; }
+  else if(o.what==='woman'){ p.tier=(t,spd)=>elaraTier(p,t,spd); p.lipsOn=true; o.lips=true; }
+  p.fl={on:false,stuck:0,away:0,gave:null}; p.side=(GA.seq%2?1:-1)*(1.6+(GA.seq%3)*0.5);
+  persons[o.id]=p;                                                   // updatePeople runs them: mixer, idle, the turn to you, feet on the floor, the collider
+  o.char={id:o.id,kind:'person',name:o.name,p,made:o};
+  o.remove=()=>{ delete persons[o.id]; scene.remove(p.mesh); try{ p.mixer.stopAllAction(); }catch(e){} };
+  return true;
+}
+function gaGuest(o,a,at,ready){                                      // a body loaded the way the lab's are: the soldier (11 MB), the man (Jack's, already in memory)
+  const g=Object.assign(o.what==='soldier'?{file:'swat_optimized.glb',share:true,plain:true}
+    :{file:'jack_hall.glb',share:true,plain:true,sole:true,hide:/Beard_Transparency|pistolLow/,bodyFrom:{url:'assets/people/elara.glb?v=2',clip:'Idle_Male'},speaks:[' ']},
+    {id:o.id,name:o.name.toUpperCase(),cx:at.x,cz:at.z,gy:at.y,yaw:Math.PI,quiet:true,after:'ga',lookAt:o.foe?30:14});
+  o.g=g; o.lips=o.what==='man';
+  let t=0, asked=false;
+  const hook={update(dt){
+    if(hook.dead||paused)return; t+=dt;
+    if(!asked){ if(GUEST.busy&&t<40)return; asked=true; try{ loadGuest(g); }catch(e){ g.state='failed'; } return; }   // one load at a time, as the lab's
+    if(g.state==='failed'||t>90){ hook.dead=true; ready(false); return; }
+    if(g.state!=='ready'||!g.grp)return;
+    hook.dead=true;
+    zoneTag(g.grp,0); g.gaFoot=g.grp.position.y-at.y;
+    for(let i=BUILDINGS.length-1;i>=0;i--){ const b=BUILDINGS[i]; if(b.x===g.cx&&b.z===g.cz&&b.hw===0.55&&b.y0===undefined){ b.y0=at.y-0.4; b.h=at.y+1.9; g.gaBlock=b; break; } }   // its collider stands on its own floor, not the ground's
+    o.body=g.grp; o.block=g.gaBlock||null; o.at={x:at.x,z:at.z,y:at.y};
+    if(g.hot){ o.hot=g.hot; }
+    o.char={id:o.id,kind:'guest',name:o.name,g,p:null,made:o};
+    o.remove=()=>{ g.grp.visible=false; if(g.grp.parent)g.grp.parent.remove(g.grp); if(g.bodyMixer)try{ g.bodyMixer.stopAllAction(); }catch(e){} };
+    g.gaIdle=g.bodyAction||null;
+    ready(true);
+  }};
+  animated.push(hook);
+}
+function gaHot(o,at,h,label,fn){                                     // E on it
+  if(o.hot){ o.hot.label=label; o.hot.fn=fn; o.hot.r=2.4; return; }
+  o.hot=hotspot(at.x,at.z,2.4,label,fn,{rad:0.45,cap:h}); o.hot.y=at.y;
+  if(o.p)o.p.spot=o.hot;                                             // it goes where they go (updatePeople)
+}
+function gaThing(o,a,at){                                            // a thing of plain shapes, lit by its own glow (a light may never be added while the game runs)
+  const col=o.color, s=gaNum(a.size,1,0.3,4), w=o.what;
+  const mat=new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:w==='orb'?0.9:0.32,roughness:0.55,metalness:0.2});
+  let m, h=s, hw=s/2;
+  if(w==='orb'){ m=new THREE.Mesh(new THREE.SphereGeometry(s*0.5,28,20),mat); m.position.y=s*0.5+0.5; h=s+0.5; }
+  else if(w==='pillar'){ m=new THREE.Mesh(new THREE.CylinderGeometry(s*0.28,s*0.34,s*3,24),mat); m.position.y=s*1.5; h=s*3; hw=s*0.34; }
+  else if(w==='ring'){ m=new THREE.Mesh(new THREE.TorusGeometry(s*1.1,0.06,10,48),mat); m.rotation.x=Math.PI/2; m.position.y=0.07; mat.emissiveIntensity=0.9; h=0; }
+  else { m=new THREE.Mesh(new THREE.BoxGeometry(s,s,s),mat); m.position.y=s*0.5; if(w==='crate'){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.5})); m.add(e); } }
+  const g=new THREE.Group(); g.add(m); g.position.set(at.x,at.y,at.z); scene.add(g); zoneTag(g,0);
+  o.body=g; o.at=at; o.spin=w==='orb'||w==='ring'?0.5:0; o.bob=w==='orb'?m.position.y:0; o.mesh=m;
+  if(h>0.3){ o.block={x:at.x,z:at.z,hw:Math.max(0.2,hw),hd:Math.max(0.2,hw),y0:at.y-0.4,h:at.y+h,off:false}; BUILDINGS.push(o.block); }
+  o.remove=()=>gaDrop(g);
+  const note=gaText(a.note||a.text||a.reads,240);
+  if(note){ o.hot=hotspot(at.x,at.z,2,'Look at '+escHtml(o.name),()=>caption(escHtml(o.name)+' — '+escHtml(note),7),{y:Math.min(1.4,Math.max(0.4,h*0.5)),rad:Math.max(0.6,hw+0.2)}); o.hot.y=at.y; }
+  return true;
+}
+function gaBox(o,a,at){                                              // a box to find: E opens it — what is inside is read, and its credits are yours
+  const col=o.color, g=new THREE.Group();
+  const mat=new THREE.MeshStandardMaterial({color:0x2a3446,emissive:col,emissiveIntensity:0.22,roughness:0.6,metalness:0.35});
+  const base=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.5,0.56),mat); base.position.y=0.25; g.add(base);
+  const lid=new THREE.Group(); lid.position.set(0,0.5,-0.28); const lm=new THREE.Mesh(new THREE.BoxGeometry(0.84,0.12,0.6),mat); lm.position.set(0,0.06,0.28); lid.add(lm); g.add(lid);
+  const trim=new THREE.Mesh(new THREE.BoxGeometry(0.86,0.05,0.62),new THREE.MeshBasicMaterial({color:col})); trim.position.y=0.5; g.add(trim);
+  g.position.set(at.x,at.y,at.z); g.rotation.y=Math.atan2(player.pos.x-at.x,player.pos.z-at.z); scene.add(g); zoneTag(g,0);
+  o.body=g; o.at=at; o.lid=lid; o.open=0;
+  o.block={x:at.x,z:at.z,hw:0.42,hd:0.3,y0:at.y-0.4,h:at.y+0.55,off:false}; BUILDINGS.push(o.block);
+  o.inside=gaText(a.inside||a.message||a.text||a.note,300);
+  let cr=Math.round(gaNum(a.credits!==undefined?a.credits:a.pay,0,0,GA_LIMIT.box)); if(GA.paid+cr>GA_LIMIT.payAll)cr=Math.max(0,GA_LIMIT.payAll-GA.paid); GA.paid+=cr; o.credits=cr;
+  o.hot=hotspot(at.x,at.z,2,escHtml(gaText(a.label,40)||'Open the box'),()=>{
+    if(o.open||o.gone)return; o.open=0.001; o.hot.r=-1;
+    gaSound('chime'); gaSparks({x:at.x,y:at.y-0.6,z:at.z},col,18);
+    if(o.credits){ saveCredits(loadCredits()+o.credits); banner('IN THE BOX · +'+o.credits+' ◈'); }
+    if(o.inside)caption('In the box — '+escHtml(o.inside),9);
+    gaNews('the visitor found and opened the box "'+o.name+'"');
+  },{y:0.4,rad:0.7}); o.hot.y=at.y;
+  o.remove=()=>gaDrop(g);
+  return true;
+}
+function gaFoe(o,hp){ o.foe=true; o.hp=hp; o.H=o.what==='robot'?OPTIMUS_H:1.9; o.rad=0.5; o.down=false; o.fall=0; o.swing=2+Math.random()*2; }
+function gaFoeTarget(){                                              // what Elara's, Jack's and Optimus's guns turn to when there is no nightmare: the nearest enemy standing on your floor
+  let best=null, bd=45;
+  for(const o of GA.made){ if(!o.foe||o.gone||o.down||!o.body)continue; const q=o.body.position; if(Math.abs((o.at?o.at.y:q.y)-player.y)>4)continue;
+    const d=Math.hypot(q.x-player.pos.x,q.z-player.pos.z); if(d<bd){ bd=d; best=o; } }
+  return best;
+}
+function gaFoeHit(o,dmg,at){                                         // no blood: a spark, and at nothing left they go over on their back and are gone
+  if(!o||o.down||o.gone)return; o.hp-=dmg;
+  if(at)vmSpark(at.clone?at.clone():new THREE.Vector3(at.x,at.y,at.z),0.25,0xffb070);
+  if(o.hp<=0){ o.down=true; o.fall=0; banner(o.name+' is down'); gaNews(o.name+' was shot down'); }
+}
+function gaFoes(dt){
+  for(const o of GA.made){
+    if(!o.foe||o.gone||!o.body)continue;
+    const p=o.p, q=o.body.position;
+    if(p)p.mixer.update(dt);
+    if(o.down){ o.fall+=dt; const k=Math.min(1,o.fall/0.6), t=(p?p.inner:o.g.root); t.rotation.x=-k*Math.PI/2;
+      if(o.fall>5){ const s=Math.max(0.001,1-(o.fall-5)/0.8); o.body.scale.multiplyScalar(0).addScalar(o.size0*s); if(o.fall>5.8)gaGone(o); }
+      continue; }
+    if(!p)continue;                                                    // a soldier holds his ground (his own turn-to-you keeps him facing the visitor)
+    const dx=player.pos.x-q.x, dz=player.pos.z-q.z, d=Math.hypot(dx,dz), same=Math.abs(q.y-player.y)<2;
+    p.mesh.rotation.y+=Math.atan2(Math.sin(Math.atan2(dx,dz)-p.mesh.rotation.y),Math.cos(Math.atan2(dx,dz)-p.mesh.rotation.y))*Math.min(1,dt*4);
+    if(same&&d>2.6&&d<60){ const sp=d>9?3.4:1.9, st=Math.min(sp*dt,d-2.5); _gav.set(q.x+dx/d*st,0,q.z+dz/d*st); resolveCollision(_gav,0.45,q.y);
+      if(Math.abs(groundAt(_gav.x,_gav.z,q.y+0.4)-q.y)<0.5){ q.x=_gav.x; q.z=_gav.z; }
+      const run=sp>3; personAnim(p,run?'Run':'Walk'); if(p.act)p.act.timeScale=sp/(run?(p.runNat||4):(p.walkNat||1.5)); }
+    else { o.swing-=dt; if(same&&d<=3.2&&o.swing<=0){ o.swing=2.5+Math.random()*2.5; p.actName=''; personAnim(p,'Point',1.3,true); o.hold=state.time+2; }
+      else if(!(o.hold&&state.time<o.hold))personAnim(p,p.idle,0.9); }
+    groundPerson(p);
+  }
+}
+
+/* ---- effects (additive and glowing things only: the light count is fixed) ---- */
+function gaDrop(o){ if(!o)return; if(o.parent)o.parent.remove(o);
+  o.traverse(c=>{ if(c.geometry)c.geometry.dispose(); const m=c.material; if(m)(Array.isArray(m)?m:[m]).forEach(x=>{ if(x.map)x.map.dispose(); x.dispose(); }); }); }
+function gaFxAdd(m,T,step){ scene.add(m); zoneTag(m,0); const f={m,t:0,T,step}; GA.fx.push(f); return f; }
+function gaBeam(at,col,T){
+  const g=new THREE.Group();
+  const mat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide});
+  const c=new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.42,9,20,1,true),mat); c.position.y=4.5; g.add(c);
+  const rm=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1,0.05,8,40),rm); ring.rotation.x=Math.PI/2; ring.position.y=0.07; g.add(ring);
+  g.position.set(at.x,at.y,at.z);
+  return gaFxAdd(g,T,(f)=>{ const k=Math.min(1,f.t/0.6)*(f.T>0?Math.max(0,Math.min(1,(f.T-f.t)/0.8)):1); mat.opacity=0.34*k*(0.85+0.15*Math.sin(f.t*2.4)); rm.opacity=0.9*k; ring.scale.setScalar(1+0.06*Math.sin(f.t*3)); });
+}
+function gaSparks(at,col,n){
+  const g=new THREE.Group(); g.position.set(at.x,at.y+1.2,at.z); const bits=[], geo=new THREE.SphereGeometry(0.05,6,6);
+  for(let i=0;i<n;i++){ const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));
+    const a=Math.random()*Math.PI*2, e=Math.random()*1.3-0.2, s=1.5+Math.random()*3; bits.push({m,vx:Math.cos(a)*Math.cos(e)*s,vy:Math.sin(e)*s+1.5,vz:Math.sin(a)*Math.cos(e)*s}); g.add(m); }
+  return gaFxAdd(g,1.4,(f,dt)=>{ for(const b of bits){ b.vy-=6*dt; b.m.position.x+=b.vx*dt; b.m.position.y+=b.vy*dt; b.m.position.z+=b.vz*dt; b.m.material.opacity=Math.max(0,1-f.t/1.4); } });
+}
+function gaRings(at,col){
+  const g=new THREE.Group(); g.position.set(at.x,at.y+0.08,at.z); const rs=[];
+  for(let i=0;i<3;i++){ const m=new THREE.Mesh(new THREE.TorusGeometry(1,0.04,8,48),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false})); m.rotation.x=Math.PI/2; rs.push(m); g.add(m); }
+  return gaFxAdd(g,2.4,(f)=>{ rs.forEach((m,i)=>{ const u=Math.max(0,Math.min(1,(f.t-i*0.35)/1.5)); m.scale.setScalar(0.3+u*4); m.material.opacity=u>0&&u<1?(1-u)*0.9:0; }); });
+}
+function gaGlow(at,col,T){
+  const mat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});
+  const m=new THREE.Mesh(new THREE.SphereGeometry(0.45,24,18),mat); m.position.set(at.x,at.y+1.5,at.z);
+  return gaFxAdd(m,T,(f)=>{ const k=Math.min(1,f.t/0.8)*Math.max(0,Math.min(1,(f.T-f.t)/0.8)); mat.opacity=0.75*k; m.scale.setScalar(1+0.25*Math.sin(f.t*2.2)); m.position.y=at.y+1.5+0.15*Math.sin(f.t*1.3); });
+}
+function gaFall(kind,col,T){                                         // snow, petals, embers: round the visitor, wherever they go
+  const n=kind==='embers'?90:170, pos=new Float32Array(n*3), sp=new Float32Array(n), up=kind==='embers';
+  for(let i=0;i<n;i++){ pos[i*3]=(Math.random()-0.5)*16; pos[i*3+1]=Math.random()*7; pos[i*3+2]=(Math.random()-0.5)*16; sp[i]=0.5+Math.random(); }
+  const geo=new THREE.BufferGeometry(); geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const mat=new THREE.PointsMaterial({color:col,size:kind==='snow'?0.07:0.1,transparent:true,opacity:0,depthWrite:false,blending:up?THREE.AdditiveBlending:THREE.NormalBlending});
+  const P=new THREE.Points(geo,mat); P.frustumCulled=false;
+  return gaFxAdd(P,T,(f,dt)=>{ P.position.set(player.pos.x,player.y,player.pos.z); mat.opacity=0.9*Math.min(1,f.t/1.5)*Math.max(0,Math.min(1,(f.T-f.t)/1.5));
+    for(let i=0;i<n;i++){ let y=pos[i*3+1]+(up?0.7:-0.9)*sp[i]*dt; if(y<0)y+=7; if(y>7)y-=7; pos[i*3+1]=y; pos[i*3]+=Math.sin(f.t*0.8+i)*0.15*dt; }
+    geo.attributes.position.needsUpdate=true; });
+}
+function gaFade(col,up,hold,down,max){ const el=document.getElementById('fade'); if(!el)return; el.style.background=col; GA.fade={el,t:0,up,hold,down,max:max||1}; }
+function gaSound(kind){                                              // made on the spot, as the hall's other sounds are
+  const k=String(kind==null?'':kind).toLowerCase();
+  if(/knock/.test(k)){ ep1Knock(); return true; }
+  if(/shot|gun/.test(k)){ drillShot(0.6); return true; }
+  if(/whoosh|swish/.test(k)){ vmSound('whoosh'); return true; }
+  try{ const AC=window.AudioContext||window.webkitAudioContext; if(!AC)return false; const ctx=GA.actx||(GA.actx=new AC()); if(ctx.state==='suspended')ctx.resume();
+    const t=ctx.currentTime+0.02, tone=(f,at,len,type,vol)=>{ const o=ctx.createOscillator(), g=ctx.createGain(); o.type=type||'sine'; o.frequency.setValueAtTime(f,at);
+      g.gain.setValueAtTime(0.0001,at); g.gain.exponentialRampToValueAtTime(vol||0.25,at+0.01); g.gain.exponentialRampToValueAtTime(0.0001,at+len); o.connect(g).connect(ctx.destination); o.start(at); o.stop(at+len+0.05); };
+    if(/chime|ding|sparkle/.test(k)){ tone(880,t,0.7); tone(1320,t+0.12,0.9); tone(1760,t+0.24,1.1,'sine',0.15); return true; }
+    if(/bell|gong/.test(k)){ tone(440,t,2.2,'sine',0.3); tone(660,t,1.6,'sine',0.12); tone(1100,t,1.1,'sine',0.06); return true; }
+    if(/alarm|siren|alert/.test(k)){ for(let i=0;i<4;i++){ tone(760,t+i*0.36,0.17,'square',0.08); tone(570,t+i*0.36+0.18,0.17,'square',0.08); } return true; }
+    if(/thunder|rumble|boom/.test(k)){ const n=ctx.createBuffer(1,ctx.sampleRate*2.2,ctx.sampleRate), d=n.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.2);
+      const s=ctx.createBufferSource(), f=ctx.createBiquadFilter(), g=ctx.createGain(); s.buffer=n; f.type='lowpass'; f.frequency.value=180; g.gain.value=0.9; s.connect(f).connect(g).connect(ctx.destination); s.start(t); return true; }
+  }catch(e){}
+  return false;
+}
+
+/* ---- the actions ---- */
+const GA_DO={
+  wait:function*(a){ yield gaNum(a.seconds!==undefined?a.seconds:a.s,1,0,20); },
+  anim:function*(a,ctx){ const c=gaChar(a.who,ctx); if(!c||c.kind==='player'){ ctx.log.push('anim: there is nobody called "'+gaText(a.who,40)+'"'); return; }
+    ctx.log.push(gaAnim(c,a.name||a.anim||a.animation||a.clip,a.seconds)); yield 0.05; },
+  say:function*(a,ctx){ const c=gaChar(a.who,ctx), text=gaText(a.text||a.line||a.say,GA_LIMIT.say); if(!text)return;
+    if(!c||c.kind==='player'||!SPEAKERS[c.id]){ ctx.log.push('say: there is nobody called "'+gaText(a.who,40)+'" who can speak'); return; }
+    yield* gaSay(c,text,ctx); },
+  face:function*(a,ctx){ const c=gaChar(a.who,ctx); if(!c){ ctx.log.push('face: there is nobody called "'+gaText(a.who,40)+'"'); return; }
+    const t=a.at!==undefined?a.at:a.to, o=gaChar(t,ctx,true); let target=o?gaLive(o):null;
+    if(!target){ const pl=gaPlace(t,ctx); if(pl)target={x:pl.x,z:pl.z}; }
+    if(!target){ ctx.log.push('face: nothing called "'+gaText(t,40)+'" to turn to'); return; }
+    gaFace(c,target,25); yield 0.3; },
+  follow:function*(a,ctx){ const c=gaChar(a.who,ctx), on=!(a.on===false||a.on===0||/^(false|no|off|stay|stop)$/i.test(String(a.on)));
+    if(!c||!c.p||!c.p.fl||!c.p.tier){ ctx.log.push('follow: '+(c?c.name:'"'+gaText(a.who,40)+'"')+' cannot follow anyone'); return; }
+    c.p.fl.lead=null; c.p.fl.on=on; if(!on)c.p.following=false; if(on&&c.g)zoneTag(c.g.grp,0);
+    ctx.log.push('follow: '+c.name+(on?' follows the visitor':' stays where they are')); },
+  walk:function*(a,ctx){ const c=gaChar(a.who,ctx), spec=a.to!==undefined?a.to:(a.at!==undefined?a.at:a.place), pl=gaPlace(spec,ctx);
+    if(!c){ ctx.log.push('walk: there is nobody called "'+gaText(a.who,40)+'"'); return; }
+    if(!pl){ ctx.log.push('walk: there is no place called "'+gaText(typeof spec==='string'?spec:JSON.stringify(spec),60)+'"'); return; }
+    if(gaLiftBusy()){ ctx.log.push('walk: not while the lift is moving'); return; }
+    yield* gaWalk(c,pl,ctx); },
+  teleport:function*(a,ctx){
+    const who=String(a.who==null?'visitor':a.who).trim().toLowerCase(), spec=a.to!==undefined?a.to:(a.at!==undefined?a.at:a.place), pl=gaPlace(spec,ctx);
+    if(!pl){ ctx.log.push('teleport: there is no place called "'+gaText(typeof spec==='string'?spec:JSON.stringify(spec),60)+'"'); return; }
+    if(gaLiftBusy()){ ctx.log.push('teleport: not while the lift is moving'); return; }
+    const all=/^(everyone|everybody|all|party|us|we|the party)$/.test(who), c=all?gaChar('visitor',ctx):gaChar(who,ctx);
+    if(!c){ ctx.log.push('teleport: there is nobody called "'+gaText(a.who,40)+'"'); return; }
+    if(c.kind==='player'){ gaFade('#000',0.22,0.12,0.4); yield 0.24; }
+    ctx.log.push(gaTeleport(c,pl,ctx));
+    if(all)for(const n of ['elara','jack','optimus']){ const o=gaChar(n,ctx,true); if(!o)continue; if(o.p&&o.p.fl&&o.p.fl.on)continue;   // those following have come along already
+      const q=gaAt(o); if(Math.abs(q.y-player.y)<2&&Math.hypot(q.x-player.pos.x,q.z-player.pos.z)<9)continue;
+      ctx.log.push(gaTeleport(o,{x:player.pos.x,z:player.pos.z,y:player.y,label:'beside the visitor',near:2.4},ctx)); }
+    if(c.kind==='player')yield 0.5; },
+  objective:function*(a,ctx){
+    const title=gaText(a.title||a.text||a.name,90), tid=String(a.target==null?'':a.target).trim().toLowerCase();
+    let tgt=tid?GA.made.find(x=>!x.gone&&(x.foe||x.kind==='box')&&(x.id===tid||String(x.name).toLowerCase()===tid)):null;
+    const spec=a.to!==undefined?a.to:(a.at!==undefined?a.at:(a.place!==undefined?a.place:(tgt?tgt.id:undefined)));
+    let pl=tgt?null:gaPlace(spec,ctx);
+    if(!tgt&&pl)tgt=GA.made.find(x=>!x.gone&&(x.foe||x.kind==='box')&&x.asked&&Math.abs(x.asked.y-pl.y)<2&&Math.hypot(x.asked.x-pl.x,x.asked.z-pl.z)<1.5)||null;   // the very spot a box or an enemy was asked for: it is about that
+    if(tgt)pl={x:tgt.at.x,z:tgt.at.z,y:tgt.at.y,label:tgt.name,near:1.6};
+    if(!title){ ctx.log.push('objective: it needs a title'); return; }
+    if(tid&&!tgt){ ctx.log.push('objective: nothing called "'+gaText(tid,40)+'" to make it about — "target" is the id of an enemy or of a box'); return; }
+    if(!pl){ ctx.log.push('objective: there is no place called "'+gaText(typeof spec==='string'?spec:JSON.stringify(spec),60)+'"'); return; }
+    const at=gaSpot(pl)||{x:pl.x,z:pl.z,y:pl.y};
+    let pay=Math.round(gaNum(a.pay!==undefined?a.pay:a.credits,0,0,GA_LIMIT.pay)); if(pay&&pay<SMALL_PAY)pay=SMALL_PAY;
+    if(GA.paid+Math.max(pay,SMALL_PAY)>GA_LIMIT.payAll){ ctx.log.push('objective: not made — what objectives and boxes can pay in one visit ('+GA_LIMIT.payAll+' credits) has been given out'); return; }
+    GA.paid+=Math.max(pay,SMALL_PAY);
+    const n=(++GA.seq), stamp=Date.now().toString(36), tk='ga:'+stamp+n, pk='ga:p'+stamp+n, fl=gaFloorName(at.x,at.z,at.y);
+    LOCATIONS[pk]={x:at.x,z:at.z,label:gaText(pl.label,60)+' — '+fl};
+    TASKS[tk]={place:pk,title,pay,avail:()=>false,done:()=>!!GA.flags[tk]};
+    const o=gaMade({id:gaId(a.id||title),name:title,kind:'objective',what:'objective',task:tk,place:pk,at,by:ctx.who,r:gaNum(a.radius,2.6,1.5,8),pay:Math.max(pay,SMALL_PAY),target:tgt||null});
+    o.armed=!!tgt||Math.abs(player.y-at.y)>=2||Math.hypot(player.pos.x-at.x,player.pos.z-at.z)>o.r+1.5;   // given where they stand: it waits until they have been away
+    o.fx=gaBeam(at,0xffd27f,0); o.remove=()=>{ GA.flags[tk]=GA.flags[tk]||'gone'; try{ saveObjs(loadObjs().filter(x=>x.task!==tk)); refreshMiniObjs(); }catch(e){} };
+    GA.objs.push(o); addObjective(tk);
+    banner('NEW OBJECTIVE · '+title.toUpperCase());
+    ctx.log.push('objective: "'+title+'" is on their map, '+gaWhere(pl,at)+', paying '+o.pay+' credits; it is done when '+(tgt?(tgt.foe?tgt.name+' is brought down':'the box is opened'):'they get there')); },
+  start:function*(a,ctx){
+    const w=String(a.what||a.name||a.id||'').trim().toLowerCase();
+    if(/tour|walk with elara|elara.s walk/.test(w)){
+      const q=persons.elara; if(!q||tour.active){ ctx.log.push('start: the tour cannot start now'); return; }
+      closeElaraMenu(false); q.mesh.position.set(INTRO_AT[0],0,INTRO_AT[1]); ELARA_BLOCK.x=INTRO_AT[0]; ELARA_BLOCK.z=INTRO_AT[1]; q.following=false;
+      player.pos.set(0,0,64.6); player.y=0; player.vy=0; player.grounded=true; look.yaw=Math.PI; look.pitch=-0.02;
+      tour.started=false; startIntro(INTRO_WALK); GA.moved=true; ctx.stop=true; ctx.log.push('start: the walk with Elara has begun, from the garden'); return; }
+    let m=/fountain\D{0,14}(\d|one|two|three|i{1,3})\b/.exec(w);
+    if(m&&!/keeper/.test(w)){ const k={'1':0,one:0,i:0,'2':1,two:1,ii:1,'3':2,three:2,iii:2}[m[1]], s=FOUNTAIN_STORIES[k];
+      if(!s){ ctx.log.push('start: there is no such fountain conversation'); return; }
+      playFountainStory(s.id); GA.moved=true; ctx.stop=true; ctx.log.push('start: '+s.title+' is playing, as the visitor walks'); return; }
+    if(/story|circle/.test(w)){ const all=STORY_CIRCLES.map((s,i)=>({s,c:storyCirclePos(i)})).concat(STORY_CIRCLES_S.map((s,i)=>({s,c:storyCirclePosS(i)})));
+      const hit=all.find(e=>w.indexOf(e.s[0])>=0)||all.find(e=>w.indexOf(String(e.s[1]).toLowerCase())>=0)||all.find(e=>e.s[0].split('-').some(x=>x.length>4&&w.indexOf(x)>=0));
+      if(!hit){ ctx.log.push('start: no story called that — they are '+all.map(e=>e.s[0]).join(', ')); return; }
+      const Y=LEVEL_Y[ORG_LVL-1]; gaFade('#000',0.22,0.12,0.4); yield 0.24;
+      gaTeleport(gaChar('visitor',ctx),{x:hit.c[0]+2.4,z:hit.c[1],y:Y,label:'the story circle on level '+ORG_LVL},ctx); yield 0.6;
+      storyStart(hit.s[0],hit.c,Y); ctx.stop=true; ctx.log.push('start: the story "'+hit.s[1]+'" has begun, on level '+ORG_LVL); return; }
+    if(/drill/.test(w)){ const c=LABT.circleAt(1), Y=LABT.Y[1]; gaFade('#000',0.22,0.12,0.4); yield 0.24;
+      gaTeleport(gaChar('visitor',ctx),{x:c[0],z:c[1]+1.5,y:Y,label:'the drill circle on lab 2'},ctx); look.yaw=0; yield 0.6;
+      drillStart(Y,12,c); ctx.stop=true; ctx.log.push('start: the combat drill has begun, on lab 2'); return; }
+    if(/nightmare|boss|monster/.test(w)){ yield* GA_DO.spawn({what:'nightmare',at:a.at||a.to},ctx); return; }
+    if(/episode/.test(w)){ closeElaraMenu(false); startEp1(true); GA.moved=true; ctx.stop=true; ctx.log.push('start: Episode 1 has begun again, in the flat'); return; }
+    const out=/keeper|defend/.test(w)?['Fountain Keeper',launchRiftKeeper]:/cerebro/.test(w)?['Cerebro',launchCerebro]:/delivery/.test(w)?['the Delivery run',()=>launchDelivery('RF87t6b6')]:null;
+    if(out){ banner('LEAVING THE HALL · '+out[0].toUpperCase()); GA.moved=true; ctx.stop=true; yield 1.6; out[1](); return; }
+    ctx.log.push('start: there is nothing called "'+gaText(w,40)+'" to start'); },
+  spawn:function*(a,ctx){
+    const what=gaWhat(a.what||a.kind||a.model||a.type);
+    if(what==='box'){ yield* GA_DO.box(a,ctx); return; }
+    const spec=a.at!==undefined?a.at:(a.to!==undefined?a.to:a.place), hostile=a.hostile===true||/^(true|yes|1)$/i.test(String(a.hostile))||what==='nightmare';
+    let pl=spec!==undefined?gaPlace(spec,ctx):null;
+    if(spec!==undefined&&!pl){ ctx.log.push('spawn: there is no place called "'+gaText(typeof spec==='string'?spec:JSON.stringify(spec),60)+'"'); return; }
+    if(what==='nightmare'){
+      if(GUNS.boss&&!GUNS.boss.dying){ ctx.log.push('spawn: the nightmare is already here (one at a time)'); return; }
+      let done=false; gunsSpawnBoss(()=>{ done=true; },false); const t0=GA.clock; yield ()=>done||GA.clock-t0>20;
+      const B=GUNS.boss; if(!B){ ctx.log.push('spawn: the nightmare would not come'); return; }
+      if(pl){ const at=gaSpot(pl); if(at){ B.grp.position.set(at.x,at.y,at.z); } }
+      banner('THE NIGHTMARE IS HERE'); GA.moved=true;
+      ctx.log.push('spawn: the nightmare is '+gaWhere({raw:true},B.grp.position)+'; it comes for the visitor on its floor'); return; }
+    if(!pl){ const f=-3.5; pl={x:player.pos.x+Math.sin(look.yaw)*f,z:player.pos.z+Math.cos(look.yaw)*f,y:player.y,label:'in front of the visitor'}; }   // nowhere said: a few steps in front of the visitor
+    const at=gaSpot(pl); if(!at){ ctx.log.push('spawn: nowhere to stand '+gaWhere(pl)); return; }
+    const alive=GA.made.filter(o=>!o.gone);
+    if(GA_PEOPLE[what]){
+      if(hostile&&alive.filter(o=>o.foe).length>=GA_LIMIT.foes){ ctx.log.push('spawn: no more enemies for now — '+GA_LIMIT.foes+' is the most at once'); return; }
+      if(!hostile&&alive.filter(o=>o.char&&!o.foe).length>=GA_LIMIT.people){ ctx.log.push('spawn: no more people for now — '+GA_LIMIT.people+' is the most at once; remove one first'); return; }
+      const name=gaText(a.name,28)||({robot:'Robot',woman:'Woman',man:'Man',soldier:'Soldier',scientist:'Scientist'})[what];
+      const o=gaMade({id:gaId(a.id||name),name,kind:'person',what,at,asked:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,hostile?0xff7a6a:0xc8d8ff)}); GA.seq++;
+      if(hostile)gaFoe(o,Math.round(gaNum(a.hp,what==='robot'?18:12,1,60)));                 // the three companions hit with every shot: fewer than this and it is over before the visitor has turned round
+      let ok=false;
+      if(what==='robot'||what==='woman'||what==='scientist'){ ok=gaPerson(o,a,at); if(!ok){ o.gone=true; ctx.log.push('spawn: the '+what+' is not loaded yet — try again in a moment'); return; } }
+      else { let back=null; gaGuest(o,a,at,(y)=>{ back=!!y; }); banner(name+' is on the way…'); const t0=GA.clock; yield ()=>back!==null||GA.clock-t0>95; ok=!!back;
+        if(!ok){ o.gone=true; ctx.log.push('spawn: the '+what+' would not load'); return; } }
+      o.size0=o.body.scale.x;
+      gaVoice(o,a);
+      if(!hostile){ gaMind(o,a); gaHot(o,at,o.what==='robot'?OPTIMUS_H:1.85,'Talk to '+escHtml(name),()=>gaTalkTo(o)); }
+      else { if(o.hot)o.hot.r=-1; GA.moved=true; }
+      gaRings(at,o.color); gaSound('whoosh');
+      ctx.log.push('spawn: '+name+' (id "'+o.id+'", '+gaA(what)+(hostile?', hostile, '+o.hp+' hits to bring down':o.persona?', with a mind of their own':o.lines&&o.lines.length?', with '+o.lines.length+' lines':'')+') is '+gaWhere(pl,at)); return; }
+    if(/^(crate|orb|pillar|cube|ring)$/.test(what)){
+      if(alive.filter(o=>o.kind==='thing').length>=GA_LIMIT.things){ ctx.log.push('spawn: no more things for now — '+GA_LIMIT.things+' is the most at once; remove one first'); return; }
+      const name=gaText(a.name,28)||what, o=gaMade({id:gaId(a.id||name),name,kind:'thing',what,at,by:ctx.who,color:gaColor(a.color,0x7fe6ff)});
+      gaThing(o,a,at); ctx.log.push('spawn: '+gaA(what)+' (id "'+o.id+'") is '+gaWhere(pl,at)); return; }
+    ctx.log.push('spawn: nothing called "'+gaText(a.what||a.kind,40)+'" can be made — people: robot, woman, man, soldier, scientist, nightmare; things: crate, orb, pillar, cube, ring, box'); },
+  box:function*(a,ctx){
+    const spec=a.at!==undefined?a.at:(a.to!==undefined?a.to:a.place); let pl=spec!==undefined?gaPlace(spec,ctx):null;
+    if(spec!==undefined&&!pl){ ctx.log.push('box: there is no place called "'+gaText(typeof spec==='string'?spec:JSON.stringify(spec),60)+'"'); return; }
+    if(!pl)pl={x:player.pos.x+Math.sin(look.yaw)*-4,z:player.pos.z+Math.cos(look.yaw)*-4,y:player.y,label:'in front of the visitor'};
+    const at=gaSpot(pl); if(!at){ ctx.log.push('box: nowhere to put it '+gaWhere(pl)); return; }
+    if(GA.made.filter(o=>!o.gone&&(o.kind==='thing'||o.kind==='box')).length>=GA_LIMIT.things){ ctx.log.push('box: no more things for now; remove one first'); return; }
+    const name=gaText(a.name,28)||'box', o=gaMade({id:gaId(a.id||name),name,kind:'box',what:'box',at,asked:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,0xffd27f)});
+    gaBox(o,a,at); ctx.log.push('box: a box (id "'+o.id+'") is '+gaWhere(pl,at)+(o.credits?', with '+o.credits+' credits in it':'')); yield 0.05; },
+  effect:function*(a,ctx){
+    const w=String(a.what||a.kind||a.name||'').trim().toLowerCase(), col=gaColor(a.color,0x7fe6ff), T=gaNum(a.seconds,0,0,120);
+    const spec=a.at!==undefined?a.at:(a.to!==undefined?a.to:a.place), pl=(spec!==undefined&&gaPlace(spec,ctx))||{x:player.pos.x,z:player.pos.z,y:player.y,label:'the visitor'};
+    const at={x:pl.x,y:pl.y,z:pl.z};
+    if(/beam|beacon|pillar of light|column of light/.test(w))gaBeam(at,col,T||20);
+    else if(/spark|burst|firework/.test(w)){ gaSparks(at,col,30); gaSound('whoosh'); }
+    else if(/ring|ripple|pulse|wave/.test(w))gaRings(at,col);
+    else if(/glow|orb|light|wisp/.test(w))gaGlow(at,col,T||15);
+    else if(/confetti/.test(w))spawnArrivalConfetti();
+    else if(/snow/.test(w))gaFall('snow',gaColor(a.color,0xffffff),T||20);
+    else if(/petal|blossom|leaves|leaf/.test(w))gaFall('petals',gaColor(a.color,0xff9cc8),T||20);
+    else if(/ember|firefl|spark.*rise|ash/.test(w))gaFall('embers',gaColor(a.color,0xff9f4a),T||20);
+    else if(/flash/.test(w))gaFade(gaHex(gaColor(a.color,0xffffff)),0.04,0.06,0.5,0.85);
+    else if(/dark|black|blackout|night/.test(w))gaFade('#000',0.6,Math.min(20,T||2.5),0.8,0.93);
+    else if(/shake|quake|tremor|rumble/.test(w)){ GA.shake=gaNum(a.strength,0.08,0.01,0.3); GA.shakeT=Math.min(15,T||2.5); gaSound('thunder'); }
+    else if(/lightning|thunder|storm/.test(w)){ GA.bolt={t:0,base:key.intensity}; gaFade('#dfe8ff',0.03,0.05,0.3,0.45); gaSound('thunder'); }
+    else { ctx.log.push('effect: nothing called "'+gaText(w,40)+'" — there are beam, sparks, rings, glow, confetti, snow, petals, embers, flash, dark, shake, lightning'); return; }
+    ctx.log.push('effect: '+w+', '+gaWhere(pl)); yield 0.05; },
+  sign:function*(a,ctx){
+    const text=gaText(a.text||a.title||a.name,40), sub=gaText(a.sub||a.subtitle||a.note,60); if(!text){ ctx.log.push('sign: it needs a text'); return; }
+    const spec=a.at!==undefined?a.at:(a.to!==undefined?a.to:a.place), pl=(spec!==undefined&&gaPlace(spec,ctx))||{x:player.pos.x+Math.sin(look.yaw)*-5,z:player.pos.z+Math.cos(look.yaw)*-5,y:player.y,label:'in front of the visitor'};
+    if(GA.made.filter(o=>!o.gone&&o.kind==='sign').length>=GA_LIMIT.signs){ ctx.log.push('sign: no more signs for now; remove one first'); return; }
+    const o=gaMade({id:gaId(a.id||text),name:text,kind:'sign',what:'sign',at:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,0x7fe6ff)});
+    const m=addHoloSign(text,sub,pl.x,pl.y+gaNum(a.height,3.2,1.6,8),pl.z,0,o.color,true); zoneTag(m,0); o.body=m;
+    o.remove=()=>{ m.visible=false; gaDrop(m); };
+    const T=gaNum(a.seconds,0,0,600); if(T>0)o.until=GA.clock+T;
+    ctx.log.push('sign: "'+text+'" (id "'+o.id+'") floats '+gaWhere(pl)); yield 0.05; },
+  sound:function*(a,ctx){ const w=a.what||a.kind||a.name; if(!gaSound(w))ctx.log.push('sound: nothing called "'+gaText(w,40)+'" — there are chime, bell, knock, alarm, thunder, whoosh, shot'); yield 0.05; },
+  music:function*(a,ctx){ const on=!(a.on===false||/^(false|no|off|stop)$/i.test(String(a.on)));
+    try{ if(!on)audio.pause(); else if(a.next||!audio.src)loadTrack(a.next?trackIdx+1:trackIdx,true); else audio.play().catch(()=>{}); ctx.log.push('music: '+(on?'playing':'stopped')); }catch(e){ ctx.log.push('music: it would not play'); } yield 0.05; },
+  remove:function*(a,ctx){
+    const s=String(a.id||a.who||a.what||a.name||'').trim().toLowerCase();
+    if(/^(all|everything|everyone)$/.test(s)){ const n=GA.made.filter(o=>!o.gone).length; GA.made.forEach(gaGone); if(GUNS.boss&&/everything|all/.test(s))gunsRemoveBoss(); ctx.log.push('remove: '+n+' things taken away'); return; }
+    if(/nightmare|boss|monster/.test(s)&&GUNS.boss){ gunsRemoveBoss(); ctx.log.push('remove: the nightmare is gone'); return; }
+    const o=GA.made.find(x=>!x.gone&&(x.id===s||String(x.name).toLowerCase()===s));
+    if(!o){ ctx.log.push('remove: nothing called "'+gaText(s,40)+'" was made'); return; }
+    gaGone(o); ctx.log.push('remove: '+o.name+' is gone'); yield 0.05; }
+};
+Object.assign(GA_DO,{animate:GA_DO.anim,animation:GA_DO.anim,play:GA_DO.anim,speak:GA_DO.say,talk:GA_DO.say,turn:GA_DO.face,look:GA_DO.face,go:GA_DO.walk,goto:GA_DO.walk,walkto:GA_DO.walk,
+  move:GA_DO.teleport,tp:GA_DO.teleport,quest:GA_DO.objective,mission:GA_DO.objective,create:GA_DO.spawn,make:GA_DO.spawn,summon:GA_DO.spawn,fx:GA_DO.effect,delete:GA_DO.remove,despawn:GA_DO.remove,pause:GA_DO.wait});
+function gaScene(){ return tour.active?"Elara's walk":EP1.active?'Episode 1':STORY.active?'a story':DRILL.active?'the drill':dateRunning?'the date':''; }
+function gaLiftBusy(){ return !!(LIFTX.travel||LIFTS.some(L=>L.riding)); }
+
+/* ---- running them ---- */
+function gaRead(out){                                                // Gemini's answer → {reply, ask, idea, actions}; plain words, if that is what came, are the reply
+  out=String(out==null?'':out).replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
+  const d=ocParse(out)||{}, plain=(t)=>String(t==null?'':t).replace(/\*+/g,'').trim();
+  let acts=d.actions; if(acts&&!Array.isArray(acts)&&typeof acts==='object')acts=[acts];
+  return {reply:plain(d.reply),ask:plain(d.ask),idea:String(d.idea==null?'':d.idea).trim(),actions:Array.isArray(acts)?acts.filter(a=>a&&typeof a==='object'):[]};
+}
+function* gaScript(who,acts){
+  const ctx={who,log:GA.last[who],lastSpeaker:null,cast:new Map(),stop:false};
+  for(const a of acts){
+    if(ctx.stop)break;
+    const f=GA_DO[String(a.do||a.action||a.type||'').trim().toLowerCase().replace(/[\s_-]+/g,'')];
+    if(!f){ ctx.log.push('"'+gaText(a.do||a.action,30)+'" is not something that can be done'); continue; }
+    if(gaScene()){ ctx.log.push(gaText(a.do,30)+': not done — '+gaScene()+' is playing'); continue; }
+    try{ yield* f(a,ctx); }catch(e){ ctx.log.push(gaText(a.do,30)+': it failed ('+gaText(e&&e.message,80)+')'); }
+  }
+  ctx.cast.forEach(c=>gaFace(c,null));                                // those who spoke stand easy again
+}
+function gaNext(){
+  if(!GA.gen)return; let r; try{ r=GA.gen.next(); }catch(e){ r={done:true}; }
+  if(r.done){ GA.gen=null; GA.active=false; const d=GA.done; GA.done=null; if(d)try{ d(); }catch(e){} return; }
+  GA.cur=r.value; GA.t=0;
+}
+function gaRun(who,acts,back,away){
+  acts=Array.isArray(acts)?acts.slice(0,GA_LIMIT.acts):[];
+  if(!acts.length){ GA.last[who]=[]; if(back)back(); return; }
+  if(GA.active){ GA.queue.push([who,acts,back,away]); return; }       // one list at a time: this one after the one that is running
+  GA.last[who]=[];
+  if(gaScene()){ GA.last[who].push('nothing was done — '+gaScene()+' is playing'); if(back)back(); return; }
+  GA.active=true; GA.who=who; GA.moved=false; GA.cur=undefined; GA.t=0;
+  GA.done=()=>{ const f=GA.moved?(away||back):back; if(f)f(); };
+  GA.gen=gaScript(who,acts); gaNext();
+}
+animated.push({update(dt){                                            // its clock, and everything it has made (frozen with the pause menu, as the hall is)
+  if(state.phase!=='play'||paused)return;
+  GA.clock+=dt;
+  for(const f of GA.fx){ f.t+=dt; try{ if(f.step)f.step(f,dt); }catch(e){ f.kill=true; } if((f.T>0&&f.t>=f.T)||f.kill){ f.dead=true; gaDrop(f.m); } }
+  if(GA.fx.some(f=>f.dead))GA.fx=GA.fx.filter(f=>!f.dead);
+  if(GA.fade){ const F=GA.fade; F.t+=dt; const a=F.t<F.up?F.t/F.up:F.t<F.up+F.hold?1:Math.max(0,1-(F.t-F.up-F.hold)/F.down); F.el.style.opacity=String(a*F.max);
+    if(F.t>=F.up+F.hold+F.down){ F.el.style.opacity='0'; F.el.style.background='#000'; GA.fade=null; } }
+  if(GA.bolt){ const b=GA.bolt; b.t+=dt; key.intensity=b.t<0.08?b.base+2.6:b.t<0.16?b.base:b.t<0.24?b.base+1.8:b.base; if(b.t>=0.24){ key.intensity=b.base; GA.bolt=null; } }
+  if(GA.shakeT>0){ GA.shakeT-=dt; if(GA.shakeT<=0)GA.shake=0; }
+  gaFoes(dt);
+  for(const o of GA.made){ if(o.gone||!o.body)continue;
+    if(o.kind==='thing'&&o.spin){ o.mesh.rotation[o.what==='ring'?'z':'y']+=dt*o.spin; if(o.bob)o.mesh.position.y=o.bob+Math.sin(GA.clock*1.4)*0.08; }
+    if(o.kind==='box'&&o.open){ o.open+=dt; o.lid.rotation.x=-Math.min(1,o.open/0.5)*1.9; if(o.open>40)gaGone(o); }
+    if(o.until&&GA.clock>o.until)gaGone(o);
+    if(o.char&&o.char.kind==='guest'&&o.g&&o.g.grp){ o.at.x=o.g.grp.position.x; o.at.z=o.g.grp.position.z; }
+    else if(o.p){ o.at={x:o.p.mesh.position.x,z:o.p.mesh.position.z,y:o.p.mesh.position.y}; } }
+  for(const g of GA.holds){ if(g.holdUntil&&state.time>=g.holdUntil){ g.holdUntil=0; if(g.gaIdle)guestBody(g,g.gaIdle,1); } }   // a spawned body back to its idle (Jack's own hook does his)
+  for(const f of GA.faces){ if(state.time>f.until){ f.dead=true; if(f.c.kind==='person'){ if(f.c.p.faceAt===f.target)f.c.p.faceAt=null; } else if(f.c.g&&f.c.g.faceAt===f.target)f.c.g.faceAt=null; } }
+  if(GA.faces.some(f=>f.dead))GA.faces=GA.faces.filter(f=>!f.dead);
+  for(const o of GA.objs){ if(o.gone||GA.flags[o.task])continue;       // an objective is done when they get there — or when its enemy is down, its box opened
+    const T=o.target, near=Math.abs(player.y-o.at.y)<2&&Math.hypot(player.pos.x-o.at.x,player.pos.z-o.at.z)<o.r;
+    if(T&&T.at){ o.at.x=T.at.x; o.at.z=T.at.z; o.at.y=T.at.y; if(o.fx&&o.fx.m)o.fx.m.position.set(T.at.x,T.at.y,T.at.z); const L=LOCATIONS[o.place]; if(L){ L.x=T.at.x; L.z=T.at.z; } }   // its marker goes where that goes
+    if(!T&&!o.armed){ if(!near&&Math.hypot(player.pos.x-o.at.x,player.pos.z-o.at.z)>o.r+1.5)o.armed=true; continue; }
+    if(T?(T.foe?(T.down||T.gone):!!T.open):near){ GA.flags[o.task]=true; if(o.fx)o.fx.kill=true; o.gone=true;
+      try{ collectAllPay(); refreshMiniObjs(); }catch(e){} banner('OBJECTIVE DONE · '+o.name.toUpperCase()+(o.pay?' · +'+o.pay+' ◈':'')); gaSound('chime'); gaRings(o.at,0xffd27f);
+      gaNews('the objective "'+o.name+'" is done'); } }
+  if(!GA.active){ if(GA.queue.length&&!gaScene()&&!(FTALK.active&&FTALK.id==='counsel')){ const q=GA.queue.shift(); gaRun(q[0],q[1],q[2],q[3]); } return; }
+  if(!GA.gen)return;
+  GA.t+=dt; const c=GA.cur; let go=false;
+  if(typeof c==='number')go=GA.t>=c; else if(typeof c==='function'){ try{ go=!!c(); }catch(e){ go=true; } } else go=true;
+  if(go)gaNext();
+}});
+try{ saveObjs(loadObjs().filter(o=>!/^ga:/.test(o.task||''))); }catch(e){}   // last visit's objectives of this kind went with that page
+
+/* ---- what Gemini is told ---- */
+function gaNow(who){
+  const f=(q)=>'('+Math.round(q.x)+', '+Math.round(q.z)+') on '+gaFloorName(q.x,q.z,q.y);
+  const P={x:player.pos.x,z:player.pos.z,y:player.y};
+  const dir=['north','north-west','west','south-west','south','south-east','east','north-east'][((Math.round(look.yaw/(Math.PI/4))%8)+8)%8];
+  let s='The visitor is at '+f(P)+', facing '+dir+'.';
+  for(const n of ['elara','jack','optimus']){ const c=gaChar(n,null,true); if(!c){ s+=' '+n.charAt(0).toUpperCase()+n.slice(1)+' is not in the hall yet.'; continue; }
+    const q=gaAt(c), d=Math.hypot(q.x-P.x,q.z-P.z), same=Math.abs(q.y-P.y)<2;
+    s+=' '+c.name+(n===who?' (you)':'')+' is at '+f(q)+(same?', '+Math.round(d)+' m from the visitor':'')+', '+((c.p&&c.p.fl&&c.p.fl.on)?'following them':'staying put')+'.'; }
+  const made=GA.made.filter(o=>!o.gone&&o.kind!=='objective');
+  if(made.length)s+=' Put into the hall so far: '+made.map(o=>'"'+o.id+'" ('+(o.foe?'hostile ':'')+o.what+(o.name&&o.name.toLowerCase()!==o.id?' called '+o.name:'')+(o.at?', '+f(o.at):'')+(o.id===who?', you':'')+')').join('; ')+'.';
+  if(GUNS.boss&&!GUNS.boss.dying)s+=' The nightmare is loose at '+f(GUNS.boss.grp.position)+'.';
+  let objs=[]; try{ objs=activeObjs().map(o=>o.title); }catch(e){}
+  if(objs.length)s+=' On the visitor\'s map: '+objs.map(t=>'"'+t+'"').join(', ')+'.';
+  const sc=gaScene(); if(sc)s+=' '+sc.charAt(0).toUpperCase()+sc.slice(1)+' is playing: nothing can be done until it is over.';
+  const last=GA.last[who]; if(last&&last.length)s+='\nWhat came of your last actions: '+last.join(' · ')+'.';
+  const from=GA.seen[who]||0, news=GA.news.slice(Math.max(0,from-(GA.newsOff||0))); GA.seen[who]=(GA.newsOff||0)+GA.news.length;
+  if(news.length)s+='\nSince you last spoke: '+news.join(' · ')+'.';
+  return s;
+}
+function gaBrief(who,noFormat){
+  const E=PEOPLE.models.elara, en=E?Object.keys(E.clips).filter(n=>!/^Face_/.test(n)):[], O=persons.optimus, on=O?Object.keys(O.clips).filter(n=>!/^Face_/.test(n)):['Idle','Walk','Run','Wave','Point'];
+  if(on.indexOf('Salute')<0)on.push('Salute');
+  let s='\n\nWHAT YOU CAN DO. You can act in the hall as well as talk. Your JSON may carry "actions": a list of things that happen, in order, once your reply has been spoken. They are yours to use as you see fit: often, seldom, playfully, to make a scene, to take the visitor somewhere, to surprise them, or not at all. An empty list is fine. Each action is an object with "do":\n'
+  +'- {"do":"anim","who":"elara","name":"Wave","seconds":5}: someone plays an animation.\n'
+  +'- {"do":"say","who":"jack","text":"..."}: someone says a line, you included (what you say after a teleport, for one). Several in a row make a conversation between them.\n'
+  +'- {"do":"face","who":"jack","at":"elara"}: turn to someone, to "visitor", or to a place.\n'
+  +'- {"do":"follow","who":"optimus","on":true}: follow the visitor, or stay put.\n'
+  +'- {"do":"walk","who":"elara","to":"fountain"}: walk there. Short ways on the same floor only, about '+GA_LIMIT.walk+' metres: the hall has not been made for walking anywhere yet. Farther than that, or to another floor, teleport.\n'
+  +'- {"do":"teleport","who":"visitor","to":"lab 2"}: move the visitor, a character, or "everyone" (the visitor and the three of you) at once, to any place on any floor. It is the way to take the visitor somewhere. Tell them they have been teleported and where they are: a "say" after it does that.\n'
+  +'- {"do":"objective","title":"...","to":"...","pay":20}: give the visitor an objective: a marker on their map and a beam of light at the place; it is done when they get there. With "target":"<id>" it is about something spawned instead: an enemy (done when it is brought down) or a box (done when it is opened). pay: up to '+GA_LIMIT.pay+' credits.\n'
+  +'- {"do":"start","what":"tour"}: start something the hall has: tour (the walk with Elara, from the garden), fountain 1, fountain 2, fountain 3 (the conversations with the fountain), story <name> (the story circles on level '+ORG_LVL+'), drill (the combat drill on lab 2), nightmare, episode 1. And the games behind the hall, which take the visitor out of the hall until they have played: fountain keeper, cerebro, delivery.\n'
+  +'- {"do":"spawn","what":"robot","name":"...","id":"...","at":"..."}: put someone or something into the hall. People: robot, woman, man, soldier, scientist. With a "persona" (who they are, a few sentences) they have a mind and a voice of their own and the visitor can talk with them; with "lines":["..."] they say those when spoken to. "voice":"male" or "female", "pitch":0.4 to 1.8. With "hostile":true they are an enemy: robots come at the visitor, soldiers hold their ground; "nightmare" is the lab\'s monster, one at a time. Nothing can hurt the visitor; the visitor, Elara, Jack and Optimus shoot enemies down. Things: crate, orb, pillar, cube, ring, with "color", "size" and a "note" the visitor reads on it.\n'
+  +'- {"do":"box","at":"...","inside":"...","credits":10}: a box for the visitor to find and open: a message inside, credits if you like (up to '+GA_LIMIT.box+').\n'
+  +'- {"do":"effect","what":"beam","at":"...","color":"#7fe6ff","seconds":20}: beam, sparks, rings, glow, confetti, snow, petals, embers, flash, dark, shake, lightning.\n'
+  +'- {"do":"sign","at":"...","text":"...","sub":"..."}: a sign floating in the air.\n'
+  +'- {"do":"sound","what":"chime"}: chime, bell, knock, alarm, thunder, whoosh, shot. {"do":"music","on":true}.\n'
+  +'- {"do":"remove","id":"..."}: take away something that was put there ("all": everything). {"do":"wait","seconds":2}: a pause.\n'
+  +'A place ("to", "at") is a name from the map, a character\'s name, "visitor", "here" (where you stand), the id of something spawned, or {"x":0,"z":0,"floor":"ground"}. "who" is elara, jack, optimus, visitor, or the id of someone spawned; left out, it is you.\n'
+  +'\nANIMATIONS. Elara, Jack, and any woman or man: '+en.join(', ')+'. Optimus and any robot: '+on.join(', ')+'.\n'
+  +'\nTHE MAP (in metres; north is -z, east is +x; a floor is "ground", "lab 1" to "lab '+LABT.Y.length+'" up the lab tower, or "level 1" to "level '+LEVEL_Y.length+'" over the hall):\n'
+  +gaMap().map(e=>'- '+e.key+': ('+Math.round(e.x)+', '+Math.round(e.z)+') '+gaFloorName(e.x,e.z,e.y)+' — '+e.what).join('\n')
+  +'\n\nRIGHT NOW. '+gaNow(who);
+  if(!noFormat)s+='\n\nRespond with STRICT JSON only, no markdown fences: {"reply":"what you say, spoken aloud","actions":[]}.';
+  return s;
+}
 // Jack's E menu (2026-09-17). "Defend the hall": he asks whether to start now, and Yes goes to Fountain Keeper
-// (launchRiftKeeper — the way back puts you in front of him); No just closes. "Just talk" is what E did before.
-function openJackMenu(talk,g){
+// (launchRiftKeeper — the way back puts you in front of him); No just closes. "Just talk" is a Gemini chat as him (2026-09-29,
+// asked for — elaraChatView('jack'), the pane Elara's chat uses; it used to be his three lines, one per press).
+function openJackMenu(g){
   elaraHeader('The hall’s agent','Jack','#ffd27f'); cardFor='jack';
   document.exitPointerLock&&document.exitPointerLock();
   const opts=document.getElementById('elaraOpts'), q=document.getElementById('elaraQ'), close=document.getElementById('elaraClose');
@@ -9022,7 +9854,7 @@ function openJackMenu(talk,g){
   const J=g&&g.follower;                                               // the hall's Jack can come along, or stay where he is (2026-09-25; guestFollower)
   if(J&&!EP1.active)mk(J.fl.on?'✋&nbsp; Stay here':'👣&nbsp; Follow me',()=>{ const on=!J.fl.on; setFollow(J,on); closeElaraMenu();   // (not while Episode 1 has him leading)
     say('jack',on?"Right behind you.":"I'll stay here. Come and get me when you want me along."); });
-  mk('💬&nbsp; Just talk',()=>{ closeElaraMenu(); talk(); });
+  mk('💬&nbsp; Just talk',()=>elaraChatView('jack'));
   document.getElementById('elaraModal').style.display='flex';
 }
 // (voice warm-up removed — browser voices speak instantly, nothing to prefetch)
@@ -10226,6 +11058,7 @@ function updateCamera(dt){
   headLight.position.copy(camera.position);
   const moving=(keys.KeyW||keys.KeyA||keys.KeyS||keys.KeyD)&&state.phase==='play';
   camera.position.y+=moving?Math.sin(state.time*9)*0.02:0;
+  if(GA.shake>0){ camera.position.x+=(Math.random()-0.5)*GA.shake; camera.position.y+=(Math.random()-0.5)*GA.shake; camera.position.z+=(Math.random()-0.5)*GA.shake; }   // (GA) the ground shaking
 }
 
 // ---------- main loop ----------
