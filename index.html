@@ -2169,10 +2169,13 @@ function wearOutfit(t,key){
    so a shared "ease back by this much" bent one foot far past flat while barely touching the other —
    which is exactly what it looked like. Now 1.00 means level on both feet, whatever the clip is doing,
    and above 1 presses the toes the same number of degrees below level on each. A walk or a run hands
-   them straight back to the animation. Runs after every mixer, at the end of update(). */
+   them straight back to the animation. Runs after every mixer, at the end of update().
+   OFF by default since 2026-09-30: she stands on the heels of her shoes now (SOLES), and toe fans held level bent the fronts of
+   her stilettos up off the floor, soles facing forward (the user: "elaras feet were flipped the wrong way"; the slider at 0:
+   "that will fix it"). The developer page's slider still turns it on, remembered on that device. */
 const FEET=[];
 const SOLE_DEG=12;                         // degrees below level per unit above 1
-let FEET_AMT=(()=>{try{const v=localStorage.getItem('atd:elara:flatfeet'); return v==null?1:+v;}catch(e){return 1;}})();
+let FEET_AMT=(()=>{try{const v=localStorage.getItem('atd:elara:flatfeet'); return v==null?0:+v;}catch(e){return 0;}})();
 function setFlatFeet(v){ FEET_AMT=v; try{localStorage.setItem('atd:elara:flatfeet',String(v));}catch(e){} }
 function feetSetup(root,walking){
   const toes=[];
@@ -7888,7 +7891,7 @@ const _jawQ=new THREE.Quaternion(),_jawAxis=new THREE.Vector3(0,0,1);   // CC_Ba
 /* ---- the same mouth on a face with the ARKit shape names (the scientist, 2026-09-30). The engine above thinks in Elara's CC
    shapes; here each of those is spread over the ARKit shapes that make the same mouth, summed and clamped, and whatever
    expression the character holds (p.exprNow, from gaExpression) is laid over it, the larger of the two winning. ---- */
-const LIP_ARKIT={V_Open:{jawOpen:0.8,mouthFunnel:0.12},Jaw_Open:{jawOpen:0.9},
+const LIP_ARKIT={V_Open:{jawOpen:0.42,mouthFunnel:0.12},Jaw_Open:{jawOpen:0.45},   // (2026-09-30, asked for: "make mouth not open as much" — was 0.8 / 0.9, which clamped at a fully open jaw on every AA)
   V_Wide:{mouthStretchLeft:0.55,mouthStretchRight:0.55,mouthSmileLeft:0.25,mouthSmileRight:0.25,mouthLowerDownLeft:0.2,mouthLowerDownRight:0.2},
   V_Tight_O:{mouthFunnel:0.85,mouthPucker:0.35,jawOpen:0.12},V_Tight:{mouthPucker:0.9,mouthFunnel:0.25},
   V_Explosive:{mouthClose:0.7,mouthPressLeft:0.8,mouthPressRight:0.8},V_Dental_Lip:{mouthRollLower:0.85,mouthPressLeft:0.25,mouthPressRight:0.25},
@@ -8570,6 +8573,7 @@ function spawnElara(){
   persons.elara=p;
   p.fl=FOLLOW; p.block=ELARA_BLOCK; p.tier=(t,spd)=>elaraTier(p,t,spd); FOLLOWERS.push(p);   // she follows (see FOLLOW): her state is FOLLOW itself, her collider ELARA_BLOCK
   if(EP1_DUE){ EP1.wasFollow=FOLLOW.on; FOLLOW.on=false; }   // Episode 1: she must not catch up to the flat while you wait there — she follows again once you have met downstairs
+  p.sole=true; p.level=true;   // (2026-09-30) the floor meets the underside of her shoes, not her toe bone 3–5 cm above it, and a standing foot lies flat in its shoe (SOLES)
   breastBind(p.inner);
   feetSetup(p.inner,()=>WALKING.test(p.actName||''));   // flat feet while she stands
   if(ELARA_OUTFIT!=='cat'||ELARA_HAIR!=='bun')wearOutfit(p.wear={root:p.inner},ELARA_OUTFIT);   // the cat suit and her bun are the model's own: nothing to fetch
@@ -8590,6 +8594,69 @@ function groundPerson(p){
   let minY=Infinity;
   for(const b of p.feet){b.getWorldPosition(_footV);if(_footV.y<minY)minY=_footV.y;}
   if(isFinite(minY))p.inner.position.y-=(minY-(p.pad||0))-(p.mesh.position.y+(p.lift||0));      // lowest foot, sole and all → the floor it stands on (world y=0, or a level's height), or the surface found over that floor (p.lift: a rug, the flats' floor, the atrium glass)
+}
+/* ---- SOLES: a standing foot lies flat in its shoe (2026-09-30, asked for: "her heel is going into the ground (not flat)").
+   Elara's clips hold her ankle-to-ball line anywhere from 11° to 52° below level — they were made for different shoes — and the
+   shoes she wears are level at about 60°: under that the heel digs into the floor, over it she stands on her toes. While she
+   stands, each foot is turned about its own side-to-side axis until the lowest point under the heel and the lowest under the ball
+   are level, measured on the shoe itself ten times a second; groundPerson then sets that sole on the floor (p.sole). A walk or a
+   run keeps its own feet, and so does anything done sitting or lying. The shoes are looked at again when her clothes change. ---- */
+const _sv1=new THREE.Vector3(),_sv2=new THREE.Vector3(),_sv3=new THREE.Vector3(),_sax=new THREE.Vector3(),_sq=new THREE.Quaternion(),_sw=new THREE.Quaternion(),_sp=new THREE.Quaternion();
+function soleSig(p){ let n=0,h=0; p.inner.traverse(m=>{ if(!m.isSkinnedMesh)return; for(let o=m;o;o=o.parent)if(o.visible===false)return; n++; const s=m.name||''; for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0; }); return n+':'+h; }
+function soleSetup(p){
+  const bones={}; p.inner.traverse(b=>{ if(b.isBone)bones[(b.name||'').replace(/_\d+$/,'')]=b; });
+  const L={feet:[],t:0,hips:bones.CC_Base_Hip||null,hips0:0};
+  p.inner.updateWorldMatrix(true,true);
+  if(L.hips)L.hips0=L.hips.getWorldPosition(_sv1).y-p.mesh.position.y;
+  for(const S of ['L','R']){ const foot=bones['CC_Base_'+S+'_Foot'], toe=bones['CC_Base_'+S+'_ToeBase']; if(!foot||!toe||toe.parent!==foot)continue;
+    // which part of the shoe a vertex belongs to is read off the pose the shoe was BOUND in, across the floor: under the ankle or behind
+    // it is the heel (a stiletto's tip included), under the ball or ahead of it is the front. Not off the pose she happens to be in — a
+    // foot caught pointing down mid-step sorted its heel into the front and was then turned the wrong way — and not along the line from
+    // ankle to ball either: bound in heels that line points almost straight down, and the heel's tip lies "along" it as far as the ball does.
+    const F={foot,toe,c:0,heel:[],ball:[]}, re=new RegExp('^CC_Base_'+S+'_(Foot|ToeBase|\\w*Toe\\d)'), v=new THREE.Vector3(), A=new THREE.Matrix4(), T=new THREE.Matrix4();
+    p.inner.traverse(m=>{ if(!m.isSkinnedMesh||!m.geometry.attributes.skinIndex)return; for(let o=m;o;o=o.parent)if(o.visible===false)return;
+      const g=m.geometry, pa=g.attributes.position, si=g.attributes.skinIndex, sw=g.attributes.skinWeight, bs=m.skeleton.bones, n=pa.count, heel=[], ball=[];
+      const fi=bs.indexOf(foot), ti=bs.indexOf(toe); if(fi<0||ti<0)return;
+      A.copy(m.skeleton.boneInverses[fi]).invert(); T.copy(m.skeleton.boneInverses[ti]).invert();          // where the ankle and the ball were when this mesh was bound
+      const ax=A.elements[12], az=A.elements[14]; let dx=T.elements[12]-ax, dz=T.elements[14]-az; const lh=Math.hypot(dx,dz); if(lh<1e-9)return; dx/=lh; dz/=lh;
+      for(let i=0;i<n;i++){ let ok=false;
+        for(let k=0;k<4&&!ok;k++){ const w=k===0?sw.getX(i):k===1?sw.getY(i):k===2?sw.getZ(i):sw.getW(i); if(w<0.3)continue; const b=bs[k===0?si.getX(i):k===1?si.getY(i):k===2?si.getZ(i):si.getW(i)]; if(b&&re.test(b.name))ok=true; }
+        if(!ok)continue;
+        v.fromBufferAttribute(pa,i).applyMatrix4(m.bindMatrix); const along=((v.x-ax)*dx+(v.z-az)*dz)/lh;   // across the floor: 0 under the ankle, 1 under the ball
+        if(along<0.2)heel.push(i); else if(along>0.7)ball.push(i); }
+      if(heel.length)F.heel.push({m,idx:Int32Array.from(heel)}); if(ball.length)F.ball.push({m,idx:Int32Array.from(ball)}); });
+    if(F.heel.length&&F.ball.length)L.feet.push(F); }
+  return L;
+}
+function soleLow(sets,out){                                          // the lowest point of those vertices as the bones hold them now
+  let y=Infinity; for(const {m,idx} of sets){ const st=idx.length>900?2:1; for(let j=0;j<idx.length;j+=st){ m.boneTransform(idx[j],_sv3); _sv3.applyMatrix4(m.matrixWorld); if(_sv3.y<y){ y=_sv3.y; out.copy(_sv3); } } }
+  return y;
+}
+function soleTurn(F,ang){                                            // the foot turned about its own level side-to-side axis: a positive turn puts the toes down
+  if(Math.abs(ang)<1e-4)return;
+  F.foot.getWorldPosition(_sv1); F.toe.getWorldPosition(_sv2); _sv2.sub(_sv1); _sv2.y=0; if(_sv2.lengthSq()<1e-8)return; _sv2.normalize();
+  _sax.set(_sv2.z,0,-_sv2.x); _sq.setFromAxisAngle(_sax,ang);
+  F.foot.getWorldQuaternion(_sw); F.foot.parent.getWorldQuaternion(_sp);
+  F.foot.quaternion.copy(_sp.invert().multiply(_sq.multiply(_sw))); F.foot.updateMatrixWorld(true);
+}
+function soleLevel(p,dt){
+  if(!p.level)return;
+  let L=p._sole; const now=state.time;
+  if(!L){ if(now-(p._soleT||-9)<0.5)return; p._soleT=now; }
+  if(!L||now-L.sigAt>1){ const sig=soleSig(p);
+    if(!L||sig!==L.sig){ if(WALKING.test(p.actName||''))return;       // the shoes are measured standing
+      L=p._sole=soleSetup(p); L.sig=sig; if(p.sole){ p.fset=footVertexSet(p.inner); p.padAt=-1; } }
+    L.sigAt=now; }
+  if(!L.feet.length)return;
+  const up=!L.hips||(L.hips.getWorldPosition(_sv1).y-p.mesh.position.y)>L.hips0*0.78;   // not sitting, not lying
+  const standing=up&&!WALKING.test(p.actName||''), look=standing&&now-L.t>0.1; if(look)L.t=now;
+  for(const F of L.feet){
+    if(!standing){ F.c+=(0-F.c)*Math.min(1,dt*8); soleTurn(F,F.c); continue; }
+    soleTurn(F,F.c);                                                  // what this foot has needed so far; then, ten times a second, what is still left
+    if(look){ const hy=soleLow(F.heel,_sv1), hx=_sv1.x, hz=_sv1.z, ty=soleLow(F.ball,_sv2);
+      if(isFinite(hy)&&isFinite(ty)){ const run=Math.max(0.06,Math.hypot(_sv2.x-hx,_sv2.z-hz)), e=Math.atan2(ty-hy,run)*0.7;
+        if(Math.abs(e)>0.002){ const c=Math.max(-1,Math.min(1,F.c+e)); soleTurn(F,c-F.c); F.c=c; } } }   // (up to 57° either way: her flat idle needs 40° to stand in these heels)
+  }
 }
 /* ---- FOLLOW: a companion trails the visitor 2.7 m behind whenever the tour is not running. Elara always has;
    since 2026-09-25 Jack and Optimus can be told to as well, each from their own E menu ('Follow me' / 'Stay here',
@@ -8831,6 +8898,7 @@ function updatePeople(dt){
       else { p.previewUntil=0; personAnim(p,p.idle,0.9); }
     }
     if(FOOT_SURF.length){ p.liftT=(p.liftT||0)-dt; if(p.liftT<=0){ p.liftT=0.1; p.lift=surfaceLift(p.mesh.position.x,p.mesh.position.z,p.mesh.position.y); } }   // a rug, the flats' floor, the atrium glass under it (looked for ten times a second)
+    soleLevel(p,dt);                                                       // a standing foot flat in its shoe (SOLES), before the sole is set on the floor
     groundPerson(p);
     // keep Elara's tour hotspot on her, and switch it off while the tour is running
     if(p.hot){ p.hot.x=p.mesh.position.x; p.hot.z=p.mesh.position.z; p.hot.y=p.mesh.position.y; p.hot.r=dateRunning?-1:(tour.active?(tour.isIntro?3.2:-1):1.53);   // no 'Press E' during the tour or the date; the opening walk keeps it, wide enough to reach her while you walk
@@ -9318,9 +9386,10 @@ for(const [S,W,k,x] of [['L','Left','l',1],['R','Right','r',-1]])GA_BONE.push(
   [k+'Hand','CC_Base_'+S+'_Hand|mixamorig\\d*'+W+'Hand|ValveBipedBip01_'+S+'_Hand|Wrist'+S,null,null,k+'Fore'],
   [k+'Thigh','CC_Base_'+S+'_Thigh|mixamorig\\d*'+W+'UpLeg|ValveBipedBip01_'+S+'_Thigh|UpperLeg'+S,[0,-1,0],k+'Calf'],
   [k+'Calf','CC_Base_'+S+'_Calf|mixamorig\\d*'+W+'Leg|ValveBipedBip01_'+S+'_Calf|LowerLeg'+S,[0,-1,0],k+'Foot'],
-  // the foot is aligned like the limbs (2026-09-30): ankle to the ball of the foot points forward and about 24° down when a sole is flat.
-  // Without it a foot got "the same turn away from rest", and Elara's rest pose holds her feet pointing down, so the scientist's
-  // flat feet were turned 75° up in her idle. A rig without toe bones (the kit) keeps the old way. The toes take the foot's alignment.
+  // the foot is aligned like the limbs (2026-09-30): ankle to the ball of the foot points forward and down by the rig's own standing
+  // pitch (gaFootPitch replaces the direction written here). Without alignment a foot got "the same turn away from rest", and Elara's
+  // rest pose holds her feet pointing down, so the scientist's flat feet were turned 75° up in her idle. A rig without toe bones
+  // (the kit) keeps the old way. The toes take the foot's alignment.
   [k+'Foot','CC_Base_'+S+'_Foot|mixamorig\\d*'+W+'Foot|ValveBipedBip01_'+S+'_Foot|Foot'+S,[0,-0.4,0.92],k+'Toe'],
   [k+'Toe','CC_Base_'+S+'_ToeBase|mixamorig\\d*'+W+'ToeBase|ValveBipedBip01_'+S+'_Toe0',null,null,k+'Foot']);
 // the fingers (2026-09-30, the scientist rigged with them): three bones each, aligned along the arm like the hand; the last bone
@@ -9347,8 +9416,12 @@ function gaRig(key){                                                 // a rig re
     for(const r in B){ Pw[r]=B[r].getWorldPosition(V()); Ww[r]=B[r].getWorldQuaternion(Q()); }
     const x=Pw.lThigh.clone().sub(Pw.rThigh).normalize(), up=Pw.head.clone().sub(Pw.hips).normalize(), z=V().crossVectors(x,up).normalize(), y=V().crossVectors(z,x).normalize();
     const R=Q().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x,y,z)), A={}, ref={};
-    for(const d of GA_BONE){ const r=d[0]; if(!B[r])continue; const al=Q();
-      if(d[2]&&B[d[3]]){ const from=Pw[d[3]].clone().sub(Pw[r]); if(from.lengthSq()>1e-10)al.setFromUnitVectors(from.normalize(),V().set(d[2][0],d[2][1],d[2][2]).applyQuaternion(R).normalize()); }
+    // a flat sole: how far below level the ankle-to-ball line runs on THIS rig when it stands (his 25°, Elara's 19°). The foot's
+    // target direction carries the rig's own pitch, so a foot arrives flat on every body and only its turn away from flat is copied;
+    // with one pitch for all, his toes stood 3–4 cm off the floor in her idle (2026-09-30)
+    const fp=gaFootPitch(key,root,B,R), footDir=[0,-Math.sin(fp),Math.cos(fp)];
+    for(const d of GA_BONE){ const r=d[0]; if(!B[r])continue; const al=Q(), dir=(r==='lFoot'||r==='rFoot')?footDir:d[2];
+      if(dir&&B[d[3]]){ const from=Pw[d[3]].clone().sub(Pw[r]); if(from.lengthSq()>1e-10)al.setFromUnitVectors(from.normalize(),V().set(dir[0],dir[1],dir[2]).applyQuaternion(R).normalize()); }
       else if(d[4]&&A[d[4]])al.copy(A[d[4]]);
       A[r]=al; ref[r]=al.clone().multiply(Ww[r]); }
     // the bones from the hips down that a role drives, and the ones between them (which keep their rest), parents first
@@ -9358,13 +9431,61 @@ function gaRig(key){                                                 // a rig re
     const restLocal=new Map(); chain.forEach(o=>restLocal.set(o,o.quaternion.clone()));
     rig={key,root,B,P:Pw,R,ref,chain,restLocal,whole,hipsParent:hp,hipsParentW:hp?hp.getWorldQuaternion(Q()):Q(),
       hipsParentInv:hp?new THREE.Matrix4().copy(hp.matrixWorld).invert():new THREE.Matrix4(),hipsLocal:B.hips.position.clone(),
-      leg:Pw.lThigh.distanceTo(Pw.lCalf)+Pw.lCalf.distanceTo(Pw.lFoot),fwd:V().set(0,0,1).applyQuaternion(R)};
+      leg:Pw.lThigh.distanceTo(Pw.lCalf)+Pw.lCalf.distanceTo(Pw.lFoot),fwd:V().set(0,0,1).applyQuaternion(R),W0:Ww};   // W0: each bone's turn at rest (gaFeetRefs)
     if(pm){ pm.stopAllAction(); pm.uncacheRoot(root); root.updateMatrixWorld(true); }
   }catch(e){ console.warn('rig',key,e&&e.message); rig=null; }
   return GA.rigs[key]=rig;
 }
+function gaFootPitch(key,root,B,R){                                  // the ankle-to-ball pitch of a standing foot on this rig, in radians below level, both feet averaged
+  const RI=R.clone().invert(), V=()=>new THREE.Vector3();
+  const measure=()=>{ let s=0,n=0; for(const k of ['l','r']){ const f=B[k+'Foot'], t=B[k+'Toe']; if(!f||!t)continue;
+    const d=t.getWorldPosition(V()).sub(f.getWorldPosition(V())).applyQuaternion(RI), h=Math.hypot(d.x,d.z); if(h>1e-6){ s+=Math.atan2(-d.y,h); n++; } } return n?s/n:0.42; };
+  const E=key==='cc3'&&PEOPLE.models.elara, clip=E&&(E.clips.Idle_Male||E.clips[ELARA_IDLE]);   // Elara's bind pose points her feet down: hers is read standing in her idle
+  if(!clip)return measure();
+  const saved=[]; root.traverse(o=>{ if(o.isBone)saved.push([o,o.quaternion.clone(),o.position.clone()]); });
+  const mx=new THREE.AnimationMixer(root); mx.clipAction(clip).play(); mx.setTime(0); root.updateMatrixWorld(true);
+  const a=measure();
+  mx.stopAllAction(); try{ mx.uncacheRoot(root); }catch(e){}
+  for(const [o,q,p] of saved){ o.quaternion.copy(q); o.position.copy(p); } root.updateMatrixWorld(true);
+  return a;
+}
+// Elara's clips come from several libraries and each holds her FEET its own way: standing, her ankle-to-ball line runs 19° below
+// level in the ActorCore male idle, 31° in the UAL idles and some Mixamo gestures, 40° in others, 52° in her own capture. A foot is
+// carried over as its turn away from flat, so each clip gets its own flat (gaFeetRefs): the middle of nine readings of a clip she
+// stands through; a walk or a run, the flattest its feet get (a walking foot is flat only while it bears the weight); a clip she
+// lies through, the standing clip of its library. With the one flat of her male idle for every clip he stood on his toes through
+// the Mixamo gestures. Only the feet: the pelvis, the spine and the shoulders are carried over plainly, as they always were — for a
+// while (2026-09-30) they were aimed at each body's own standing shape too, and the user found his chest stuck out further.
+const GA_STANCE=[[/UAL/,'Idle_UAL'],[/^(Run_M|Run_Girl)$/,'Idle_Male'],[/^Walk_Lady$/,'Idle']];   // a clip's library, by its standing clip; the rest: Idle_Mixamo
+function gaFeetPose(S,clip,n,low){                                   // each foot's pitch below level in the rig's own frame through a clip (the middle of n readings; low: the flattest), and how upright it is
+  const RI=S.R.clone().invert(), V=()=>new THREE.Vector3(), B=S.B, root=S.root, got={l:[],r:[],up:[]};
+  const saved=[]; root.traverse(o=>{ if(o.isBone)saved.push([o,o.quaternion.clone(),o.position.clone()]); });
+  const mx=new THREE.AnimationMixer(root); mx.clipAction(clip).play();
+  for(let i=0;i<n;i++){ mx.setTime(clip.duration*(i+0.5)/n); root.updateMatrixWorld(true);
+    for(const k of ['l','r']){ const f=B[k+'Foot'], t=B[k+'Toe']; if(!f||!t)continue;
+      const d=t.getWorldPosition(V()).sub(f.getWorldPosition(V())).applyQuaternion(RI), h=Math.hypot(d.x,d.z); if(h>1e-6)got[k].push(Math.atan2(-d.y,h)); }
+    got.up.push(B.head.getWorldPosition(V()).sub(B.hips.getWorldPosition(V())).normalize().y); }
+  mx.stopAllAction(); try{ mx.uncacheRoot(root); }catch(e){}
+  for(const [o,q,p] of saved){ o.quaternion.copy(q); o.position.copy(p); } root.updateMatrixWorld(true);
+  const at=(a,k)=>{ a=a.slice().sort((p,q)=>p-q); return a.length?a[Math.min(a.length-1,Math.floor(a.length*k))]:undefined; };
+  return {l:at(got.l,low?0.2:0.5),r:at(got.r,low?0.2:0.5),up:at(got.up,0.5)};
+}
+function gaFeetRefs(S,clip){                                         // the source's feet at rest, aimed at THIS clip's flat (null: the rig's own, from gaFootPitch)
+  const E=S.key==='cc3'&&PEOPLE.models.elara; if(!E||!S.W0)return null;
+  const name=Object.keys(E.clips).find(k=>E.clips[k]===clip)||clip.name||'';
+  S.feetAt=S.feetAt||{}; if(S.feetAt[name]!==undefined)return S.feetAt[name];
+  const walks=WALKING.test(name); let f=gaFeetPose(S,clip,9,walks);
+  if(!walks&&f.up<0.82){ const sc=E.clips[(GA_STANCE.find(g=>g[0].test(name))||[0,'Idle_Mixamo'])[1]]; f=sc?gaFeetPose(S,sc,7):null; }   // lying: her library's standing
+  let out=null;
+  if(f)for(const k of ['l','r']){ const p=f[k]!==undefined?f[k]:f[k==='l'?'r':'l']; if(p===undefined||!S.B[k+'Foot']||!S.B[k+'Toe'])continue;
+    const from=S.P[k+'Toe'].clone().sub(S.P[k+'Foot']); if(from.lengthSq()<1e-10)continue;
+    const al=new THREE.Quaternion().setFromUnitVectors(from.normalize(),new THREE.Vector3(0,-Math.sin(p),Math.cos(p)).applyQuaternion(S.R).normalize());
+    out=out||{}; out[k+'Foot']=al.clone().multiply(S.W0[k+'Foot']); out[k+'Toe']=al.clone().multiply(S.W0[k+'Toe']); }   // the toes take the foot's turn
+  return S.feetAt[name]=out;
+}
 function gaBake(srcKey,clip,dstKey,name){                            // the clip, as the other kind of body would play it
   const S=gaRig(srcKey), D=gaRig(dstKey); if(!S||!D||!D.whole||!clip)return null;
+  const SR=gaFeetRefs(S,clip);                                         // the source's flat feet for THIS clip (Elara's libraries differ), read before the clip goes on its bones
   const roles=GA_BONE.map(d=>d[0]).filter(r=>S.B[r]&&D.B[r]), idx=new Map(); roles.forEach((r,i)=>idx.set(D.B[r],i));
   const n=Math.max(2,Math.min(1500,Math.round(clip.duration*24)+1)), times=new Float32Array(n), qv=roles.map(()=>new Float32Array(n*4)), hv=new Float32Array(n*3);
   const mx=new THREE.AnimationMixer(S.root), act=mx.clipAction(clip); act.setLoop(THREE.LoopOnce,0); act.clampWhenFinished=true; act.play();
@@ -9378,7 +9499,7 @@ function gaBake(srcKey,clip,dstKey,name){                            // the clip
       const pw=(o.parent===D.hipsParent||!W.has(o.parent))?D.hipsParentW:W.get(o.parent), i=idx.get(o);
       if(i===undefined){ W.set(o,pw.clone().multiply(D.restLocal.get(o))); continue; }
       const r=roles[i];
-      S.B[r].getWorldQuaternion(w); d.copy(RsI).multiply(w).multiply(t1.copy(S.ref[r]).invert()).multiply(Rs);
+      S.B[r].getWorldQuaternion(w); d.copy(RsI).multiply(w).multiply(t1.copy((SR&&SR[r])||S.ref[r]).invert()).multiply(Rs);
       w.copy(Rd).multiply(d).multiply(RdI).multiply(D.ref[r]);
       W.set(o,w.clone()); t1.copy(pw).invert().multiply(w);
       const q=qv[i]; q[f*4]=t1.x; q[f*4+1]=t1.y; q[f*4+2]=t1.z; q[f*4+3]=t1.w;
@@ -9627,7 +9748,7 @@ function gaPerson(o,a,at){                                           // a copy o
   const p=makePerson(model,{h}); if(!p)return false;
   p.gaRig=o.what==='robot'?'optimus':o.what==='woman'?'cc3':'sci';
   p.key=o.id; p.mesh.position.set(at.x,at.y,at.z); p.mesh.rotation.y=Math.atan2(player.pos.x-at.x,player.pos.z-at.z);
-  p.blockH=h; if(o.what==='robot'||o.what==='scientist')p.sole=true;   // sole: the floor meets the underside of his shoes, measured from his mesh, not the toe bone 5 cm above it
+  p.blockH=h; if(o.what==='woman')p.level=true; p.sole=true;   // sole: the floor meets the underside of his shoes, measured from his mesh, not the toe bone 5 cm above it
   o.body=p.mesh; o.p=p;
   if(o.foe)return true;                                              // an enemy is run by gaFoes, not as one of the hall's people
   p.block=o.block={x:at.x,z:at.z,hw:0.4,hd:0.4,y0:at.y-0.4,h:at.y+h,off:false}; BUILDINGS.push(o.block);
