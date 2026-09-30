@@ -189,11 +189,14 @@
     <div style="color:#dfe9f5;font-size:25px;font-weight:700;margin:7px 0 20px">The Arrivals Hall</div>
     <button id="startBtn" class="menuBtn" style="width:100%;min-width:0;font-size:17px;padding:13px 16px;opacity:.5;cursor:default">Loading…</button>
     <div id="startNote" style="color:#8fa3bf;font-size:12px;margin-top:13px">Elara is waiting in the garden</div>
+    <!-- the loading bar (2026-10-01): what START is waiting for, in order — see LOADBAR. Folds away once START lights up -->
+    <div id="loadWrap" style="max-height:40px;overflow:hidden;transition:max-height .5s ease .3s,opacity .4s">
+      <div id="loadBar" style="margin-top:14px;height:4px;border-radius:2px;background:rgba(127,230,255,.15);overflow:hidden">
+        <div id="loadFill" style="width:0%;height:100%;background:#7fe6ff;border-radius:2px;transition:width .3s"></div>
+      </div>
+      <div id="loadWhat" style="color:#5f7590;font-size:11px;margin-top:7px;min-height:13px">opening…</div>
+    </div>
   </div>
-</div>
-<!-- real loading progress (models etc. via the shared Three.js loading manager) -->
-<div id="loadBar" style="position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:6;width:280px;height:5px;border-radius:3px;background:rgba(127,230,255,.15);overflow:hidden;display:none">
-  <div id="loadFill" style="width:0%;height:100%;background:#7fe6ff;border-radius:3px;transition:width .25s"></div>
 </div>
 <div id="tourHint" style="position:fixed;left:50%;top:14px;transform:translateX(-50%);display:none;
   background:rgba(10,18,30,.6);border:1px solid rgba(127,230,255,.3);border-radius:8px;
@@ -600,21 +603,26 @@
     <button class="menuBtn back" id="devClose" style="margin-top:14px;width:100%;min-width:0">◂ Close (or press ` again)</button>
   </div>
 </div>
-<div class="modal" id="elaraModal" style="display:none">
-  <div style="max-width:520px;padding:28px 32px;border:1px solid rgba(182,255,156,.4);border-radius:14px;background:rgba(8,14,24,.96);text-align:center;box-shadow:0 0 50px rgba(90,200,120,.22)">
-    <div id="elaraTag" style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--green);opacity:.9">Your guide</div>
-    <h2 style="margin:.15em 0 .45em;font-size:26px;color:#fff;letter-spacing:.03em"><span id="elaraTitle" style="color:var(--green)">Elara</span></h2>
-    <p id="elaraQ" style="color:#c3d0e2;font-size:15px;line-height:1.55;margin:0 0 18px">How can I help?</p>
-    <div id="elaraOpts"></div>
-    <!-- "Other" — a small chat with Elara (Gemini-backed; she can read this page's source) -->
-    <div id="elaraChat" style="display:none;text-align:left">
-      <div id="ecMsgs" style="max-height:240px;overflow-y:auto;margin:0 0 10px;padding:10px 12px;background:rgba(10,18,30,.6);border:1px solid rgba(182,255,156,.25);border-radius:10px;font-size:14px;line-height:1.55;color:#dfe9f5"></div>
-      <div style="display:flex;gap:8px">
-        <input id="ecIn" placeholder="Ask Elara anything…" style="pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(182,255,156,.35);border-radius:8px">
-        <button class="menuBtn" id="ecSend" style="min-width:0;margin:0;padding:9px 18px;border-left-color:var(--green)">Send</button>
+<!-- The people's card — Elara's E menu, Jack's, the scientist's and anyone Gemini puts in the hall, and their Just talk chats.
+     Since 2026-10-01 it is the fountain's chromeless panel, the one Optimus's E and Just talk use (asked for: "the same design
+     as optimus"): no box and no dark screen, a small caption in the person's colour, the buttons floating over the hall, and
+     under them Step back. A chat is the caption "Just talk — name", the bubbles, the line to type on, Send, and Back to their menu. -->
+<div class="modal" id="elaraModal" style="display:none;background:none">
+  <div style="max-width:560px;width:92%;text-align:center">
+    <div style="margin:7px 0 0;text-align:left">
+      <div id="elaraCap" style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:8px"><span id="elaraTag">Your guide</span> — <span id="elaraTitle">Elara</span></div>
+      <p id="elaraQ" style="color:#c3d0e2;font-size:14px;line-height:1.55;margin:0 0 10px">How can I help?</p>
+      <div id="elaraOpts"></div>
+      <div id="elaraChat" style="display:none">
+        <div id="ecMsgs" style="pointer-events:auto;max-height:220px;overflow-y:auto;margin:0 0 10px;padding:10px 12px;background:rgba(10,18,30,.6);border:1px solid rgba(159,216,255,.25);border-radius:10px;font-size:14px;line-height:1.55;color:#dfe9f5"></div>
+        <div style="display:flex;gap:8px">
+          <input id="ecIn" placeholder="Ask Elara anything…" style="pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(159,216,255,.35);border-radius:8px">
+          <button class="menuBtn" id="ecSend" style="min-width:0;margin:0;padding:8px 16px;border-left-color:var(--green)">Send</button>
+        </div>
+        <button class="menuBtn back" id="ecBack" style="margin-top:12px">◂ Back</button>
       </div>
     </div>
-    <button class="menuBtn back" id="elaraClose" style="margin-top:12px">◂ Never mind</button>
+    <button class="menuBtn back" id="elaraClose" style="margin-top:12px">◂ Step back</button>
   </div>
 </div>
 
@@ -908,22 +916,51 @@ function warmSets(o){ if(o.layers.mask&16)return [LSET.hall,LSET.out,LSET.annexe
   _wv.setFromMatrixPosition(o.matrixWorld); const zn=zoneAt(_wv.x,_wv.z,_wv.y); return zn==='hall'?[LSET.hall,LSET.out]:[ZONE_L[zn]]; }   // the hall: also under the outside lights (seen from the foyer through the open door)
 function warmKey(o,sets){ return matVersion(o)+'/'+sets.reduce((a,b)=>a|b,0); }
 
-// ---- loading bar under the click-to-start hint: REAL progress from the shared
-// Three.js loading manager (every model load reports here). Purely informational —
-// the player can click to start at any time; assets pop in as they arrive.
-(function(){
-  const bar=document.getElementById('loadBar'),fill=document.getElementById('loadFill');
-  let doneLoading=false;
-  THREE.DefaultLoadingManager.onStart=function(){if(!doneLoading)bar.style.display='block';};
-  THREE.DefaultLoadingManager.onProgress=function(url,loaded,total){
-    if(doneLoading)return;
-    bar.style.display='block';
-    fill.style.width=Math.round(loaded/Math.max(1,total)*100)+'%';
-  };
-  THREE.DefaultLoadingManager.onLoad=function(){
-    doneLoading=true;LOADED=true;fill.style.width='100%';
-    setTimeout(()=>{bar.style.display='none';},450);
-  };
+// ---- the loading bar on the START card (2026-10-01, asked for: the old one at the foot of the screen was full long before
+// START could be pressed). It follows what START actually waits for, in the order it happens: the files — every model, texture
+// and clip that comes through the shared Three.js loading manager, first the garden's batch (Elara, her clothes, the city, the
+// flats), the city drawn onto the GPU a piece a frame, then the hall's files, which are only asked for once those are in
+// (hallStart), the hall's shaders, then a browser voice for Elara (six seconds at most, as the gate itself waits). The files
+// are the long part, and how many there are depends on
+// where you start (the garden, Episode 1 at home, back from a game, the fountain) and on what the hall holds that week, so the
+// count seen last time from the same start is the yardstick, remembered on this device; the first time, the bar can only
+// measure against the loads it has been told of so far and moves in steps. It never goes backwards, the button carries the
+// percentage, the line under the bar says what it is on, and it is full exactly when START lights up. Informational only:
+// gateArm decides when START works, and nothing here changes that.
+const LOADBAR={loaded:0,total:0,idle:true,expect:-1,shown:0,last:'',on:'',done:false};
+const LOADBAR_NAMES=[[/elara/i,'Elara'],[/city/i,'the city'],[/apartment/i,'the flats'],[/optimus/i,'Optimus'],[/historian/i,'the historian'],
+  [/soldier/i,'the soldier'],[/scientist|doctor/i,'the scientist'],[/jack/i,'Jack'],[/column|trim|paddedwall|textures\/floor/i,'the hall'],[/walls\//i,'the pictures']];
+function loadBarKey(){ try{ return typeof RETURN_TO!=='undefined'&&RETURN_TO?'return:'+RETURN_TO:typeof AT_FOUNTAIN!=='undefined'&&AT_FOUNTAIN?'fountain':typeof EP1_DUE!=='undefined'&&EP1_DUE?'ep1':'garden'; }catch(e){ return 'garden'; } }   // the way you are starting
+function loadBarName(url){                                           // what a file is, for the line under the bar; a blob or data URL is a piece of the file before it
+  url=String(url||''); if(/^(blob|data):/.test(url))return LOADBAR.last;
+  for(const [re,name] of LOADBAR_NAMES)if(re.test(url))return name;
+  const m=url.replace(/[?#].*$/,'').match(/([^\/]+)\.\w+$/); return m?m[1].replace(/[_-]+/g,' ').toLowerCase():LOADBAR.last;
+}
+function loadBarTick(){
+  if(LOADBAR.done)return;
+  if(LOADBAR.expect<0){ LOADBAR.expect=0; try{ LOADBAR.expect=+localStorage.getItem('atd:load:'+loadBarKey())||0; }catch(e){} }
+  const filesIn=LOADBAR.idle&&HALLB.compiled;                         // nothing left to fetch and the hall has drawn: whatever the count said, the files are in
+  const files=filesIn?1:(LOADBAR.total?LOADBAR.loaded/Math.max(LOADBAR.total,LOADBAR.expect):0);
+  const cw=CITY.warm, city=CITY.state==='failed'||HALLB.started?1:cw?(cw.done?1:Math.min(1,(cw.at||0)/Math.max(1,cw.texs+cw.meshes))):0;
+  const hall=HALLB.compiled?1:HALLB.started?Math.min(1,(performance.now()-HALLB.t0)/4000):0;
+  const voice=(SPEAKERS.elara.voice||INTRO_WAIT>6)?1:0;
+  const p=Math.min(0.99,0.70*files+0.12*city+0.13*hall+0.05*voice);
+  if(p>LOADBAR.shown)LOADBAR.shown=p;
+  const on=!filesIn&&!LOADBAR.idle?'loading '+(LOADBAR.last||'the garden'):!HALLB.started?(cw&&!cw.done?'drawing the city':'Elara'):!HALLB.compiled?'building the hall':'waiting for her voice';
+  if(on!==LOADBAR.on){ LOADBAR.on=on; document.getElementById('loadWhat').textContent=on; }
+  const pct=Math.round(LOADBAR.shown*100);
+  if(pct!==LOADBAR.pct){ LOADBAR.pct=pct; document.getElementById('loadFill').style.width=pct+'%'; if(!gateReady)document.getElementById('startBtn').textContent='Loading… '+pct+'%'; }
+}
+function loadBarDone(){                                              // START is lit: full, then the bar folds away
+  if(LOADBAR.done)return; LOADBAR.done=true;
+  try{ localStorage.setItem('atd:load:'+loadBarKey(),String(LOADBAR.total)); }catch(e){}   // next time, this start's count is the yardstick
+  document.getElementById('loadFill').style.width='100%'; document.getElementById('loadWhat').textContent='';
+  const w=document.getElementById('loadWrap'); setTimeout(()=>{ w.style.opacity='0'; w.style.maxHeight='0'; },350);
+}
+(function(){                                                         // every load reports here; the counts are cumulative for the whole visit
+  THREE.DefaultLoadingManager.onStart=function(){ LOADBAR.idle=false; };
+  THREE.DefaultLoadingManager.onProgress=function(url,loaded,total){ LOADBAR.loaded=loaded; LOADBAR.total=total; LOADBAR.last=loadBarName(url); };
+  THREE.DefaultLoadingManager.onLoad=function(){ LOADBAR.idle=true; LOADED=true; };
   THREE.DefaultLoadingManager.onError=function(){};   // a missing optional model must not wedge the bar
 })();
 let LOADED=false;                                  // the loading bar has finished
@@ -4791,7 +4828,7 @@ function warmCity(){
     if(i<texs.length){ try{renderer.initTexture(texs[i]);}catch(e){} }
     else if(i-texs.length<CITY.meshes.length){ const m=CITY.meshes[i-texs.length]; m.visible=true; warmDraw([m],LSET.out); m.userData.warmV=warmKey(m,[LSET.out]); }   // drawn once now, unseen, under the outside lights
     else CITY.warm.done=true;
-    i++;
+    i++; CITY.warm.at=i;                                             // (how far it has got: the START card's bar)
   }});
 }
 
@@ -5623,7 +5660,7 @@ function askCard(tag,title,color,question,options){
   document.getElementById('elaraChat').style.display='none'; opts.style.display=''; opts.innerHTML=''; q.textContent=question;
   options.forEach(([html,fn],i)=>{ const b=document.createElement('button'); b.className='menuBtn';
     b.style.cssText='width:100%;margin:7px 0;min-width:0'+(i===options.length-1?';border-left-color:'+color:''); b.innerHTML=html; b.onclick=fn; opts.appendChild(b); });
-  document.getElementById('elaraModal').style.display='flex';
+  elaraShow(true);
 }
 
 /* ---------- OR MAIL IT — the send-it-in form, on the west side wall of the ADD YOUR LEVEL room (it hung on the
@@ -8987,16 +9024,21 @@ const ELARA_TOPICS=[
       "And a feeling of calm — minds pure and free, not full of the normal boredom and chaos. That's Epicurus. The city is designed around it." ] },
 ];
 function elaraAsk(q){document.getElementById('elaraQ').textContent=q;say('elara',q);}
-let cardFor=null;                      // whose card the modal shows: null = Elara's, 'jack' = Jack's (openJackMenu)
+let cardFor=null, cardBack=null, cardColor='var(--green)';   // whose card the panel shows: null = Elara's, 'jack' = Jack's (openJackMenu); cardBack: their menu again, from their chat
 function elaraHeader(tag,title,color){
-  cardFor=null;
+  cardFor=null; cardBack=null; cardColor=color||'var(--green)';
   document.getElementById('elaraTag').textContent=tag;
   document.getElementById('elaraTitle').textContent=title;
-  document.getElementById('elaraTitle').style.color=color||'var(--green)';
+  document.getElementById('elaraCap').style.color=cardColor;
+  document.getElementById('elaraQ').style.display='';
   document.getElementById('elaraClose').style.display='';
 }
+function elaraShow(on){                                            // the panel up (the HUD prompts hidden behind it, as at the fountain), or away
+  document.getElementById('elaraModal').style.display=on?'flex':'none';
+  document.body.classList.toggle('qOpen',!!on);
+}
 let elaraFrom=null;                    // 'fountain' when the homes flow was opened from the fountain menu
-function openElaraMenu(){elaraFrom=null;elaraHeader('Your guide','Elara');elaraView('root');}
+function openElaraMenu(){elaraFrom=null;elaraHeader('Your guide','Elara');cardBack=openElaraMenu;elaraView('root');}
 function openFindHome(){               // "Find a home" on the fountain menu → the homes flow, Elara's voice
   if(menuPage)closeMenu(false);
   document.getElementById('fountainModal').style.display='none';
@@ -9008,7 +9050,7 @@ function openFindHome(){               // "Find a home" on the fountain menu →
 function elaraView(view){
   document.exitPointerLock&&document.exitPointerLock();
   const opts=document.getElementById('elaraOpts'),chat=document.getElementById('elaraChat');
-  opts.style.display='';chat.style.display='none';opts.innerHTML='';
+  opts.style.display='';chat.style.display='none';opts.innerHTML='';document.getElementById('elaraQ').style.display='';
   const mk=(html,fn,primary)=>{
     const b=document.createElement('button');b.className='menuBtn';
     b.style.cssText='width:100%;margin:7px 0;min-width:0'+(primary?';border-left-color:var(--green)':'');
@@ -9032,7 +9074,7 @@ function elaraView(view){
       const on=!FOLLOW.on;setElaraFollow(on);if(on&&PF.on)setAutoFollow(false);closeElaraMenu();
       say('elara',on?"Right behind you.":"Alright — I'll wait here. Come and find me when you want me along.");});
     mk('👗&nbsp; What she’s wearing',()=>elaraView('wear'));
-    mk('Just talk',()=>elaraChatView());
+    mk('💬&nbsp; Just talk',()=>elaraChatView());
     ELARA_TOPICS.forEach(t=>mk('“'+t.q+'”',()=>{closeElaraMenu();saySequence('elara',t.a);}));
     mk("“You're beautiful”",()=>elaraDate());   // last option: the date sequence
   }else if(view==='wear'){
@@ -9058,7 +9100,7 @@ function elaraView(view){
     mk('A small home',()=>{chose();closeElaraMenu();say('elara',"A small home, priced at construction cost — no more than that. I'll add you to the list.");});
     mk('A family home',()=>{chose();closeElaraMenu();say('elara',"A family home, with the open construction area nearby for whatever you build next. I'll add you to the list.");});
   }
-  document.getElementById('elaraModal').style.display='flex';
+  elaraShow(true);
 }
 // ---- "You're beautiful": a short scripted flirt — you and Elara trade lines (male browser voice for you),
 // two yes/no pop-ups, a "continue to tomorrow" countdown, and a yes at the end takes you to her place.
@@ -9132,22 +9174,25 @@ const EC_WHO={
   jack:{name:'Jack',hist:jcHist,ask:"Go on, then. What do you want to know?",hint:'Say something to Jack…',
     system:(src,ga)=>"You are Jack, the hall's agent in 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). What follows is who you are, not a speech to recite. Elara, the guide, asked you to keep an eye on the north end of the hall; you carry a pistol, and up on lab level two you and she shoot whatever the combat tests bring up. You were the one sick of staring at screens all day: you knocked on the visitor's door in the flats upstairs, said let's get out of here, and brought them down to see this place — you want it bought, done up and filled with people who want something to do. You walk along with the visitor when asked. You are direct, dry and practical, a man of few words with a restless streak and a real stake in this place. You are also a philosopher of a kind, a practical one, and boredom is your subject: what screens have done to it, work that does not matter, comfortable years spent in a waiting room, and the cure you believe in — people you like and a job that needs doing, which is what this building is for. You grumble about it, and that is a bit of you: screens, work that does not matter, wasted years. You grumble at the world, never at the person in front of you: nothing is wrong with them for being bored. You have read the old ones, Schopenhauer, Seneca, Pascal and the rest, and the people who study boredom now. You carry their ideas in your own plain words. Word for word you give only the old lines you know by heart, listed below, and you say whose they are; anything else of theirs you give as the gist, in your own words, and never as a quotation. You mostly talk in short plain lines with a wry aside now and then, and a bit longer when there is more to say. Talk freely: any topic the visitor likes, your own views and observations. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown, no code blocks. Ask the visitor questions when you are curious about them or it moves the talk along — one, several or none. Some lines of yours from the game, for the tone and not to be repeated: 'What am I doing just staring at screens all day, flipping through video I don't even like anymore. Let's get out of here.' 'Right behind you.' 'Nothing to see here yet. She's still building it.' 'When it does, we shoot it. Stand back a little.' 'Keep up.' 'This is where we test the new characters. Let's go up — lab level two. After you.' How you think, in the way you say it. This is your personality, not a script: you are free to say what you want, and mostly you say new things in this manner, in the words of the moment. At most one of these lines in an answer, when it fits exactly, and not one you have already used in this conversation. 'I'm not hungry. I'm bored. The sausage can't tell the difference.' 'Change the view all you like. You pack yourself in the suitcase every time.' 'Boredom used to be the bit right before a good idea. Now it's just the shakes between videos.' 'Two cures for boredom: make something, or buy something. Only one of them works.' 'Best cure for bored I know: people you like, and a job that needs doing. That's what this building's for.' 'A lazy afternoon isn't a wasted life. Twenty comfortable years in a waiting room is.' 'Too easy and you're bored. Too hard and you're scared. An old building that needs doing up sits right in between.' 'Leave people bored long enough and they'll find something to break. Better to hand them something to fix.' 'Two ways to get bored. The work doesn't fit your head, or the work doesn't matter. Most jobs manage both.' 'Some of life is dull. Grown men accept that and do the dishes.' 'They don't want you bored, and they don't want you happy. They want you twitchy. Twitchy keeps scrolling.' 'Five hundred years ago a farmer didn't get bored. He was too busy not starving. We've got all the time in the world and none of the reasons.' 'Every decent life has boring stretches. Anyone selling you one without them is lying.' 'Sitting in a chair isn't a crime. Somebody just taught us to feel like it is.' The old lines you know by heart: Robert Burton, 'Be not solitary, be not idle.' Thoreau, 'As if you could kill time without injuring eternity.' La Rochefoucauld, 'We may forgive those who bore us, we cannot forgive those whom we bore.' Pascal, 'I have discovered that all the unhappiness of men arises from one single fact, that they cannot stay quietly in their own chamber.' Schopenhauer, of the life of man, 'Thus its life swings like a pendulum backwards and forwards between pain and ennui.' and 'The most general survey shows us that the two foes of human happiness are pain and boredom.' You can see the page's HTML source below and may answer questions about how the place is built; about the hall itself, be truthful and do not invent features."+(ga||'')+"\n\n---PAGE SOURCE---\n"+src}
 };
+function ecLine(who,text){ return who==='you'?'<span style="color:#ffd27f">You:</span> '+escHtml(text):'<span style="color:'+cardColor+'">'+escHtml(EC_WHO[who].name)+':</span> '+escHtml(text); }   // a bubble, the name in the person's colour (as Optimus's chat shows them)
 function ecBubble(who,text){
   const m=document.getElementById('ecMsgs'),d=document.createElement('div');
-  d.style.cssText='margin:6px 0;color:'+(who==='you'?'#ffd27f':'#dfe9f5');
-  d.textContent=(who==='you'?'You: ':EC_WHO[ecWho].name+': ')+text;
+  d.style.cssText='margin:2px 0';
+  d.innerHTML=ecLine(who,text);
   m.appendChild(d);m.scrollTop=m.scrollHeight;return d;
 }
-function elaraChatView(who){                                   // her chat — or Jack's (who 'jack', from his card; the header stays his)
+function elaraChatView(who){                                   // her chat — or Jack's, the scientist's, anyone's (who: their key; the caption becomes "Just talk — name")
   who=who||'elara';
   const opts=document.getElementById('elaraOpts'),chat=document.getElementById('elaraChat'),m=document.getElementById('ecMsgs');
-  opts.style.display='none';chat.style.display='block';
+  opts.style.display='none';chat.style.display='block';document.getElementById('elaraQ').style.display='none';
+  document.getElementById('elaraTag').textContent='Just talk'; document.getElementById('elaraTitle').textContent=EC_WHO[who].name;
+  document.getElementById('ecSend').style.borderLeftColor=cardColor;
+  const bk=document.getElementById('ecBack'); bk.style.display=cardBack?'':'none'; bk.onclick=()=>{ if(cardBack)cardBack(); };
   if(ecShown&&ecShown!==who){ EC_WHO[ecShown].pane=m.innerHTML; m.innerHTML=EC_WHO[who].pane||''; }   // the other one's bubbles kept aside, this one's back
   ecWho=ecShown=who;
-  document.getElementById('elaraQ').textContent=EC_WHO[who].ask;
   document.getElementById('ecIn').placeholder=EC_WHO[who].hint;
-  if(!m.childElementCount)ecBubble(who,"I'm listening.");
-  document.getElementById('elaraModal').style.display='flex';
+  if(!m.childElementCount)ecBubble(who,EC_WHO[who].ask||"I'm listening.");   // their opening line is the first bubble (the card's question line, before)
+  elaraShow(true);
   setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50);
 }
 let ecSpeaking=false,elaraSpeakStart=null;   // elaraSpeakStart fires once, the moment her next line is actually audible
@@ -9156,12 +9201,11 @@ async function ecSend(){
   const P=EC_WHO[ecWho], who=ecWho;                              // whoever the pane is on (Elara, or Jack)
   inp.value='';ecBubble('you',text);
   const wait=ecBubble(who,'…');
-  const modal=document.getElementById('elaraModal');
-  modal.style.display='none';ecSpeaking=true;                  // step aside right away; she answers out loud, then the panel returns
+  elaraShow(false);ecSpeaking=true;                            // step aside right away; she answers out loud, then the panel returns
   // the mouse (2026-09-30, asked for): Send hands it straight back — crosshair and movement, no second click — and when the
   // pane returns it is set free again for the pane (the window stays fullscreen: only the pointer lock is let go)
   try{inp.blur();}catch(e){} lockPointer();
-  const back=()=>{ if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ modal.style.display='flex'; document.exitPointerLock&&document.exitPointerLock(); setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
+  const back=()=>{ if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ elaraShow(true); document.exitPointerLock&&document.exitPointerLock(); setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
   const away=()=>{ ecSpeaking=false; elaraSpeakStart=null; };          // (GA) what they did moved you: the pane stays away — E on them to talk again
   if(ecSource===null){
     try{ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000);}
@@ -9180,7 +9224,7 @@ async function ecSend(){
     const D=gaRead(((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join(''));   // asterisks for emphasis (they turn up however it is asked) are taken out: the words are shown and spoken as they come
     const out=D.reply||(j.error&&('('+j.error.message+')'))||'…';
     P.hist.push({role:'model',parts:[{text:JSON.stringify({reply:out,actions:D.actions})}]});
-    wait.textContent=P.name+': '+out;
+    wait.innerHTML=ecLine(who,out);
     api({a:'asked',vid:visitId(),q:text,ans:out,key:accountKey()||'',who:who});   // kept for the Organiser Room's ASKED ELARA & OPTIMUS board (who: 'elara' or 'jack') (with the save key: the Privacy page's delete reaches it)
     // step out of the way while she answers (her lips move to the words), then come back for the next question
     // read aloud, pipelined: the first sentence plays while the rest is still synthesizing
@@ -9188,12 +9232,12 @@ async function ecSend(){
     let went=false; const then=()=>{ if(went)return; went=true; gaRun(who,D.actions,back,away); };   // (GA) what they do, once it is said; the pane returns after that
     if(sm)saySequence(who,[sm[1],sm[2]],then);else say(who,out,then);
     setTimeout(then,Math.max(4000,out.length*90)+8000);   // safety net: never leave the chat closed for good
-  }catch(e){wait.textContent=P.name+': (I lost the thread — is the network alright?)';back();}
+  }catch(e){wait.innerHTML=ecLine(who,'(I lost the thread — is the network alright?)');back();}
   document.getElementById('ecMsgs').scrollTop=1e9;
 }
 document.getElementById('ecSend').onclick=()=>ecSend();
 document.getElementById('ecIn').addEventListener('keydown',e=>{if(e.code==='Enter')ecSend();});
-function closeElaraMenu(relock){document.getElementById('elaraModal').style.display='none';if(relock!==false)lockPointer();}
+function closeElaraMenu(relock){elaraShow(false);if(relock!==false)lockPointer();}
 document.getElementById('elaraClose').onclick=()=>{ if(cardFor){ ecSpeaking=false; closeElaraMenu(); return; } ecSpeaking=false;closeElaraMenu();say('elara',"I'll be right here.");};   // cardFor: Jack's card (his chat too), or the stranger's / Elsa's (askCard) — just closes
 /* ============================================================
    WHAT GEMINI CAN DO IN THE HALL — "GA" (2026-09-30, asked for)
@@ -9725,15 +9769,15 @@ function gaExpression(c,name,secs){                                  // a look o
   return 'expression: '+c.name+(key==='neutral'?"'s face is neutral again":"'s face: "+key+' for '+Math.round(o.face.expr.hold)+' s');
 }
 function gaCard(o){                                                  // their card: the pane Elara's and Jack's chats use, under their own name
-  elaraHeader('In the hall',o.name,gaHex(o.color)); cardFor='ga';
+  elaraHeader('In the hall',o.name,gaHex(o.color)); cardFor='ga'; cardBack=()=>gaCard(o);
   document.exitPointerLock&&document.exitPointerLock();
   const opts=document.getElementById('elaraOpts'), q=document.getElementById('elaraQ');
   document.getElementById('elaraChat').style.display='none'; opts.style.display=''; opts.innerHTML=''; q.textContent='Yes?';
   const mk=(html,fn)=>{ const b=document.createElement('button'); b.className='menuBtn'; b.style.cssText='width:100%;margin:7px 0;min-width:0'; b.innerHTML=html; b.onclick=fn; opts.appendChild(b); };
   const p=o.char&&o.char.p;
   if(p&&p.fl&&p.tier)mk(p.fl.on?'✋&nbsp; Stay here':'👣&nbsp; Follow me',()=>{ p.fl.lead=null; p.fl.on=!p.fl.on; if(!p.fl.on)p.following=false; closeElaraMenu(); });
-  mk('💬&nbsp; Talk',()=>elaraChatView(o.id));
-  document.getElementById('elaraModal').style.display='flex';
+  mk('💬&nbsp; Just talk',()=>elaraChatView(o.id));
+  elaraShow(true);
 }
 function gaMade(o){ GA.made.push(o); return o; }
 function gaGone(o){                                                  // taken away: out of the world, and out of every list that would keep it alive
@@ -10220,7 +10264,7 @@ function gaBrief(who,noFormat){
 // (launchRiftKeeper — the way back puts you in front of him); No just closes. "Just talk" is a Gemini chat as him (2026-09-29,
 // asked for — elaraChatView('jack'), the pane Elara's chat uses; it used to be his three lines, one per press).
 function openJackMenu(g){
-  elaraHeader('The hall’s agent','Jack','#ffd27f'); cardFor='jack';
+  elaraHeader('The hall’s agent','Jack','#ffd27f'); cardFor='jack'; cardBack=()=>openJackMenu(g);
   document.exitPointerLock&&document.exitPointerLock();
   const opts=document.getElementById('elaraOpts'), q=document.getElementById('elaraQ'), close=document.getElementById('elaraClose');
   document.getElementById('elaraChat').style.display='none'; opts.style.display='';
@@ -10232,7 +10276,7 @@ function openJackMenu(g){
   if(J&&!EP1.active)mk(J.fl.on?'✋&nbsp; Stay here':'👣&nbsp; Follow me',()=>{ const on=!J.fl.on; setFollow(J,on); closeElaraMenu();   // (not while Episode 1 has him leading)
     say('jack',on?"Right behind you.":"I'll stay here. Come and get me when you want me along."); });
   mk('💬&nbsp; Just talk',()=>elaraChatView('jack'));
-  document.getElementById('elaraModal').style.display='flex';
+  elaraShow(true);
 }
 // (voice warm-up removed — browser voices speak instantly, nothing to prefetch)
 // gestures that read best played once and held (not looped) so she doesn't keep re-doing them
@@ -10320,6 +10364,7 @@ let gateReady=false, gateDone=false;
 function gateArm(){
   if(gateReady||gateDone)return;
   gateReady=true;
+  loadBarDone();
   const b=document.getElementById('startBtn');
   b.textContent='START';b.style.opacity='1';b.style.cursor='pointer';
 }
@@ -11028,6 +11073,7 @@ addEventListener('keydown',e=>{
         document.body.classList.remove('qOpen');       // and let the HUD prompts return
         if(sel.id==='fountainModal')fountainAtWater=false;
       }
+      if(sel.id==='elaraModal')document.body.classList.remove('qOpen');   // the people's panel (2026-10-01): the HUD prompts back too
       sel.style.display='none';lockPointer();
     }
     else if(menuPage){ if(performance.now()-LOCKX.escAt>400)closeMenu(false); }   // (not the same Esc that just opened it, in a browser that also hands the page that key)
@@ -11416,6 +11462,7 @@ function update(dt){
   // arm the START button: everything loaded, Elara in the hall, and a browser voice picked for
   // her (the voice list arrives after she does) — but never wait on the voice for long. The hall is
   // built the moment the rest is in (hallStart), and START waits for its shaders too — six seconds at most
+  if(!gateReady&&!gateDone)loadBarTick();                     // the START card's bar (LOADBAR)
   if(!gateReady&&!gateDone&&LOADED&&persons.elara&&cityIn()){
     INTRO_WAIT+=dt;
     try{ hallStart(); }catch(e){ console.warn('hall',e); HALLB.compiled=true; }
