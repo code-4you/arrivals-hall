@@ -9323,6 +9323,13 @@ for(const [S,W,k,x] of [['L','Left','l',1],['R','Right','r',-1]])GA_BONE.push(
   // flat feet were turned 75° up in her idle. A rig without toe bones (the kit) keeps the old way. The toes take the foot's alignment.
   [k+'Foot','CC_Base_'+S+'_Foot|mixamorig\\d*'+W+'Foot|ValveBipedBip01_'+S+'_Foot|Foot'+S,[0,-0.4,0.92],k+'Toe'],
   [k+'Toe','CC_Base_'+S+'_ToeBase|mixamorig\\d*'+W+'ToeBase|ValveBipedBip01_'+S+'_Toe0',null,null,k+'Foot']);
+// the fingers (2026-09-30, the scientist rigged with them): three bones each, aligned along the arm like the hand; the last bone
+// takes the middle one's turn (Character Creator's fingers have no tip bone to measure to). Only bodies with finger bones on
+// both sides of a carry-over move them — the kit's mannequin hands and Optimus's have none, so their clips leave fingers at rest.
+for(const [S,W,k,x] of [['L','Left','l',1],['R','Right','r',-1]])for(const [F,M,v] of [['Thumb','Thumb',0],['Index','Index',1],['Mid','Middle',2],['Ring','Ring',3],['Pinky','Pinky',4]])GA_BONE.push(
+  [k+F+'1','CC_Base_'+S+'_'+F+'1|mixamorig\\d*'+W+'Hand'+M+'1|ValveBipedBip01_'+S+'_Finger'+v,[x,0,0],k+F+'2'],
+  [k+F+'2','CC_Base_'+S+'_'+F+'2|mixamorig\\d*'+W+'Hand'+M+'2|ValveBipedBip01_'+S+'_Finger'+v+'1',[x,0,0],k+F+'3'],
+  [k+F+'3','CC_Base_'+S+'_'+F+'3|mixamorig\\d*'+W+'Hand'+M+'3|ValveBipedBip01_'+S+'_Finger'+v+'2',null,null,k+F+'2']);
 GA_BONE.forEach(d=>{ d.re=new RegExp('^('+d[1]+')(_\\d+)?$'); });
 function gaRigScene(key){ const M=PEOPLE.models; return key==='cc3'?(M.elara&&M.elara.scene):key==='optimus'?(M.optimus&&M.optimus.scene):key==='sci'?(M.scientist2&&M.scientist2.scene):key==='kit'?(M.scientist&&M.scientist.scene):null; }
 function gaRig(key){                                                 // a rig read once, at rest: its bones by role, its own frame, its T-pose, its legs
