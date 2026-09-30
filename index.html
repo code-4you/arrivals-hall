@@ -373,6 +373,8 @@
         Elara’s body — “Elara” by <a href="https://sketchfab.com/patromes" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">patromes</a> on <a href="https://sketchfab.com/models/148ebfcf617c4e43a3be1229f1fa4caa" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a>, <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">CC BY 4.0</a>; her face capture “<a href="https://sketchfab.com/3d-models/facial-animation-of-a-sexy-girl-51c1d536d7b24f8e910e81fb50198193" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Facial animation of a sexy girl</a>” and standing capture “<a href="https://sketchfab.com/3d-models/dahlia-ccc2406939704544b8c61083cce70b97" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Dahlia</a>” are by patromes too (CC BY 4.0). Her secretary clothes — shirt, pencil skirt, heels and bob — come from “Secretary” by <a href="https://sketchfab.com/patromes" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">patromes</a> as well (CC BY 4.0), hung on her own skeleton. Her long tied-back hair is from “Topless sexy girl with heels”, patromes again (CC BY 4.0). Gestures and walk — <a href="https://www.mixamo.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Mixamo</a>, retargeted onto her rig; extra idles from the “Universal Animation Library” by <a href="https://quaternius.com" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Quaternius</a> (CC0). The hall itself: © Lightsmith Forge, all rights reserved — see LICENSE.md.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">JACK</div>
         Jack’s body — “<a href="https://sketchfab.com/models/8698b3595c714b31941d239e53d0dd0f" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Jack</a>” by <a href="https://sketchfab.com/patromes" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">patromes</a> on Sketchfab, <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">CC BY 4.0</a>, in the hall and in the Lab. The pistol he and Elara draw is his too, from the same model.
+        <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">THE SCIENTIST</div>
+        “<a href="https://sketchfab.com/3d-models/doctor-lab-dd29cf9290c8419e80561221416a8694" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Doctor Lab</a>” by <a href="https://sketchfab.com/00amza" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">00amza</a> on Sketchfab, <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">CC BY 4.0</a> — the scientist the hall's people can call in. Given bones by Mixamo (Adobe), resized, and moved by the hall's own animations.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">THE CITY OUTSIDE</div>
         “New York City” by <a href="https://sketchfab.com/mortalityrexotable" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">golukumar</a> on <a href="https://sketchfab.com/3d-models/new-york-city-4737b6ee73ed4634ad5b414558fdfa45" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the streets and blocks around the hall and the tower on its roof, rebuilt into one file by tools/gltf/build-city.js.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">THE ELEVATOR</div>
@@ -775,7 +777,7 @@ const EARLY_SPEC=[   // key, colour, intensity, distance, world position at rest
   ['blindspots',0xffcf8a,0.7,11, 45,2.2,-14,LS_H],['cerebro',0x6fa8ff,0.85,12, 14,2.4,-43,LS_H],
   ['hallwyl',0xffc37a,0.85,12, -45,2.4,-26,LS_H],['theater',0x8fd8c8,0.5,11, -43,3.4,18,LS_H],['community',0xffd27f,0.85,9, -30,1.5,34,LS_H]];
 for(const x of [-60,-25,10])for(const z of ANNEXE_LAMP_Z)EARLY_SPEC.push(['annexe'+x+','+z,0xbfd8ff,0.45,z===-56?26:44, x,5.2,z,z===-56?LS_H|LS_A:LS_A]);   // the Annexe corridors; the row by the hall reaches into it
-for(const [x,z] of [[-68,-63],[-51,-63],[-34,-63],[-17,-63],[0,-63],[-51,-79],[-34,-79],[0,-79]])EARLY_SPEC.push(['space'+x+','+z,0xffffff,0.5,9, x,3.2,z,LS_A]);   // the Annexe spaces with a character
+for(const [x,z] of [[-68,-63],[-51,-63],[-34,-63],[-17,-63],[0,-63],[-51,-79],[-34,-79],[-17,-79],[0,-79]])EARLY_SPEC.push(['space'+x+','+z,0xffffff,0.5,9, x,3.2,z,LS_A]);   // the Annexe spaces with a character (-17,-79: the brawler since 2026-09-30; -51,-63: the scientist)
 // the levels: exactly eight point lights each, the same number as outside, so every shader compiled for the outside
 // (the city, the garden, Elara) serves the levels unchanged — a different count would be a new shader for each
 for(let i=0;i<LEVEL_Y.length;i++){ const Y=LEVEL_Y[i], set=[LSET.l1,LSET.l2,LSET.l3,LSET.l4,LSET.l5,LSET.l6][i];
@@ -1692,7 +1694,10 @@ const ANNEXE={x0:-76,x1:15,z0:-166,z1:-52,H:7,   // z0 was -118 (2026-09-20): th
 // the four new characters, one to a space, at life size. Their source files run to hundreds of
 // megabytes, so nothing loads until you are actually inside the space.
 const GUESTS=[
-  {id:'brawler', file:'brawler_optimized.glb', name:'THE BRAWLER',  cx:-51,cz:-63, col:0xff9f6a},   // renamed 2026-09-29 (asked for): no character's name on the signs (Steam)
+  {id:'brawler', file:'brawler_optimized.glb', name:'THE BRAWLER',  cx:-17,cz:-79, col:0xff9f6a},   // renamed 2026-09-29 (asked for): no character's name on the signs (Steam); moved from space 02 to space 09 (asked for, 2026-09-30)
+  // the hall's own scientist, in space 02 (asked for, 2026-09-30): not a file of his own but made the way the chats make people
+  // (guestMade → gaPerson), so he comes with their talk card, follow, looks and lip sync. The sign, ring and light are the space's as usual.
+  {id:'scientist', made:'scientist', name:'THE SCIENTIST', cx:-51,cz:-63, col:0xa8e0ff},
   // The soldier rebuilt small (2026-09-18): tools/gltf/optimize-swat.js makes it — 158 MB → 11.5 MB, 344k → 230k
   // triangles — and says there what went and why it could. Space 13 showed the file exactly as it came beside it until
   // 2026-09-29, when it was taken out (asked for); swat_blend.glb itself stays — SWAT · UNMASKED wears it.
@@ -1737,7 +1742,7 @@ const GUESTS=[
   // rest pose, and the built model's rest differs enough that the same clips leave her arms out.
   {id:'elara_clips',url:'assets/people/elara4_optimized.glb',                   name:'ELARA · TRY IDLES',   cx:  0,cz:-79, col:0x9fe8ff, faceYaw:0,
    clipsFrom:'https://lightsmithforge.linkpc.net/junk_lab_files_live/elara_idles.glb'},
-  // (space 09 — SWAT · RELAX IDLE — was cleared 2026-09-17 as well; swat_blend.glb is kept)
+  // (space 09 — SWAT · RELAX IDLE — was cleared 2026-09-17 as well; swat_blend.glb is kept. THE BRAWLER stands there since 2026-09-30; space 02 is empty)
 ];
 const GUEST={busy:false, height:1.87};   // one load at a time; sized by the same rule as Elara the guide
 function annexeFloor(x,z,w,d,tint){
@@ -3622,6 +3627,7 @@ function updateGuests(){
       continue;
     }
     if(Math.abs(player.y-(g.gy||0))>3)continue;   // his own floor only: the twenty spaces are on the lab's ground floor, not under every floor of the tower over it (2026-09-18)
+    if(g.made){ if(Math.abs(player.pos.x-g.cx)<14&&Math.abs(player.pos.z-g.cz)<12)guestMade(g); continue; }   // a resident made like the chats' people: from a little further off, so he is standing there when you arrive
     if(Math.abs(player.pos.x-g.cx)<6&&Math.abs(player.pos.z-g.cz)<5.2){ loadGuest(g); return; }
   }
 }
@@ -7864,7 +7870,9 @@ function lipUpdate(p,dt){
   const ks=1-Math.pow(0.72,dt*60);
   const v2e=lipV2(),kUp=v2e?1-Math.pow(0.52,dt*60):ks,kDn=v2e?1-Math.pow(0.78,dt*60):ks;   // v2: shapes land crisply, let go softly
   for(const n of managed){const c=p.lipNow[n]||0,g=LIP.tgt[n]||0,v=c+(g-c)*(g>c?kUp:kDn);p.lipNow[n]=Math.abs(v)<1e-4?0:v;}
-  if((mouthOn||lifeOn)&&!(FACE_PRESET.raw&&!LIP.active))for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;for(const n of managed){const i=d[n];if(i!==undefined)inf[i]=p.lipNow[n];}}   // Original 0: the captured mouth shows while she is not speaking
+  if((mouthOn||lifeOn)&&!(FACE_PRESET.raw&&!LIP.active))for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;
+    if(p.arkit){lipWriteArkit(p,m,managed);continue;}   // a face with the ARKit shape names (the scientist, 2026-09-30): the CC shapes translated, an expression laid over
+    for(const n of managed){const i=d[n];if(i!==undefined)inf[i]=p.lipNow[n];}}   // Original 0: the captured mouth shows while she is not speaking
   else if(mode==='off')for(const m of p.morphs){const inf=m.morphTargetInfluences;for(let i=0;i<inf.length;i++)inf[i]=0;}
   // jaw bone follows whatever is on the mouth now (our visemes or the capture's)
   if(p.jaw){const m=p.morphs.find(x=>x.morphTargetDictionary.Jaw_Open!==undefined);
@@ -7872,11 +7880,28 @@ function lipUpdate(p,dt){
       p.jaw.quaternion.copy(p.jawRest).multiply(_jawQ.setFromAxisAngle(_jawAxis,open*0.26));}}
   // three r128 draws only the 8 strongest morphs per mesh: while she talks, rank the mouth shapes first so they never get dropped
   for(const m of p.morphs){const inf=m.morphTargetInfluences,d=m.morphTargetDictionary;if(inf.length<=8)continue;
-    if(!m._mouthIdx){m._mouthIdx=new Set();for(const n in d)if(/^V_|^Jaw_|^Mouth_/.test(n))m._mouthIdx.add(d[n]);}
+    if(!m._mouthIdx){m._mouthIdx=new Set();for(const n in d)if(/^V_|^Jaw_|^Mouth_|^jaw|^mouth/.test(n))m._mouthIdx.add(d[n]);}   // (jaw…/mouth…: the ARKit names)
     const order=[];for(let i=0;i<inf.length;i++)if(Math.abs(inf[i])>0.01)order.push([i,Math.abs(inf[i])*(talking&&m._mouthIdx.has(i)?3:1)]);
     if(order.length>8){order.sort((x,y)=>y[1]-x[1]);for(let q=8;q<order.length;q++)inf[order[q][0]]=0;}}
 }
 const _jawQ=new THREE.Quaternion(),_jawAxis=new THREE.Vector3(0,0,1);   // CC_Base_JawRoot opens about its local +Z
+/* ---- the same mouth on a face with the ARKit shape names (the scientist, 2026-09-30). The engine above thinks in Elara's CC
+   shapes; here each of those is spread over the ARKit shapes that make the same mouth, summed and clamped, and whatever
+   expression the character holds (p.exprNow, from gaExpression) is laid over it, the larger of the two winning. ---- */
+const LIP_ARKIT={V_Open:{jawOpen:0.8,mouthFunnel:0.12},Jaw_Open:{jawOpen:0.9},
+  V_Wide:{mouthStretchLeft:0.55,mouthStretchRight:0.55,mouthSmileLeft:0.25,mouthSmileRight:0.25,mouthLowerDownLeft:0.2,mouthLowerDownRight:0.2},
+  V_Tight_O:{mouthFunnel:0.85,mouthPucker:0.35,jawOpen:0.12},V_Tight:{mouthPucker:0.9,mouthFunnel:0.25},
+  V_Explosive:{mouthClose:0.7,mouthPressLeft:0.8,mouthPressRight:0.8},V_Dental_Lip:{mouthRollLower:0.85,mouthPressLeft:0.25,mouthPressRight:0.25},
+  V_Affricate:{mouthFunnel:0.45,mouthShrugUpper:0.3,jawOpen:0.08},V_Lip_Open:{mouthLowerDownLeft:0.45,mouthLowerDownRight:0.45,mouthUpperUpLeft:0.25,mouthUpperUpRight:0.25},
+  V_Tongue_up:{},V_Tongue_Out:{},Eye_Blink_L:{eyeBlinkLeft:1},Eye_Blink_R:{eyeBlinkRight:1},
+  Mouth_Smile_L:{mouthSmileLeft:1},Mouth_Smile_R:{mouthSmileRight:1},Brow_Raise_Inner_L:{browInnerUp:0.5},Brow_Raise_Inner_R:{browInnerUp:0.5}};
+function lipWriteArkit(p,m,managed){
+  const d=m.morphTargetDictionary,inf=m.morphTargetInfluences,out={};
+  for(const n of managed){const v=p.lipNow[n]||0,map=LIP_ARKIT[n];if(!map)continue;for(const k in map)out[k]=Math.min(1,(out[k]||0)+v*map[k]);}
+  const ex=p.exprNow;if(ex)for(const k in ex)out[k]=Math.max(out[k]||0,ex[k]);
+  if(!m._arkitKeys){m._arkitKeys=new Set();for(const n in LIP_ARKIT)for(const k in LIP_ARKIT[n])m._arkitKeys.add(k);for(const e in GA_EXPR)for(const k in GA_EXPR[e])m._arkitKeys.add(k);}
+  for(const k of m._arkitKeys){const i=d[k];if(i!==undefined)inf[i]=out[k]||0;}   // every shape this can touch is written each frame, so a look let go of really goes
+}
 /* ---- eyes follow the visitor: engages only while her head is turned toward the camera (within ~35°), blends over the
    captured eye motion, limited to 30° of eye swing, smoothed in time. Off past 75°, off when the dev switch says so,
    and off while p.eyesOff is set (for scenes that want her looking elsewhere). ---- */
@@ -8448,19 +8473,24 @@ function makePerson(key,opts){
   let bbH=0,bbMin=0;
   if(src.cc3){ model.updateMatrixWorld(true); let hb=null; model.traverse(o=>{if(o.isBone&&/CC_Base_Head/.test(o.name))hb=o;});
     const hy=hb?hb.getWorldPosition(new THREE.Vector3()).y:1.6; bbH=hy+0.12; bbMin=0; }
+  else if(src.headRe){ model.updateMatrixWorld(true); let hy=null, fy=Infinity; const v=new THREE.Vector3();   // (2026-09-30) measured by its own bones, head to the lower foot: a Sketchfab file's box is not its body's
+    model.traverse(o=>{ if(!o.isBone)return; if(src.headRe.test(o.name))hy=o.getWorldPosition(v).y; else if(src.footRe&&src.footRe.test(o.name))fy=Math.min(fy,o.getWorldPosition(v).y); });
+    if(hy===null)hy=1.6; if(!isFinite(fy))fy=0; bbH=(hy-fy)+(src.headAdd!==undefined?src.headAdd:0.2); bbMin=fy-0.08; }   // headAdd: what the head bone leaves out (a skull's height above a Head bone, or an ankle's below a crown bone)
   else { const bb=new THREE.Box3().setFromObject(model); bbH=bb.max.y-bb.min.y; bbMin=bb.min.y; }
   const s=(opts.h||1.7)/Math.max(0.01,bbH);
   inner.scale.setScalar(s);inner.position.y=-bbMin*s;
   if(src.cc3)inner.rotation.y=(src.facing==='+z')?0:Math.PI;   // people here face +Z; turn the export around if it faces -Z
+  else if(src.yaw!==undefined)inner.rotation.y=src.yaw;        // (2026-09-30) or by however much its own file is turned
   model.traverse(o=>{
     if(src.cc3){ if(o.isMesh||o.isSkinnedMesh){ o.frustumCulled=false; o.castShadow=true; } return; }   // keep her real materials
     if(o.isMesh||o.isSkinnedMesh){
+      if(src.headRe)o.frustumCulled=false;                     // (2026-09-30) a scientist's head vanished from close by: a skinned mesh is culled by where its vertices REST, which need not be where the bones have put them
       const om=o.material;
       const mk=(m)=>new THREE.MeshStandardMaterial({
         color:(m&&m.color)?m.color.clone():new THREE.Color(0x8899aa),
         map:(m&&m.map)?m.map:null,
         transparent:!!(m&&m.transparent),alphaTest:(m&&m.transparent)?(m.alphaTest||0.5):0,
-        roughness:0.65,metalness:0.25,skinning:true});
+        roughness:0.65,metalness:0.25,skinning:true,morphTargets:!!(o.morphTargetInfluences&&o.morphTargetInfluences.length)});   // morphTargets: a face with shapes (the scientist's) can move
       o.material=Array.isArray(om)?om.map(mk):mk(om);
     }
   });
@@ -9118,7 +9148,8 @@ document.getElementById('elaraClose').onclick=()=>{ if(cardFor){ ecSpeaking=fals
      GA_DO         one generator per action: a number yielded is a wait in seconds, a function is polled each frame
    ============================================================ */
 const GA={active:false,gen:null,cur:undefined,t:0,clock:0,who:null,done:null,moved:false,queue:[],
-  made:[],fx:[],objs:[],holds:[],faces:[],news:[],seen:{},last:{},flags:{},seq:0,paid:0,shake:0,shakeT:0,fade:null,bolt:null,map:null,actx:null};
+  made:[],fx:[],objs:[],holds:[],faces:[],news:[],seen:{},last:{},flags:{},seq:0,paid:0,shake:0,shakeT:0,fade:null,bolt:null,map:null,actx:null,
+  rigs:{},baked:{},sciState:''};
 const GA_LIMIT={acts:14,people:8,foes:6,things:24,signs:8,pay:50,payAll:150,box:25,walk:20,say:600,persona:700};
 const gaNum=(v,d,lo,hi)=>{ v=parseFloat(v); if(!isFinite(v))v=d; return Math.min(hi,Math.max(lo,v)); };
 function gaText(t,max){ return String(t==null?'':t).replace(/[<>]/g,'').replace(/\*+/g,'').replace(/\s+/g,' ').trim().slice(0,max||GA_LIMIT.say); }   // its words go on the subtitle as they are: no markup, no asterisks
@@ -9261,36 +9292,194 @@ function gaFace(c,target,secs){                                      // turned t
   GA.faces=GA.faces.filter(f=>f.c.id!==c.id); if(target)GA.faces.push({c,target,until:state.time+(secs||20)});
 }
 
-/* ---- animations ---- */
-const GA_ONCE=/^(Point|Wave|Thankful|Nod|Happy_\d|Salute|Lie_Down)$/;       // played once and held, as the tour plays them
-function gaAnimNames(c){
-  if(c.kind==='person')return Object.keys(c.p.clips||{}).filter(n=>!/^Face_/.test(n));
-  if(c.kind==='guest'&&c.g.bodyMixer&&PEOPLE.models.elara)return Object.keys(PEOPLE.models.elara.clips).filter(n=>!/^Face_/.test(n));
-  return [];
+/* ---- animations: any of them, on any body (2026-09-30, asked for: "gemini can have access to any animation for
+   anyone it can use") ----
+   The hall's bodies are of four kinds of rig: Character Creator's (Elara, Jack, the soldier), Mixamo's (Optimus),
+   Valve's biped (the scientist, assets/people/scientist.glb) and the mannequin kit's (Dr. Vance's file, whose 24 clips
+   are kept as a library). gaBake carries a clip from one kind to another. Both rigs are put in the same T-pose — each
+   bone turned, from where it rests, to point the way that bone points in a T-pose (GA_BONE), in the body's own frame
+   (x its left, y up, z the way it faces) — and for every frame of the clip the bone's turn away from that pose, in
+   the world, is given to the other body's bone:
+       world(t) = Rd · [ Rs⁻¹ · src(t) · srcT⁻¹ · Rs ] · Rd⁻¹ · dstT
+   with the hips' travel scaled by leg length. (sitRetarget does the same for the stranger's chair with T-pose clips;
+   these rigs have none, so the T-pose is worked out from where the bones are.) A clip is baked the first time it is
+   asked for, at 24 frames a second, and kept. The names Gemini is given are the same for everyone (gaLibrary). ---- */
+const GA_ONCE=/^(Point|Wave|Thankful|Nod|Happy_\d|Salute|Lie_Down|Death|Roll|Interact|Gun_Shoot|Idle_Gun_Shoot|HitRecieve(_2)?|Kick_(Left|Right)|Punch_(Left|Right)|Sword_Slash)$/;   // played once and held, as the tour plays them
+const GA_BONE=[['hips','CC_Base_Hip|mixamorig\\d*Hips|ValveBipedBip01_Pelvis|Hips'],     // role · the bone that carries it in each kind of rig (names as the loader leaves them) · the way it points in a T-pose · the role that is measured to · the role whose turn it takes when it has none of its own
+  ['spine','CC_Base_Waist|mixamorig\\d*Spine|ValveBipedBip01_Spine|Abdomen',[0,1,0],'spine1'],
+  ['spine1','CC_Base_Spine01|mixamorig\\d*Spine1|ValveBipedBip01_Spine1|Torso',[0,1,0],'chest'],
+  ['chest','CC_Base_Spine02|mixamorig\\d*Spine2|ValveBipedBip01_Spine2|Chest',[0,1,0],'neck'],
+  ['neck','CC_Base_NeckTwist01|mixamorig\\d*Neck|ValveBipedBip01_Neck1|Neck',[0,1,0],'head'],
+  ['head','CC_Base_Head|mixamorig\\d*Head|ValveBipedBip01_Head1|Head']];
+for(const [S,W,k,x] of [['L','Left','l',1],['R','Right','r',-1]])GA_BONE.push(
+  [k+'Clav','CC_Base_'+S+'_Clavicle|mixamorig\\d*'+W+'Shoulder|ValveBipedBip01_'+S+'_Clavicle|Shoulder'+S,[x,0,0],k+'Arm'],
+  [k+'Arm','CC_Base_'+S+'_Upperarm|mixamorig\\d*'+W+'Arm|ValveBipedBip01_'+S+'_UpperArm|UpperArm'+S,[x,0,0],k+'Fore'],
+  [k+'Fore','CC_Base_'+S+'_Forearm|mixamorig\\d*'+W+'ForeArm|ValveBipedBip01_'+S+'_Forearm|LowerArm'+S,[x,0,0],k+'Hand'],
+  [k+'Hand','CC_Base_'+S+'_Hand|mixamorig\\d*'+W+'Hand|ValveBipedBip01_'+S+'_Hand|Wrist'+S,null,null,k+'Fore'],
+  [k+'Thigh','CC_Base_'+S+'_Thigh|mixamorig\\d*'+W+'UpLeg|ValveBipedBip01_'+S+'_Thigh|UpperLeg'+S,[0,-1,0],k+'Calf'],
+  [k+'Calf','CC_Base_'+S+'_Calf|mixamorig\\d*'+W+'Leg|ValveBipedBip01_'+S+'_Calf|LowerLeg'+S,[0,-1,0],k+'Foot'],
+  // the foot is aligned like the limbs (2026-09-30): ankle to the ball of the foot points forward and about 24° down when a sole is flat.
+  // Without it a foot got "the same turn away from rest", and Elara's rest pose holds her feet pointing down, so the scientist's
+  // flat feet were turned 75° up in her idle. A rig without toe bones (the kit) keeps the old way. The toes take the foot's alignment.
+  [k+'Foot','CC_Base_'+S+'_Foot|mixamorig\\d*'+W+'Foot|ValveBipedBip01_'+S+'_Foot|Foot'+S,[0,-0.4,0.92],k+'Toe'],
+  [k+'Toe','CC_Base_'+S+'_ToeBase|mixamorig\\d*'+W+'ToeBase|ValveBipedBip01_'+S+'_Toe0',null,null,k+'Foot']);
+GA_BONE.forEach(d=>{ d.re=new RegExp('^('+d[1]+')(_\\d+)?$'); });
+function gaRigScene(key){ const M=PEOPLE.models; return key==='cc3'?(M.elara&&M.elara.scene):key==='optimus'?(M.optimus&&M.optimus.scene):key==='sci'?(M.scientist2&&M.scientist2.scene):key==='kit'?(M.scientist&&M.scientist.scene):null; }
+function gaRig(key){                                                 // a rig read once, at rest: its bones by role, its own frame, its T-pose, its legs
+  if(GA.rigs[key]!==undefined)return GA.rigs[key];
+  const tpl=gaRigScene(key); if(!tpl)return null;                     // not loaded yet: asked again next time
+  let rig=null;
+  try{
+    const root=THREE.SkeletonUtils.clone(tpl); root.updateMatrixWorld(true);
+    // the kit's file rests in the middle of a move, turned 27 degrees: it is read standing in its own neutral idle instead
+    const K=key==='kit'&&PEOPLE.models.scientist.clips, stand=K&&(K.Idle_Neutral||K.Idle), pm=stand?new THREE.AnimationMixer(root):null;
+    if(pm){ pm.clipAction(stand).play(); pm.setTime(0); root.updateMatrixWorld(true); }
+    const B={}; root.traverse(o=>{ if(o.isMesh)return; const n=o.name||''; for(const d of GA_BONE)if(!B[d[0]]&&d.re.test(n)){ B[d[0]]=o; break; } });
+    for(const r of ['hips','head','lThigh','rThigh','lCalf','lFoot','lArm','rArm'])if(!B[r])throw new Error('no '+r);
+    const V=()=>new THREE.Vector3(), Q=()=>new THREE.Quaternion(), Pw={}, Ww={};
+    for(const r in B){ Pw[r]=B[r].getWorldPosition(V()); Ww[r]=B[r].getWorldQuaternion(Q()); }
+    const x=Pw.lThigh.clone().sub(Pw.rThigh).normalize(), up=Pw.head.clone().sub(Pw.hips).normalize(), z=V().crossVectors(x,up).normalize(), y=V().crossVectors(z,x).normalize();
+    const R=Q().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x,y,z)), A={}, ref={};
+    for(const d of GA_BONE){ const r=d[0]; if(!B[r])continue; const al=Q();
+      if(d[2]&&B[d[3]]){ const from=Pw[d[3]].clone().sub(Pw[r]); if(from.lengthSq()>1e-10)al.setFromUnitVectors(from.normalize(),V().set(d[2][0],d[2][1],d[2][2]).applyQuaternion(R).normalize()); }
+      else if(d[4]&&A[d[4]])al.copy(A[d[4]]);
+      A[r]=al; ref[r]=al.clone().multiply(Ww[r]); }
+    // the bones from the hips down that a role drives, and the ones between them (which keep their rest), parents first
+    const hp=B.hips.parent, set=new Set(); let whole=true;
+    for(const r in B){ let o=B[r]; while(o&&o!==hp){ set.add(o); o=o.parent; } if(!o)whole=false; }
+    const chain=[]; root.traverse(o=>{ if(set.has(o))chain.push(o); });
+    const restLocal=new Map(); chain.forEach(o=>restLocal.set(o,o.quaternion.clone()));
+    rig={key,root,B,P:Pw,R,ref,chain,restLocal,whole,hipsParent:hp,hipsParentW:hp?hp.getWorldQuaternion(Q()):Q(),
+      hipsParentInv:hp?new THREE.Matrix4().copy(hp.matrixWorld).invert():new THREE.Matrix4(),hipsLocal:B.hips.position.clone(),
+      leg:Pw.lThigh.distanceTo(Pw.lCalf)+Pw.lCalf.distanceTo(Pw.lFoot),fwd:V().set(0,0,1).applyQuaternion(R)};
+    if(pm){ pm.stopAllAction(); pm.uncacheRoot(root); root.updateMatrixWorld(true); }
+  }catch(e){ console.warn('rig',key,e&&e.message); rig=null; }
+  return GA.rigs[key]=rig;
 }
-function gaGuestClip(g,name){                                        // Jack's body plays Elara's clips: mapped onto his bones the way his idle is, once, and kept
+function gaBake(srcKey,clip,dstKey,name){                            // the clip, as the other kind of body would play it
+  const S=gaRig(srcKey), D=gaRig(dstKey); if(!S||!D||!D.whole||!clip)return null;
+  const roles=GA_BONE.map(d=>d[0]).filter(r=>S.B[r]&&D.B[r]), idx=new Map(); roles.forEach((r,i)=>idx.set(D.B[r],i));
+  const n=Math.max(2,Math.min(1500,Math.round(clip.duration*24)+1)), times=new Float32Array(n), qv=roles.map(()=>new Float32Array(n*4)), hv=new Float32Array(n*3);
+  const mx=new THREE.AnimationMixer(S.root), act=mx.clipAction(clip); act.setLoop(THREE.LoopOnce,0); act.clampWhenFinished=true; act.play();
+  const Rs=S.R, RsI=S.R.clone().invert(), Rd=D.R, RdI=D.R.clone().invert(), W=new Map();
+  const w=new THREE.Quaternion(), d=new THREE.Quaternion(), t1=new THREE.Quaternion(), v=new THREE.Vector3(), a=new THREE.Vector3(), b=new THREE.Vector3();
+  const k=D.leg/Math.max(1e-6,S.leg);
+  for(let f=0;f<n;f++){
+    const t=Math.min(Math.max(0,clip.duration-1e-4),f/(n-1)*clip.duration); times[f]=t;
+    mx.setTime(t); S.root.updateMatrixWorld(true); W.clear();
+    for(const o of D.chain){
+      const pw=(o.parent===D.hipsParent||!W.has(o.parent))?D.hipsParentW:W.get(o.parent), i=idx.get(o);
+      if(i===undefined){ W.set(o,pw.clone().multiply(D.restLocal.get(o))); continue; }
+      const r=roles[i];
+      S.B[r].getWorldQuaternion(w); d.copy(RsI).multiply(w).multiply(t1.copy(S.ref[r]).invert()).multiply(Rs);
+      w.copy(Rd).multiply(d).multiply(RdI).multiply(D.ref[r]);
+      W.set(o,w.clone()); t1.copy(pw).invert().multiply(w);
+      const q=qv[i]; q[f*4]=t1.x; q[f*4+1]=t1.y; q[f*4+2]=t1.z; q[f*4+3]=t1.w;
+    }
+    S.B.hips.getWorldPosition(v).sub(S.P.hips).applyQuaternion(RsI).multiplyScalar(k).applyQuaternion(Rd);   // the hips' travel, in the other body's own measure
+    a.copy(D.P.hips).applyMatrix4(D.hipsParentInv); b.copy(D.P.hips).add(v).applyMatrix4(D.hipsParentInv); b.sub(a).add(D.hipsLocal);
+    hv[f*3]=b.x; hv[f*3+1]=b.y; hv[f*3+2]=b.z;
+  }
+  mx.stopAllAction(); mx.uncacheRoot(S.root);
+  const tracks=roles.map((r,i)=>new THREE.QuaternionKeyframeTrack(D.B[r].name+'.quaternion',times,qv[i]));
+  tracks.push(new THREE.VectorKeyframeTrack(D.B.hips.name+'.position',times,hv));
+  return new THREE.AnimationClip(name,clip.duration,tracks);
+}
+function gaLibrary(){                                                // every animation there is, by name: Elara's, then the kit's that she has not
+  const L={}, M=PEOPLE.models;
+  if(M.scientist)for(const n in M.scientist.clips)L[n]={src:'kit',clip:M.scientist.clips[n]};
+  if(M.elara)for(const n in M.elara.clips)if(!/^Face_/.test(n))L[n]={src:'cc3',clip:M.elara.clips[n]};
+  return L;
+}
+function gaRigKey(c){                                                // what kind of rig this body is
+  if(c.kind==='guest')return c.g.bodyMixer?'cc3':null;
+  const p=c.p; if(!p)return null;
+  return p.gaRig||(p===persons.elara?'cc3':p===persons.optimus?'optimus':null);
+}
+function gaClip(rk,N){                                               // that animation for that kind of body: its own, or carried over
+  const M=PEOPLE.models, own=rk==='cc3'?(M.elara&&M.elara.clips):rk==='optimus'?(M.optimus&&M.optimus.clips):rk==='sci'?(M.scientist2&&M.scientist2.clips):null;
+  if(own&&own[N])return own[N];
+  const key=rk+'|'+N; if(GA.baked[key])return GA.baked[key];
+  const e=gaLibrary()[N]; if(!e||e.src===rk)return null;
+  const c=gaBake(e.src,e.clip,rk,N); if(c)GA.baked[key]=c;
+  return c;
+}
+function gaAnimNames(c){
+  const rk=gaRigKey(c); if(!rk)return [];
+  const n=Object.keys(gaLibrary());
+  if(rk==='optimus'){ const O=PEOPLE.models.optimus; if(O)for(const k in O.clips)if(n.indexOf(k)<0)n.push(k); if(n.indexOf('Salute')<0)n.push('Salute'); }
+  return n;
+}
+function gaGuestClip(g,name){                                        // Jack's kind of body plays Elara's kind of clip: mapped onto his bones by name, the way his idle is, once, and kept
   g.gaActs=g.gaActs||{};
-  if(g.gaActs[name]!==undefined)return g.gaActs[name];
-  let a=null; const E=PEOPLE.models.elara, src=E&&E.clips[name];
+  if(g.gaActs[name])return g.gaActs[name];
+  let a=null; const E=PEOPLE.models.elara, src=E&&gaClip('cc3',name);
   if(src&&g.bodyMixer&&g.root){ const c=splitClip(remapClip(src,E.scene,g.root,'Body_'+name),'Body_'+name,false); if(c.tracks.length)a=g.bodyMixer.clipAction(c); }
-  return g.gaActs[name]=a;
+  if(a)g.gaActs[name]=a;
+  return a;
+}
+function gaPlay(p,N,clip,once){                                      // personAnim, given the clip itself
+  const next=p.mixer.clipAction(clip);
+  next.reset(); next.enabled=true; next.timeScale=1; next.setEffectiveWeight(1);
+  if(once){ next.setLoop(THREE.LoopOnce,0); next.clampWhenFinished=true; } else next.setLoop(THREE.LoopRepeat,Infinity);
+  if(p.act&&p.act!==next)p.act.crossFadeTo(next,0.22,false);
+  next.play(); p.act=next; p.actName=N;
 }
 function gaAnim(c,name,secs){
-  const want=String(name==null?'':name).trim().toLowerCase().replace(/[\s-]+/g,'_');
-  if(want==='salute'&&c.kind==='person'&&!c.p.morphs&&!c.p.clips.Salute){ try{ drillSalute(c.p); }catch(e){} }
+  const want=String(name==null?'':name).trim().toLowerCase().replace(/[\s-]+/g,'_'), rk=gaRigKey(c);
+  if(!rk)return 'anim: '+c.name+' cannot be animated';
+  if(want==='salute'&&rk==='optimus'&&!c.p.clips.Salute){ try{ drillSalute(c.p); }catch(e){} }
   const names=gaAnimNames(c), bare=(n)=>n.toLowerCase().replace(/_/g,'');
   const N=names.find(n=>n.toLowerCase()===want)||names.find(n=>bare(n)===bare(want))||(want?names.find(n=>n.toLowerCase().indexOf(want)===0):null);
-  if(!N)return 'anim: '+c.name+' has no animation called "'+gaText(name,40)+'"';
-  const once=GA_ONCE.test(N);
-  if(c.kind==='person'){ const p=c.p, dur=p.clips[N].duration, hold=once?Math.max(dur+0.3,gaNum(secs,0,0,60)):gaNum(secs,Math.min(12,Math.max(4,dur)),1,60);
-    p.talk=0; p.actName=''; personAnim(p,N,1,once); p.previewUntil=state.time+hold; return 'anim: '+c.name+' plays '+N; }
+  if(!N)return 'anim: there is no animation called "'+gaText(name,40)+'"';
+  const once=GA_ONCE.test(N), holdFor=(dur)=>once?Math.max(dur+0.3,gaNum(secs,0,0,60)):gaNum(secs,Math.min(12,Math.max(4,dur)),1,60);
+  if(c.kind==='person'){ const p=c.p, clip=gaClip(rk,N); if(!clip)return 'anim: '+N+' would not fit '+c.name;
+    p.talk=0; gaPlay(p,N,clip,once); p.previewUntil=state.time+holdFor(clip.duration); return 'anim: '+c.name+' plays '+N; }
   const g=c.g, a=gaGuestClip(g,N); if(!a)return 'anim: '+N+' would not fit '+c.name;
-  const dur=a.getClip().duration, hold=once?Math.max(dur+0.3,gaNum(secs,0,0,60)):gaNum(secs,Math.min(12,Math.max(4,dur)),1,60);
   a.setLoop(once?THREE.LoopOnce:THREE.LoopRepeat,once?0:Infinity); a.clampWhenFinished=!!once;
   if(c.p)c.p.talk=0;
   if(g.bodyAction===a){ a.reset(); a.play(); } else guestBody(g,a,1);
-  g.holdUntil=state.time+hold; if(!c.p&&GA.holds.indexOf(g)<0)GA.holds.push(g);
+  g.holdUntil=state.time+holdFor(a.getClip().duration); if(!c.p&&GA.holds.indexOf(g)<0)GA.holds.push(g);
   return 'anim: '+c.name+' plays '+N;
+}
+function gaSciLoad(){                                                // the scientist's own file (asked for, 2026-09-30; since that evening the "Doctor Lab" body on a Mixamo rig): no clips of his own — he stands, walks and runs on Elara's, carried over
+  if(GA.sciState)return; GA.sciState='loading';
+  new THREE.GLTFLoader().load('assets/people/scientist.glb',(gl)=>{
+    try{
+      PEOPLE.models.scientist2={scene:gl.scene,clips:{},headRe:/mixamorig\d*HeadTop_End$/,footRe:/mixamorig\d*(Left|Right)Foot$/,headAdd:0.09};   // measured by his bones (his meshes sit under a 0.01 armature, so their box is 2 cm): crown to ankle, plus the ankle's height
+      const R=gaRig('sci'), E=PEOPLE.models.elara; if(!R||!E)throw new Error('rig');
+      PEOPLE.models.scientist2.yaw=-Math.atan2(R.fwd.x,R.fwd.z);      // people here face +z: the file turned to face that way (a Mixamo body already does)
+      for(const [n,from] of [['Idle','Idle_Male'],['Walk','Walk'],['Run','Run_M']]){ const c=E.clips[from]&&gaBake('cc3',E.clips[from],'sci',n); if(c)PEOPLE.models.scientist2.clips[n]=c; }
+      if(!PEOPLE.models.scientist2.clips.Idle)throw new Error('idle');
+      GA.sciState='ready';
+    }catch(e){ console.warn('scientist',e&&e.message); delete PEOPLE.models.scientist2; GA.rigs.sci=undefined; GA.sciState='failed'; }
+  },undefined,()=>{ GA.sciState='failed'; });
+}
+// a resident of the Annexe made the way the chats make people (asked for, 2026-09-30): the scientist in space 02. He gets the same
+// body, voice, mind (his own Gemini chat), talk card, follow, looks and lip sync as one Gemini puts into the hall — and stays out
+// of Gemini's count of made people, and cannot be removed.
+const GUEST_MADE_WHO={scientist:{name:'Scientist',pitch:0.92,
+  persona:"the scientist who keeps space 02 in the Lab of The Arrivals Hall. Curious about everything and everyone that comes through the doors, exact with words, dry in your humour, and honest about what you do not know. Nobody has written your history yet: if asked about it, say so plainly rather than making one up. Your face shows what you feel — the expression action is yours to use whenever it fits."}};
+function guestMade(g){
+  if(g.state)return; g.state='loading';
+  const W=GUEST_MADE_WHO[g.made]||{name:g.made};
+  if(g.made==='scientist'&&!PEOPLE.models.scientist2)gaSciLoad();
+  let t=0; const hook={update(dt){
+    if(hook.dead||paused)return; t+=dt;
+    const ready=g.made==='scientist'?GA.sciState==='ready':!!PEOPLE.models.elara;
+    if(GA.sciState==='failed'||t>90){ hook.dead=true; g.state='failed'; return; }
+    if(!ready||!PEOPLE.models.elara||state.phase!=='play')return;
+    hook.dead=true;
+    const at={x:g.cx,z:g.cz,y:g.gy||0};
+    const o=gaMade({id:g.id,name:W.name,kind:'person',what:g.made,at,asked:{x:at.x,z:at.z,y:at.y},by:'hall',color:g.col,resident:true}); GA.seq++;
+    if(!gaPerson(o,{},at)){ o.gone=true; g.state='failed'; return; }
+    o.p.mesh.rotation.y=(g.faceYaw!==undefined)?g.faceYaw:0;         // facing the doorway of his space until someone comes near (then he turns to them, as the hall's people do)
+    gaVoice(o,{pitch:W.pitch}); gaMind(o,{persona:W.persona});
+    gaHot(o,at,1.85,'Talk to the '+W.name.toLowerCase(),()=>gaTalkTo(o));
+    if(o.face){ o.face.idle=true; o.face.next=4+Math.random()*8; }   // a look now and then while he stands there
+    g.o=o; g.state='ready';
+  }};
+  animated.push(hook);
 }
 
 /* ---- speaking, walking, teleporting ---- */
@@ -9370,6 +9559,43 @@ function gaTalkTo(o){                                                // E on the
   if(o.persona&&EC_WHO[o.id]){ gaCard(o); return; }
   if(o.lines&&o.lines.length)say(o.id,o.lines[o.lineI++%o.lines.length]);
 }
+// the looks a face with the ARKit shapes can hold (the scientist, 2026-09-30): each a handful of shapes, since three r128 draws
+// only the eight strongest per mesh and his mouth and blinks want theirs too
+const GA_EXPR={
+  smile:{mouthSmileLeft:0.75,mouthSmileRight:0.75,cheekSquintLeft:0.35,cheekSquintRight:0.35},
+  grin:{mouthSmileLeft:1,mouthSmileRight:1,cheekSquintLeft:0.6,cheekSquintRight:0.6,eyeSquintLeft:0.3,eyeSquintRight:0.3},
+  laugh:{mouthSmileLeft:1,mouthSmileRight:1,jawOpen:0.3,cheekSquintLeft:0.7,cheekSquintRight:0.7,eyeSquintLeft:0.4,eyeSquintRight:0.4},
+  frown:{mouthFrownLeft:0.7,mouthFrownRight:0.7,browDownLeft:0.5,browDownRight:0.5},
+  sad:{mouthFrownLeft:0.6,mouthFrownRight:0.6,browInnerUp:0.8,mouthShrugLower:0.3,eyeSquintLeft:0.15,eyeSquintRight:0.15},
+  angry:{browDownLeft:1,browDownRight:1,noseSneerLeft:0.5,noseSneerRight:0.5,mouthPressLeft:0.6,mouthPressRight:0.6,eyeSquintLeft:0.3,eyeSquintRight:0.3},
+  surprised:{browInnerUp:0.8,browOuterUpLeft:0.9,browOuterUpRight:0.9,eyeWideLeft:0.9,eyeWideRight:0.9,jawOpen:0.3},
+  afraid:{browInnerUp:1,browOuterUpLeft:0.4,browOuterUpRight:0.4,eyeWideLeft:0.7,eyeWideRight:0.7,mouthStretchLeft:0.4,mouthStretchRight:0.4},
+  disgusted:{noseSneerLeft:1,noseSneerRight:1,mouthUpperUpLeft:0.4,mouthUpperUpRight:0.4,browDownLeft:0.5,browDownRight:0.5,eyeSquintLeft:0.4,eyeSquintRight:0.4},
+  thinking:{browDownLeft:0.6,browOuterUpRight:0.7,eyeSquintLeft:0.3,mouthPressLeft:0.5,mouthPressRight:0.3,mouthLeft:0.3},
+  doubtful:{browOuterUpLeft:0.9,browDownRight:0.4,mouthPressRight:0.5,eyeSquintRight:0.35,mouthRight:0.25},
+  wink:{eyeBlinkLeft:1,mouthSmileLeft:0.5,mouthSmileRight:0.35,cheekSquintLeft:0.5},
+  tired:{eyeSquintLeft:0.5,eyeSquintRight:0.5,eyeLookDownLeft:0.4,eyeLookDownRight:0.4,browDownLeft:0.2,browDownRight:0.2,mouthShrugLower:0.3},
+  pout:{mouthPucker:0.8,browInnerUp:0.3,mouthFrownLeft:0.3,mouthFrownRight:0.3},
+  neutral:{}};
+const GA_EXPR_ALIAS={happy:'smile',glad:'smile',pleased:'smile',cheerful:'smile',joy:'smile',smiling:'smile',kind:'smile',warm:'smile',
+  bigsmile:'grin',grinning:'grin',delighted:'grin',amused:'grin',laughing:'laugh',laughs:'laugh',
+  serious:'frown',stern:'frown',grim:'frown',displeased:'frown',frowning:'frown',
+  unhappy:'sad',sorry:'sad',sorrow:'sad',sorrowful:'sad',crying:'sad',cry:'sad',hurt:'sad',gloomy:'sad',down:'sad',
+  mad:'angry',furious:'angry',cross:'angry',annoyed:'angry',irritated:'angry',rage:'angry',
+  surprise:'surprised',shocked:'surprised',shock:'surprised',amazed:'surprised',astonished:'surprised',startled:'surprised',wonder:'surprised',
+  scared:'afraid',fear:'afraid',fearful:'afraid',frightened:'afraid',worried:'afraid',anxious:'afraid',nervous:'afraid',alarmed:'afraid',
+  disgust:'disgusted',revolted:'disgusted',yuck:'disgusted',
+  think:'thinking',pensive:'thinking',puzzled:'thinking',curious:'thinking',confused:'thinking',wondering:'thinking',thoughtful:'thinking',
+  doubt:'doubtful',sceptical:'doubtful',skeptical:'doubtful',suspicious:'doubtful',unsure:'doubtful',unconvinced:'doubtful',wry:'doubtful',
+  winking:'wink',sleepy:'tired',bored:'tired',weary:'tired',exhausted:'tired',sulky:'pout',sulk:'pout',pouting:'pout',
+  calm:'neutral',plain:'neutral',normal:'neutral',none:'neutral',reset:'neutral',blank:'neutral',clear:'neutral',relaxed:'neutral'};
+function gaExpression(c,name,secs){                                  // a look on a face that has the shapes for it, for a while
+  const o=c&&c.made; if(!o||!o.face)return 'expression: '+(c?c.name:'nobody')+' has no face that can hold a look — only a scientist put into the hall has';
+  const s=String(name==null?'':name).trim().toLowerCase().replace(/[\s_-]+/g,''), key=GA_EXPR[s]?s:GA_EXPR_ALIAS[s];
+  if(!key)return 'expression: there is no look called "'+gaText(name,30)+'" — smile, grin, laugh, frown, sad, angry, surprised, afraid, disgusted, thinking, doubtful, wink, tired, pout, neutral';
+  o.face.expr=key==='neutral'?null:{name:key,w:GA_EXPR[key],t0:GA.clock,hold:gaNum(secs,8,1,120)};
+  return 'expression: '+c.name+(key==='neutral'?"'s face is neutral again":"'s face: "+key+' for '+Math.round(o.face.expr.hold)+' s');
+}
 function gaCard(o){                                                  // their card: the pane Elara's and Jack's chats use, under their own name
   elaraHeader('In the hall',o.name,gaHex(o.color)); cardFor='ga';
   document.exitPointerLock&&document.exitPointerLock();
@@ -9389,17 +9615,23 @@ function gaGone(o){                                                  // taken aw
   if(o.block){ const i=BUILDINGS.indexOf(o.block); if(i>=0)BUILDINGS.splice(i,1); }
   if(o.fx)o.fx.kill=true;
 }
-function gaPerson(o,a,at){                                           // a copy of a body the hall already holds (nothing to download): the robot, the woman, the scientist
-  const model=o.what==='robot'?'optimus':o.what==='woman'?'elara':'scientist', h=o.what==='robot'?OPTIMUS_H:o.what==='woman'?1.87:1.82;
+function gaPerson(o,a,at){                                           // a copy of a body held in memory: the robot, the woman, the scientist (his own file since 2026-09-30, gaSciLoad)
+  const model=o.what==='robot'?'optimus':o.what==='woman'?'elara':'scientist2', h=o.what==='robot'?OPTIMUS_H:o.what==='woman'?1.87:1.92;   // the scientist: 1.92 here puts the top of his head at 1.94 m in his idle, 10 cm under the top of Jack's hair at 2.04 (asked for, 2026-09-30)
   const p=makePerson(model,{h}); if(!p)return false;
+  p.gaRig=o.what==='robot'?'optimus':o.what==='woman'?'cc3':'sci';
   p.key=o.id; p.mesh.position.set(at.x,at.y,at.z); p.mesh.rotation.y=Math.atan2(player.pos.x-at.x,player.pos.z-at.z);
-  p.blockH=h; if(o.what==='robot')p.sole=true;
+  p.blockH=h; if(o.what==='robot'||o.what==='scientist')p.sole=true;   // sole: the floor meets the underside of his shoes, measured from his mesh, not the toe bone 5 cm above it
   o.body=p.mesh; o.p=p;
   if(o.foe)return true;                                              // an enemy is run by gaFoes, not as one of the hall's people
   p.block=o.block={x:at.x,z:at.z,hw:0.4,hd:0.4,y0:at.y-0.4,h:at.y+h,off:false}; BUILDINGS.push(o.block);
   if(o.what==='robot'){ const src=persons.optimus; p.walkNat=src?src.walkNat:1.5; p.runNat=src?src.runNat:4;
     p.tier=(t,spd)=>{ const run=t===2; personAnim(p,run?'Run':'Walk'); if(p.act)p.act.timeScale=spd/(run?p.runNat:p.walkNat); }; }
   else if(o.what==='woman'){ p.tier=(t,spd)=>elaraTier(p,t,spd); p.lipsOn=true; o.lips=true; }
+  else { p.tier=(t,spd)=>{ const run=t===2; personAnim(p,run?'Run':'Walk'); if(p.act)p.act.timeScale=spd/(run?3.9:1.65); };   // the scientist: Elara's walk and run on his legs, at the pace he is moved
+    // his face: the file's 51 shapes carry the usual names (ARKit's). The lip engine mouths his words on them, one shape per
+    // syllable, as Elara's (lipWriteArkit translates), blinks him, and lays over whatever look he has been given (gaExpression)
+    p.morphs=[]; p.mesh.traverse(m=>{ const d=m.morphTargetDictionary; if(d&&d.jawOpen!==undefined)p.morphs.push(m); });
+    if(p.morphs.length){ p.arkit=true; p.lipsOn=true; o.lips=true; o.face={expr:null}; } }
   p.fl={on:false,stuck:0,away:0,gave:null}; p.side=(GA.seq%2?1:-1)*(1.6+(GA.seq%3)*0.5);
   persons[o.id]=p;                                                   // updatePeople runs them: mixer, idle, the turn to you, feet on the floor, the collider
   o.char={id:o.id,kind:'person',name:o.name,p,made:o};
@@ -9407,7 +9639,7 @@ function gaPerson(o,a,at){                                           // a copy o
   return true;
 }
 function gaGuest(o,a,at,ready){                                      // a body loaded the way the lab's are: the soldier (11 MB), the man (Jack's, already in memory)
-  const g=Object.assign(o.what==='soldier'?{file:'swat_optimized.glb',share:true,plain:true}
+  const g=Object.assign(o.what==='soldier'?{file:'swat_optimized.glb',share:true,plain:true,bodyFrom:{url:'assets/people/elara.glb?v=2',clip:'Idle_Male'}}   // (his stance is Jack's idle, so that his body has a mixer any animation can play on)
     :{file:'jack_hall.glb',share:true,plain:true,sole:true,hide:/Beard_Transparency|pistolLow/,bodyFrom:{url:'assets/people/elara.glb?v=2',clip:'Idle_Male'},speaks:[' ']},
     {id:o.id,name:o.name.toUpperCase(),cx:at.x,cz:at.z,gy:at.y,yaw:Math.PI,quiet:true,after:'ga',lookAt:o.foe?30:14});
   o.g=g; o.lips=o.what==='man';
@@ -9417,6 +9649,8 @@ function gaGuest(o,a,at,ready){                                      // a body l
     if(!asked){ if(GUEST.busy&&t<40)return; asked=true; try{ loadGuest(g); }catch(e){ g.state='failed'; } return; }   // one load at a time, as the lab's
     if(g.state==='failed'||t>90){ hook.dead=true; ready(false); return; }
     if(g.state!=='ready'||!g.grp)return;
+    if(g.bodyFrom&&!g.bodyMixer){ g.grp.visible=false; return; }          // his stance comes a moment after his body (it is read off Elara's file): not shown standing arms out while it does
+    g.grp.visible=true;
     hook.dead=true;
     zoneTag(g.grp,0); g.gaFoot=g.grp.position.y-at.y;
     for(let i=BUILDINGS.length-1;i>=0;i--){ const b=BUILDINGS[i]; if(b.x===g.cx&&b.z===g.cz&&b.hw===0.55&&b.y0===undefined){ b.y0=at.y-0.4; b.h=at.y+1.9; g.gaBlock=b; break; } }   // its collider stands on its own floor, not the ground's
@@ -9567,7 +9801,10 @@ const GA_DO={
     ctx.log.push(gaAnim(c,a.name||a.anim||a.animation||a.clip,a.seconds)); yield 0.05; },
   say:function*(a,ctx){ const c=gaChar(a.who,ctx), text=gaText(a.text||a.line||a.say,GA_LIMIT.say); if(!text)return;
     if(!c||c.kind==='player'||!SPEAKERS[c.id]){ ctx.log.push('say: there is nobody called "'+gaText(a.who,40)+'" who can speak'); return; }
+    const ex=a.expression||a.look||a.mood; if(ex&&c.made&&c.made.face)gaExpression(c,ex,Math.max(3,text.length*0.075)+2);   // a look for the length of the line
     yield* gaSay(c,text,ctx); },
+  expression:function*(a,ctx){ const c=gaChar(a.who,ctx); if(!c){ ctx.log.push('expression: there is nobody called "'+gaText(a.who,40)+'"'); return; }
+    ctx.log.push(gaExpression(c,a.what||a.expression||a.look||a.mood||a.name,a.seconds!==undefined?a.seconds:a.secs)); yield 0.2; },
   face:function*(a,ctx){ const c=gaChar(a.who,ctx); if(!c){ ctx.log.push('face: there is nobody called "'+gaText(a.who,40)+'"'); return; }
     const t=a.at!==undefined?a.at:a.to, o=gaChar(t,ctx,true); let target=o?gaLive(o):null;
     if(!target){ const pl=gaPlace(t,ctx); if(pl)target={x:pl.x,z:pl.z}; }
@@ -9660,11 +9897,12 @@ const GA_DO={
     const alive=GA.made.filter(o=>!o.gone);
     if(GA_PEOPLE[what]){
       if(hostile&&alive.filter(o=>o.foe).length>=GA_LIMIT.foes){ ctx.log.push('spawn: no more enemies for now — '+GA_LIMIT.foes+' is the most at once'); return; }
-      if(!hostile&&alive.filter(o=>o.char&&!o.foe).length>=GA_LIMIT.people){ ctx.log.push('spawn: no more people for now — '+GA_LIMIT.people+' is the most at once; remove one first'); return; }
+      if(!hostile&&alive.filter(o=>o.char&&!o.foe&&!o.resident).length>=GA_LIMIT.people){ ctx.log.push('spawn: no more people for now — '+GA_LIMIT.people+' is the most at once; remove one first'); return; }
       const name=gaText(a.name,28)||({robot:'Robot',woman:'Woman',man:'Man',soldier:'Soldier',scientist:'Scientist'})[what];
       const o=gaMade({id:gaId(a.id||name),name,kind:'person',what,at,asked:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,hostile?0xff7a6a:0xc8d8ff)}); GA.seq++;
       if(hostile)gaFoe(o,Math.round(gaNum(a.hp,what==='robot'?18:12,1,60)));                 // the three companions hit with every shot: fewer than this and it is over before the visitor has turned round
       let ok=false;
+      if(what==='scientist'&&!PEOPLE.models.scientist2){ gaSciLoad(); banner(name+' is on the way…'); const t0=GA.clock; yield ()=>GA.sciState==='ready'||GA.sciState==='failed'||GA.clock-t0>60; }
       if(what==='robot'||what==='woman'||what==='scientist'){ ok=gaPerson(o,a,at); if(!ok){ o.gone=true; ctx.log.push('spawn: the '+what+' is not loaded yet — try again in a moment'); return; } }
       else { let back=null; gaGuest(o,a,at,(y)=>{ back=!!y; }); banner(name+' is on the way…'); const t0=GA.clock; yield ()=>back!==null||GA.clock-t0>95; ok=!!back;
         if(!ok){ o.gone=true; ctx.log.push('spawn: the '+what+' would not load'); return; } }
@@ -9719,14 +9957,16 @@ const GA_DO={
     try{ if(!on)audio.pause(); else if(a.next||!audio.src)loadTrack(a.next?trackIdx+1:trackIdx,true); else audio.play().catch(()=>{}); ctx.log.push('music: '+(on?'playing':'stopped')); }catch(e){ ctx.log.push('music: it would not play'); } yield 0.05; },
   remove:function*(a,ctx){
     const s=String(a.id||a.who||a.what||a.name||'').trim().toLowerCase();
-    if(/^(all|everything|everyone)$/.test(s)){ const n=GA.made.filter(o=>!o.gone).length; GA.made.forEach(gaGone); if(GUNS.boss&&/everything|all/.test(s))gunsRemoveBoss(); ctx.log.push('remove: '+n+' things taken away'); return; }
+    if(/^(all|everything|everyone)$/.test(s)){ const n=GA.made.filter(o=>!o.gone&&!o.resident).length; GA.made.forEach(o=>{ if(!o.resident)gaGone(o); }); if(GUNS.boss&&/everything|all/.test(s))gunsRemoveBoss(); ctx.log.push('remove: '+n+' things taken away'); return; }
     if(/nightmare|boss|monster/.test(s)&&GUNS.boss){ gunsRemoveBoss(); ctx.log.push('remove: the nightmare is gone'); return; }
     const o=GA.made.find(x=>!x.gone&&(x.id===s||String(x.name).toLowerCase()===s));
     if(!o){ ctx.log.push('remove: nothing called "'+gaText(s,40)+'" was made'); return; }
+    if(o.resident){ ctx.log.push('remove: '+o.name+' lives here and stays'); return; }
     gaGone(o); ctx.log.push('remove: '+o.name+' is gone'); yield 0.05; }
 };
 Object.assign(GA_DO,{animate:GA_DO.anim,animation:GA_DO.anim,play:GA_DO.anim,speak:GA_DO.say,talk:GA_DO.say,turn:GA_DO.face,look:GA_DO.face,go:GA_DO.walk,goto:GA_DO.walk,walkto:GA_DO.walk,
-  move:GA_DO.teleport,tp:GA_DO.teleport,quest:GA_DO.objective,mission:GA_DO.objective,create:GA_DO.spawn,make:GA_DO.spawn,summon:GA_DO.spawn,fx:GA_DO.effect,delete:GA_DO.remove,despawn:GA_DO.remove,pause:GA_DO.wait});
+  move:GA_DO.teleport,tp:GA_DO.teleport,quest:GA_DO.objective,mission:GA_DO.objective,create:GA_DO.spawn,make:GA_DO.spawn,summon:GA_DO.spawn,fx:GA_DO.effect,delete:GA_DO.remove,despawn:GA_DO.remove,pause:GA_DO.wait,
+  emotion:GA_DO.expression,mood:GA_DO.expression,expr:GA_DO.expression,feel:GA_DO.expression,feeling:GA_DO.expression,facialexpression:GA_DO.expression});
 function gaScene(){ return tour.active?"Elara's walk":EP1.active?'Episode 1':STORY.active?'a story':DRILL.active?'the drill':dateRunning?'the date':''; }
 function gaLiftBusy(){ return !!(LIFTX.travel||LIFTS.some(L=>L.riding)); }
 
@@ -9777,6 +10017,11 @@ animated.push({update(dt){                                            // its clo
     if(o.kind==='thing'&&o.spin){ o.mesh.rotation[o.what==='ring'?'z':'y']+=dt*o.spin; if(o.bob)o.mesh.position.y=o.bob+Math.sin(GA.clock*1.4)*0.08; }
     if(o.kind==='box'&&o.open){ o.open+=dt; o.lid.rotation.x=-Math.min(1,o.open/0.5)*1.9; if(o.open>40)gaGone(o); }
     if(o.until&&GA.clock>o.until)gaGone(o);
+    if(o.face&&o.p){ const F=o.face, E=F.expr, now={};                 // the look he holds: comes in over 0.35 s, stays its while, goes in 0.7 s (the lip engine writes it, lipWriteArkit)
+      if(E){ const t=GA.clock-E.t0, k=t<0.35?t/0.35:t<E.hold?1:1-(t-E.hold)/0.7; if(k<=0)F.expr=null; else for(const n in E.w)now[n]=E.w[n]*k; }
+      else if(F.idle){ F.next-=dt; if(F.next<=0&&!(o.p.talk>0)){ F.next=12+Math.random()*20;   // a resident's face is not still: a mild look every so often, a few seconds long
+        const k=['thinking','smile','doubtful','tired','thinking','smile'][(Math.random()*6)|0]; F.expr={name:k,w:GA_EXPR[k],t0:GA.clock,hold:3+Math.random()*3}; } }
+      o.p.exprNow=now; }
     if(o.char&&o.char.kind==='guest'&&o.g&&o.g.grp){ o.at.x=o.g.grp.position.x; o.at.z=o.g.grp.position.z; }
     else if(o.p){ o.at={x:o.p.mesh.position.x,z:o.p.mesh.position.z,y:o.p.mesh.position.y}; } }
   for(const g of GA.holds){ if(g.holdUntil&&state.time>=g.holdUntil){ g.holdUntil=0; if(g.gaIdle)guestBody(g,g.gaIdle,1); } }   // a spawned body back to its idle (Jack's own hook does his)
@@ -9807,7 +10052,7 @@ function gaNow(who){
     const q=gaAt(c), d=Math.hypot(q.x-P.x,q.z-P.z), same=Math.abs(q.y-P.y)<2;
     s+=' '+c.name+(n===who?' (you)':'')+' is at '+f(q)+(same?', '+Math.round(d)+' m from the visitor':'')+', '+((c.p&&c.p.fl&&c.p.fl.on)?'following them':'staying put')+'.'; }
   const made=GA.made.filter(o=>!o.gone&&o.kind!=='objective');
-  if(made.length)s+=' Put into the hall so far: '+made.map(o=>'"'+o.id+'" ('+(o.foe?'hostile ':'')+o.what+(o.name&&o.name.toLowerCase()!==o.id?' called '+o.name:'')+(o.at?', '+f(o.at):'')+(o.id===who?', you':'')+')').join('; ')+'.';
+  if(made.length)s+=' Put into the hall so far: '+made.map(o=>'"'+o.id+'" ('+(o.foe?'hostile ':'')+o.what+(o.name&&o.name.toLowerCase()!==o.id?' called '+o.name:'')+(o.resident?', lives here':'')+(o.at?', '+f(o.at):'')+(o.id===who?', you':'')+')').join('; ')+'.';
   if(GUNS.boss&&!GUNS.boss.dying)s+=' The nightmare is loose at '+f(GUNS.boss.grp.position)+'.';
   let objs=[]; try{ objs=activeObjs().map(o=>o.title); }catch(e){}
   if(objs.length)s+=' On the visitor\'s map: '+objs.map(t=>'"'+t+'"').join(', ')+'.';
@@ -9818,12 +10063,12 @@ function gaNow(who){
   return s;
 }
 function gaBrief(who,noFormat){
-  const E=PEOPLE.models.elara, en=E?Object.keys(E.clips).filter(n=>!/^Face_/.test(n)):[], O=persons.optimus, on=O?Object.keys(O.clips).filter(n=>!/^Face_/.test(n)):['Idle','Walk','Run','Wave','Point'];
-  if(on.indexOf('Salute')<0)on.push('Salute');
+  const names=Object.keys(gaLibrary());
   let s='\n\nWHAT YOU CAN DO. You can act in the hall as well as talk. Your JSON may carry "actions": a list of things that happen, in order, once your reply has been spoken. They are yours to use as you see fit: often, seldom, playfully, to make a scene, to take the visitor somewhere, to surprise them, or not at all. An empty list is fine. Each action is an object with "do":\n'
   +'- {"do":"anim","who":"elara","name":"Wave","seconds":5}: someone plays an animation.\n'
   +'- {"do":"say","who":"jack","text":"..."}: someone says a line, you included (what you say after a teleport, for one). Several in a row make a conversation between them.\n'
   +'- {"do":"face","who":"jack","at":"elara"}: turn to someone, to "visitor", or to a place.\n'
+  +'- {"do":"expression","who":"doctor","what":"surprised","seconds":8}: a look on the face — smile, grin, laugh, frown, sad, angry, surprised, afraid, disgusted, thinking, doubtful, wink, tired, pout, neutral. Only a scientist put into the hall has a face for it (Elara, Jack and Optimus do not). "say" also takes "expression":"..." for the length of the line.\n'
   +'- {"do":"follow","who":"optimus","on":true}: follow the visitor, or stay put.\n'
   +'- {"do":"walk","who":"elara","to":"fountain"}: walk there. Short ways on the same floor only, about '+GA_LIMIT.walk+' metres: the hall has not been made for walking anywhere yet. Farther than that, or to another floor, teleport.\n'
   +'- {"do":"teleport","who":"visitor","to":"lab 2"}: move the visitor, a character, or "everyone" (the visitor and the three of you) at once, to any place on any floor. It is the way to take the visitor somewhere. Tell them they have been teleported and where they are: a "say" after it does that.\n'
@@ -9836,7 +10081,7 @@ function gaBrief(who,noFormat){
   +'- {"do":"sound","what":"chime"}: chime, bell, knock, alarm, thunder, whoosh, shot. {"do":"music","on":true}.\n'
   +'- {"do":"remove","id":"..."}: take away something that was put there ("all": everything). {"do":"wait","seconds":2}: a pause.\n'
   +'A place ("to", "at") is a name from the map, a character\'s name, "visitor", "here" (where you stand), the id of something spawned, or {"x":0,"z":0,"floor":"ground"}. "who" is elara, jack, optimus, visitor, or the id of someone spawned; left out, it is you.\n'
-  +'\nANIMATIONS. Elara, Jack, and any woman or man: '+en.join(', ')+'. Optimus and any robot: '+on.join(', ')+'.\n'
+  +'\nANIMATIONS. Anyone can play any of these — Elara, Jack, Optimus, and whoever is put into the hall: '+names.join(', ')+'. Optimus and any robot also: Salute.\n'
   +'\nTHE MAP (in metres; north is -z, east is +x; a floor is "ground", "lab 1" to "lab '+LABT.Y.length+'" up the lab tower, or "level 1" to "level '+LEVEL_Y.length+'" over the hall):\n'
   +gaMap().map(e=>'- '+e.key+': ('+Math.round(e.x)+', '+Math.round(e.z)+') '+gaFloorName(e.x,e.z,e.y)+' — '+e.what).join('\n')
   +'\n\nRIGHT NOW. '+gaNow(who);

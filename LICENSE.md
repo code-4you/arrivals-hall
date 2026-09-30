@@ -52,6 +52,8 @@ contribution.
 - Elara's body, face capture and standing capture — "Elara", "Facial animation of a
   sexy girl" and "Dahlia" by patromes (Sketchfab), CC BY 4.0. These may be reused under
   that licence with attribution to patromes; this notice does not restrict them.
+- The scientist — "Doctor Lab" by 00amza (Sketchfab), CC BY 4.0, rigged with Mixamo, resized
+  and animated here.
 - Gesture and idle animations — Mixamo (Adobe): included only as baked into this game; not
   to be extracted or redistributed on their own. "Universal Animation Library" idles —
   Quaternius, CC0.
