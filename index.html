@@ -447,7 +447,7 @@
         <h3>Who else gets it</h3>
         <ul>
           <li><b>Google (Gemini)</b> gets the words of your chats with Elara and Optimus and your counselling text, to write the replies. They pass through our server, so Google does not get your IP address. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API terms</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy policy</a></li>
-          <li><b>ip-api.com</b> gets your IP address from our server, to look up its country and region (Cerebro also looks up your city). <a href="https://ip-api.com/docs/legal" target="_blank" rel="noopener">ip-api.com legal</a></li>
+          <li><b>ip-api.com</b> gets your IP address from our server, to look up its country and region (Cerebrum also looks up your city). <a href="https://ip-api.com/docs/legal" target="_blank" rel="noopener">ip-api.com legal</a></li>
           <li><b>Where it runs</b> — our server at lightsmithforge.linkpc.net keeps the data; GitHub hosts the hall’s pages; itch.io and Game Jolt show it in a frame if you play it there. Like any website, they see your IP address when you visit.</li>
           <li><b>Code, a font and music</b> load from other sites (jsDelivr, cdnjs, threejs.org, OpenGameArt), which see your IP address when your browser fetches them.</li>
         </ul>
@@ -740,6 +740,32 @@ const ULANG=(()=>{
   return {tag,code,name,base,ui,on:/^[a-z]{2,3}$/.test(code)&&code!=='en'};
 })();
 
+// ---------- saved under the listening dome's earlier name ----------
+// The dome on lab level 4 was called something else until 2026-10-01 (that name is spelt in two halves here, so that it
+// stands nowhere in this page). What a visitor's browser kept under it — the "heard" flag, play counts, an objective, the
+// paid ledger — is carried over to the new name, so nobody loses anything. Run at load, and again whenever a save
+// arrives from the account server (which merges and so still holds the old keys).
+const OLD_DOME='cere'+'bro';
+function oldDomeFix(){
+  let n=0;
+  try{
+    const keys=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.indexOf('atd:')===0)keys.push(k); }
+    for(const k of keys){
+      const v=localStorage.getItem(k); let k2=k, v2=v;
+      if(k.indexOf(OLD_DOME)>=0)k2=k.split(OLD_DOME).join('cerebrum');
+      if((k==='atd:objectives'||k==='atd:paid')&&v&&v.indexOf('"'+OLD_DOME+'"')>=0){
+        v2=v.split('"'+OLD_DOME+'"').join('"cerebrum"');
+        if(k==='atd:objectives'){ try{ const seen=new Set(); v2=JSON.stringify(JSON.parse(v2).filter(o=>{ const t=JSON.stringify(o); if(seen.has(t))return false; seen.add(t); return true; })); }catch(e){} } }
+      if(k2===k&&v2===v)continue;
+      if(k2!==k){ const cur=localStorage.getItem(k2); localStorage.removeItem(k);
+        if(cur!=null)v2=/^atd:plays:/.test(k2)?String((+cur||0)+(+v2||0)):cur; }   // both there: play counts add up, anything else keeps what the new name already has
+      localStorage.setItem(k2,v2); n++;
+    }
+  }catch(e){}
+  return n;
+}
+oldDomeFix();
+
 // ---------- renderer / scene ----------
 THREE.Cache.enabled=true;
 const renderer=new THREE.WebGLRenderer({antialias:true});
@@ -839,7 +865,7 @@ const EARLY_SPEC=[   // key, colour, intensity, distance, world position at rest
   ['retreatOrbit1',0xff4fd8,0.9,14, 67,4.6,-76,LS_R],['retreatOrbit2',0x5fe0ff,0.9,14, 61,4.6,-76,LS_R],['retreatGym',0xdfe8ff,0.7,18, 80,5.5,-76,LS_R],
   ['retreatPool66',0x5fe0ff,0.7,14, 66,1.6,-59,LS_R],['retreatPool78',0x5fe0ff,0.7,14, 78,1.6,-59,LS_R],
   ['delivery',0xffd27f,0.9,9, 30,4,36.3,LS_H],['nexus',0x9fd8ff,0.85,34, 58,7,-1,LS_H],['gate',0x9fd0ff,1.2,18, 62,2.6,-1,LS_H],
-  ['blindspots',0xffcf8a,0.7,11, 45,2.2,-14,LS_H],['cerebro',0x6fa8ff,0.85,12, 14,2.4,-43,LS_H],
+  ['blindspots',0xffcf8a,0.7,11, 45,2.2,-14,LS_H],['cerebrum',0x6fa8ff,0.85,12, 14,2.4,-43,LS_H],
   ['hallwyl',0xffc37a,0.85,12, -45,2.4,-26,LS_H],['theater',0x8fd8c8,0.5,11, -43,3.4,18,LS_H],['community',0xffd27f,0.85,9, -30,1.5,34,LS_H]];
 for(const x of [-60,-25,10])for(const z of ANNEXE_LAMP_Z)EARLY_SPEC.push(['annexe'+x+','+z,0xbfd8ff,0.45,z===-56?26:44, x,5.2,z,z===-56?LS_H|LS_A:LS_A]);   // the Annexe corridors; the row by the hall reaches into it
 for(const [x,z] of [[-68,-63],[-51,-63],[-34,-63],[-17,-63],[0,-63],[-51,-79],[-34,-79],[-17,-79],[0,-79]])EARLY_SPEC.push(['space'+x+','+z,0xffffff,0.5,9, x,3.2,z,LS_A]);   // the Annexe spaces with a character (-17,-79: the brawler since 2026-09-30; -51,-63: the scientist)
@@ -1278,13 +1304,13 @@ const ROOMS=[
   {id:'lab',     name:'LAB',      sub:'TWENTY SPACES',   type:'community',cx:-28,cz:-41,w:12,d:10,dir:'S', backOpen:4.4, backOpenAt:0},   // back-wall doorway → the Annexe (buildAnnexe)
   {id:'submit',  name:'ADD YOUR LEVEL',sub:'OR YOUR GAME',  type:'community',cx:-14,cz:-41,w:12,d:10,dir:'S'},
   {id:'fame',    name:'IDEAS',    sub:'WRITE ON THE WALL',type:'community',cx:0,  cz:-41,w:12,d:10,dir:'S'},
-  {id:'cerebro', name:'CEREBRO',  sub:'VOICES THIS WEEK',type:'game',     cx:14, cz:-41,w:12,d:10,dir:'S'},   // the old Arcade room (2026-09-17); was east of the foyer
+  {id:'cerebrum', name:'CEREBRUM',  sub:'VOICES THIS WEEK',type:'game',     cx:14, cz:-41,w:12,d:10,dir:'S'},   // the old Arcade room (2026-09-17); was east of the foyer
   {id:'lounge',  name:'LOUNGE',   sub:'THE RETREAT',     type:'community',cx:28, cz:-41,w:12,d:10,dir:'S', backOpen:3.6, backOpenAt:-3},   // back-wall doorway → the bent corridor → gym · pool · dance (buildLounge)
   // south wall, openings face north (-z) — two each side of the foyer, all on the
   // visible wall (x -38..38); the old corner spots hid garden/vault behind the wings
   {id:'garden',  name:'GARDEN',   sub:'THE COMMUNITY',   type:'community',cx:-30,cz:33,w:12,d:10,dir:'N'},
   {id:'credits', name:'UNDER',    sub:'CONSTRUCTION',    type:'studio',   cx:-16,cz:33,w:12,d:10,dir:'N'},   // west of the foyer: the elevator takes this space next (2026-09-16)
-  {id:'arcade',  name:'ARCADE',   sub:'COMMUNITY MAPS',  type:'community',cx:16, cz:33,w:12,d:10,dir:'N'},   // Cerebro's old room east of the foyer (2026-09-17); hidden while COMMUNITY_GAMES is empty
+  {id:'arcade',  name:'ARCADE',   sub:'COMMUNITY MAPS',  type:'community',cx:16, cz:33,w:12,d:10,dir:'N'},   // Cerebrum's old room east of the foyer (2026-09-17); hidden while COMMUNITY_GAMES is empty
   {id:'vault',   name:'UNDER',    sub:'CONSTRUCTION',    type:'community',cx:30, cz:33,w:12,d:10,dir:'N'},
 ];
 const DIRV={E:[1,0],W:[-1,0],S:[0,1],N:[0,-1]};
@@ -1292,7 +1318,7 @@ const DIRV={E:[1,0],W:[-1,0],S:[0,1],N:[0,-1]};
 // prompt, not on the map; whatever it holds stays built behind the wall (a kiosk's E prompt is blocked by it). The developer
 // page's HIDDEN ROOMS section opens one again (atd:dev:room:<id>, this machine only; Reset walls them all over). The
 // Arcade counts as hidden until a COMMUNITY_GAMES entry gives it a poster.
-const HIDDEN_ROOMS=['fps','crypt','credits','rally','velocity','theater','blindspots','vault','hallwyl','lounge','cerebro'];   // cerebro walled over 2026-09-25 (asked for): Cerebro is reached from lab level 4's circle now   // the empty ones — FPS HALL, the Garrison (emptied: Fountain Keeper starts from the circle beside the stranger), UNDER CONSTRUCTION west of the foyer — the two racing rooms, Blindspots and the Hallwyl, hidden on request, and the Theater and the delivery room (vault) until the stranger opens the Theater (theaterOpened) — and the Lounge (the way to the Retreat) with them
+const HIDDEN_ROOMS=['fps','crypt','credits','rally','velocity','theater','blindspots','vault','hallwyl','lounge','cerebrum'];   // cerebrum walled over 2026-09-25 (asked for): Cerebrum is reached from lab level 4's circle now   // the empty ones — FPS HALL, the Garrison (emptied: Fountain Keeper starts from the circle beside the stranger), UNDER CONSTRUCTION west of the foyer — the two racing rooms, Blindspots and the Hallwyl, hidden on request, and the Theater and the delivery room (vault) until the stranger opens the Theater (theaterOpened) — and the Lounge (the way to the Retreat) with them
 function roomHidden(R){ return HIDDEN_ROOMS.indexOf(R.id)>=0||(R.id==='arcade'&&!COMMUNITY_GAMES.length); }
 function roomShown(R){ return !roomHidden(R)||devFlag('room:'+R.id,false)||((R.id==='theater'||R.id==='vault'||R.id==='lounge')&&theaterOpened()); }
 function roomApply(R){                            // show the room, or wall it over, as the developer page has it
@@ -1368,7 +1394,7 @@ function buildRoom(R){
                          Math.abs(rz)*(R.w-3)+Math.abs(fz)*(R.d-3),0xbfd8ff,0.55);
   // back wall: for fitted game rooms, a big screenshot of the game
   // (assets/walls/<roomid>.jpg) filling as much of the wall as its aspect allows.
-  if(['hallwyl','velocity','rally','blindspots','cerebro'].indexOf(R.id)>=0){   // (the Garrison, 'crypt', left the list 2026-09-17: the room is empty; walls/crypt.jpg stays for the fountain's quest view)
+  if(['hallwyl','velocity','rally','blindspots','cerebrum'].indexOf(R.id)>=0){   // (the Garrison, 'crypt', left the list 2026-09-17: the room is empty; walls/crypt.jpg stays for the fountain's quest view)
     const ap=P(-hd+0.45,0), ry=Math.atan2(fx,fz);
     new THREE.TextureLoader().load('assets/walls/'+R.id+'.jpg',(tex)=>{
       tex.encoding=THREE.sRGBEncoding;
@@ -1384,7 +1410,7 @@ function buildRoom(R){
   const rotY=Math.atan2(fx,fz);
   const sp=P(hd+0.5,0);
   const sign=addHoloSign(R.name,R.sub,sp.x,5.0,sp.z,rotY,col);   // holo display on the header (was two lines of 3D text)
-  if(R.id==='cerebro')sign.visible=false;                  // Cerebro's sign taken down (2026-09-17)
+  if(R.id==='cerebrum')sign.visible=false;                  // Cerebrum's sign taken down (2026-09-17)
   const fp=P(hd+2.0,0);
   const ft=addFloorText(R.name,fp.x,fp.z,-fx,-fz,0.8,col);
   // emissive threshold line on the floor across the room's opening — built as before, hidden by the switch
@@ -1392,7 +1418,7 @@ function buildRoom(R){
   const tl=emissiveStrip(tp.x,0.02,tp.z,Math.abs(rx)*OPEN+0.14,0.05,Math.abs(rz)*OPEN+0.14,col,0.9);
   tl.name='thresholdLine';tl.visible=THRESHOLD_LINES_VISIBLE;
   // placeholder interaction until the storefront is fitted out (build 2)
-  const FITTED=['credits','rally','velocity','crypt','blindspots','hallwyl','theater','submit','fame','vault','garden','cerebro','lounge','lab'];
+  const FITTED=['credits','rally','velocity','crypt','blindspots','hallwyl','theater','submit','fame','vault','garden','cerebrum','lounge','lab'];
   if(FITTED.indexOf(R.id)<0){ // these rooms have real content now — they add their own hotspots
     const hp=P(hd+1.6,0);
     R.hot=hotspot(hp.x,hp.z,2.3,R.name+(R.type==='spare'?' — for lease':' — opening soon'),
@@ -1512,7 +1538,7 @@ function buildHall(now){
   // (the Garrison room was emptied 2026-09-17: Fountain Keeper starts from Jack's E menu now — openJackMenu)
   q.push(()=>{buildCommunityDoor();});                       // the standing door in the Garden room
   q.push(()=>{buildBlindspotsKiosk();});                     // Blindspots — the stranger + lectern (Sponza vignette)
-  q.push(()=>{buildCerebroKiosk();});                        // Cerebro — the listening dome (weekly voices)
+  q.push(()=>{buildCerebrumKiosk();});                        // Cerebrum — the listening dome (weekly voices)
   q.push(()=>{buildHallwylDoor();});                         // The Hallwyl — the 1899 house (story game)
   q.push(()=>{buildTheater();});                             // Theater — Quick Stories listening room
   q.push(()=>{buildTheaterScene();});                        // the stranger in front of it, who opens it (and Elsa)
@@ -2152,11 +2178,11 @@ LABT.contents={
     labCircle(Y,c1[0],c1[1],0xffd27f,'Combat drill — eight of Optimus','level 2 · circle 2',()=>drillStart(Y,zn,c1),true,LAB_SIGN_H);   // the drill (2026-09-25, asked for): see DRILL
     labCircle(Y,c2[0],c2[1],0x7fe6ff,'Circle 3 — empty','level 2 · nothing on it yet',empty(3),true,LAB_SIGN_H);
   },
-  4:(Y,zn)=>{                                              // Cerebro (2026-09-25, asked for): the week's voices, from here instead of the room on Makers' Row
+  4:(Y,zn)=>{                                              // Cerebrum (2026-09-25, asked for): the week's voices, from here instead of the room on Makers' Row
     const c=LABT.circleAt(1);
-    labCircle(Y,c[0],c[1],0x6fa8ff,'Cerebro — hear the week','level 4 · walk off the platform there to come back',()=>launchCerebro(),true,LAB_SIGN_H);
+    labCircle(Y,c[0],c[1],0x6fa8ff,'Cerebrum — hear the week','level 4 · walk off the platform there to come back',()=>launchCerebrum(),true,LAB_SIGN_H);
   },
-  5:(Y,zn)=>holoBuildDoor(Y,zn),                           // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebro") — see HOLO
+  5:(Y,zn)=>holoBuildDoor(Y,zn),                           // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebrum") — see HOLO
 };
 function buildLabLights(){
   for(const [k,c,i,d,,y] of EARLY_SPEC)if(k.indexOf('labT')===0){          // the eight lights, and how far each sits above its floor
@@ -5238,15 +5264,15 @@ function launchBlindspots(n){
   leaveFor('https://lightsmithforge.linkpc.net/blindspots/index.html'+(n===2?'#get-real':'#why'),{'atd:fromHub':'1'});
 }
 
-// Cerebro (the former Forge room) — the walk-in listening dome: what people said
+// Cerebrum (the former Forge room) — the walk-in listening dome: what people said
 // this week orbits you as cards. The distinctive element is a glossy blue mini-dome
 // on a console with a ring of tiny card-lights orbiting it, echoing the chamber inside.
-function cerebroDone(){try{return localStorage.getItem('atd:cerebro:1')==='1';}catch(e){return false;}}
+function cerebrumDone(){try{return localStorage.getItem('atd:cerebrum:1')==='1';}catch(e){return false;}}
 function blindspotsDone(){try{return localStorage.getItem('atd:blindspots:1')==='1';}catch(e){return false;}}
-function buildCerebroKiosk(){
-  const R=ROOMS.find(r=>r.id==='cerebro');
+function buildCerebrumKiosk(){
+  const R=ROOMS.find(r=>r.id==='cerebrum');
   const sz=DIRV[R.dir][1], cx=R.cx, cz=R.cz-sz*2;   // deep in the room, faces the entrance (sz: which way the room opens, +1 south, -1 north)
-  const gl=takeLight('cerebro',0x6fa8ff,0.85,12);gl.position.set(cx,2.4,cz);worldGroup.add(gl);
+  const gl=takeLight('cerebrum',0x6fa8ff,0.85,12);gl.position.set(cx,2.4,cz);worldGroup.add(gl);
   // the mini-dome + orbiting card-lights, beside the display
   const orbit=new THREE.Group();orbit.position.set(cx-1.6,2.15,cz);worldGroup.add(orbit);
   const dome=new THREE.Mesh(new THREE.SphereGeometry(0.55,24,18),
@@ -5264,19 +5290,19 @@ function buildCerebroKiosk(){
   // info screen beside the console, facing the entrance (-z)
   const cnv=document.createElement('canvas');cnv.width=360;cnv.height=480;const ctx=cnv.getContext('2d');
   holoFrame(ctx,'#7fb7ff');
-  ctx.textAlign='center';ctx.fillStyle='#a8ccff';ctx.font='bold 42px Segoe UI';ctx.fillText('CEREBRO',180,110);
+  ctx.textAlign='center';ctx.fillStyle='#a8ccff';ctx.font='bold 42px Segoe UI';ctx.fillText('CEREBRUM',180,110);
   ctx.fillStyle='#cfe0d6';ctx.font='20px Segoe UI';ctx.fillText('what people said this week',180,150);
-  if(cerebroDone()){ctx.fillStyle='#b6ff9c';ctx.font='bold 22px Segoe UI';ctx.fillText('✓ HEARD — listen again',180,214);}
+  if(cerebrumDone()){ctx.fillStyle='#b6ff9c';ctx.font='bold 22px Segoe UI';ctx.fillText('✓ HEARD — listen again',180,214);}
   else{ctx.fillStyle='#ffd27f';ctx.font='bold 22px Segoe UI';ctx.fillText('step inside',180,214);}
   const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7*480/360),
     holoMat(tex));
   screen.position.set(cx,1.38,cz+sz*0.2);screen.rotation.y=sz>0?0:Math.PI;worldGroup.add(screen);
-  hotspot(cx,cz+sz*1.7,2.8,'Cerebro — hear the week',()=>launchCerebro(),{x:cx,y:1.4,z:cz+sz*0.2,rad:1.2});   // aim: the screen
+  hotspot(cx,cz+sz*1.7,2.8,'Cerebrum — hear the week',()=>launchCerebrum(),{x:cx,y:1.4,z:cz+sz*0.2,rad:1.2});   // aim: the screen
 }
-function launchCerebro(){                                  // from lab level 4's circle (2026-09-25); 'cerebro' brings you back beside that circle (RETURN_SPAWN)
-  trackPlay('cerebro:1');
-  leaveFor('https://lightsmithforge.linkpc.net/cerebro/index.html',{'atd:fromHub':'1','atd:returnTo':'cerebro'});
+function launchCerebrum(){                                  // from lab level 4's circle (2026-09-25); 'cerebrum' brings you back beside that circle (RETURN_SPAWN)
+  trackPlay('cerebrum:1');
+  leaveFor('https://lightsmithforge.linkpc.net/cerebrum/index.html',{'atd:fromHub':'1','atd:returnTo':'cerebrum'});
 }
 
 /* ============================================================
@@ -5398,7 +5424,8 @@ function pullProgress(){                   // server → local, then repaint, th
   api({a:'load',key}).then(r=>{
     if(!(r&&r.ok&&r.data))return;
     if(r.key&&KEY_RE.test(r.key)&&r.key!==key){try{localStorage.setItem('atd:accountKey',r.key);}catch(e){}}   // follow an alias
-    if(applyProgress(r.data))progressArrived();
+    const got=applyProgress(r.data), fixed=oldDomeFix();           // (the server's copy may still hold keys under the dome's earlier name: carried over each time)
+    if(got||fixed)progressArrived();
     syncNow();
   });
 }
@@ -5460,7 +5487,7 @@ function goGame(url,ss){
 // lightsmithforge cannot read that page's sessionStorage — so from any copy of the hall the launch goes through
 // account/go.html on lightsmithforge (goGame above), which plants the hand-off there and continues to the game. On the
 // live site itself, and on localhost where the game is next door, the entries are set here and the page just goes.
-// The door strings stay written as ../cerebro/index.html and so on: make-arrivals-zip.ps1 rewrites those literals to
+// The door strings stay written as ../cerebrum/index.html and so on: make-arrivals-zip.ps1 rewrites those literals to
 // the live site for the GitHub copy, and that absolute address is exactly what makes relayFor choose the relay there.
 const LIVE_ORIGIN='https://lightsmithforge.linkpc.net';
 function relayFor(url){ return (!/linkpc\.net|lightsmithforge/i.test(location.hostname)&&url.indexOf(LIVE_ORIGIN+'/')===0)?url:null; }
@@ -5840,14 +5867,15 @@ function buildArcade(){
 
 /* ---------- LEADERS BOARD — every door opening is counted (side wall of Completion) ---------- */
 const GAME_NAMES={chronos:'The Chronos Paradox',rally:'Trigger Rally',hexgl:'Velocity · HexGL',
-  riftkeeper:'Rift Keeper',fountainkeeper:'Fountain Keeper',blindspots:'Blindspots',hallwyl:'The Hallwyl',stories:'Quick Stories'};
+  riftkeeper:'Rift Keeper',fountainkeeper:'Fountain Keeper',blindspots:'Blindspots',hallwyl:'The Hallwyl',stories:'Quick Stories',cerebrum:'Cerebrum'};
 function buildLeadersBoard(){
   const R=ROOMS.find(r=>r.id==='submit');
   const cnv=document.createElement('canvas');cnv.width=760;cnv.height=560;
   const ctx=cnv.getContext('2d');
   const tex=new THREE.CanvasTexture(cnv);tex.encoding=THREE.sRGBEncoding;
   const agg=(rows)=>{const m={};for(const r of rows||[]){
-    const p=String(r.game).split(':')[0];if(!GAME_NAMES[p]&&!/^[a-z0-9_-]{1,24}$/i.test(p))continue;
+    let p=String(r.game).split(':')[0];if(p===OLD_DOME)p='cerebrum';   // (the server still counts the dome's earlier openings under its earlier name)
+    if(!GAME_NAMES[p]&&!/^[a-z0-9_-]{1,24}$/i.test(p))continue;
     m[p]=(m[p]||0)+(+r.count||0);}return m;};
   function draw(map,src){
     ctx.fillStyle='#0a1626';ctx.fillRect(0,0,760,560);
@@ -6596,7 +6624,7 @@ const LOCATIONS={
   chronos:{x:38,z:-1,label:'Chronos Court'},
   crypt:{x:31,z:20,label:'The stranger — Defend the hall'},   // Fountain Keeper starts from the circle beside the stranger (2026-09-25; it was Jack's E menu from 2026-09-17)
   vault:{x:30,z:28,label:'Under construction'},
-  cerebro:{x:-42.5,z:-62.5,label:'Cerebro — the circle on lab level 4'},   // 2026-09-25: the room on Makers' Row is walled over; the circle on lab level 4 opens it
+  cerebrum:{x:-42.5,z:-62.5,label:'Cerebrum — the circle on lab level 4'},   // 2026-09-25: the room on Makers' Row is walled over; the circle on lab level 4 opens it
   delivery:{x:30,z:35,label:'Delivery door — in the room under construction'}
 };   // (Episode 1 adds its two — ep1lift, ep1lab — where it is defined)
 // the three story circles on level 5 over the hall (buildStoryCircles), as places: the community stories' quests point at
@@ -6609,7 +6637,7 @@ LOCATIONS.optimus={ get x(){ const p=persons.optimus; return p?p.mesh.position.x
 function escHtml(s){return (s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
 // ---- completable tasks the fountain may allocate. ONLY doors with a real finish signal
 // qualify: Chronos missions, Rally stages, Velocity levels, the Delivery run, the Crypt,
-// Blindspots (reaching the far door), Cerebro (leaving through its exit door), and every
+// Blindspots (reaching the far door), Cerebrum (leaving through its exit door), and every
 // quick story (heard to the end writes atd:story:<id>). The Hallwyl, FPS Hall, Submit,
 // Fame Wall etc. have no completion flag, so the fountain never sends anyone there as an
 // objective. `avail` gates second tiers the door itself keeps locked until tier 1 is done.
@@ -6624,7 +6652,7 @@ const TASKS={
   delivery:{place:'delivery',title:'Make the delivery run',
             done:()=>deliveryDone('uUJTPz6M')||deliveryDone('RF87t6b6')},
   blindspots:{place:'blindspots',title:'Meet the Maker',done:()=>blindspotsDone()},
-  cerebro: {place:'cerebro',title:'Voices this week — Cerebro',done:()=>cerebroDone()},
+  cerebrum: {place:'cerebrum',title:'Voices this week — Cerebrum',done:()=>cerebrumDone()},
   // (Episode 1's two, ep1lift and ep1lab, are added where it is defined: their done() reads EP1, which comes later in the file)
   // fountain-app quests — talking to the app itself pays well (see taskPay)
   tour:    {place:'elara',  title:'Take the tour with Elara',done:()=>tourDone()},
@@ -7153,7 +7181,7 @@ document.getElementById('nbClose').onclick=()=>closeFountainPanel();
 const WORK={
   crypt:   {job:'Defend the hall', pay:200, side:true},   // side: a paid job still, but not on the main quest line — never the standing objective (2026-09-25, asked for)
   delivery:{job:'Delivery Run — drive the routes, hand the package over on foot', pay:200, side:true},   // side (2026-09-25, asked for): a paid job, off the main quest line
-  cerebro: {job:'Listening shift — staff the Cerebro dome, hear the week\'s voices', pay:200}
+  cerebrum: {job:'Listening shift — staff the Cerebrum dome, hear the week\'s voices', pay:200}
 };
 const SMALL_PAY=8;                                   // what any other finished task pays
 const mainLine=()=>Object.keys(WORK).filter(k=>!WORK[k].side);   // the main quest line, in order: the standing objective and the Work panel's card
@@ -7198,7 +7226,7 @@ function appendQuestButtons(host){
   host.appendChild(box);
 }
 // the MAIN QUEST line — one at a time, in this order; each card shows the room's screenshot
-const QUEST_IMG={crypt:'assets/walls/crypt.jpg',delivery:'assets/walls/delivery.jpg',cerebro:'assets/walls/cerebro.jpg'};
+const QUEST_IMG={crypt:'assets/walls/crypt.jpg',delivery:'assets/walls/delivery.jpg',cerebrum:'assets/walls/cerebrum.jpg'};
 function renderWork(){
   const earned=collectAllPay();
   document.getElementById('wkBal').textContent='◈ '+loadCredits()+(earned?'  (+'+earned+' just collected)':'');
@@ -7239,14 +7267,14 @@ function renderWork(){
   }
   renderSideQuests();
 }
-// SIDE QUESTS — every task, the crypt included since 2026-09-25 (delivery + cerebro appear here too, even
+// SIDE QUESTS — every task, the crypt included since 2026-09-25 (delivery + cerebrum appear here too, even
 // though they are main missions), in a curated order: Meet the Maker, the tour, the
-// fountain talks, the Cthulhu Redemption, the Garden series, delivery, Cerebro, then
+// fountain talks, the Cthulhu Redemption, the Garden series, delivery, Cerebrum, then
 // the two fountain-app quests — and the rest after a gap.
 // The side quests' order — the user's own, set with the dev drag tool (2026-09-27, second list; "not the final order").
 // Quests not in it (added later) come after these, in sqRank's order. The separator line goes under SQ_SPLIT.
 const SQ_ORDER=[
-  'optalk','tour','story:the-fountain','story:the-fountain-2','story:the-fountain-3','cerebro','story:an-invitation-to-the-community','story:welcome-to-the-garden','story:how-we-made-affordable-homes',
+  'optalk','tour','story:the-fountain','story:the-fountain-2','story:the-fountain-3','cerebrum','story:an-invitation-to-the-community','story:welcome-to-the-garden','story:how-we-made-affordable-homes',
   'counsel','ideas','crypt','home','todo','blindspots','story:the-scholars-revelation','story:the-sunken-oasis',
   'story:the-sleeper-below','story:the-whisper-below','story:the-sacred-geometry','story:the-sanctuary','delivery','chronos1','chronos2','rally1',
   'rally2','hex1','hex2','story:the-burdened-soul','story:brother-thomas','story:young-sarah','story:the-republic-1','story:the-republic-2',
@@ -7266,7 +7294,7 @@ function sqRank(k){
   if(k==='tour')return 1;
   if(k==='delivery')return 2;
   if(k==='crypt')return 2.5;
-  if(k==='cerebro')return 3;
+  if(k==='cerebrum')return 3;
   if(k==='todo')return 4;
   if(k==='counsel')return 5;
   if(k==='home')return 6;
@@ -9061,9 +9089,9 @@ const TOUR = [
       "The empty shopfronts — one of them could be yours." ] },
   { at:[-24,-10],via:[[-15,-21]],look:[-43,-11],anim:['Point'], lines:[
       "And to the west — the fast doors. Anti-grav racing, rally dirt, for the days you'd rather move than think." ] },
-  { at:[-8,18], look:[[-27,28],[14,-36]], anim:['Point','Point'], lines:[   // Cerebro moved to Makers' Row 2026-09-17: she points there (the recorded line still says across the foyer)
+  { at:[-8,18], look:[[-27,28],[14,-36]], anim:['Point','Point'], lines:[   // Cerebrum moved to Makers' Row 2026-09-17: she points there (the recorded line still says across the foyer)
       "On the south side, the Garden door — how it began.",
-      "Across the foyer, Cerebro — a dome where the week's voices orbit. Come back often; it never sounds the same twice." ] },
+      "Across the foyer, Cerebrum — a dome where the week's voices orbit. Come back often; it never sounds the same twice." ] },
   { at:[0,6],    look:'player', anim:['Nod','Talk_2','Wave'], lines:[
       "That's the tour — or as much of it as we've built.",
       "The fountain will help organize what you want to do today.",
@@ -9320,7 +9348,7 @@ document.getElementById('ecIn').addEventListener('keydown',e=>{if(e.code==='Ente
 function closeElaraMenu(relock){elaraShow(false);if(relock!==false)lockPointer();}
 document.getElementById('elaraClose').onclick=()=>{ if(cardFor){ ecSpeaking=false; closeElaraMenu(); return; } ecSpeaking=false;closeElaraMenu();say('elara',"I'll be right here.");};   // cardFor: Jack's card (his chat too), or the stranger's / Elsa's (askCard) — just closes
 /* ============================================================
-   THE HOLOGRAM ROOM (2026-10-01, asked for) — a door on lab level 5, the floor over Cerebro's, to a space of its own beyond the
+   THE HOLOGRAM ROOM (2026-10-01, asked for) — a door on lab level 5, the floor over Cerebrum's, to a space of its own beyond the
    city's edge where models fetched from Sketchfab are put up for this visit. At the door (and at the console in the space) a
    planner — Gemini — asks what the visitor wants to stand in, the environment first and then what goes in it, and for each
    thing looks on Sketchfab (its public search; no login for this) for models anyone may download: CC BY, CC BY-SA, CC BY-ND,
@@ -9939,7 +9967,7 @@ function gaMap(){                                                    // the plac
   add('lab',-28,-56,0,'the lab wing, ground floor: marked spaces with a character in some');
   add('lab lift',-42.5,-56,0,'the glass lift up the lab tower');
   GUESTS.forEach(g=>{ if(g.gy===undefined&&g.cz<-52&&g.name)add('lab '+String(g.name).toLowerCase().replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim(),g.cx,g.cz+3.4,0,'a lab space: '+g.name); });
-  LABT.Y.forEach((y,i)=>add('lab '+(i+1),-42.5,-56.5,y,'lab tower floor '+(i+1)+(i===1?', the combat floor: the nightmare circle and the drill circle':i===3?', with the Cerebro circle':', an open floor')));
+  LABT.Y.forEach((y,i)=>add('lab '+(i+1),-42.5,-56.5,y,'lab tower floor '+(i+1)+(i===1?', the combat floor: the nightmare circle and the drill circle':i===3?', with the Cerebrum circle':', an open floor')));
   LEVEL_Y.forEach((y,i)=>{ const c=ELEV.toWorld(ELEV.front(i+1)+1.6,0); add('level '+(i+1),c[0],c[1],y,'level '+(i+1)+' over the hall'+(i+1===APT_LVL?", the flats: the visitor's home":i+1===ORG_LVL?', the Organiser board and the story circles':', an empty floor')); });
   add('home',2.95,42.7,LEVEL_Y[APT_LVL-1],"the visitor's flat, number 33");
   add('organiser board',5.58,38.2,LEVEL_Y[ORG_LVL-1],'the board on level '+ORG_LVL);
@@ -9967,7 +9995,7 @@ function gaPlace(spec,ctx){                                          // what Gem
   const M=gaMap(); let p=M.find(e=>e.key===s);
   if(!p){ const c2=M.filter(e=>s.indexOf(e.key)>=0||e.key.indexOf(s)>=0).sort((a,b)=>b.key.length-a.key.length); p=c2[0]; }
   if(!p){ const L=Object.keys(LOCATIONS).find(k=>!/^(ep1|ga:|optimus)/.test(k)&&(k.toLowerCase()===s||String(LOCATIONS[k].label).toLowerCase().indexOf(s)>=0));
-    if(L){ const q=LOCATIONS[L]; p={key:L,x:q.x,z:q.z,y:/^l5:/.test(L)?LEVEL_Y[ORG_LVL-1]:L==='cerebro'?LABT.Y[3]:0,what:String(q.label)}; } }
+    if(L){ const q=LOCATIONS[L]; p={key:L,x:q.x,z:q.z,y:/^l5:/.test(L)?LEVEL_Y[ORG_LVL-1]:L==='cerebrum'?LABT.Y[3]:0,what:String(q.label)}; } }
   if(p)return {x:p.x,z:p.z,y:p.y,label:String(p.what).split(/[:,]/)[0]};
   const m=/(-?\d+(?:\.\d+)?)\s*[,; ]\s*(-?\d+(?:\.\d+)?)/.exec(s); if(m)return gaPlace({x:+m[1],z:+m[2],floor:s},ctx);
   return null;
@@ -10658,7 +10686,7 @@ const GA_DO={
       drillStart(Y,12,c); ctx.stop=true; ctx.log.push('start: the combat drill has begun, on lab 2'); return; }
     if(/nightmare|boss|monster/.test(w)){ yield* GA_DO.spawn({what:'nightmare',at:a.at||a.to},ctx); return; }
     if(/episode/.test(w)){ closeElaraMenu(false); startEp1(true); GA.moved=true; ctx.stop=true; ctx.log.push('start: Episode 1 has begun again, in the flat'); return; }
-    const out=/keeper|defend/.test(w)?['Fountain Keeper',launchRiftKeeper]:/cerebro/.test(w)?['Cerebro',launchCerebro]:/delivery/.test(w)?['the Delivery run',()=>launchDelivery('RF87t6b6')]:null;
+    const out=/keeper|defend/.test(w)?['Fountain Keeper',launchRiftKeeper]:/cerebrum/.test(w)?['Cerebrum',launchCerebrum]:/delivery/.test(w)?['the Delivery run',()=>launchDelivery('RF87t6b6')]:null;
     if(out){ banner('LEAVING THE HALL · '+out[0].toUpperCase()); GA.moved=true; ctx.stop=true; yield 1.6; out[1](); return; }
     ctx.log.push('start: there is nothing called "'+gaText(w,40)+'" to start'); },
   spawn:function*(a,ctx){
@@ -10980,7 +11008,7 @@ function gaBrief(who,noFormat){
   +'- {"do":"walk","who":"elara","to":"fountain"}: walk there. Short ways on the same floor only, about '+GA_LIMIT.walk+' metres: the hall has not been made for walking anywhere yet. Farther than that, or to another floor, teleport.\n'
   +'- {"do":"teleport","who":"visitor","to":"lab 2"}: move the visitor, a character, or "everyone" (the visitor and the three of you) at once, to any place on any floor. It is the way to take the visitor somewhere. Tell them they have been teleported and where they are: a "say" after it does that.\n'
   +'- {"do":"objective","title":"...","to":"...","pay":20}: give the visitor an objective: a marker on their map and a beam of light at the place; it is done when they get there. With "target":"<id>" it is about something spawned instead: an enemy (done when it is brought down) or a box (done when it is opened). pay: up to '+GA_LIMIT.pay+' credits.\n'
-  +'- {"do":"start","what":"tour"}: start something the hall has: tour (the walk with Elara, from the garden), fountain 1, fountain 2, fountain 3 (the conversations with the fountain), story <name> (the story circles on level '+ORG_LVL+'), drill (the combat drill on lab 2), nightmare, episode 1. And the games behind the hall, which take the visitor out of the hall until they have played: fountain keeper, cerebro, delivery.\n'
+  +'- {"do":"start","what":"tour"}: start something the hall has: tour (the walk with Elara, from the garden), fountain 1, fountain 2, fountain 3 (the conversations with the fountain), story <name> (the story circles on level '+ORG_LVL+'), drill (the combat drill on lab 2), nightmare, episode 1. And the games behind the hall, which take the visitor out of the hall until they have played: fountain keeper, cerebrum, delivery.\n'
   +'- {"do":"spawn","what":"robot","name":"...","id":"...","at":"..."}: put someone or something into the hall. People: robot, woman, man, soldier, scientist. With a "persona" (who they are, a few sentences) they have a mind and a voice of their own and the visitor can talk with them; with "lines":["..."] they say those when spoken to. "voice":"male" or "female", or one by name (VOICES, below); "pitch":0.4 to 1.8. With "hostile":true they are an enemy: robots come at the visitor, soldiers hold their ground; "nightmare" is the lab\'s monster, one at a time. Nothing can hurt the visitor; the visitor, Elara, Jack and Optimus shoot enemies down. Things: crate, orb, pillar, cube, ring, with "color", "size" and a "note" the visitor reads on it.\n'
   +'- {"do":"sketchfab","find":"grey alien","as":"character","name":"...","persona":"...","say":"...","voice":"male","pitch":0.7,"size":2,"motion":"hover"}: fetch a model from Sketchfab\'s free library — almost anything exists there: creatures, people of every kind, vehicles, furniture, monuments, food — and put it where the visitor is (or "at" a place). It takes some seconds to arrive. "as":"thing": it stands there ("size" in metres, a "note" the visitor reads on it). "as":"character": it is someone — with a "persona" it has a mind and a voice of its own, it says "say" as it arrives — its own first words on what the visitor wanted of it, a question for them in it if that suits — and from then on the visitor is talking with IT, not with you: its chat opens for them. It has none of the hall\'s animations: "motion" is hover, bob, spin, sway or none, and a model that came with animations plays them — you are told their names when it arrives, for "anim". "as":"place": surroundings — a forest, a street, a room — made in the Hologram Room, and the visitor and whoever follows are taken there at once; what you do next happens there. When the visitor asks for something or someone, do it in this same answer — do not offer it, describe it or ask whether they would like it first — and a thing standing there is the least of it: make something of it if you can — a talk, a small story, a question for them, a part for you or the others to play in it.\n'
   +'- {"do":"resize","id":"...","size":3}: what was fetched comes at a guessed size, and the guess is often wrong: "size" (metres high) or "factor" puts a model right; "id":"place" with a "factor" does it for the Hologram Room\'s surroundings.\n'
@@ -11571,7 +11599,7 @@ const TOUR_RECORDED={
   '3:0':'elara_t3_l0.mp3',                                    // "On your right: the Chronos Court."
   '5:0':'elara_t5_l0.mp3','5:1':'elara_t5_l1.mp3',            // Makers' Row
   '5:2':'elara_t5_l2.mp3','5:3':'elara_t5_l3.mp3',
-  '7:0':'elara_t7_l0.mp3','7:1':'elara_t7_l1.mp3',            // Garden door + Cerebro
+  '7:0':'elara_t7_l0.mp3',                                    // Garden door (the line after it, about Cerebrum, was recorded with the room's earlier name: the browser voice reads it now)
   '8:1':'elara_t8_l1.mp3',                                    // "The fountain will help organize…"
 };
 TOUR.forEach((stop,si)=>stop.lines.forEach((t,li)=>{const f=TOUR_RECORDED[si+':'+li];if(f)VOICE_FILES[t]=f;}));
@@ -11766,7 +11794,7 @@ const URLQ=(()=>{ const r={returnTo:null,done:[]};
   try{ const q=new URLSearchParams(location.search); r.returnTo=q.get('returnTo')||null; r.done=(q.get('done')||'').split(',').filter(Boolean);
     if(q.has('returnTo')||q.has('done')){ q.delete('returnTo'); q.delete('done'); const s=q.toString(); history.replaceState(null,'',location.pathname+(s?'?'+s:'')+location.hash); } }catch(e){}
   return r; })();
-for(const k of URLQ.done){ if(/^(atd:(cerebro|blindspots|fountainkeeper|story|chronos|rally|hexgl):[\w.-]+|delivery:done:[\w.-]+)$/.test(k)){ try{ if(!localStorage.getItem(k))localStorage.setItem(k,'1'); }catch(e){} } }
+for(const k of URLQ.done){ if(/^(atd:(cerebrum|blindspots|fountainkeeper|story|chronos|rally|hexgl):[\w.-]+|delivery:done:[\w.-]+)$/.test(k)){ try{ if(!localStorage.getItem(k))localStorage.setItem(k,'1'); }catch(e){} } }
 const RETURN_TO=URLQ.returnTo||(()=>{try{const v=sessionStorage.getItem('atd:returnTo');if(v)sessionStorage.removeItem('atd:returnTo');return v;}catch(e){return null;}})();
 // deep link: /hub/index.html#the-fountain drops you standing at the atrium fountain, facing it.
 const AT_FOUNTAIN=(()=>{try{return ['the-fountain','fountain'].includes((location.hash||'').replace(/^#/,''));}catch(e){return false;}})();
@@ -11949,7 +11977,7 @@ animated.push({update(dt){                                       // the scene's 
 const RETURN_SPAWN={crypt:{x:35,z:16,yaw:Math.PI/2},     // just outside the Crypt, facing the atrium
                     jack:{x:8,z:-28.5,yaw:0},             // in front of Jack, facing him (Fountain Keeper returned here until 2026-09-25)
                     stranger:{x:31,z:23.5,yaw:0},         // back from Fountain Keeper: just south of its circle beside the stranger, facing it
-                    cerebro:{x:-42.5,z:-59.5,yaw:0,y:LABT.Y[3]}};   // back from Cerebro: on lab level 4, between the lift and its circle, facing the circle (2026-09-25; it was outside the room on Makers' Row)
+                    cerebrum:{x:-42.5,z:-59.5,yaw:0,y:LABT.Y[3]}};   // back from Cerebrum: on lab level 4, between the lift and its circle, facing the circle (2026-09-25; it was outside the room on Makers' Row)
 const _RS=RETURN_TO&&RETURN_SPAWN[RETURN_TO];
 // Where you were standing, kept in this browser and nowhere else: no account, no server, no
 // cookie, nothing that leaves the machine. A refresh or a quick return puts you back on the
@@ -11968,7 +11996,7 @@ const SPAWN = _RS ? {x:_RS.x,z:_RS.z}
             : RESUME ? {x:RESUME.x,z:RESUME.z}          // back where you left off
             : {x:0,z:64.6};                             // default first arrival: in the garden, your back to the birdbath (0,62), facing south — Elara in front of you, the gate and the city beyond (2026-09-18)
 const SPAWN_YAW = _RS ? _RS.yaw : EP1_DUE ? EP1.spawn.yaw : (RESUME&&typeof RESUME.yaw==='number') ? RESUME.yaw : AT_FOUNTAIN ? 0 : Math.PI;   // yaw 0 = look north (the fountain link: at the fountain); the garden arrival looks south, at Elara and the city
-const player={pos:new THREE.Vector3(SPAWN.x,0,SPAWN.z),speed:6.4,r:0.55,y:(_RS&&typeof _RS.y==='number')?_RS.y:EP1_DUE?LEVEL_Y[APT_LVL-1]:((RESUME&&typeof RESUME.y==='number')?RESUME.y:0),vy:0,grounded:true};   // y: back on the floor you were on (Episode 1: level 3; back from Cerebro: lab level 4)
+const player={pos:new THREE.Vector3(SPAWN.x,0,SPAWN.z),speed:6.4,r:0.55,y:(_RS&&typeof _RS.y==='number')?_RS.y:EP1_DUE?LEVEL_Y[APT_LVL-1]:((RESUME&&typeof RESUME.y==='number')?RESUME.y:0),vy:0,grounded:true};   // y: back on the floor you were on (Episode 1: level 3; back from Cerebrum: lab level 4)
 const sprint={energy:6,max:6,cooling:false,active:false};
 const look={yaw:SPAWN_YAW,pitch:-0.02,locked:false,moved:-99}; // yaw 0 = straight into the mall; spawn is angled a bit. moved: when you last turned the view yourself
 const SENS=0.0022;
