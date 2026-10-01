@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sketchfab login — The Arrivals Hall</title>
+<meta name="robots" content="noindex">
+<style>body{background:#05070d;color:#dfe9f5;font:15px "Segoe UI",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}</style>
+</head>
+<body>
+<div id="m">Signing in…</div>
+<!-- The Hologram Room's login door (2026-10-01): Sketchfab sends the visitor back here after they log in, with the token in the
+     address. This page hands it to the hall (the window that opened it) and closes. Nothing is kept here. -->
+<script>
+(function(){
+  var q=new URLSearchParams(location.hash.replace(/^#/,'')||location.search.slice(1));
+  var token=q.get('access_token'), err=q.get('error'), m=document.getElementById('m');
+  if(token&&window.opener){
+    try{ window.opener.postMessage({type:'sketchfab-token',token:token,expires:q.get('expires_in'),state:q.get('state')},location.origin); }catch(e){}
+    m.textContent='Logged in to Sketchfab — this window closes itself.';
+    setTimeout(function(){ window.close(); },900);
+  } else m.textContent=err?('Sketchfab said: '+err+(q.get('error_description')?' — '+q.get('error_description'):'')):'This is the hall’s Sketchfab login door: nothing to see here.';
+})();
+</script>
+</body>
+</html>

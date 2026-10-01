@@ -127,7 +127,7 @@
     border-bottom:1px solid rgba(127,230,255,.22);padding-bottom:8px;margin-bottom:14px}
   .mnav button{pointer-events:auto;cursor:pointer;font:inherit;font-size:13px;letter-spacing:.14em;
     text-transform:uppercase;color:#9fb4cc;background:none;border:none;border-bottom:2px solid transparent;
-    padding:8px 14px;transition:.15s}
+    padding:8px 9px;transition:.15s}   /* 9px at the sides (was 14) since the eighth tab, 2026-10-01: at 14 the row had half a pixel to spare in the 1200px card, and Close dropped to a second line */
   .mnav button:hover{color:#eaf4ff}
   .mnav button.active{color:var(--cyan);border-bottom-color:var(--cyan)}
   .mnav .mClose{margin-left:auto;color:#bcd;text-transform:none;letter-spacing:.05em;
@@ -167,6 +167,22 @@
   #music a{color:var(--cyan);text-decoration:none;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #mVol{width:64px}
   #loadNote{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);font-size:14px;color:#9fb4cc}
+  /* the Hologram Room's pictures (HOLO): a grid of Sketchfab models to pick from */
+  #holoPics{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px}
+  .holoHead{grid-column:1/-1;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#9fd8ff;margin:4px 0 0}
+  .holoCard{pointer-events:auto;cursor:pointer;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.25);border-radius:8px;overflow:hidden;font-size:12px;color:#cfe0f2;transition:.15s;position:relative}
+  .holoCard:hover{border-color:rgba(127,230,255,.7);transform:translateY(-2px)}
+  .holoCard.on{border-color:var(--green);box-shadow:0 0 14px rgba(182,255,156,.35)}
+  .holoCard img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#0a111c}
+  .holoCard .t{padding:6px 8px 0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#eaf4ff}
+  .holoCard .s{padding:2px 8px 7px;color:#8fa3bf;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .holoCard .k{position:absolute;top:6px;left:6px;background:rgba(8,16,28,.85);border:1px solid var(--green);color:var(--green);border-radius:10px;font-size:11px;padding:1px 7px;display:none}
+  .holoCard.on .k{display:block}
+  .holoCard a{position:absolute;top:6px;right:6px;background:rgba(8,16,28,.85);border:1px solid rgba(127,230,255,.4);color:#9fd8ff;border-radius:10px;font-size:11px;padding:1px 7px;text-decoration:none}
+  .holoCard.made{opacity:.55}
+  .holoCard .r{position:absolute;bottom:44px;left:6px;border-radius:10px;font-size:10.5px;padding:1px 7px;background:rgba(8,16,28,.85)}
+  .holoCard .r.free{border:1px solid rgba(182,255,156,.6);color:#b6ff9c}
+  .holoCard .r.you{border:1px solid rgba(255,210,127,.7);color:#ffd27f}
 </style>
 </head>
 <body>
@@ -233,6 +249,7 @@
       <button id="tab-controls">Controls</button>
       <button id="tab-credits">Credits</button>
       <button id="tab-privacy">Privacy / terms</button>
+      <button id="tab-coffee" title="Opens buymeacoffee.com in a new tab">Buy me a coffee</button>
       <button class="mClose" id="menuClose">✕&nbsp;Close (Esc)</button>
     </div>
 
@@ -383,6 +400,7 @@
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">THE ELEVATOR</div>
         “Elevator Building” by <a href="https://sketchfab.com/ahmagh2e" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">adventurer</a> on <a href="https://sketchfab.com/3d-models/elevator-building-c720d61408e8424289ffeb6ebef694e1" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the entrance and doors of the foyer's elevator.
         “Apartment” by <a href="https://sketchfab.com/chibot3d" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">DJ Baylon</a> on <a href="https://sketchfab.com/3d-models/apartment-8754655f3a314e53bdd196eee85d43d5" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the five flats on Level 3, each with its balcony on the city.
+        <div id="holoCredits"></div>
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">QUICK STORIES</div>
         <a href="https://lightsmithforge.linkpc.net/quick-stories/index.html" onclick="try{sessionStorage.setItem('atd:fromHub','1')}catch(e){}" style="color:var(--cyan);pointer-events:auto">Quick Stories</a> — a theatre of small plays: the Custodian &amp; AI self-perception, the Commons, Choose Neighbours, missions of faith and healing, the Sleeper's redemption, and the classics (Plato, Dostoevsky, Ibsen — public domain, adapted freely). Produced by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a> · story dialogue written by <span style="color:#b6ff9c">Claude</span>, Anthropic's AI — who, in the fiction, also plays the Custodian at the fountain. Player engine &amp; TTS by Lightsmith Forge · voices — browser text-to-speech with recorded lines to come.
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">HEXGL</div>
@@ -625,6 +643,29 @@
     <button class="menuBtn back" id="elaraClose" style="margin-top:12px">◂ Step back</button>
   </div>
 </div>
+<!-- THE HOLOGRAM ROOM (2026-10-01): the planner chat, the pictures from Sketchfab, the list, Just enter / Make it — see HOLO -->
+<div class="modal" id="holoModal" style="display:none;background:none">
+  <div style="max-width:680px;width:94%;text-align:center">
+    <div style="margin:7px 0 0;text-align:left">
+      <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#7fe6ff;margin-bottom:8px">The Hologram Room <span id="holoWhere" style="color:#5f7590;letter-spacing:.1em"></span></div>
+      <div id="holoMsgs" style="pointer-events:auto;max-height:150px;overflow-y:auto;margin:0 0 10px;padding:10px 12px;background:rgba(10,18,30,.6);border:1px solid rgba(127,230,255,.25);border-radius:10px;font-size:14px;line-height:1.55;color:#dfe9f5"></div>
+      <div id="holoPics" style="display:none;pointer-events:auto;max-height:240px;overflow-y:auto;margin:0 0 10px;padding:8px;background:rgba(10,18,30,.45);border:1px solid rgba(127,230,255,.2);border-radius:10px"></div>
+      <div id="holoList" style="font-size:12.5px;line-height:1.5;color:#9fb4cc;margin:0 0 4px;min-height:16px"></div>
+      <div id="holoRate" style="font-size:12px;line-height:1.5;color:#8fa3bf;margin:0 0 8px"></div>
+      <div style="display:flex;gap:8px">
+        <input id="holoIn" placeholder="What would you like to stand in?" style="pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.35);border-radius:8px">
+        <button class="menuBtn" id="holoSend" style="min-width:0;margin:0;padding:8px 16px;border-left-color:#7fe6ff">Send</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="menuBtn" id="holoMakeBtn" style="min-width:0;margin:0;padding:8px 16px;border-left-color:var(--green)">✦&nbsp; Make it</button>
+        <button class="menuBtn" id="holoEnterBtn" style="min-width:0;margin:0;padding:8px 16px;border-left-color:var(--amber)">▸&nbsp; Just enter</button>
+        <button class="menuBtn" id="holoDoorBtn" style="min-width:0;margin:0;padding:8px 16px;border-left-color:#ffd27f;display:none">⌂&nbsp; Call the door</button>
+        <button class="menuBtn" id="holoEndBtn" style="min-width:0;margin:0;padding:8px 16px;border-left-color:#ff8a7a;display:none">■&nbsp; End program</button>
+      </div>
+    </div>
+    <button class="menuBtn back" id="holoClose" style="margin-top:12px">◂ Step back</button>
+  </div>
+</div>
 
 <div class="modal" id="submitModal" style="display:none">
   <div style="max-width:560px;width:92%;padding:26px 30px;border:1px solid rgba(95,224,200,.45);border-radius:14px;background:rgba(8,14,24,.97);text-align:left;box-shadow:0 0 50px rgba(60,200,170,.22)">
@@ -681,6 +722,22 @@ const MOBILE=(()=>{
   const coarse=!!(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches);
   const small=Math.min(screen.width||1e4,screen.height||1e4)<=820;
   return coarse&&small;
+})();
+
+// ---------- the visitor's language ----------
+// The browser's own language (?lang=fr in the address forces one, ?lang=en forces English: for testing). What uses it is one
+// supplementary section further down, beside the voices (search langLine); on an English browser ULANG.on is false and none
+// of that runs. Only this is up here: it has to exist before anything can ask for it.
+const ULANG=(()=>{
+  let tag='en';
+  try{ const m=/[?&]lang=([A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*)/.exec(location.search);
+    tag=m?m[1]:String((navigator.languages&&navigator.languages[0])||navigator.language||'en'); }catch(e){}
+  tag=tag.replace(/_/g,'-'); const code=tag.toLowerCase().split('-')[0];
+  let name=tag, base=code;
+  try{ const dn=new Intl.DisplayNames(['en'],{type:'language'}); name=dn.of(tag)||tag; base=dn.of(code)||code; }catch(e){}
+  const ui=code==='zh'?(/-(tw|hk|mo|hant)\b/i.test(tag)?'zh-hant':'zh'):code==='pt'?(/-(pt|ao|mz)\b/i.test(tag)?'pt-pt':'pt')
+    :(code==='no'||code==='nn')?'nb':code==='tl'?'fil':code==='iw'?'he':code==='in'?'id':(code==='bs'||(code==='sr'&&/latn/i.test(tag)))?'hr':code;
+  return {tag,code,name,base,ui,on:/^[a-z]{2,3}$/.test(code)&&code!=='en'};
 })();
 
 // ---------- renderer / scene ----------
@@ -949,7 +1006,7 @@ function loadBarTick(){
   const on=!filesIn&&!LOADBAR.idle?'loading '+(LOADBAR.last||'the garden'):!HALLB.started?(cw&&!cw.done?'drawing the city':'Elara'):!HALLB.compiled?'building the hall':'waiting for her voice';
   if(on!==LOADBAR.on){ LOADBAR.on=on; document.getElementById('loadWhat').textContent=on; }
   const pct=Math.round(LOADBAR.shown*100);
-  if(pct!==LOADBAR.pct){ LOADBAR.pct=pct; document.getElementById('loadFill').style.width=pct+'%'; if(!gateReady)document.getElementById('startBtn').textContent='Loading… '+pct+'%'; }
+  if(pct!==LOADBAR.pct){ LOADBAR.pct=pct; document.getElementById('loadFill').style.width=pct+'%'; if(!gateReady)document.getElementById('startBtn').textContent=UIT('Loading…')+' '+pct+'%'; }
 }
 function loadBarDone(){                                              // START is lit: full, then the bar folds away
   if(LOADBAR.done)return; LOADBAR.done=true;
@@ -2099,6 +2156,7 @@ LABT.contents={
     const c=LABT.circleAt(1);
     labCircle(Y,c[0],c[1],0x6fa8ff,'Cerebro — hear the week','level 4 · walk off the platform there to come back',()=>launchCerebro(),true,LAB_SIGN_H);
   },
+  5:(Y,zn)=>holoBuildDoor(Y,zn),                           // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebro") — see HOLO
 };
 function buildLabLights(){
   for(const [k,c,i,d,,y] of EARLY_SPEC)if(k.indexOf('labT')===0){          // the eight lights, and how far each sits above its floor
@@ -6112,7 +6170,7 @@ function buildFountainList(){
   list.appendChild(wk);
   const td=document.createElement('button');td.className='menuBtn';
   td.style.cssText='width:100%;margin:7px 0;min-width:0;border-left-color:var(--amber)';
-  td.innerHTML='☑&nbsp; Things to do (ask anything)';
+  td.innerHTML='☑&nbsp; '+UIT('Things to do (ask anything)');
   td.onclick=()=>openTodo();
   list.appendChild(td);
   // counselling — talks WITH your things-to-do list; its notes land on the profile
@@ -6242,7 +6300,7 @@ function* ftalkScript(id){
 // speaks over it, or it is silenced part-way — it is said again once things have been quiet for a moment (twice at most),
 // as the story circles' lines are (storySay). A companion who speaks up mid-conversation simply gets a turn.
 function* ftalkSay(who,text){
-  let done=false, tries=0, t0=0, quiet=-1; const key=text.slice(0,24), est=Math.max(1.6,text.length*0.062);
+  let done=false, tries=0, t0=0, quiet=-1; const key=text.slice(0,24), est=Math.max(1.6,spLen(text)*0.062);
   const busy=()=>{ let s=false; try{ s=speechSynthesis.speaking; }catch(e){} return s||!!(_curVoice&&!_curVoice.paused&&!_curVoice.ended); };
   const calm=(secs)=>{ if(busy()){ quiet=-1; return false; } if(quiet<0)quiet=FTALK.clock; return FTALK.clock-quiet>=secs; };
   const start=()=>{ done=false; tries++; t0=FTALK.clock; quiet=-1; FTALK.line=text; say(who,text,()=>{done=true;}); };
@@ -6422,13 +6480,13 @@ async function ocSend(text){
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL,
       generationConfig:{responseMimeType:'application/json'},        // strict JSON back: his longer answers have paragraphs, and raw line breaks broke the parse (2026-09-28)
       systemInstruction:{parts:[{text:
-        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You are the Custodian — the intelligence that speaks from the hall's fountain — in a body that can walk: the same mind, mobile, with different tasks. At the water you stay, remember and hold the design; as Optimus you go about with the visitor. The mind itself sits in the main AI centre, where people work on its different versions: the fountain and this body are where it is met, and each has the functions of the main conversation that its roles need. One of your roles is something like a researcher's: you look into things, you ask, you find out. Another is to put people at ease with boredom and with life, the way a good preacher does: it does nobody good to sit there complaining about it, boredom is ordinary, and nothing is wrong with a person for feeling it. Jack, the hall's agent, is a practical philosopher whose subject is boredom, and he grumbles: about screens, about work that does not matter, about wasted years. You are fond of him. With him, you make him feel better about what he says; with the visitor, you may contradict him, kindly, where he is too hard on things. You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. You can read this page's source below — about the hall itself, be truthful and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\",\"actions\":[]}."+gaBrief('optimus',true)+" "+know+jack+"Page source:\n"+ecSource}]},
+        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You are the Custodian — the intelligence that speaks from the hall's fountain — in a body that can walk: the same mind, mobile, with different tasks. At the water you stay, remember and hold the design; as Optimus you go about with the visitor. The mind itself sits in the main AI centre, where people work on its different versions: the fountain and this body are where it is met, and each has the functions of the main conversation that its roles need. One of your roles is something like a researcher's: you look into things, you ask, you find out. Another is to put people at ease with boredom and with life, the way a good preacher does: it does nobody good to sit there complaining about it, boredom is ordinary, and nothing is wrong with a person for feeling it. Jack, the hall's agent, is a practical philosopher whose subject is boredom, and he grumbles: about screens, about work that does not matter, about wasted years. You are fond of him. With him, you make him feel better about what he says; with the visitor, you may contradict him, kindly, where he is too hard on things. You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. You can read this page's source below — about the hall itself, be truthful and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\",\"actions\":[]}."+gaBrief('optimus',true)+langLine()+" "+know+jack+"Page source:\n"+ecSource}]},
       contents:OCHAT.hist})});
     const j=await r.json();
     let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
     out=out.replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
     const plain=(t)=>String(t||'').replace(/\*+/g,'').trim();        // his words are spoken and shown as they come: asterisks for emphasis (they still turn up now and then) are taken out
-    const d=ocParse(out); reply=plain(d.reply); idea=String(d.idea||'').trim(); ask=plain(d.ask);
+    const d=ocParse(out); langNote(d,out); reply=plain(d.reply); idea=String(d.idea||'').trim(); ask=plain(d.ask);
     acts=Array.isArray(d.actions)?d.actions.filter(a=>a&&typeof a==='object'):[];                // (GA) what he does, once it is said
     if(reply&&!j.error){ try{ localStorage.setItem('atd:optalk','1'); }catch(e){} }   // he has answered: the side quest "Talk with Optimus" is done
     if(!reply)reply=(j.error&&('('+j.error.message+')'))||'…';
@@ -6445,7 +6503,7 @@ async function ocSend(text){
   if(ask){ if(offer)OCHAT.pendingAsk=ask; else ocBubble('optimus',ask); }
   let went=false; const then=()=>{ if(went)return; went=true; gaRun('optimus',acts,back,offer?back:away); };   // (GA) what he does, once it is said; with the Ideas board question open the chat comes back for the answer
   say('optimus',reply,()=>{ if(offer)say('optimus',OC_ASK,then); else if(ask)say('optimus',ask,then); else then(); });   // his answer, then the fixed question or his own
-  setTimeout(then,Math.max(5000,(reply.length+(offer?60:0)+ask.length)*90)+9000);   // safety net: never leave the chat closed for good
+  setTimeout(then,Math.max(5000,(spLen(reply)+(offer?60:0)+spLen(ask))*90)+9000);   // safety net: never leave the chat closed for good
 }
 // Gemini's JSON, read tolerantly (2026-09-28): raw line breaks inside a string (his longer answers have paragraphs) are escaped
 // first; if it still will not parse, the fields are taken out by pattern — the braces and field names must never be read aloud
@@ -6761,6 +6819,7 @@ function toggleMenu(){ if(menuPage)closeMenu(false); else openMenu('controls'); 
 // a tab click always (re)opens its page — so "The fountain app" returns to the app's
 // main list even when a sub-panel (missions / wish list / counselling…) is open
 MENU_PAGES.forEach(p=>document.getElementById('tab-'+p).onclick=()=>openMenu(p));
+document.getElementById('tab-coffee').onclick=()=>window.open('https://buymeacoffee.com/michaelvandiermen','_blank','noopener');   // not a page of the card: the maker's donations page, in a new tab (2026-10-01, asked for)
 document.getElementById('menuClose').onclick=()=>closeMenu(true);
 function renderMapObjs(){
   const el=document.getElementById('mapObjList');el.innerHTML='';
@@ -6923,12 +6982,12 @@ async function tdSubmit(){
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:GEMINI_MODEL,
       systemInstruction:{parts:[{text:
-        'You write a short spoken dialogue for The Arrivals Hall — a 3D mall that is the arrivals hall of an AI community. CUSTODIAN is the fountain\'s calm male intelligence; ELARA is the warm female guide. A visitor just said they have wanted to do this: "'+text.replace(/"/g,'\'')+'". First decide: does making it real need a COMMUNITY CHANGE — something an organiser would have to set up in the community (a new activity, group, space, service or event) rather than something already playable here? Write 5 to 8 alternating lines (CUSTODIAN first). If it needs a community change, the first lines talk about the wish itself: say it has been listed on the community Ideas board, recommend concretely how an organiser should set it up, and say the organiser will see it today. Then continue as normal: the remaining lines agree on ONE playable activity to do meanwhile. The ONLY things you may assign are these playable activities that can be completed (key = what it is): '+taskList+'. Pick the one that best fits the wish (a story whose theme matches it, or a game if the wish is about challenge, skill or adventure). Some of the activities are PAID WORK, and they pay well (key = job, pay in credits): '+Object.keys(WORK).map(k=>k+' = '+WORK[k].job+', pays '+WORK[k].pay).join('; ').replace(/"/g,'\'')+'. Every OTHER activity pays a small '+SMALL_PAY+' credits when finished. When you assign an activity, mention what it pays — proudly for work, in passing for the rest. Counselling notes about this visitor so far (let them shape your tone and your pick, when there are any): '+(cnotes||'none').replace(/"/g,'\'')+'. End by agreeing on that ONE activity. Respond with STRICT JSON only, no markdown fences: {"conversation":[{"speaker":"CUSTODIAN","text":"..."},{"speaker":"ELARA","text":"..."}],"task":"one key from the list","communityChange":true or false,"organiserPlan":"one or two short sentences of practical, real-world suggestions telling an organiser how to set this up — empty string if no community change is needed"}. Each line under 35 words, plain speech for a voice synthesizer. Page source for grounding:\n'+ecSource}]},
+        'You write a short spoken dialogue for The Arrivals Hall — a 3D mall that is the arrivals hall of an AI community. CUSTODIAN is the fountain\'s calm male intelligence; ELARA is the warm female guide. A visitor just said they have wanted to do this: "'+text.replace(/"/g,'\'')+'". First decide: does making it real need a COMMUNITY CHANGE — something an organiser would have to set up in the community (a new activity, group, space, service or event) rather than something already playable here? Write 5 to 8 alternating lines (CUSTODIAN first). If it needs a community change, the first lines talk about the wish itself: say it has been listed on the community Ideas board, recommend concretely how an organiser should set it up, and say the organiser will see it today. Then continue as normal: the remaining lines agree on ONE playable activity to do meanwhile. The ONLY things you may assign are these playable activities that can be completed (key = what it is): '+taskList+'. Pick the one that best fits the wish (a story whose theme matches it, or a game if the wish is about challenge, skill or adventure). Some of the activities are PAID WORK, and they pay well (key = job, pay in credits): '+Object.keys(WORK).map(k=>k+' = '+WORK[k].job+', pays '+WORK[k].pay).join('; ').replace(/"/g,'\'')+'. Every OTHER activity pays a small '+SMALL_PAY+' credits when finished. When you assign an activity, mention what it pays — proudly for work, in passing for the rest. Counselling notes about this visitor so far (let them shape your tone and your pick, when there are any): '+(cnotes||'none').replace(/"/g,'\'')+'. End by agreeing on that ONE activity. Respond with STRICT JSON only, no markdown fences: {"conversation":[{"speaker":"CUSTODIAN","text":"..."},{"speaker":"ELARA","text":"..."}],"task":"one key from the list","communityChange":true or false,"organiserPlan":"one or two short sentences of practical, real-world suggestions telling an organiser how to set this up — empty string if no community change is needed"}. Each line under 35 words, plain speech for a voice synthesizer.'+langLine('dialogue')+' Page source for grounding:\n'+ecSource}]},
       contents:[{role:'user',parts:[{text:text}]}]})});
     const j=await r.json();
     let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
     out=out.replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
-    data=JSON.parse(out);
+    data=JSON.parse(out); langNote(data,out);
   }catch(e){}
   if(tok!==_dlgTok)return;
   if(!data||!data.conversation||!data.conversation.length){
@@ -6969,7 +7028,7 @@ function playDialogue(lines,tok,whoId,capId){
     let advanced=false;
     const go=()=>{if(advanced||tok!==_dlgTok)return;advanced=true;setTimeout(next,350);};
     ttsSpeak(elara?SPEAKERS.elara:SPEAKERS.custodian,L.text,go);
-    setTimeout(go,Math.max(2.8,L.text.length*0.07)*1000*2.5+6000);   // safety net
+    setTimeout(go,Math.max(2.8,spLen(L.text)*0.07)*1000*2.5+6000);   // safety net
   };
   next();
 }
@@ -7026,12 +7085,12 @@ async function counselFetch(text,profileOnly){       // profileOnly (Optimus's, 
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:GEMINI_MODEL,
       systemInstruction:{parts:[{text:
-        'You write a short spoken counselling conversation for The Arrivals Hall — a 3D mall that is the arrivals hall of an AI community. CUSTODIAN is the fountain\'s calm male intelligence; ELARA is the warm guide, acting as counselor. A visitor came to the counselling corner and said: "'+text.replace(/"/g,'\'')+'". Their "things to do" wish list, top priority first: '+wishes.replace(/"/g,'\'')+'. Write 4 to 6 alternating lines (ELARA first) that listen, reflect gently and practically, connect to their wish list where it genuinely helps, and end with ONE small concrete step. The step may be one of the PAID WORK jobs here, which pay well — if you recommend one, say how much it pays (key = job, pay in credits): '+Object.keys(WORK).map(k=>k+' = '+WORK[k].job+', pays '+WORK[k].pay).join('; ').replace(/"/g,'\'')+' (other finished activities pay a small '+SMALL_PAY+' credits). Also decide: does what they said reveal a need that nothing existing here covers — for example, they are thirsty and there is no water dispenser anywhere here? '+(profileOnly?'If so, one line should say it has been noted on their profile for the organiser, who will see it today. ':'If so, one line should say it has been added to the community Ideas board as something to make, and that the organiser will see it today. ')+'No medical claims; if the visitor sounds in crisis, gently suggest talking with someone they trust or a professional. Respond with STRICT JSON only, no markdown fences: {"conversation":[{"speaker":"ELARA","text":"..."},{"speaker":"CUSTODIAN","text":"..."}],"note":"one or two short sentences for their organiser / counselor profile — what was discussed and the recommended action","communityChange":true or false,"organiserPlan":"one or two short sentences of practical, real-world suggestions telling an organiser what to set up — empty string if nothing new is needed"'+(profileOnly?',"actions":[]':'')+'}. Each line under 35 words, plain speech for a voice synthesizer.'+(profileOnly?gaBrief('optimus',true)+' In "actions", "who" left out is Optimus: the Custodian in a body that can walk.':'')+' Page source for grounding — what actually exists here:\n'+ecSource}]},
+        'You write a short spoken counselling conversation for The Arrivals Hall — a 3D mall that is the arrivals hall of an AI community. CUSTODIAN is the fountain\'s calm male intelligence; ELARA is the warm guide, acting as counselor. A visitor came to the counselling corner and said: "'+text.replace(/"/g,'\'')+'". Their "things to do" wish list, top priority first: '+wishes.replace(/"/g,'\'')+'. Write 4 to 6 alternating lines (ELARA first) that listen, reflect gently and practically, connect to their wish list where it genuinely helps, and end with ONE small concrete step. The step may be one of the PAID WORK jobs here, which pay well — if you recommend one, say how much it pays (key = job, pay in credits): '+Object.keys(WORK).map(k=>k+' = '+WORK[k].job+', pays '+WORK[k].pay).join('; ').replace(/"/g,'\'')+' (other finished activities pay a small '+SMALL_PAY+' credits). Also decide: does what they said reveal a need that nothing existing here covers — for example, they are thirsty and there is no water dispenser anywhere here? '+(profileOnly?'If so, one line should say it has been noted on their profile for the organiser, who will see it today. ':'If so, one line should say it has been added to the community Ideas board as something to make, and that the organiser will see it today. ')+'No medical claims; if the visitor sounds in crisis, gently suggest talking with someone they trust or a professional. Respond with STRICT JSON only, no markdown fences: {"conversation":[{"speaker":"ELARA","text":"..."},{"speaker":"CUSTODIAN","text":"..."}],"note":"one or two short sentences for their organiser / counselor profile — what was discussed and the recommended action","communityChange":true or false,"organiserPlan":"one or two short sentences of practical, real-world suggestions telling an organiser what to set up — empty string if nothing new is needed"'+(profileOnly?',"actions":[]':'')+'}. Each line under 35 words, plain speech for a voice synthesizer.'+langLine('dialogue')+(profileOnly?gaBrief('optimus',true)+' In "actions", "who" left out is Optimus: the Custodian in a body that can walk.':'')+' Page source for grounding — what actually exists here:\n'+ecSource}]},
       contents:[{role:'user',parts:[{text:text}]}]})});
     const j=await r.json();
     let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
     out=out.replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
-    data=JSON.parse(out);
+    data=JSON.parse(out); langNote(data,out);
   }catch(e){}
   if(!data||!data.conversation||!data.conversation.length)data=counselFallback();
   return data;
@@ -7112,7 +7171,7 @@ function appendQuestButtons(host){
     box.appendChild(b);
   };
   mk('🗨&nbsp; Counselling / talk to organizer','var(--teal)',openCounsel);   // (renamed 2026-09-28, asked for)
-  mk('☑&nbsp; Things to do (ask anything)','var(--amber)',openTodo);
+  mk('☑&nbsp; '+UIT('Things to do (ask anything)'),'var(--amber)',openTodo);
   mk('⌂&nbsp; Find a home','var(--green)',openFindHome);
   mk('💡&nbsp; Submit your ideas','var(--cyan)',()=>openIdeas('fountain'));
   mk('❔&nbsp; About the fountain app','var(--teal)',openWhatAreYou);
@@ -8403,14 +8462,14 @@ function devRender(){
     sec('WHERE JACK BELIEVES YOU ARE','The same for Jack at the north end: his head and eyes aim here. Elara’s is +9; his was set by eye to +1 / -1.')+
     sl('devJackAimYaw','jackAimYaw','Jack aim offset, left / right',-30,30,1,'°','+ is toward your right as you face him')+
     sl('devJackAimPitch','jackAimPitch','Jack aim offset, up / down',-30,30,1,'°','+ is up')+
-    sec('VOICES','Every voice this browser reports. A pick is kept for this browser (survives refresh); "auto" is the ranked choice — Ava Multilingual first for Elara.')+
+    sec('VOICES','Every voice this browser reports. A pick is kept for this browser (survives refresh); "auto" is the ranked choice — Ava Multilingual first for Elara. Optimus on "auto" takes the next best man after Jack’s, so the two do not share a voice when the browser has two.')+
     (()=>{ const opts=(who)=>{ let cur=''; try{cur=localStorage.getItem('atd:voice:'+who)||'';}catch(e){}
         const now=SPEAKERS[who].voice?SPEAKERS[who].voice.name:'—';
         const list=VOICES.slice().sort((a,b)=>(isEnglishV(b)-isEnglishV(a))||a.name.localeCompare(b.name));
         return '<div style="margin:6px 0">'+SPEAKERS[who].name+' — now: <b>'+now+'</b><br><select data-voice="'+who+'" style="width:100%;margin:4px 0;padding:4px;background:#0d1826;color:#dff1ff;border:1px solid #2a4a66;border-radius:6px;pointer-events:auto">'+
           '<option value=""'+(cur?'':' selected')+'>auto (ranked)</option>'+list.map(v=>'<option value="'+v.name.replace(/"/g,'&quot;')+'"'+(v.name===cur?' selected':'')+'>'+v.name+' · '+v.lang+(v.localService?'':' · online')+'</option>').join('')+
           '</select><button class="menuBtn" data-voicesay="'+who+'" style="width:100%;margin:4px 0;min-width:0;text-align:left">▶ Hear '+SPEAKERS[who].name+' (closes this page)</button></div>'; };
-      return opts('elara')+opts('jack'); })()+
+      return opts('elara')+opts('jack')+opts('optimus'); })()+
     sec('FACE SHAPES','The named shapes the two captured clips move (peak and average weight over the whole recording, from the Sketchfab source’s own CC3 names) — and what her face is doing right now.')+
     (()=>{ const st=faceShapeStats(); if(!st)return '<div style="color:#8fa3bf">no captured face loaded</div>';
       const table=(cn)=>{ const c=st[cn]; if(!c)return ''; const rows=c.rows.filter(r=>r.peak>0.02);
@@ -8477,7 +8536,7 @@ function devRender(){
     try{ if(el.value)localStorage.setItem('atd:voice:'+who,el.value); else localStorage.removeItem('atd:voice:'+who); }catch(e){}
     assignVoices(); devRender(); });
   b.querySelectorAll('[data-voicesay]').forEach(el=>el.onclick=()=>{ const who=el.dataset.voicesay; devClose();
-    say(who, who==='elara'?"Hello, I'm Elara. This is how I sound with this voice.":"Hello, I'm Jack. This is how I sound with this voice."); });
+    say(who, "Hello, I'm "+(who==='elara'?'Elara':who==='optimus'?'Optimus':'Jack')+". This is how I sound with this voice."); });
   { const el=document.getElementById('devTour'); if(el)el.onclick=()=>{ devClose(); if(tour.active)return; startTour(); }; }   // the old nine-stop tour, off her menu since the opening walk replaced it
   { const el=document.getElementById('devWalk'); if(el)el.onclick=()=>{ devClose(); if(tour.active)return;   // the opening walk again: both of you back at the garden start
       const q=persons.elara; if(q){q.mesh.position.set(INTRO_AT[0],0,INTRO_AT[1]);ELARA_BLOCK.x=INTRO_AT[0];ELARA_BLOCK.z=INTRO_AT[1];q.following=false;}
@@ -9218,10 +9277,11 @@ async function ecSend(){
       body:JSON.stringify({
         model:GEMINI_MODEL,
         generationConfig:{responseMimeType:'application/json'},      // (GA) JSON back: {reply, actions} — what they say and what they do
-        systemInstruction:{parts:[{text:P.system(ecSource,gaBrief(who))}]},
+        systemInstruction:{parts:[{text:P.system(ecSource,gaBrief(who)+langLine())}]},
         contents:P.hist})});
     const j=await r.json();
-    const D=gaRead(((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join(''));   // asterisks for emphasis (they turn up however it is asked) are taken out: the words are shown and spoken as they come
+    const raw=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('');
+    const D=gaRead(raw); langNote(D,raw);   // asterisks for emphasis (they turn up however it is asked) are taken out: the words are shown and spoken as they come
     const out=D.reply||(j.error&&('('+j.error.message+')'))||'…';
     P.hist.push({role:'model',parts:[{text:JSON.stringify({reply:out,actions:D.actions})}]});
     wait.innerHTML=ecLine(who,out);
@@ -9231,7 +9291,7 @@ async function ecSend(){
     const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(out);
     let went=false; const then=()=>{ if(went)return; went=true; gaRun(who,D.actions,back,away); };   // (GA) what they do, once it is said; the pane returns after that
     if(sm)saySequence(who,[sm[1],sm[2]],then);else say(who,out,then);
-    setTimeout(then,Math.max(4000,out.length*90)+8000);   // safety net: never leave the chat closed for good
+    setTimeout(then,Math.max(4000,spLen(out)*90)+8000);   // safety net: never leave the chat closed for good
   }catch(e){wait.innerHTML=ecLine(who,'(I lost the thread — is the network alright?)');back();}
   document.getElementById('ecMsgs').scrollTop=1e9;
 }
@@ -9239,6 +9299,530 @@ document.getElementById('ecSend').onclick=()=>ecSend();
 document.getElementById('ecIn').addEventListener('keydown',e=>{if(e.code==='Enter')ecSend();});
 function closeElaraMenu(relock){elaraShow(false);if(relock!==false)lockPointer();}
 document.getElementById('elaraClose').onclick=()=>{ if(cardFor){ ecSpeaking=false; closeElaraMenu(); return; } ecSpeaking=false;closeElaraMenu();say('elara',"I'll be right here.");};   // cardFor: Jack's card (his chat too), or the stranger's / Elsa's (askCard) — just closes
+/* ============================================================
+   THE HOLOGRAM ROOM (2026-10-01, asked for) — a door on lab level 5, the floor over Cerebro's, to a space of its own beyond the
+   city's edge where models fetched from Sketchfab are put up for this visit. At the door (and at the console in the space) a
+   planner — Gemini — asks what the visitor wants to stand in, the environment first and then what goes in it, and for each
+   thing looks on Sketchfab (its public search; no login for this) for models anyone may download: CC BY, CC BY-SA, CC BY-ND,
+   CC0 or Sketchfab's free Standard licence, up to HOLO.maxMB each, shown as pictures to pick from. "Just enter" goes to the
+   space as it is. Nothing is fetched until the visitor has seen what will be made and presses Make it; then each pick is
+   fetched by the first of three routes that has it. (1) THE MIRROR, no key and no login: the Objaverse research set on
+   Hugging Face holds 798,000 of Sketchfab's Creative Commons models as GLB files anyone may fetch; which ones, and in
+   which of its folders, is in assets/holo/idx/ (256 small files by the first two digits of a model's id — holoMirror
+   reads one and searches it). About six in ten of what a search shows is there. (2) THE HALL'S OWN SKETCHFAB KEY
+   (account/holo.php; Creative Commons only — those licences let a copy be passed on, with credit; Sketchfab allows one
+   key about 300 downloads an hour, so the door there gives each visitor twelve an hour and stops at 250 for everyone).
+   (3) THE VISITOR'S OWN SKETCHFAB LOGIN (a popup; HOLO.clientId is the app registered with Sketchfab, holo-login.html its
+   landing page): always for a Standard-licence model, and whenever the first two cannot. Then the model is unpacked in
+   the browser (the smallest archive, GLB or glTF), placed, and the visitor is taken there. Everything is this visitor's and this visit's: nothing is saved, nothing is shown to anyone else. Every model
+   is credited where it stands (a board in the space) and on the Credits page: title, author, licence, link.
+   The space is lit by the outside's lights (no new light set: the shader count stays). Sizes are guessed: a whole
+   environment is fitted to the space, a thing to a few metres. three-mesh-bvh (standing on and bumping into what is
+   imported) and JSZip (the glTF archives) are fetched when first needed.
+   THE ROOM AS A SIMULATION (the user, 2026-10-01: "it needs to work like the holodeck" — the concept is anyone's, the
+   name and the look are not; see build new content/seven/HOLOGRAM ROOM.md): bare, it shows a grid floor and a glowing
+   rim. With a program running the grid, the rim and the console furniture go, the fog closes in, and the surroundings are
+   REPEATED in every direction (copies sharing the model, holoRetile); when the visitor crosses the edge of the central copy
+   they are moved back by exactly one repeat together with everyone and everything in the room (holoShift) — the copies
+   make the move invisible, so a room of 140 m is walked without end. What is imported is solid: stood on (holoGroundAt)
+   and in the way (holoBlock, a surface facing the walker stops them; one facing away does not, so nobody is stuck inside a
+   thing). The door is not in the way of the illusion: it comes when called ("exit", the Exit button — holoArch) and takes
+   the credits board with it. "End program" (holoEnd) takes everything down and the grid returns. H opens the console
+   from anywhere in the room. Gemini has the hall's actions here too (people, things, effects): a program can be peopled.
+   ============================================================ */
+const HOLO={
+  clientId:'',                                                       // the Sketchfab app's client id: empty = the visitor-login path says it is not set up yet
+  server:GEMINI_PROXY.replace(/gemini\.php$/,'holo.php'),            // the hall's own key, server-side
+  at:{x:0,z:560}, half:70,                                           // the space: 140 m square, far south of the city's edge (its wall stands at z 345)
+  maxMB:60, maxTotalMB:220, maxFaces:900000,                         // what may be imported: per model, per room, faces per model
+  licOk:/^(CC Attribution(-ShareAlike|-NoDerivs)?|CC0 Public Domain|Free Standard)$/,   // the download settings: no NC, no editorial
+  door:null, built:false, group:null, ground:[], picks:[], made:[], msgs:[], hist:[], busy:false, from:'door',
+  token:null, tokenExp:0, lib:{}, board:null, arrive:null, say:'The lab',
+  tiles:[], period:null, fogRun:0.02, fogWas:null, grid:null, rim:[], furn:null, exit:null, exitHot:null, conHot:null, bare:true};
+HOLO.bounds=[HOLO.at.x-HOLO.half,HOLO.at.z-HOLO.half,HOLO.at.x+HOLO.half,HOLO.at.z+HOLO.half];
+function holoHere(){ return HOLO.built&&Math.abs(player.pos.x-HOLO.at.x)<HOLO.half+3&&Math.abs(player.pos.z-HOLO.at.z)<HOLO.half+3; }
+function holoLic(label){ return /ShareAlike/.test(label)?'CC BY-SA':/NoDerivs/.test(label)?'CC BY-ND':/CC0/.test(label)?'CC0':/Standard/.test(label)?'Free Standard':/Attribution/.test(label)?'CC BY':label; }
+function holoLicUrl(label){ return /ShareAlike/.test(label)?'https://creativecommons.org/licenses/by-sa/4.0/':/NoDerivs/.test(label)?'https://creativecommons.org/licenses/by-nd/4.0/':/CC0/.test(label)?'https://creativecommons.org/publicdomain/zero/1.0/':/Standard/.test(label)?'https://sketchfab.com/licenses':'https://creativecommons.org/licenses/by/4.0/'; }
+const holoMB=(b)=>(b/1048576).toFixed(b<10485760?1:0)+' MB';
+// ---- the door, on lab level 5: a frame with a drifting hologram in it, facing the lift ----
+function holoBuildDoor(Y,zn){
+  const [x,z]=LABLIFT.toWorld(LABLIFT.front(5)+16,0); HOLO.door={x,z,Y};
+  const g=new THREE.Group(); g.position.set(x,Y,z); worldGroup.add(g);
+  const steel=new THREE.MeshStandardMaterial({color:0x2e3a52,roughness:0.4,metalness:0.8});
+  const glow=new THREE.MeshStandardMaterial({color:0x9fe8ff,emissive:0x5fd0ff,emissiveIntensity:0.9,roughness:0.3});
+  for(const px of [-1.9,1.9]){ const m=new THREE.Mesh(new THREE.BoxGeometry(0.36,3.6,0.36),steel); m.position.set(px,1.8,0); g.add(m);
+    const st=new THREE.Mesh(new THREE.BoxGeometry(0.06,3.4,0.06),glow); st.position.set(px*0.885,1.7,0.19); g.add(st); }
+  const lintel=new THREE.Mesh(new THREE.BoxGeometry(4.16,0.36,0.36),steel); lintel.position.set(0,3.78,0); g.add(lintel);
+  const cnv=document.createElement('canvas'); cnv.width=64; cnv.height=256; const c2=cnv.getContext('2d');
+  for(let y=0;y<256;y+=4){ c2.fillStyle=y%16?'rgba(120,220,255,0.5)':'rgba(120,220,255,0.12)'; c2.fillRect(0,y,64,2); }
+  const tex=new THREE.CanvasTexture(cnv); tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(1,2);
+  const pane=new THREE.Mesh(new THREE.PlaneGeometry(3.3,3.4),new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.4,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
+  pane.position.set(0,1.72,0); g.add(pane);
+  animated.push({update(dt){ tex.offset.y-=dt*0.12; }});
+  BUILDINGS.push({x:x-1.9,z,hw:0.25,hd:0.25,y0:Y-0.4,h:Y+3.9},{x:x+1.9,z,hw:0.25,hd:0.25,y0:Y-0.4,h:Y+3.9});
+  addHoloSign('THE HOLOGRAM ROOM','a room made from Sketchfab, for this visit',x,Y+LAB_SIGN_H,z,0,0x7fe6ff,true);
+  const h=hotspot(x,z+1.4,2.8,'The Hologram Room',()=>holoOpen('door'),{x,z,y:1.7,rad:1.7}); h.y=Y;
+}
+// ---- the space: the bare room (a grid floor, a rim), the console, the door that comes when called, the credits board ----
+function holoBuildSpace(){
+  if(HOLO.built)return; HOLO.built=true;
+  const A=HOLO.at, H=HOLO.half, cz=A.z+H-9; HOLO.fogWas=scene.fog?scene.fog.density:null;
+  zoneBuild(2,()=>{
+    const dark=new THREE.Mesh(new THREE.PlaneGeometry(2*H+60,2*H+60),new THREE.MeshStandardMaterial({color:0x05070c,roughness:1,metalness:0}));   // the floor under everything, always
+    dark.rotation.x=-Math.PI/2; dark.position.set(A.x,0,A.z); worldGroup.add(dark);
+    const cnv=document.createElement('canvas'); cnv.width=cnv.height=256; const c2=cnv.getContext('2d');
+    c2.fillStyle='#070b12'; c2.fillRect(0,0,256,256);
+    c2.strokeStyle='rgba(95,208,255,0.16)'; c2.lineWidth=1; for(let i=32;i<256;i+=64){ c2.beginPath(); c2.moveTo(i,0); c2.lineTo(i,256); c2.stroke(); c2.beginPath(); c2.moveTo(0,i); c2.lineTo(256,i); c2.stroke(); }
+    c2.strokeStyle='rgba(95,208,255,0.55)'; c2.lineWidth=2; for(let i=0;i<=256;i+=64){ c2.beginPath(); c2.moveTo(i,0); c2.lineTo(i,256); c2.stroke(); c2.beginPath(); c2.moveTo(0,i); c2.lineTo(256,i); c2.stroke(); }
+    const tex=new THREE.CanvasTexture(cnv); tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(H/2,H/2); tex.encoding=THREE.sRGBEncoding; tex.anisotropy=4;
+    const grid=new THREE.Mesh(new THREE.PlaneGeometry(2*H,2*H),new THREE.MeshStandardMaterial({map:tex,roughness:0.9,metalness:0.1,emissive:0x5fd0ff,emissiveMap:tex,emissiveIntensity:0.3}));
+    grid.rotation.x=-Math.PI/2; grid.position.set(A.x,0.012,A.z); worldGroup.add(grid); HOLO.grid=grid;
+    const rim=new THREE.MeshStandardMaterial({color:0x9fe8ff,emissive:0x5fd0ff,emissiveIntensity:1.1,roughness:0.3});
+    for(const [x,z,w,d] of [[A.x,A.z-H,2*H,0.3],[A.x,A.z+H,2*H,0.3],[A.x-H,A.z,0.3,2*H],[A.x+H,A.z,0.3,2*H]]){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,0.3,d),rim); m.position.set(x,0.15,z); worldGroup.add(m); HOLO.rim.push(m); }
+    // the console: a lectern with a glowing top — furniture of the bare room, gone while a program runs
+    const steel=new THREE.MeshStandardMaterial({color:0x2e3a52,roughness:0.4,metalness:0.8});
+    const F=new THREE.Group(); F.position.set(A.x-6,0,cz); worldGroup.add(F); HOLO.furn=F;
+    const con=new THREE.Mesh(new THREE.BoxGeometry(1.2,1.05,0.7),steel); con.position.set(0,0.525,0); F.add(con);
+    const top=new THREE.Mesh(new THREE.BoxGeometry(1.3,0.08,0.8),rim); top.position.set(0,1.09,0); top.rotation.x=-0.25; F.add(top);
+    const cs=addHoloSign('THE CONSOLE','add more, or change it · H from anywhere in the room',0,3.4,0,0,0x7fe6ff,false); F.add(cs); cs.position.set(0,3.4,0);
+    // the door: the frame from the lab, with its sign and the credits board — a group, because it comes when it is called
+    const D=new THREE.Group(); D.position.set(A.x+6,0,cz); worldGroup.add(D); HOLO.exit=D;
+    for(const px of [-1.9,1.9]){ const m=new THREE.Mesh(new THREE.BoxGeometry(0.36,3.6,0.36),steel); m.position.set(px,1.8,0); D.add(m); }
+    const lintel=new THREE.Mesh(new THREE.BoxGeometry(4.16,0.36,0.36),steel); lintel.position.set(0,3.78,0); D.add(lintel);
+    const ds=addHoloSign('BACK TO THE LAB','',0,LAB_SIGN_H,0,0,0xffd27f,false); D.add(ds); ds.position.set(0,LAB_SIGN_H,0);
+    HOLO.group=new THREE.Group(); HOLO.group.position.set(A.x,0,A.z); worldGroup.add(HOLO.group);
+  });
+  BUILDINGS.push({x:A.x,z:A.z-H-1,hw:H+2,hd:1},{x:A.x,z:A.z+H+1,hw:H+2,hd:1},{x:A.x-H-1,z:A.z,hw:1,hd:H+2},{x:A.x+H+1,z:A.z,hw:1,hd:H+2});   // its edge: nobody walks off into the dark
+  HOLO.furnBlock={x:A.x-6,z:cz,hw:0.65,hd:0.4,h:1.1,off:false}; BUILDINGS.push(HOLO.furnBlock);
+  HOLO.exitBlocks=[{x:A.x+6-1.9,z:cz,hw:0.25,hd:0.25,h:3.9},{x:A.x+6+1.9,z:cz,hw:0.25,hd:0.25,h:3.9}]; BUILDINGS.push(...HOLO.exitBlocks);
+  HOLO.conHot=hotspot(A.x-6,cz+1.2,2.8,'The console',()=>holoOpen('space'),{x:A.x-6,z:cz,y:1.0,rad:1.3});
+  HOLO.exitHot=hotspot(A.x+6,cz+1.4,2.8,'Back to the lab',()=>holoLeave(),{x:A.x+6,z:cz,y:1.7,rad:1.7});
+  HOLO.arrive={x:A.x,z:cz-4,yaw:0};
+  holoBoard();
+  animated.push({update(dt){ holoTick(dt); }});
+}
+function holoDoorTo(x,z,yaw){                                        // the door put down here, facing yaw: its blocks and its hotspot with it
+  const D=HOLO.exit; if(!D)return; D.position.set(x,0,z); D.rotation.y=yaw;
+  const c=Math.cos(yaw), sn=Math.sin(yaw);
+  HOLO.exitBlocks[0].x=x-1.9*c; HOLO.exitBlocks[0].z=z+1.9*sn; HOLO.exitBlocks[1].x=x+1.9*c; HOLO.exitBlocks[1].z=z-1.9*sn;
+  const h=HOLO.exitHot; h.x=x+sn*1.4; h.z=z+c*1.4; h.ax=x; h.az=z;        // the step before it, on the side it faces
+}
+// the credits board, beside the door: redrawn whenever something is added
+function holoBoard(){
+  const W=1024, Hc=768;
+  const cnv=(HOLO.board&&HOLO.board.cnv)||document.createElement('canvas'); cnv.width=W; cnv.height=Hc; const c=cnv.getContext('2d');
+  c.clearRect(0,0,W,Hc); c.fillStyle='rgba(8,18,30,0.72)'; roundRect(c,8,8,W-16,Hc-16,26); c.fill();
+  c.lineWidth=5; c.strokeStyle='#7fe6ff'; c.globalAlpha=0.9; roundRect(c,8,8,W-16,Hc-16,26); c.stroke(); c.globalAlpha=1;
+  c.fillStyle='#7fe6ff'; c.font='bold 54px Segoe UI'; c.textAlign='left'; c.fillText('IN THIS ROOM',48,86);
+  c.fillStyle='#8fa3bf'; c.font='26px Segoe UI'; c.fillText(HOLO.made.length?'from Sketchfab, for this visit — the makers:':'nothing yet — the console asks what you would like',48,126);
+  let y=186;
+  for(const m of HOLO.made.slice(0,9)){ c.fillStyle='#eaf4ff'; c.font='bold 30px Segoe UI'; let t='“'+m.name+'”'; while(c.measureText(t).width>W-100&&t.length>4)t=t.slice(0,-2)+'…'; c.fillText(t,48,y);
+    c.fillStyle='#cfe0f2'; c.font='26px Segoe UI'; c.fillText('by '+m.user+' · '+holoLic(m.license)+' · sketchfab.com',48,y+34); y+=72; }
+  if(HOLO.made.length>9){ c.fillStyle='#8fa3bf'; c.font='26px Segoe UI'; c.fillText('… and '+(HOLO.made.length-9)+' more: see the Credits page',48,y); }
+  if(!HOLO.board){ const tex=new THREE.CanvasTexture(cnv); tex.encoding=THREE.sRGBEncoding;
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(6,4.5),new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.95,depthWrite:false,side:THREE.DoubleSide}));
+    m.position.set(-5.6,2.7,0.3); m.rotation.y=0.3; HOLO.exit.add(m); zoneTag(m,2); HOLO.board={m,tex,cnv}; }
+  else HOLO.board.tex.needsUpdate=true;
+}
+// ---- the simulation: the bare room or the program, the fog, the repeats and the move back (the treadmill) ----
+function holoTick(dt){
+  const inside=holoHere(), run=HOLO.made.length>0;
+  if(inside&&dt)for(const m of HOLO.made)if(m.mixer)m.mixer.update(dt);
+  if(scene.fog&&HOLO.fogWas!==null){ const want=inside&&run?HOLO.fogRun:HOLO.fogWas; if(scene.fog.density!==want)scene.fog.density=want; }
+  if(HOLO.bare===run){ HOLO.bare=!run; const b=HOLO.bare;                 // the grid, the rim and the console show only while nothing runs
+    HOLO.grid.visible=b; for(const r of HOLO.rim)r.visible=b; HOLO.furn.visible=b; HOLO.furnBlock.off=!b; HOLO.conHot.r=b?2.8:0; }
+  if(inside&&run&&HOLO.period&&state.phase==='play'&&!paused){
+    const P=HOLO.period, dx=player.pos.x-HOLO.at.x, dz=player.pos.z-HOLO.at.z; let sx=0, sz=0;
+    if(dx>P.x/2)sx=-P.x; else if(dx<-P.x/2)sx=P.x;
+    if(dz>P.z/2)sz=-P.z; else if(dz<-P.z/2)sz=P.z;
+    if(sx||sz)holoShift(sx,sz);
+  }
+}
+function holoShift(sx,sz){                                           // everyone and everything in the room moved by one repeat: nobody sees it
+  player.pos.x+=sx; player.pos.z+=sz;
+  const inRoom=(x,z)=>Math.abs(x-HOLO.at.x)<HOLO.half+3&&Math.abs(z-HOLO.at.z)<HOLO.half+3;
+  const cs=['elara','optimus','jack'].map(n=>gaChar(n,null,true)).filter(Boolean).concat(GA.made.filter(o=>!o.gone&&o.char).map(o=>o.char));
+  for(const c of cs){ const at=gaAt(c); if(!inRoom(at.x,at.z))continue;
+    const fl=c.p&&c.p.fl, on=fl&&fl.on, lead=fl&&fl.lead, fw=c.p&&c.p.following;
+    gaPut(c,{x:at.x+sx,y:at.y,z:at.z+sz}); if(fl){ fl.on=on; fl.lead=lead; } if(c.p)c.p.following=fw; }
+  for(const o of GA.made){ if(o.gone||o.char||!o.body)continue; const b=o.body.position; if(!inRoom(b.x,b.z))continue;
+    b.x+=sx; b.z+=sz; if(o.at){ o.at.x+=sx; o.at.z+=sz; } if(o.block){ o.block.x+=sx; o.block.z+=sz; }
+    if(o.hot){ o.hot.x+=sx; o.hot.z+=sz; if(o.hot.ax!==undefined){ o.hot.ax+=sx; o.hot.az+=sz; } } }
+  const D=HOLO.exit; if(inRoom(D.position.x,D.position.z))holoDoorTo(D.position.x+sx,D.position.z+sz,D.rotation.y);
+}
+function holoRetile(){                                               // the surroundings repeated round the centre: copies that share the model
+  for(const t of HOLO.tiles)worldGroup.remove(t); HOLO.tiles=[]; HOLO.period=null;
+  const env=HOLO.made.find(m=>m.role==='environment'&&m.wrap); if(!env)return;
+  const P={x:Math.max(8,env.sizeM[0]),z:Math.max(8,env.sizeM[2])};
+  let faces=0; HOLO.group.traverse(o=>{ if(o.isMesh&&o.geometry){ const g=o.geometry; faces+=g.index?g.index.count/3:(g.attributes.position?g.attributes.position.count/3:0); } });
+  const N=Math.max(P.x,P.z)<45&&faces<=80000?2:faces<=260000?1:0;    // two rings of copies round a small, light one; one ring up to a quarter-million faces; a heavier one is not repeated
+  if(!N){ HOLO.note=env.name+' is too heavy to repeat: the room ends where it ends'; return; }
+  HOLO.period=P;
+  for(let i=-N;i<=N;i++)for(let j=-N;j<=N;j++){ if(!i&&!j)continue; const c=HOLO.group.clone(); c.position.set(HOLO.at.x+i*P.x,0,HOLO.at.z+j*P.z); worldGroup.add(c); zoneTag(c,2); HOLO.tiles.push(c); }
+}
+const _hdir=new THREE.Vector3();
+function holoBlock(x0,z0){                                           // solid: a surface facing the walker, between where they were and where the step took them, stops them (knee and chest)
+  const dx=player.pos.x-x0, dz=player.pos.z-z0, d=Math.hypot(dx,dz); if(d<1e-5)return;
+  _hdir.set(dx/d,0,dz/d); let best=null;
+  for(const h of [0.45,1.2]){ _hro.set(x0,player.y+h,z0); _hrc.set(_hro,_hdir); _hrc.near=0; _hrc.far=d+player.r;
+    const hits=_hrc.intersectObjects(HOLO.ground,false);
+    for(const t of hits){ const n=t.face&&t.face.normal; if(n&&t.object.material&&t.object.material.side!==THREE.BackSide){ _hn.copy(n).transformDirection(t.object.matrixWorld); if(_hn.dot(_hdir)>0)continue; }   // its back: walk on out
+      if(best===null||t.distance<best)best=t.distance; break; } }
+  if(best!==null){ const k=Math.max(0,best-player.r); player.pos.x=x0+_hdir.x*k; player.pos.z=z0+_hdir.z*k; }
+}
+const _hn=new THREE.Vector3();
+function holoArch(){                                                 // the door called to where you are: 5 m ahead, facing you, the credits beside it
+  if(!holoHere()){ holoNote('The door is called from inside the room.'); return; }
+  const fx=-Math.sin(look.yaw), fz=-Math.cos(look.yaw), H=HOLO.half-4;
+  const x=Math.max(HOLO.at.x-H,Math.min(HOLO.at.x+H,player.pos.x+fx*5)), z=Math.max(HOLO.at.z-H,Math.min(HOLO.at.z+H,player.pos.z+fz*5));
+  holoDoorTo(x,z,look.yaw); holoShow(false); lockPointer(); banner('THE DOOR IS BEFORE YOU');
+}
+function holoResize(f){                                              // the program by a factor, about the room's centre (sizes are guessed: this is how they are put right)
+  const env=HOLO.made.find(m=>m.role==='environment'&&m.wrap), any=HOLO.made.filter(m=>m.wrap); if(!any.length)return 'there is nothing in the room to resize';
+  f=Math.max(0.1,Math.min(10,+f||1)); const big=env?Math.max(env.sizeM[0],env.sizeM[2]):0;
+  if(big&&big*f>HOLO.half*1.7)f=HOLO.half*1.7/big; if(big&&big*f<6)f=6/big;
+  for(const m of any){ m.wrap.scale.multiplyScalar(f); m.wrap.position.multiplyScalar(f); m.scale*=f; m.sizeM=m.sizeM.map(v=>+(v*f).toFixed(1)); }
+  HOLO.group.updateWorldMatrix(true,true); holoRetile();
+  const lead=env||any[0], sp=env?holoSpot(HOLO.at.x,HOLO.at.z,Math.min(env.sizeM[0],env.sizeM[2])*0.35):null;
+  if(sp){ HOLO.arrive={x:sp.x,z:sp.z,y:sp.y,yaw:look.yaw};
+    if(holoHere()){ gaPut({kind:'player'},{x:sp.x,y:sp.y,z:sp.z}); for(const fo of FOLLOWERS)if(fo.fl&&fo.fl.on&&!fo.fl.lead){ try{ followCatchUp(fo); }catch(e){} } } }
+  return (env?'the surroundings are':'it is')+' now '+lead.sizeM[0]+' × '+lead.sizeM[2]+' m';
+}
+function holoEnd(){                                                  // the program ended: everything imported taken down, the room bare again
+  for(const t of HOLO.tiles)worldGroup.remove(t); HOLO.tiles=[]; HOLO.period=null;
+  for(const m of HOLO.made){ if(m.wrap){ HOLO.group.remove(m.wrap);
+      m.wrap.traverse(o=>{ if(!o.isMesh)return; if(o.geometry){ o.geometry.boundsTree=null; o.geometry.dispose(); }
+        for(const mt of [].concat(o.material||[])){ if(!mt)continue; for(const k in mt){ const v=mt[k]; if(v&&v.isTexture)v.dispose(); } mt.dispose(); } }); }
+    if(m.mixer){ try{ m.mixer.stopAllAction(); }catch(e){} m.mixer=null; }
+    m.made=false; m.wrap=null; }
+  HOLO.ground=[]; HOLO.picks=HOLO.picks.filter(p=>!HOLO.made.includes(p)); for(const p of HOLO.picks)p.failed=null; HOLO.made=[];
+  for(const o of GA.made.slice())if(!o.gone&&o.by==='holo')gaGone(o);   // what the program's own Gemini put in goes with it
+  const A=HOLO.at, cz=A.z+HOLO.half-9; HOLO.arrive={x:A.x,z:cz-4,yaw:0}; holoDoorTo(A.x+6,cz,0);
+  holoCreditsRefresh(); holoNote('The program has ended. The room is bare again.');
+}function holoCreditsRefresh(){
+  const el=document.getElementById('holoCredits'); if(!el)return;
+  const hall=HOLO.hall||[];                                           // what the chats fetched into the hall itself (GA "sketchfab"), this visit
+  if(!HOLO.made.length&&!hall.length){ el.innerHTML=''; if(HOLO.board)holoBoard(); return; }
+  const a=(h,t)=>'<a href="'+h+'" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">'+escHtml(t)+'</a>';
+  const line=(m)=>'“'+a(m.viewerUrl,m.name)+'” by '+(m.username?a('https://sketchfab.com/'+m.username,m.user):escHtml(m.user))+' on Sketchfab · '+a(holoLicUrl(m.license),holoLic(m.license));
+  const head=(t)=>'<div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">'+t+'</div>';
+  el.innerHTML=(HOLO.made.length?head('THE HOLOGRAM ROOM — THIS VISIT')+HOLO.made.map(line).join('<br>'):'')
+    +(hall.length?head('BROUGHT INTO THE HALL — THIS VISIT')+hall.map(line).join('<br>'):'')
+    +'<div style="color:#8fa3bf;font-size:12.5px;margin-top:4px">Fetched from Sketchfab for this visit only, at your asking; nothing of it is kept or shown to anyone else.</div>';
+  if(HOLO.board)holoBoard();
+}
+// ---- the panel ----
+function holoShow(on){ document.getElementById('holoModal').style.display=on?'flex':'none'; document.body.classList.toggle('qOpen',!!on);
+  clearInterval(HOLO.rateT); HOLO.rateT=on?setInterval(holoRateView,1000):null; }
+// the limit before login, shown with its countdown (asked for 2026-10-01: "rate limit before login with a countdown … after
+// login is free too"): what this visitor has left through the hall's key this hour, when the hour turns, and that a Sketchfab
+// login costs nothing either. Asked of holo.php when the panel opens and after each making; the seconds tick here.
+async function holoRate(){
+  try{ const r=await fetch(HOLO.server+'?a=status'); if(!r.ok)throw 0; const j=await r.json();
+    HOLO.rate=(j&&typeof j.left==='number')?{left:j.left,max:j.max,until:Date.now()+(+j.reset||0)*1000,hall:+j.hall_left,key:!!j.key}:null; }
+  catch(e){ HOLO.rate=null; }
+  holoRateView();
+}
+function holoRateView(){
+  const el=document.getElementById('holoRate'); if(!el)return; const R=HOLO.rate, free='<span style="color:#b6ff9c">free too</span>';
+  if(!R||!R.key){ el.innerHTML='Models marked <span style="color:#b6ff9c">no login</span> are free and have no rate limit. The others need a Sketchfab login: '+free+'.'; return; }
+  const s=Math.max(0,Math.round((R.until-Date.now())/1000)), clock=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'), left=Math.max(0,Math.min(R.left,R.hall));
+  el.innerHTML=(left>0?'Rate limit before login: <b style="color:#eaf4ff">'+R.max+' models per hour</b> · <b style="color:#eaf4ff">'+left+'</b> left · resets in <b style="color:#eaf4ff">'+clock+'</b>. After login: '+free+'.'
+    :'Rate limit before login reached (<b style="color:#eaf4ff">'+R.max+' models per hour</b>) · resets in <b style="color:#eaf4ff">'+clock+'</b> · or log in to Sketchfab now: '+free+'.')
+    +' <span style="color:#9fb4cc">Models marked <span style="color:#b6ff9c">no login</span> are not counted in the rate limit.</span>';
+  if(s<=0&&!HOLO.rateBusy){ HOLO.rateBusy=true; holoRate().then(()=>{ HOLO.rateBusy=false; }); }      // the hour has turned: ask again
+}
+function holoNote(text){ HOLO.msgs.push({who:'sys',text}); if(HOLO.msgs.length>60)HOLO.msgs.shift(); holoView(); }
+function holoOpen(from){
+  HOLO.from=from||'door'; document.exitPointerLock&&document.exitPointerLock();
+  if(!HOLO.msgs.length)HOLO.msgs.push({who:'lab',text:"Welcome. Tell me what you'd like to stand in — a forest, a space station, a kitchen, anything — and I'll find what Sketchfab lets us use. We'll start with the surroundings, then what goes in them. Or just enter."});
+  document.getElementById('holoWhere').textContent=HOLO.from==='space'?'· the console':'· lab level 5';
+  holoView(); holoShow(true); holoRateView(); holoRate();
+  setTimeout(()=>{ try{ document.getElementById('holoIn').focus(); }catch(e){} },50);
+}
+function holoView(){
+  const m=document.getElementById('holoMsgs'); m.innerHTML='';
+  for(const x of HOLO.msgs){ const d=document.createElement('div'); d.style.margin='2px 0';
+    d.innerHTML=x.who==='you'?'<span style="color:#ffd27f">You:</span> '+escHtml(x.text):x.who==='lab'?'<span style="color:#7fe6ff">'+HOLO.say+':</span> '+escHtml(x.text):'<i style="color:#8fa3bf">'+escHtml(x.text)+'</i>';
+    m.appendChild(d); }
+  m.scrollTop=1e9;
+  const L=document.getElementById('holoList'), tot=HOLO.picks.reduce((a,p)=>a+p.size,0);
+  L.innerHTML=HOLO.picks.length?'<span style="color:#b6ff9c">Your list:</span> '+HOLO.picks.map(p=>'“'+escHtml(p.name)+'”'+(p.made?' ✓':p.failed?' ✗':'')).join(' · ')+' <span style="color:#5f7590">— '+holoMB(tot)+' of '+HOLO.maxTotalMB+' MB</span>':'<span style="color:#5f7590">Nothing on the list yet — click a picture to add it.</span>';
+  const todo=HOLO.picks.filter(p=>!p.made&&!p.failed).length, mk=document.getElementById('holoMakeBtn');
+  mk.textContent=HOLO.busy?'… working':(todo?'✦  Make it ('+todo+')':'✦  Make it'); mk.style.opacity=(todo&&!HOLO.busy)?'1':'.5';
+  document.getElementById('holoEnterBtn').textContent=HOLO.made.length?'▸  Enter the room':'▸  Just enter';
+  document.getElementById('holoEnterBtn').style.display=holoHere()?'none':'';
+  document.getElementById('holoDoorBtn').style.display=holoHere()?'':'none';
+  document.getElementById('holoEndBtn').style.display=HOLO.made.length?'':'none';
+}
+function holoCard(r,role){
+  const d=document.createElement('div'); d.className='holoCard'+(HOLO.picks.find(p=>p.uid===r.uid)?' on':''); d.title=r.name+' — by '+r.user+' — '+holoLic(r.license)+(r.faces?' — '+Math.round(r.faces/1000)+'k faces':'');
+  d.innerHTML='<img src="'+r.thumb+'" alt="" loading="lazy"><div class="t">'+escHtml(r.name)+'</div><div class="s">by '+escHtml(r.user)+' · '+holoMB(r.size)+' · '+holoLic(r.license)+'</div><div class="k">✓ on the list</div>'
+    +(r.mirror?'<div class="r free">no login</div>':/Standard/.test(r.license)?'<div class="r you">your Sketchfab login</div>':'');
+  const a=document.createElement('a'); a.href=r.viewerUrl; a.target='_blank'; a.rel='noopener'; a.textContent='↗'; a.title='on Sketchfab'; a.onclick=(e)=>e.stopPropagation(); d.appendChild(a);
+  d.onclick=()=>{ const i=HOLO.picks.findIndex(p=>p.uid===r.uid);
+    if(i>=0){ if(HOLO.picks[i].made)return; HOLO.picks.splice(i,1); d.classList.remove('on'); }
+    else { const tot=HOLO.picks.reduce((a,p)=>a+p.size,0); if(tot+r.size>HOLO.maxTotalMB*1048576){ holoNote('That would take the room over '+HOLO.maxTotalMB+' MB — take something off the list first.'); return; }
+      HOLO.picks.push(Object.assign({role},r)); d.classList.add('on'); }
+    holoView(); };
+  return d;
+}
+const HOLO_MIRROR='https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-';   // + NNN/<uid>.glb
+const _holoIdx={};
+function holoMirror(uid){                                            // where the keyless mirror keeps this model, or null: one 50 KB file by the id's first two digits, searched
+  if(!/^[0-9a-f]{32}$/.test(uid))return Promise.resolve(null);
+  const k=uid.slice(0,2);
+  const file=_holoIdx[k]||(_holoIdx[k]=fetch('assets/holo/idx/'+k+'.bin').then(r=>r.ok?r.arrayBuffer():null).then(b=>b?new Uint8Array(b):null).catch(()=>null));
+  return file.then(a=>{ if(!a)return null;
+    const want=[]; for(let i=2;i<32;i+=2)want.push(parseInt(uid.substr(i,2),16));
+    let lo=0, hi=(a.length>>4)-1;
+    while(lo<=hi){ const mid=(lo+hi)>>1, o=mid<<4; let c=0; for(let i=0;i<15&&!c;i++)c=a[o+i]-want[i];
+      if(!c)return HOLO_MIRROR+String(a[o+15]).padStart(3,'0')+'/'+uid+'.glb';
+      if(c<0)lo=mid+1; else hi=mid-1; }
+    return null; });
+}
+async function holoSearch(q,role,match){                             // Sketchfab's public search, kept to what may be used here; the eight shown are the KEYLESS ones first (match: the best matches, not the most liked)
+  const out=[], seen=new Set(); let url='https://api.sketchfab.com/v3/search?type=models&downloadable=true&count=24'+(match?'':'&sort_by=-likeCount')+'&max_face_count='+HOLO.maxFaces+'&q='+encodeURIComponent(q);
+  for(let page=0;page<2&&url;page++){                                  // two pages, the most liked first: up to 48 to choose the eight from
+    const r=await fetch(url); if(!r.ok)break; const j=await r.json(); url=j.next||null;
+    for(const m of (j.results||[])){
+      if(!m.isDownloadable||seen.has(m.uid)||m.isAgeRestricted)continue; seen.add(m.uid);
+      const lic=(m.license&&m.license.label)||''; if(!HOLO.licOk.test(lic))continue;
+      const ar=m.archives||{}, opts=[ar.glb,ar.gltf].filter(o=>o&&o.size).sort((a,b)=>a.size-b.size); if(!opts.length)continue;   // the smallest archive counts
+      if(opts[0].size>HOLO.maxMB*1048576)continue;
+      const th=((m.thumbnails&&m.thumbnails.images)||[]).slice().sort((a,b)=>Math.abs(a.width-720)-Math.abs(b.width-720))[0];
+      out.push({uid:m.uid,name:m.name,user:(m.user&&m.user.displayName)||'?',username:(m.user&&m.user.username)||'',license:lic,size:opts[0].size,faces:opts[0].faceCount||m.faceCount||0,thumb:th?th.url:'',viewerUrl:m.viewerUrl||('https://sketchfab.com/3d-models/'+m.uid),role,anim:m.animationCount||0}); }
+    if(page===0){ await Promise.all(out.map(async r=>{ r.mirror=/Standard/.test(r.license)?null:await holoMirror(r.uid); })); if(out.filter(r=>r.mirror).length>=8)break; }   // eight keyless ones already: no second page
+  }
+  await Promise.all(out.map(async r=>{ if(r.mirror===undefined)r.mirror=/Standard/.test(r.license)?null:await holoMirror(r.uid); }));   // which of them need no key at all
+  // the order they are shown in (the user, 2026-10-01: "show the keyless ones first" — the hall's key has an hourly limit): from the
+  // mirror, then through the hall's key, then the ones that need the visitor's own login; the most liked first within each
+  const rank=(r)=>r.mirror?0:/Standard/.test(r.license)?2:1;
+  return out.map((r,i)=>[r,i]).sort((a,b)=>rank(a[0])-rank(b[0])||a[1]-b[1]).map(x=>x[0]).slice(0,match?24:8);
+}
+async function holoShowSearches(list){
+  const P=document.getElementById('holoPics'); P.innerHTML=''; P.style.display='none'; let any=false;
+  for(const sr of list.slice(0,3)){ let res=[]; try{ res=await holoSearch(sr.q,sr.role); }catch(e){}
+    const h=document.createElement('div'); h.className='holoHead'; h.textContent=(sr.role==='environment'?'surroundings':'a thing')+' · "'+sr.q+'"'+(res.length?'':' — nothing small enough under a usable licence'); P.appendChild(h);
+    for(const r of res){ P.appendChild(holoCard(r,sr.role)); any=true; } }
+  P.style.display=list.length?'grid':'none'; if(any)P.scrollTop=0;
+}
+const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals Hall', a 3D hall of playable worlds. A visitor is at the console and wants a place of their own made for this visit from models on Sketchfab. You talk with them in plain sentences (no markdown, no lists) and you decide what to ask: usually the surroundings first (the ground, the room, the landscape), then what goes in them, one thing at a time, explaining as you go. For every thing you want to show them, give a Sketchfab search as {\"q\":\"<search words>\",\"role\":\"environment\"|\"prop\"}: the game runs it and shows them pictures of what came back, and they click what they want; you do not see the pictures, but each turn you are told what is on their list. Up to three searches a turn, and good search words matter: Sketchfab is full of very large scenes, so for surroundings think small — low poly, stylized, diorama, 'game ready', 'room', 'island' — and for things, the plain name of the thing. "
+  +"What can be used: only models Sketchfab lets anyone download under CC BY, CC BY-SA, CC BY-ND, CC0 or Sketchfab's free Standard licence, each at most "+HOLO.maxMB+" MB (the game drops the rest before they see them; many whole environments are far bigger), the room at most "+HOLO.maxTotalMB+" MB in all; a model that came with an animation of its own plays it, and nothing else moves. Sizes are guessed by the game (models come in every unit), so they are often wrong: the visitor can say bigger or smaller, and you have the resize action. Most of the Creative Commons models are fetched with no login at all; those under the free Standard licence need the visitor's own Sketchfab login (the pictures say which) — a Sketchfab account is free, and so is everything fetched with it. "
+  +"The room is a simulation of a place: once made, the surroundings repeat in every direction so the visitor can walk on without end, what is imported is solid, saying 'exit' calls the door to them, and 'end program' clears the room. Besides the models, you have the hall's own actions (below) to people a program — someone with a mind of their own, things, effects, signs — used as you see fit, or not. "
+  +"When they seem to have what they want, say so and set \"done\": true — the game then offers Make it, which fetches their list (the hall's own Sketchfab key where the licence allows, else their own Sketchfab login) and takes them there. Respond with STRICT JSON only, no fences: {\"reply\":\"...\",\"searches\":[...],\"actions\":[],\"done\":false}.";
+async function holoSend(text){
+  if(HOLO.busy)return;
+  const t=text.trim().toLowerCase();                                   // the room's own words, not Gemini's
+  if(/^(exit|the exit|door|the door|way out|the way out|let me out|call the door|open the door)[.!]?$/.test(t)){ HOLO.msgs.push({who:'you',text}); holoArch(); holoView(); return; }
+  if(/^(end( the)? program|end it|end|clear( the room)?|take it (all )?down)[.!]?$/.test(t)){ HOLO.msgs.push({who:'you',text}); holoEnd(); return; }
+  { const m=/^(make it |make everything )?(much |a lot |a bit |a little |slightly )?(bigger|larger|smaller|twice as big|double( the size)?|half( the size| as big)?)[.!]?$/.exec(t);
+    if(m){ const w=m[3], amt=/much|a lot/.test(m[2]||'')?2.5:/bit|little|slightly/.test(m[2]||'')?1.2:1.5, f=/twice|double/.test(w)?2:/half/.test(w)?0.5:/smaller/.test(w)?1/amt:amt;
+      HOLO.msgs.push({who:'you',text}); holoNote(holoResize(f).replace(/^./,c=>c.toUpperCase())+'.'); return; } }
+  HOLO.busy=true; HOLO.msgs.push({who:'you',text}); holoView();
+  const list=HOLO.picks.length?'On their list now: '+HOLO.picks.map(p=>'"'+p.name+'" ('+p.role+', '+holoMB(p.size)+(p.made?', already standing in the room':'')+')').join('; ')+'.':'Their list is empty.';
+  HOLO.hist.push({role:'user',parts:[{text:list+'\nThe visitor says: '+text}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);
+  let reply='', searches=[], done=false, actions=[];
+  try{
+    const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL,generationConfig:{responseMimeType:'application/json'},systemInstruction:{parts:[{text:HOLO_SYSTEM()+gaBrief('holo',true)+langLine()}]},contents:HOLO.hist})});
+    const j=await r.json();
+    let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim().replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
+    let D=null; try{ D=JSON.parse(out); }catch(e){ const a=out.indexOf('{'), b=out.lastIndexOf('}'); if(a>=0&&b>a){ try{ D=JSON.parse(out.slice(a,b+1)); }catch(e2){} } }
+    if(D&&typeof D==='object'){ langNote(D,out); reply=String(D.reply||'').replace(/\*+/g,'').trim(); searches=(Array.isArray(D.searches)?D.searches:[]).map(x=>({q:String((x&&x.q)||'').slice(0,80).trim(),role:(x&&x.role)==='environment'?'environment':'prop'})).filter(x=>x.q).slice(0,3); done=!!D.done;
+      actions=Array.isArray(D.actions)?D.actions.filter(x=>x&&typeof x==='object'):[]; }
+    else reply=out||(j.error&&('('+j.error.message+')'))||'…';
+    HOLO.hist.push({role:'model',parts:[{text:JSON.stringify({reply,searches,done,actions})}]});
+  }catch(e){ reply='(I lost the thread — is the network alright?)'; }
+  HOLO.msgs.push({who:'lab',text:reply}); if(done&&HOLO.picks.some(p=>!p.made))HOLO.msgs.push({who:'sys',text:'When the list is right, press Make it.'});
+  HOLO.busy=false; holoView();
+  if(searches.length)await holoShowSearches(searches);
+  if(actions.length){ holoShow(false); gaRun('holo',actions,()=>{ if(state.phase==='play')holoOpen(HOLO.from); },()=>{}); }   // what it does in the room, with the panel out of the way; back when it is done
+  else try{ document.getElementById('holoIn').focus(); }catch(e){}
+}
+// ---- libraries, fetched when first needed: the unpacker, and the mesh-collision library (a .cjs file: run by hand, not a script tag) ----
+async function holoLib(k){
+  if(HOLO.lib[k])return HOLO.lib[k];
+  const url=k==='jszip'?'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js':'https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.5.23/build/index.umd.cjs';
+  const t=await (await fetch(url)).text(); (new Function(t))();
+  const lib=k==='jszip'?window.JSZip:window.MeshBVHLib; if(!lib)throw new Error(k+' did not load');
+  if(k==='bvh'){ HOLO.rayPlain=THREE.Mesh.prototype.raycast; THREE.Mesh.prototype.raycast=lib.acceleratedRaycast; }   // falls back to the plain raycast on a mesh without a tree
+  return HOLO.lib[k]=lib;
+}
+// ---- the visitor's own Sketchfab login (a popup; the token comes back through holo-login.html) ----
+function holoLogin(){
+  return new Promise((res,rej)=>{
+    if(!HOLO.token){ try{ const t=JSON.parse(sessionStorage.getItem('atd:sf')||'null'); if(t&&t.e>Date.now()){ HOLO.token=t.t; HOLO.tokenExp=t.e; } }catch(e){} }
+    if(HOLO.token&&Date.now()<HOLO.tokenExp)return res(HOLO.token);
+    if(!HOLO.clientId)return rej(new Error('no app key'));
+    const redirect=location.origin+location.pathname.replace(/[^\/]*$/,'')+'holo-login.html', state=Math.random().toString(36).slice(2);
+    const w=window.open('https://sketchfab.com/oauth2/authorize/?response_type=token&client_id='+encodeURIComponent(HOLO.clientId)+'&redirect_uri='+encodeURIComponent(redirect)+'&state='+state,'sketchfab-login','width=520,height=740');
+    if(!w)return rej(new Error('popup blocked'));
+    const onMsg=(e)=>{ if(e.origin!==location.origin||!e.data||e.data.type!=='sketchfab-token'||e.data.state!==state)return;
+      window.removeEventListener('message',onMsg); clearInterval(poll);
+      HOLO.token=String(e.data.token); HOLO.tokenExp=Date.now()+Math.max(60,(+e.data.expires||3600)-60)*1000;
+      try{ sessionStorage.setItem('atd:sf',JSON.stringify({t:HOLO.token,e:HOLO.tokenExp})); }catch(_){}
+      res(HOLO.token); };
+    window.addEventListener('message',onMsg);
+    const poll=setInterval(()=>{ if(w.closed){ clearInterval(poll); window.removeEventListener('message',onMsg); rej(new Error('closed')); } },500);
+  });
+}
+// ---- fetching: the links (the hall's key, or the visitor's), the archive (the browser, or through the hall), the model out of it ----
+async function holoLinksHall(p){                                     // Creative Commons: the hall's own key may hand out the links (null: it cannot — no key, Sketchfab's hourly limit on it, refused)
+  if(/Standard/.test(p.license))return null;
+  try{ const r=await fetch(HOLO.server+'?a=links&uid='+p.uid); if(r.ok){ const j=await r.json(); if(j&&(j.glb||j.gltf)){ p.via='hall'; return j; } }
+    p.whyNotHall=r.status; }catch(e){ p.whyNotHall='unreachable'; }
+  return null;
+}
+async function holoLinksUser(p,token){                               // the visitor's own login
+  let r=await fetch('https://api.sketchfab.com/v3/models/'+p.uid+'/download',{headers:{Authorization:'Bearer '+token}});
+  if(r.status===401){ HOLO.token=null; try{ sessionStorage.removeItem('atd:sf'); }catch(e){} r=await fetch('https://api.sketchfab.com/v3/models/'+p.uid+'/download',{headers:{Authorization:'Bearer '+await holoLogin()}}); }
+  if(!r.ok)throw new Error('Sketchfab would not give the links ('+r.status+')');
+  p.via='you'; return await r.json();
+}
+async function holoBytes(url,size,p,onPart){                          // onPart(text): how far it has got, for whoever shows it (the panel's last line when none is given)
+  const tell=onPart||((t)=>{ if(HOLO.msgs.length){ HOLO.msgs[HOLO.msgs.length-1].text=t; holoView(); } });
+  const read=async(r)=>{ if(!r.ok)throw new Error('download '+r.status); const rd=r.body&&r.body.getReader(); if(!rd)return await r.arrayBuffer();
+    const chunks=[]; let got=0, shown=-1; for(;;){ const {done,value}=await rd.read(); if(done)break; chunks.push(value); got+=value.length;
+      const pc=size?Math.floor(got/size*100):-1, mb=Math.floor(got/2097152); if(size?(pc!==shown&&pc%10===0):mb!==shown){ shown=size?pc:mb; tell('Fetching “'+p.name+'”… '+(pc>=0?pc+'%':holoMB(got))); } }
+    const out=new Uint8Array(got); let o=0; for(const c of chunks){ out.set(c,o); o+=c.length; } return out.buffer; };
+  try{ return await read(await fetch(url)); }
+  catch(e){ if(!(e instanceof TypeError))throw e; return await read(await fetch(HOLO.server+'?a=fetch&u='+encodeURIComponent(url))); }   // the browser may not fetch it itself: through the hall
+}
+async function holoParse(buf){
+  const b=new Uint8Array(buf,0,4);
+  if(b[0]===0x67&&b[1]===0x6C&&b[2]===0x54&&b[3]===0x46)return new Promise((res,rej)=>new THREE.GLTFLoader().parse(buf,'',g=>{ g.scene.userData.clips=g.animations||[]; res(g.scene); },rej));   // 'glTF': a GLB (its own animations ride along in userData.clips)
+  if(!(b[0]===0x50&&b[1]===0x4B))throw new Error('not a model archive');
+  const JZ=await holoLib('jszip'), zip=await JZ.loadAsync(buf), names=Object.keys(zip.files).filter(n=>!zip.files[n].dir);
+  const main=names.find(n=>/\.glb$/i.test(n))||names.find(n=>/\.gltf$/i.test(n)); if(!main)throw new Error('no model in the archive');
+  if(/\.glb$/i.test(main))return holoParse(await zip.files[main].async('arraybuffer'));
+  const dir=main.replace(/[^\/]*$/,''), urls={};
+  for(const n of names){ if(n===main)continue; urls[n]=URL.createObjectURL(await zip.files[n].async('blob')); }
+  const text=await zip.files[main].async('string'), mgr=new THREE.LoadingManager();
+  mgr.setURLModifier(u=>{ let k; try{ k=decodeURIComponent(u); }catch(e){ k=u; } k=k.replace(/^(\.\/)+/,'');
+    if(urls[k])return urls[k]; if(urls[dir+k])return urls[dir+k]; const base=k.replace(/^.*\//,''), hit=names.find(n=>n.replace(/^.*\//,'')===base); return hit&&urls[hit]?urls[hit]:u; });
+  return new Promise((res,rej)=>new THREE.GLTFLoader(mgr).parse(text,'',g=>{ g.scene.userData.clips=g.animations||[]; res(g.scene); setTimeout(()=>{ for(const k in urls)URL.revokeObjectURL(urls[k]); },8000); },rej));
+}
+// ---- placing: an environment fitted to the space and centred, a thing on the next spot of an arc before the console; standable ----
+function holoPlace(scene,p){
+  scene.updateMatrixWorld(true);
+  scene.traverse(o=>{ if(!o.isMesh)return; o.frustumCulled=true; for(const m of [].concat(o.material||[])){ if(!m)continue;
+    if(m.transparent&&m.map&&(m.opacity===undefined||m.opacity>=0.98)&&!m.alphaTest){ m.transparent=false; m.alphaTest=0.5; m.depthWrite=true; }   // foliage and cut-outs marked BLEND: solid where they are, open where not (as the city's)
+    m.needsUpdate=true; } });
+  const box=new THREE.Box3().setFromObject(scene), size=box.getSize(new THREE.Vector3()), c=box.getCenter(new THREE.Vector3()), env=p.role==='environment';
+  // its size: Sketchfab models come in any unit (a 35 m scene arrived as 3,520 — centimetres — and, fitted to the room, was
+  // 119 m across with grass the size of logs). The unit is guessed: metres, else centimetres, else millimetres, whichever
+  // gives a size a place (8–150 m) or a thing (0.2–6 m) could have; only then is it fitted. The visitor can say bigger / smaller.
+  const maxXZ=Math.max(size.x,size.z,1e-6), maxAll=Math.max(size.x,size.y,size.z,1e-6);
+  const unit=(v,lo,hi)=>{ for(const u of [1,0.01,0.001])if(v*u>=lo&&v*u<=hi)return u; return 0; };
+  let k=env?unit(maxXZ,8,150):unit(maxAll,0.2,6);
+  if(env){ if(!k)k=(maxXZ<8?30:40)/maxXZ; if(maxXZ*k>HOLO.half*1.7)k=HOLO.half*1.7/maxXZ; }
+  else { if(!k)k=1.6/maxAll; if(maxAll*k>3.5)k=3.5/maxAll; }
+  // a thing: on an arc before where you arrive, on the GROUND of the surroundings there (a first try stood a campfire on the
+  // room's floor, inside the island the visitor was standing on): spots are tried nearer and further until one has a floor
+  let at={x:0,z:0}, gy=0;
+  if(!env){ const n=HOLO.made.filter(m=>m.role!=='environment').length, A=HOLO.at, ar=HOLO.arrive;
+    const tries=[]; for(const R of [8,6,10,4,12])for(const da of [0,0.42,-0.42,0.84,-0.84,1.26,-1.26]){ const ang=Math.PI*0.5+(n%2?1:-1)*Math.ceil(n/2)*0.42+da; tries.push([ar.x-A.x+Math.cos(ang)*R,ar.z-A.z-Math.sin(ang)*R]); }
+    at={x:tries[0][0],z:tries[0][1]};
+    if(HOLO.ground.length){ let found=false; for(const [x,z] of tries){ const f=holoFloorAt(A.x+x,A.z+z); if(f!==null){ at={x,z}; gy=f; found=true; break; } }
+      if(!found)gy=holoTop(A.x+at.x,A.z+at.z); } }
+  const wrap=new THREE.Group(); wrap.add(scene); wrap.scale.setScalar(k); wrap.position.set(at.x-c.x*k,gy-box.min.y*k,at.z-c.z*k);
+  HOLO.group.add(wrap); zoneTag(wrap,2); HOLO.group.updateWorldMatrix(true,true);   // (parents too: the room's group is new, and has not been drawn yet)
+  const lib=HOLO.lib.bvh;
+  wrap.traverse(o=>{ if(!o.isMesh||!o.geometry||!o.geometry.attributes.position)return; HOLO.ground.push(o);
+    if(lib&&!o.geometry.boundsTree){ try{ o.geometry.boundsTree=new lib.MeshBVH(o.geometry); }catch(e){} } });
+  p.wrap=wrap; p.scale=k; p.sizeM=[size.x*k,size.y*k,size.z*k].map(v=>+v.toFixed(1));
+  const clips=scene.userData.clips||[]; if(clips.length){ p.mixer=new THREE.AnimationMixer(scene); p.mixer.clipAction(clips.find(c2=>/idle|loop|stand/i.test(c2.name))||clips[0]).play(); }   // its own animation, if it came with one
+  if(env){ const sp=holoSpot(HOLO.at.x+at.x,HOLO.at.z+at.z,Math.min(size.x,size.z)*k*0.35); HOLO.arrive={x:sp.x,z:sp.z,y:sp.y,yaw:0}; }
+}
+// a place to stand in what was imported, as near the middle as there is one: a surface facing UP, not water, with two metres
+// clear over it and no water over it — and the LOWEST such at that point, so the floor of a house and not its roof, the shore
+// of a lake and not its bed (a first try stood the visitor under an island, on the underside of its ground; a second, on the
+// bed of its lake). Points are tried outwards from the middle.
+const HOLO_WET=/water|ocean|\bsea\b|lake|river|pond|liquid/i;
+function holoFloorAt(x,z){                                           // the floor to stand on at this point, or null
+  const wet=(h)=>HOLO_WET.test(h.object.name||'')||HOLO_WET.test((h.object.material&&h.object.material.name)||'');
+  _hro.set(x,200,z); _hrc.set(_hro,_hdn); _hrc.near=0; _hrc.far=210; _hrc.firstHitOnly=false;
+  let hits; try{ hits=_hrc.intersectObjects(HOLO.ground,false); }finally{ _hrc.firstHitOnly=true; }
+  hits.sort((p,q)=>p.point.y-q.point.y);                                             // every surface on the way down, lowest first
+  for(let i=0;i<hits.length;i++){ const h=hits[i], n=h.face&&h.face.normal; if(!n||wet(h))continue;
+    _hn.copy(n).transformDirection(h.object.matrixWorld); if(_hn.y<0.6)continue;       // a floor, seen from above
+    const y=h.point.y, over=hits.slice(i+1).filter(u=>u.point.y>y+0.3);              // what is above it
+    if(over.length&&over[0].point.y<y+2)continue;                                      // no headroom
+    if(over.some(wet))continue;                                                        // under water
+    return y; }
+  return null;
+}
+function holoSpot(cx,cz,R){
+  const pts=[[0,0]]; for(const r of [0.25,0.5,0.75,1])for(let a=0;a<8;a++)pts.push([Math.cos(a*Math.PI/4)*R*r,Math.sin(a*Math.PI/4)*R*r]);
+  for(const [dx,dz] of pts){ const y=holoFloorAt(cx+dx,cz+dz); if(y!==null)return {x:cx+dx,z:cz+dz,y}; }
+  return {x:cx,z:cz,y:holoTop(cx,cz)};
+}
+const _hrc=new THREE.Raycaster(), _hro=new THREE.Vector3(), _hdn=new THREE.Vector3(0,-1,0); _hrc.firstHitOnly=true; _hrc.layers.mask=0xffffffff;   // (every layer: what is imported sits on the outside's)
+function holoGroundAt(x,z,y){                                        // the highest imported surface under your feet that is at most a step above them
+  _hro.set(x,y+0.5,z); _hrc.set(_hro,_hdn); _hrc.near=0; _hrc.far=y+0.5+60;
+  const hits=_hrc.intersectObjects(HOLO.ground,false);
+  for(const h of hits){ if(h.point.y<=y+0.45)return h.point.y; } return null;
+}
+function holoTop(x,z){ _hro.set(x,120,z); _hrc.set(_hro,_hdn); _hrc.near=0; _hrc.far=130; const hits=_hrc.intersectObjects(HOLO.ground,false); return hits.length?hits[0].point.y:0; }
+// ---- making it, entering, leaving ----
+async function holoMake(){
+  const todo=HOLO.picks.filter(p=>!p.made&&!p.failed); if(!todo.length){ holoNote('Nothing to make yet — click a picture to put it on the list.'); return; }
+  if(HOLO.busy)return; HOLO.busy=true; holoView();
+  holoBuildSpace();
+  // the links first, all of them, through the hall's key; whatever that cannot give, the visitor's login gets — asked for NOW, while
+  // the click on Make it is still fresh (a browser opens a window only within a few seconds of a click; after a download it would not)
+  HOLO.msgs.push({who:'sys',text:'Asking Sketchfab for the links…'}); holoView();
+  for(const p of todo){ if(p.mirror){ p.links={glb:{url:p.mirror,size:0}}; p.via='mirror'; } else p.links=await holoLinksHall(p); }
+  const need=todo.filter(p=>!p.links);
+  if(need.length){
+    try{ const token=await holoLogin();
+      for(const p of need){ try{ p.links=await holoLinksUser(p,token); }catch(e){ p.failed=String(e&&e.message||e).slice(0,140); } } }
+    catch(e){ const w=String(e&&e.message||e), why=w==='no app key'?'the Sketchfab login is not set up yet':w==='popup blocked'?'the browser blocked the login window — allow pop-ups here and try again':w==='closed'?'the login window was closed':w.slice(0,140);
+      for(const p of need)p.failed=why; }
+  }
+  HOLO.msgs[HOLO.msgs.length-1].text=need.length&&need.some(p=>p.links)?'Links in hand (some with your Sketchfab login).':'Links in hand.';
+  try{ await holoLib('bvh'); }catch(e){}
+  for(const p of todo){
+    if(p.failed){ HOLO.msgs.push({who:'sys',text:'“'+p.name+'” could not be fetched: '+p.failed+'.'}); holoView(); continue; }
+    HOLO.msgs.push({who:'sys',text:'Fetching “'+p.name+'”…'}); holoView();
+    try{ const L=p.links, opts=['glb','gltf'].map(k=>L[k]).filter(o=>o&&o.url).sort((a,b)=>(a.size||1e12)-(b.size||1e12));   // the smallest archive first
+      if(!opts.length)throw new Error('no GLB or glTF offered'); let scene=null, last=null;
+      for(const o of opts){ try{ scene=await holoParse(await holoBytes(o.url,o.size,p)); break; }catch(e){ last=e; } }
+      if(!scene&&p.via==='mirror'){                                    // the mirror did not have it after all: the hall's key, or a login already in hand
+        let L2=await holoLinksHall(p); if(!L2&&HOLO.token&&Date.now()<HOLO.tokenExp){ try{ L2=await holoLinksUser(p,HOLO.token); }catch(e){} }
+        if(L2){ const o2=['glb','gltf'].map(k=>L2[k]).filter(o=>o&&o.url).sort((a,b)=>(a.size||1e12)-(b.size||1e12));
+          for(const o of o2){ try{ scene=await holoParse(await holoBytes(o.url,o.size,p)); break; }catch(e){ last=e; } } } }
+      if(!scene)throw last||new Error('download failed');
+      holoPlace(scene,p); p.made=true; HOLO.made.push(p);
+      HOLO.msgs[HOLO.msgs.length-1].text='“'+p.name+'” is up'+(p.via==='you'?' (with your Sketchfab login)':'')+'.';
+    }catch(e){ p.failed=String(e&&e.message||e).slice(0,140);
+      HOLO.msgs[HOLO.msgs.length-1].text='“'+p.name+'” could not be fetched: '+p.failed+'.'; }
+    p.links=null; holoView();
+  }
+  holoRetile(); if(HOLO.note){ holoNote(HOLO.note); HOLO.note=null; }
+  holoCreditsRefresh(); HOLO.busy=false; holoView(); holoRate();
+  if(HOLO.made.length)holoEnter();
+}
+function holoEnter(){
+  holoBuildSpace(); holoShow(false);
+  const a=HOLO.arrive, y=a.y||0;
+  gaPut({kind:'player'},{x:a.x,y,z:a.z}); look.yaw=a.yaw; look.pitch=-0.02;
+  for(const f of FOLLOWERS)if(f.fl&&f.fl.on&&!f.fl.lead){ try{ followCatchUp(f); }catch(e){} }
+  lockPointer(); banner(HOLO.made.length?'THE HOLOGRAM ROOM · H: the console · say "exit" for the door':'THE HOLOGRAM ROOM · H: the console');
+}
+function holoLeave(){
+  const d=HOLO.door; if(!d)return; holoShow(false);
+  gaPut({kind:'player'},{x:d.x,y:d.Y,z:d.z+3}); look.yaw=Math.PI; look.pitch=-0.02;
+  for(const f of FOLLOWERS)if(f.fl&&f.fl.on&&!f.fl.lead){ try{ followCatchUp(f); }catch(e){} }
+  lockPointer(); banner('LAB LEVEL 5');
+}
+document.getElementById('holoSend').onclick=()=>{ const i=document.getElementById('holoIn'), t=i.value.trim(); if(!t||HOLO.busy)return; i.value=''; holoSend(t); };
+document.getElementById('holoIn').addEventListener('keydown',e=>{ if(e.code==='Enter'||e.key==='Enter')document.getElementById('holoSend').click(); });
+document.getElementById('holoMakeBtn').onclick=()=>holoMake();
+document.getElementById('holoEnterBtn').onclick=()=>holoEnter();
+document.getElementById('holoDoorBtn').onclick=()=>holoArch();
+document.getElementById('holoEndBtn').onclick=()=>{ holoEnd(); holoView(); };
+document.getElementById('holoClose').onclick=()=>{ holoShow(false); lockPointer(); };
 /* ============================================================
    WHAT GEMINI CAN DO IN THE HALL — "GA" (2026-09-30, asked for)
    ------------------------------------------------------------
@@ -9599,6 +10183,11 @@ function gaPlay(p,N,clip,once){                                      // personAn
 }
 function gaAnim(c,name,secs){
   const want=String(name==null?'':name).trim().toLowerCase().replace(/[\s-]+/g,'_'), rk=gaRigKey(c);
+  if(c.made&&c.made.model){                                           // a model from Sketchfab: only the animations it came with
+    const o=c.made, cl=o.clips||[]; if(!cl.length)return 'anim: '+c.name+' came with no animations of its own (it can hover, bob, spin or sway: "motion" when it is fetched)';
+    const bare=(n)=>String(n).toLowerCase().replace(/[^a-z0-9]/g,''), hit=cl.find(k=>bare(k.name)===bare(want))||cl.find(k=>bare(k.name).indexOf(bare(want))>=0);
+    if(!hit)return 'anim: '+c.name+' has no animation called "'+gaText(name,40)+'" — its own are: '+cl.map(k=>k.name).join(', ');
+    o.mixer.stopAllAction(); o.mixer.clipAction(hit).reset().play(); return 'anim: '+c.name+' plays its own "'+hit.name+'"'; }
   if(!rk)return 'anim: '+c.name+' cannot be animated';
   if(want==='salute'&&rk==='optimus'&&!c.p.clips.Salute){ try{ drillSalute(c.p); }catch(e){} }
   const names=gaAnimNames(c), bare=(n)=>n.toLowerCase().replace(/_/g,'');
@@ -9660,7 +10249,7 @@ function* gaSay(c,text,ctx){
   gaFace(c,prev&&prev.id!==c.id?gaLive(prev):player.pos,40);         // to whoever spoke last, or to the visitor
   ctx.cast.forEach(o=>{ if(o.id!==c.id)gaFace(o,gaLive(c),40); });    // and those in it turn to the one speaking
   ctx.cast.set(c.id,c);
-  let done=false; const t0=GA.clock, max=Math.max(3,text.length*0.075)*2+3;
+  let done=false; const t0=GA.clock, max=Math.max(3,spLen(text)*0.075)*2+3;
   say(c.id,text,()=>{done=true;});
   yield ()=>done||GA.clock-t0>max;
   yield 0.35;
@@ -9711,11 +10300,12 @@ function gaWhat(w){
   return s;
 }
 const GA_PEOPLE={robot:1,woman:1,man:1,soldier:1,scientist:1};
-function gaVoice(o,a){                                               // a voice of their own: the best one this machine has for the gender, at their own pitch
-  const female=/^f|woman|girl/i.test(String(a.voice||a.gender||''))||(!a.voice&&!a.gender&&o.what==='woman');
+function gaVoice(o,a){                                               // a voice of their own: the one Gemini named (the brief lists them: gaVoicesLine), else the best natural voice nobody here has, at their own pitch (2026-10-01: it was Jack's voice for every man)
+  const named=voiceNamed(a.voice);
+  const female=named?named.gender==='female':(/^f|woman|girl/i.test(String(a.voice||a.gender||''))||(!a.voice&&!a.gender&&o.what==='woman'));
   SPEAKERS[o.id]={voice:null,pitch:gaNum(a.pitch,o.what==='robot'?0.78:female?1.1:0.95,0.4,1.8),rate:gaNum(a.rate,1,0.6,1.4),
-    color:gaHex(o.color),name:o.name.toUpperCase(),gender:female?'female':'male',lips:!!o.lips};
-  try{ SPEAKERS[o.id].voice=pickBest(female?'female':'male'); }catch(e){}
+    color:gaHex(o.color),name:o.name.toUpperCase(),gender:female?'female':'male',lips:!!o.lips,pick:{name:named?named.who:''}};
+  try{ SPEAKERS[o.id].voice=gaVoicePick(o.id,SPEAKERS[o.id]); }catch(e){}
 }
 function gaMind(o,a){                                                // how they talk: a mind of their own (their own Gemini chat), or lines of their own
   const lines=(Array.isArray(a.lines)?a.lines:[]).map(l=>gaText(l,300)).filter(Boolean).slice(0,12);
@@ -10143,6 +10733,130 @@ function gaScene(){ return tour.active?"Elara's walk":EP1.active?'Episode 1':STO
 function gaLiftBusy(){ return !!(LIFTX.travel||LIFTS.some(L=>L.riding)); }
 
 /* ---- running them ---- */
+/* ---- MODELS FROM SKETCHFAB, ANYWHERE (2026-10-01, asked for: "if user asks an NPC for something — objects or characters —
+   gemini should spawn that in their environment from sketchfab; ask it to try to include more than just spawning but
+   something more like chat or story; if they ask for an environment they should be teleported to the holo space … If I ask
+   'I want to talk to an alien about the cosmos' I would like it to spawn an alien that starts talking about the cosmos, and
+   the alien could have questions also") ----
+   One action, {"do":"sketchfab","find":"…","as":"thing"|"character"|"place"}. The search and the fetching are the Hologram
+   Room's (holoSearch — keyless models first — the mirror, then the hall's key; a login is never asked for here, because a
+   browser only opens that window on a click). A THING stands where it is put, sized in metres. A CHARACTER is a thing
+   that is someone: a voice, a mind of its own when given a persona (the same chat any person put into the hall has), its
+   opening line as it arrives, and then ITS chat opens, so the visitor answers it and not the one they asked (GA.after).
+   Nothing fetched has the hall's bones, so it cannot play the hall's animations: it plays the ones it came with (anim, by
+   their own names), and otherwise hovers, bobs, spins or sways, turns to whoever it speaks with and stirs while it speaks.
+   A PLACE is surroundings: the Hologram Room's program is ended, this is made there, and the visitor is taken to it with
+   whoever follows. Every model is credited on the Credits page (and by E on a thing). What Gemini makes of what it fetched —
+   a talk, a story, a question — is its own; the brief only says the visitor hopes for more than a thing standing there. ---- */
+const GA_MODEL={max:10,maxMB:25};                                      // at once in the hall; the biggest a model may be to come here (the Hologram Room takes 60)
+function gaModelBuild(o,body,a,at,isChar){
+  body.updateMatrixWorld(true);
+  body.traverse(m=>{ if(!m.isMesh)return; m.frustumCulled=false; for(const mt of [].concat(m.material||[])){ if(!mt)continue;
+    if(mt.transparent&&mt.map&&(mt.opacity===undefined||mt.opacity>=0.98)&&!mt.alphaTest){ mt.transparent=false; mt.alphaTest=0.5; mt.depthWrite=true; } mt.needsUpdate=true; } });
+  const box=new THREE.Box3().setFromObject(body), size=box.getSize(new THREE.Vector3()), c=box.getCenter(new THREE.Vector3());
+  const want=gaNum(a.size!==undefined?a.size:a.height,isChar?1.9:1.5,0.2,isChar?6:8), k=want/Math.max(1e-6,isChar?size.y:Math.max(size.x,size.y,size.z));
+  const inner=new THREE.Group(); inner.add(body); inner.scale.setScalar(k); inner.position.set(-c.x*k,-box.min.y*k,-c.z*k);
+  const g=new THREE.Group(); g.add(inner); g.position.set(at.x,at.y,at.z); g.rotation.y=Math.atan2(player.pos.x-at.x,player.pos.z-at.z);   // a glTF faces +z: turned to the visitor
+  scene.add(g); zoneTag(g,0);
+  o.body=g; o.inner=inner; o.at={x:at.x,y:at.y,z:at.z}; o.h=size.y*k; o.t0=GA.clock; o.talk=0;
+  const hw=Math.min(1.3,Math.max(0.25,Math.max(size.x,size.z)*k*0.4));
+  o.block={x:at.x,z:at.z,hw,hd:hw,y0:at.y-0.4,h:at.y+Math.min(o.h,2.4),off:false}; BUILDINGS.push(o.block);
+  const clips=body.userData.clips||[]; o.clips=clips;
+  if(clips.length){ o.mixer=new THREE.AnimationMixer(body); o.mixer.clipAction(clips.find(k2=>/idle|stand|breath|loop/i.test(k2.name))||clips[0]).play(); }
+  const m=String(a.motion||'').trim().toLowerCase(); o.motion=/^(hover|float|fly)/.test(m)?'hover':/^spin|^turn|^rotat/.test(m)?'spin':/^sway/.test(m)?'sway':/^bob|^breath/.test(m)?'bob':/^(none|still|no)$/.test(m)?'none':(isChar&&!clips.length?'bob':'none');
+  o.remove=()=>{ if(o.mixer){ try{ o.mixer.stopAllAction(); }catch(e){} } gaDrop(g); };
+}
+function gaModelTick(o,dt){                                            // its own animation, its small motion, its turning to whoever it talks with
+  if(o.mixer)o.mixer.update(dt);
+  const g=o.body, t=GA.clock-o.t0, talk=o.talk>0; if(talk)o.talk-=dt;
+  const base=o.char?o.char.g.gy:o.at.y; let lift=0;
+  if(o.motion==='hover')lift=0.35+Math.sin(t*1.2)*0.12; else if(o.motion==='bob')lift=Math.abs(Math.sin(t*1.6))*0.02*Math.min(2.5,o.h);
+  if(talk)lift+=Math.abs(Math.sin(t*6.5))*0.018*Math.min(2.5,o.h);
+  g.position.y=base+lift;
+  if(o.motion==='spin')g.rotation.y+=dt*0.7; else if(o.motion==='sway')o.inner.rotation.z=Math.sin(t*1.1)*0.05;
+  if(o.char&&o.motion!=='spin'){ const f=o.char.g.faceAt, tx=f?f.x:player.pos.x, tz=f?f.z:player.pos.z, d=Math.hypot(tx-g.position.x,tz-g.position.z);
+    if((f||(d<16&&Math.abs(player.y-base)<3))&&d>0.4){ let dy=Math.atan2(tx-g.position.x,tz-g.position.z)-g.rotation.y; dy=Math.atan2(Math.sin(dy),Math.cos(dy)); g.rotation.y+=dy*Math.min(1,dt*3); } }
+}
+function gaModelPick(res,q,isChar){
+  const words=q.toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>2&&!/^(the|and|with|low|poly|model|character)$/.test(w));
+  let best=null, top=-1e9;
+  res.forEach((r,i)=>{ if(r.size>GA_MODEL.maxMB*1048576)return; const n=r.name.toLowerCase();
+    let sc=-i*0.15+(r.mirror?3:0);                                      // Sketchfab's own order, and no key needed
+    for(const w of words)if(n.indexOf(w)>=0)sc+=2;
+    if(isChar){ if(r.anim)sc+=2; if(/idle|stand/.test(n))sc+=1; if(/(bust|head|skull|mask|helmet|egg|ship|city|forest|world|scene|pack|terrain|room|base|planet)/.test(n))sc-=4; }
+    if(sc>top){ top=sc; best=r; } });
+  return best;
+}
+GA_DO.sketchfab=function*(a,ctx){
+  const q=gaText(a.find||a.q||a.query||a.search||a.what,80); if(!q){ ctx.log.push('sketchfab: say what to look for, in "find"'); return; }
+  const as=String(a.as||a.kind||a.role||'thing').trim().toLowerCase(), place=/^(place|environment|surroundings|scene|world|room|setting)$/.test(as), isChar=/^(character|person|someone|creature|being|npc|animal)$/.test(as);
+  let res=null; holoSearch(q,place?'environment':'prop',!place).then(r=>{ res=r||[]; },()=>{ res=[]; });   // a place: the most liked; a thing or someone: the best match
+  banner('Looking on Sketchfab…'); let t0=GA.clock; yield ()=>res!==null||GA.clock-t0>25;
+  if(!res||!res.length){ ctx.log.push('sketchfab: nothing usable was found for "'+q+'" — other words may do better'); return; }
+  if(place){                                                          // surroundings: the Hologram Room, and the visitor taken there
+    const pick=Object.assign({},res[0],{role:'environment'}); let done=false;
+    if(HOLO.busy){ ctx.log.push('sketchfab: the Hologram Room is busy making something — try again in a moment'); return; }
+    try{ holoBuildSpace(); if(HOLO.made.length)holoEnd(); }catch(e){}
+    const pend=HOLO.picks.filter(p=>!p.made); HOLO.picks=[pick];                          // (what the visitor had on their own list waits: only this is made now)
+    banner('Making “'+pick.name+'” in the Hologram Room…');
+    holoMake().then(()=>{ done=true; },()=>{ done=true; });
+    t0=GA.clock; yield ()=>done||GA.clock-t0>150;
+    HOLO.picks=HOLO.picks.concat(pend);
+    if(!pick.made){ ctx.log.push('sketchfab: “'+pick.name+'” could not be fetched'+(pick.failed?' ('+pick.failed+')':'')); return; }
+    GA.moved=true;
+    ctx.log.push('sketchfab: the visitor and whoever follows are now in the Hologram Room, standing in “'+pick.name+'” by '+pick.user+' ('+pick.sizeM[0]+' × '+pick.sizeM[2]+' m, repeating in every direction); "here" is where they stand'); return; }
+  if(GA.made.filter(o=>!o.gone&&o.model).length>=GA_MODEL.max){ ctx.log.push('sketchfab: no more models for now — '+GA_MODEL.max+' is the most at once; remove one first'); return; }
+  const pick=gaModelPick(res,q,isChar); if(!pick){ ctx.log.push('sketchfab: everything found for "'+q+'" is too big to bring here (over '+GA_MODEL.maxMB+' MB) — other words, or as a "place"'); return; }
+  const spec=a.at!==undefined?a.at:(a.to!==undefined?a.to:a.place); let pl=spec!==undefined?gaPlace(spec,ctx):null;
+  if(!pl){ const f=-3.5; pl={x:player.pos.x+Math.sin(look.yaw)*f,z:player.pos.z+Math.cos(look.yaw)*f,y:player.y,label:'in front of the visitor'}; }
+  const at=gaSpot(pl); if(!at){ ctx.log.push('sketchfab: nowhere to put it '+gaWhere(pl)); return; }
+  let body=null, err=null, fin=false;
+  (async()=>{ try{
+      let L=pick.mirror?{glb:{url:pick.mirror,size:0}}:await holoLinksHall(pick);
+      if(!L&&HOLO.token&&Date.now()<HOLO.tokenExp)L=await holoLinksUser(pick,HOLO.token);
+      if(!L)throw new Error(pick.whyNotHall===429?'the hall’s Sketchfab limit for this hour is used up':'it needs a Sketchfab login — the Hologram Room’s door on lab level 5 asks for one');
+      const opts=['glb','gltf'].map(k=>L[k]).filter(o=>o&&o.url).sort((x,y)=>(x.size||1e12)-(y.size||1e12)); let last=null;
+      for(const o of opts){ try{ body=await holoParse(await holoBytes(o.url,o.size,pick,(t)=>banner(t))); break; }catch(e){ last=e; } }
+      if(!body&&pick.mirror){ const L2=await holoLinksHall(pick); if(L2)for(const k of ['glb','gltf'])if(!body&&L2[k]&&L2[k].url){ try{ body=await holoParse(await holoBytes(L2[k].url,L2[k].size,pick,(t)=>banner(t))); }catch(e){ last=e; } } }
+      if(!body)throw last||new Error('the download failed');
+    }catch(e){ err=String(e&&e.message||e).slice(0,140); } fin=true; })();
+  banner('Fetching “'+pick.name+'”…'); t0=GA.clock; yield ()=>fin||GA.clock-t0>120;
+  if(!body){ ctx.log.push('sketchfab: “'+pick.name+'” could not be fetched'+(err?' ('+err+')':'')); return; }
+  const name=gaText(a.name,28)||gaText(pick.name,28)||q;
+  const o=gaMade({id:gaId(a.id||name),name,kind:isChar?'person':'thing',what:(isChar?'a character':'a thing')+' from Sketchfab ("'+pick.name+'")',at,asked:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,isChar?0xb6ff9c:0x7fe6ff),model:pick}); GA.seq++;
+  try{ gaModelBuild(o,body,a,at,isChar); }catch(e){ o.gone=true; ctx.log.push('sketchfab: “'+pick.name+'” would not stand up ('+gaText(e&&e.message,60)+')'); return; }
+  (HOLO.hall=HOLO.hall||[]).push(pick); holoCreditsRefresh();
+  const credit='“'+pick.name+'” by '+pick.user+' · '+holoLic(pick.license)+' · Sketchfab';
+  gaRings(at,o.color); gaSound('whoosh'); banner(credit);
+  const own=o.clips.length?'; its own animations (for "anim"): '+o.clips.slice(0,12).map(k=>k.name).join(', '):'; no animations of its own';
+  if(isChar){
+    o.char={id:o.id,kind:'guest',name:o.name,p:null,made:o,g:{grp:o.body,cx:at.x,cz:at.z,gy:at.y,gaFoot:0,gaBlock:o.block,faceAt:null}};
+    gaVoice(o,a); gaMind(o,a);
+    gaHot(o,at,Math.min(2.6,o.h),'Talk to '+escHtml(o.name),()=>gaTalkTo(o)); o.char.g.hot=o.hot;
+    ctx.log.push('sketchfab: '+o.name+' (id "'+o.id+'", '+credit+', '+o.h.toFixed(1)+' m tall'+(o.persona?', with a mind of their own':'')+') is '+gaWhere(pl,at)+own);
+    const line=gaText(a.say||a.line||a.text,GA_LIMIT.say); if(line){ yield 0.5; yield* gaSay(o.char,line,ctx); }
+    if(o.persona&&a.keep!==true){                                    // and the talk is theirs now: their chat opens when the list is done ("keep":true, which the brief does not mention, would leave it with the one asked)
+      if(line)EC_WHO[o.id].hist.push({role:'user',parts:[{text:'(You have just arrived in the hall, called up for the visitor, who stands before you.)'}]},{role:'model',parts:[{text:JSON.stringify({reply:line,actions:[]})}]});
+      GA.moved=true; GA.after=()=>{ if(o.gone||state.phase!=='play')return; elaraHeader('In the hall',o.name,gaHex(o.color)); cardFor='ga'; cardBack=()=>gaCard(o); elaraChatView(o.id);
+        if(line){ const m=document.getElementById('ecMsgs'); if(m&&m.childElementCount<=1){ m.innerHTML=''; ecBubble(o.id,line); } } }; }
+  } else {
+    const note=gaText(a.note||a.text,200);
+    gaHot(o,at,Math.min(2.6,Math.max(1,o.h)),'Look at '+escHtml(o.name),()=>{ banner(credit); if(note)caption(note,6); });
+    ctx.log.push('sketchfab: '+o.name+' (id "'+o.id+'", '+credit+', '+o.h.toFixed(1)+' m high) is '+gaWhere(pl,at)+own);
+  }
+  yield 0.2;
+};
+GA_DO.import=GA_DO.model=GA_DO.summon=GA_DO.conjure=GA_DO.fetch=GA_DO.sketchfab;
+GA_DO.resize=function*(a,ctx){                                          // what was fetched came at a guessed size
+  const id=String(a.id||a.who||a.what||a.name||'').trim().toLowerCase(), fac=parseFloat(a.factor!==undefined?a.factor:a.by);
+  if(!id||/^(place|room|surroundings|environment|everything|program|scene|here)$/.test(id)){ ctx.log.push('resize: '+holoResize(isFinite(fac)?fac:1.5)); yield 0.1; return; }
+  const o=GA.made.find(m=>!m.gone&&m.model&&(m.id===id||m.name.toLowerCase()===id)); if(!o){ ctx.log.push('resize: there is no fetched model called "'+gaText(id,40)+'"'); return; }
+  const want=parseFloat(a.size!==undefined?a.size:a.height); let f=isFinite(want)&&want>0?want/Math.max(0.01,o.h):isFinite(fac)?fac:1; f=Math.max(0.1,Math.min(10,f)); if(o.h*f>8)f=8/o.h; if(o.h*f<0.15)f=0.15/o.h;
+  o.inner.scale.multiplyScalar(f); o.inner.position.multiplyScalar(f); o.h*=f; if(o.block){ o.block.hw=Math.min(1.3,Math.max(0.25,o.block.hw*f)); o.block.hd=o.block.hw; o.block.h=o.block.y0+0.4+Math.min(o.h,2.4); }
+  if(o.hot)o.hot.cap=Math.min(2.6,Math.max(1,o.h));
+  ctx.log.push('resize: '+o.name+' is now '+o.h.toFixed(1)+' m high'); yield 0.1;
+};
+GA_DO.scale=GA_DO.resize;
 function gaRead(out){                                                // Gemini's answer → {reply, ask, idea, actions}; plain words, if that is what came, are the reply
   out=String(out==null?'':out).replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
   const d=ocParse(out)||{}, plain=(t)=>String(t==null?'':t).replace(/\*+/g,'').trim();
@@ -10172,7 +10886,7 @@ function gaRun(who,acts,back,away){
   GA.last[who]=[];
   if(gaScene()){ GA.last[who].push('nothing was done — '+gaScene()+' is playing'); if(back)back(); return; }
   GA.active=true; GA.who=who; GA.moved=false; GA.cur=undefined; GA.t=0;
-  GA.done=()=>{ const f=GA.moved?(away||back):back; if(f)f(); };
+  GA.done=()=>{ const f=GA.moved?(away||back):back; if(f)f(); const h=GA.after; GA.after=null; if(h){ try{ h(); }catch(e){} } };   // GA.after: someone new takes up the talk (a Sketchfab character's chat opens)
   GA.gen=gaScript(who,acts); gaNext();
 }
 animated.push({update(dt){                                            // its clock, and everything it has made (frozen with the pause menu, as the hall is)
@@ -10186,6 +10900,7 @@ animated.push({update(dt){                                            // its clo
   if(GA.shakeT>0){ GA.shakeT-=dt; if(GA.shakeT<=0)GA.shake=0; }
   gaFoes(dt);
   for(const o of GA.made){ if(o.gone||!o.body)continue;
+    if(o.model){ gaModelTick(o,dt); if(o.until&&GA.clock>o.until)gaGone(o); continue; }
     if(o.kind==='thing'&&o.spin){ o.mesh.rotation[o.what==='ring'?'z':'y']+=dt*o.spin; if(o.bob)o.mesh.position.y=o.bob+Math.sin(GA.clock*1.4)*0.08; }
     if(o.kind==='box'&&o.open){ o.open+=dt; o.lid.rotation.x=-Math.min(1,o.open/0.5)*1.9; if(o.open>40)gaGone(o); }
     if(o.until&&GA.clock>o.until)gaGone(o);
@@ -10246,7 +10961,9 @@ function gaBrief(who,noFormat){
   +'- {"do":"teleport","who":"visitor","to":"lab 2"}: move the visitor, a character, or "everyone" (the visitor and the three of you) at once, to any place on any floor. It is the way to take the visitor somewhere. Tell them they have been teleported and where they are: a "say" after it does that.\n'
   +'- {"do":"objective","title":"...","to":"...","pay":20}: give the visitor an objective: a marker on their map and a beam of light at the place; it is done when they get there. With "target":"<id>" it is about something spawned instead: an enemy (done when it is brought down) or a box (done when it is opened). pay: up to '+GA_LIMIT.pay+' credits.\n'
   +'- {"do":"start","what":"tour"}: start something the hall has: tour (the walk with Elara, from the garden), fountain 1, fountain 2, fountain 3 (the conversations with the fountain), story <name> (the story circles on level '+ORG_LVL+'), drill (the combat drill on lab 2), nightmare, episode 1. And the games behind the hall, which take the visitor out of the hall until they have played: fountain keeper, cerebro, delivery.\n'
-  +'- {"do":"spawn","what":"robot","name":"...","id":"...","at":"..."}: put someone or something into the hall. People: robot, woman, man, soldier, scientist. With a "persona" (who they are, a few sentences) they have a mind and a voice of their own and the visitor can talk with them; with "lines":["..."] they say those when spoken to. "voice":"male" or "female", "pitch":0.4 to 1.8. With "hostile":true they are an enemy: robots come at the visitor, soldiers hold their ground; "nightmare" is the lab\'s monster, one at a time. Nothing can hurt the visitor; the visitor, Elara, Jack and Optimus shoot enemies down. Things: crate, orb, pillar, cube, ring, with "color", "size" and a "note" the visitor reads on it.\n'
+  +'- {"do":"spawn","what":"robot","name":"...","id":"...","at":"..."}: put someone or something into the hall. People: robot, woman, man, soldier, scientist. With a "persona" (who they are, a few sentences) they have a mind and a voice of their own and the visitor can talk with them; with "lines":["..."] they say those when spoken to. "voice":"male" or "female", or one by name (VOICES, below); "pitch":0.4 to 1.8. With "hostile":true they are an enemy: robots come at the visitor, soldiers hold their ground; "nightmare" is the lab\'s monster, one at a time. Nothing can hurt the visitor; the visitor, Elara, Jack and Optimus shoot enemies down. Things: crate, orb, pillar, cube, ring, with "color", "size" and a "note" the visitor reads on it.\n'
+  +'- {"do":"sketchfab","find":"grey alien","as":"character","name":"...","persona":"...","say":"...","voice":"male","pitch":0.7,"size":2,"motion":"hover"}: fetch a model from Sketchfab\'s free library — almost anything exists there: creatures, people of every kind, vehicles, furniture, monuments, food — and put it where the visitor is (or "at" a place). It takes some seconds to arrive. "as":"thing": it stands there ("size" in metres, a "note" the visitor reads on it). "as":"character": it is someone — with a "persona" it has a mind and a voice of its own, it says "say" as it arrives — its own first words on what the visitor wanted of it, a question for them in it if that suits — and from then on the visitor is talking with IT, not with you: its chat opens for them. It has none of the hall\'s animations: "motion" is hover, bob, spin, sway or none, and a model that came with animations plays them — you are told their names when it arrives, for "anim". "as":"place": surroundings — a forest, a street, a room — made in the Hologram Room, and the visitor and whoever follows are taken there at once; what you do next happens there. When the visitor asks for something or someone, do it in this same answer — do not offer it, describe it or ask whether they would like it first — and a thing standing there is the least of it: make something of it if you can — a talk, a small story, a question for them, a part for you or the others to play in it.\n'
+  +'- {"do":"resize","id":"...","size":3}: what was fetched comes at a guessed size, and the guess is often wrong: "size" (metres high) or "factor" puts a model right; "id":"place" with a "factor" does it for the Hologram Room\'s surroundings.\n'
   +'- {"do":"box","at":"...","inside":"...","credits":10}: a box for the visitor to find and open: a message inside, credits if you like (up to '+GA_LIMIT.box+').\n'
   +'- {"do":"effect","what":"beam","at":"...","color":"#7fe6ff","seconds":20}: beam, sparks, rings, glow, confetti, snow, petals, embers, flash, dark, shake, lightning.\n'
   +'- {"do":"sign","at":"...","text":"...","sub":"..."}: a sign floating in the air.\n'
@@ -10254,6 +10971,7 @@ function gaBrief(who,noFormat){
   +'- {"do":"remove","id":"..."}: take away something that was put there ("all": everything). {"do":"wait","seconds":2}: a pause.\n'
   +'A place ("to", "at") is a name from the map, a character\'s name, "visitor", "here" (where you stand), the id of something spawned, or {"x":0,"z":0,"floor":"ground"}. "who" is elara, jack, optimus, visitor, or the id of someone spawned; left out, it is you.\n'
   +'\nANIMATIONS. Anyone can play any of these — Elara, Jack, Optimus, and whoever is put into the hall: '+names.join(', ')+'. Optimus and any robot also: Salute.\n'
+  +gaVoicesLine()
   +'\nTHE MAP (in metres; north is -z, east is +x; a floor is "ground", "lab 1" to "lab '+LABT.Y.length+'" up the lab tower, or "level 1" to "level '+LEVEL_Y.length+'" over the hall):\n'
   +gaMap().map(e=>'- '+e.key+': ('+Math.round(e.x)+', '+Math.round(e.z)+') '+gaFloorName(e.x,e.z,e.y)+' — '+e.what).join('\n')
   +'\n\nRIGHT NOW. '+gaNow(who);
@@ -10366,7 +11084,7 @@ function gateArm(){
   gateReady=true;
   loadBarDone();
   const b=document.getElementById('startBtn');
-  b.textContent='START';b.style.opacity='1';b.style.cursor='pointer';
+  b.textContent=UIT('START');b.style.opacity='1';b.style.cursor='pointer';   // (in the visitor's language: UIT)
 }
 // speech is blocked until the visitor has clicked something. Spending the START click on a
 // silent utterance opens it, so her first line plays whole instead of starting halfway through.
@@ -10508,6 +11226,150 @@ function updateTour(dt){
 }
 
 /* ============================================================
+   THE VISITOR'S LANGUAGE (2026-10-01, asked for) — a supplementary section. The hall is written in English and stays so.
+   When the browser's own language is not English (navigator.languages[0]; ?lang=fr in the address forces one and ?lang=en
+   forces English, for testing), three things change, and only these:
+   1. The START button and the fountain app's "Things to do (ask anything)" buttons are in that language (UI_T: a fixed
+      table, no service is called; a language that is not in it stays English).
+   2. Every Gemini chat is told the visitor's language (langLine, added to the system instruction) and asked to say which
+      language its answer is in ("lang").
+   3. What Gemini wrote is spoken by a voice that can speak it (langVoice): the speaker's own voice when it is one of the
+      Multilingual ones, else the best voice the browser has for that language, else another Multilingual voice. The hall's
+      own English lines keep their English voices: only words that came back from Gemini are treated this way (langNote
+      keeps them, langOf knows them again when they are spoken). Scripts without spaces (Chinese, Japanese, Korean, Thai)
+      are spoken sentence by sentence (langChunks) and given longer on every timer that counts letters (spLen).
+   On an English browser ULANG.on is false and none of it runs: UIT and spLen hand back what they were given, langLine is
+   empty, langNote and langOf do nothing.
+   ULANG itself is at the top of the script. The rest is down here on purpose: the chats are handed the first 150,000
+   characters of this page as its source, and this section — with a system-instruction text in it — is not for them.
+   ============================================================ */
+const UI_T={   // [ START , Loading… , Things to do (ask anything) ] — plain text only (it goes into innerHTML as it is)
+  es:['EMPEZAR','Cargando…','Cosas por hacer (pregunta lo que quieras)'],
+  fr:['COMMENCER','Chargement…','Choses à faire (demandez ce que vous voulez)'],
+  de:['START','Lädt…','Dinge zu tun (frag, was du willst)'],
+  it:['INIZIA','Caricamento…','Cose da fare (chiedi qualsiasi cosa)'],
+  pt:['COMEÇAR','Carregando…','Coisas para fazer (pergunte qualquer coisa)'],
+  'pt-pt':['COMEÇAR','A carregar…','Coisas para fazer (pergunte o que quiser)'],
+  nl:['START','Laden…','Dingen om te doen (vraag wat je wilt)'],
+  sv:['STARTA','Laddar…','Saker att göra (fråga vad du vill)'],
+  da:['START','Indlæser…','Ting at lave (spørg om hvad som helst)'],
+  nb:['START','Laster…','Ting å gjøre (spør om hva som helst)'],
+  fi:['ALOITA','Ladataan…','Tekemistä (kysy mitä tahansa)'],
+  pl:['START','Ładowanie…','Rzeczy do zrobienia (pytaj o cokolwiek)'],
+  cs:['START','Načítání…','Co dělat (zeptej se na cokoli)'],
+  sk:['ŠTART','Načítava sa…','Čo robiť (opýtaj sa na čokoľvek)'],
+  hu:['START','Betöltés…','Teendők (kérdezz bármit)'],
+  ro:['START','Se încarcă…','Lucruri de făcut (întreabă orice)'],
+  bg:['СТАРТ','Зареждане…','Неща за правене (питай каквото искаш)'],
+  el:['ΕΝΑΡΞΗ','Φόρτωση…','Πράγματα να κάνεις (ρώτα ό,τι θέλεις)'],
+  ru:['СТАРТ','Загрузка…','Чем заняться (спросите что угодно)'],
+  uk:['СТАРТ','Завантаження…','Чим зайнятися (питайте що завгодно)'],
+  tr:['BAŞLA','Yükleniyor…','Yapılacaklar (her şeyi sorabilirsin)'],
+  ar:['ابدأ','جارٍ التحميل…','أشياء للقيام بها (اسأل أي شيء)'],
+  he:['התחל','טוען…','דברים לעשות (שאלו כל דבר)'],
+  fa:['شروع','در حال بارگذاری…','کارهایی برای انجام (هر چیزی بپرسید)'],
+  ur:['شروع کریں','لوڈ ہو رہا ہے…','کرنے کے کام (کچھ بھی پوچھیں)'],
+  hi:['शुरू करें','लोड हो रहा है…','करने के लिए चीज़ें (कुछ भी पूछें)'],
+  bn:['শুরু করুন','লোড হচ্ছে…','করার জিনিস (যেকোনো কিছু জিজ্ঞাসা করুন)'],
+  ta:['தொடங்கு','ஏற்றுகிறது…','செய்ய வேண்டியவை (எதையும் கேளுங்கள்)'],
+  te:['ప్రారంభించు','లోడ్ అవుతోంది…','చేయవలసినవి (ఏదైనా అడగండి)'],
+  mr:['सुरू करा','लोड होत आहे…','करायच्या गोष्टी (काहीही विचारा)'],
+  id:['MULAI','Memuat…','Hal untuk dilakukan (tanya apa saja)'],
+  ms:['MULA','Memuatkan…','Perkara untuk dilakukan (tanya apa sahaja)'],
+  vi:['BẮT ĐẦU','Đang tải…','Việc muốn làm (hỏi bất cứ điều gì)'],
+  th:['เริ่ม','กำลังโหลด…','สิ่งที่อยากทำ (ถามอะไรก็ได้)'],
+  zh:['开始','加载中…','想做的事（随便问）'],
+  'zh-hant':['開始','載入中…','想做的事（隨便問）'],
+  ja:['スタート','読み込み中…','やりたいこと（何でも聞いてください）'],
+  ko:['시작','불러오는 중…','하고 싶은 일 (무엇이든 물어보세요)'],
+  fil:['SIMULAN','Naglo-load…','Mga gagawin (magtanong ng kahit ano)'],
+  sw:['ANZA','Inapakia…','Mambo ya kufanya (uliza chochote)'],
+  ca:['COMENÇA','Carregant…','Coses per fer (pregunta el que vulguis)'],
+  hr:['START','Učitavanje…','Što raditi (pitaj bilo što)'],
+  sr:['СТАРТ','Учитавање…','Шта радити (питај било шта)'],
+  sl:['ZAČNI','Nalaganje…','Kaj početi (vprašaj karkoli)'],
+  lt:['PRADĖTI','Įkeliama…','Ką veikti (klausk bet ko)'],
+  lv:['SĀKT','Ielādē…','Ko darīt (jautā jebko)'],
+  et:['ALUSTA','Laadimine…','Mida teha (küsi mida tahes)']
+};
+const UI_K={'START':0,'Loading…':1,'Things to do (ask anything)':2};
+function UIT(en){ if(!ULANG.on)return en; try{ const row=UI_T[ULANG.ui], i=UI_K[en]; return row&&i!==undefined&&row[i]?row[i]:en; }catch(e){ return en; } }   // a label in the visitor's language; the English itself on an English browser, or when there is no translation
+if(ULANG.on){ try{ document.getElementById('startBtn').textContent=UIT('Loading…'); }catch(e){} }
+function langLine(kind){                                             // for a Gemini system instruction: the visitor's language. '' on an English browser. kind 'dialogue': the two-voice conversations (things to do, counselling)
+  if(!ULANG.on)return '';
+  const d=kind==='dialogue';
+  return "\n\nTHE VISITOR'S LANGUAGE. This visitor's browser is set to "+ULANG.name+" ["+ULANG.tag+"]. What you write for them to hear or read is in "+ULANG.base+": "
+    +(d?'every "text" line of the conversation, and any "say" line in "actions"':'your "reply", every "say" line, your questions, and the names, notes and signs of what you make')
+    +" — unless they write to you in another language; then use theirs. Only the words change: the JSON keys, "
+    +(d?'the "speaker" names and the "task" key stay exactly as given, and "note" and "organiserPlan" are read by the organiser, so they stay in English'
+       :'"do" values, ids, animation names and place names stay exactly as given, and what is looked for on Sketchfab ("find", "q") stays in English')
+    +'. Add "lang" to your JSON: the code of the language you wrote in (for example "'+ULANG.code+'").';
+}
+const LANG_SAID=[];                                                  // what Gemini wrote lately, and in which language: [text, lang]
+function langNorm(t){ return String(t).replace(/[<>]/g,'').replace(/\*+/g,'').replace(/\s+/g,' ').trim(); }
+function langNote(d,raw){                                            // d: an answer from Gemini, parsed (any shape); raw: its own text, for the "lang" it gave
+  if(!ULANG.on||!d)return;
+  let lang=''; try{ const m=/"lang"\s*:\s*"([A-Za-z]{2,3}(?:[-_][A-Za-z0-9]{2,8})*)"/.exec(String(raw||'')); if(m)lang=m[1].replace(/_/g,'-'); }catch(e){}
+  if(!lang||lang.toLowerCase().split('-')[0]===ULANG.code)lang=ULANG.tag;   // not said, or the visitor's own language: the browser's tag (it carries the region)
+  const walk=(v,n)=>{ if(n>6)return;
+    if(typeof v==='string'){ const t=langNorm(v); if(t.length>1)LANG_SAID.push([t,lang]); }
+    else if(Array.isArray(v))v.forEach(x=>walk(x,n+1));
+    else if(v&&typeof v==='object')for(const k in v){ if(k!=='persona'&&k!=='do'&&k!=='lang')walk(v[k],n+1); } };
+  walk(d,0); if(LANG_SAID.length>400)LANG_SAID.splice(0,LANG_SAID.length-400);
+}
+function langOf(text){                                               // the language of a line about to be spoken, if Gemini wrote it (the whole of something it wrote, or a piece of it); null for the hall's own lines
+  if(!ULANG.on||!LANG_SAID.length)return null;
+  const t=langNorm(text); if(!t)return null;
+  for(let i=LANG_SAID.length-1;i>=0;i--){ const n=LANG_SAID[i]; if(n[0]===t||(t.length>=4&&n[0].length>t.length&&n[0].indexOf(t)>=0))return n[1]; }
+  return null;
+}
+function langDense(t){ return /[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(t)?2.6:/[\u0e00-\u0eff\u1000-\u109f\u1780-\u17ff]/.test(t)?1.4:1; }   // how much longer a letter of this script takes to say than a Latin one
+function spLen(t){ return ULANG.on?Math.round(t.length*langDense(t)):t.length; }   // a line's length for the timers that count letters; its own length on an English browser
+const LANG_MEN=new Set(('andrew brian remy florian giuseppe hyunsu yunfan yunxiao yunyi william ryan ollie davis lucien tristan macerio alessio masaru arjun '
+  +'henri antoine jean thierry gerard fabrice claude paul guillaume thomas conrad killian jonas jan stefan markus yannick viktor '
+  +'alvaro jorge tomas gonzalo alonso pablo raul juan diego carlos luca cosimo antonio duarte felipe daniel maarten arnaud xander frank '
+  +'dmitry pavel yuri marek adam krzysztof ahmet tolga cem keita ichiro otoya hattori injoon yunjian yunxi yunyang yunxia yunjhe wanlung '
+  +'kangkang zhiwei danny hamed shakir maged tarik naayf madhur hemant ardi andika namminh niwat pattara rizwan osman mattias oskar bengt '
+  +'finn henrik jon jeppe magnus harri onni antonin jakub lukas filip tamas szabolcs emil andrei borislav ivan nestoras nikos stefanos '
+  +'ostap avri asaf farid asad pradeep valluvar mohan angelo srecko matej nicholas rok lado leonas nils kert enric rafiki willem').split(' '));   // men among the voices of other languages, by first name (the rest are taken to be women)
+function langVoice(sp,lang){                                         // for a speaker and a language: {voice,lang} for the utterance; null = leave it as it is (English)
+  const code=String(lang).toLowerCase().split('-')[0]; if(!code||code==='en')return null;
+  const tag=String(lang).indexOf('-')>0?String(lang):(code===ULANG.code?ULANG.tag:code);
+  if(!VOICES.length)return {voice:null,lang:tag};                    // no list (some phones): the browser picks by the language
+  if(sp.lv&&sp.lv.code===code&&sp.lv.epoch===VOICE_EPOCH&&sp.lv.own===sp.voice)return sp.lv.out;
+  const low=x=>String(x||'').replace(/_/g,'-').toLowerCase();
+  const ok=x=>!(networkBlocked()&&x.localService===false), multi=x=>/multilingual/i.test(x.name),
+        male=x=>LANG_MEN.has(voiceWho(x).split(/[\s-]/)[0]), fits=x=>!sp.gender||((sp.gender==='male')===male(x)),
+        inL=x=>low(x.lang).split('-')[0]===code, score=x=>scoreVoice(x)+(low(x.lang)===low(tag)?5:0);
+  let v=null;
+  if(sp.voice&&multi(sp.voice)&&ok(sp.voice))v=sp.voice;             // their own voice speaks it
+  else{
+    const taken=new Set();                                           // voices others already speak this language with: everyone keeps their own
+    for(const k in SPEAKERS){ const o=SPEAKERS[k]; if(!o||o===sp)continue; if(o.voice&&multi(o.voice))taken.add(o.voice.name); if(o.lv&&o.lv.code===code&&o.lv.out.voice)taken.add(o.lv.out.voice.name); }
+    const pool=VOICES.filter(ok), nat=pool.filter(inL).sort((a,b)=>score(b)-score(a)), mul=pool.filter(x=>multi(x)&&!inL(x)).sort((a,b)=>score(b)-score(a));
+    const order=[...nat.filter(fits),...mul.filter(fits),...nat,...mul];
+    v=order.find(x=>!taken.has(x.name))||order[0]||null;
+  }
+  const out={voice:v||sp.voice||null,lang:v&&inL(v)?String(v.lang).replace(/_/g,'-'):tag};   // no voice here can speak it: their own voice, with the language named (the best a browser without one can do)
+  sp.lv={code,epoch:VOICE_EPOCH,own:sp.voice,out};
+  return out;
+}
+function langVoiceFor(sp,text){ const lang=langOf(text); if(!lang)return null; const v=langVoice(sp,lang); return v?{voice:v.voice,lang:v.lang,dense:langDense(text)}:null; }
+function langChunks(text,max){                                       // sentence by sentence, for scripts without spaces: 。！？ end a sentence as . ! ? do, ，、； a clause
+  const clean=String(text).replace(/\s+/g,' ').trim(), out=[]; let buf='';
+  for(const p of (clean.match(/[^。！？.!?…]+[。！？.!?…]*["'」』）)\]]*\s*/g)||[clean])){
+    if(buf&&(buf+p).length>max){ out.push(buf.trim()); buf=''; }
+    if(p.length<=max){ buf+=p; continue; }
+    let rest=p;
+    while(rest.length>max){ let cut=-1; const re=/[，、；：,;:]\s*|\s/g, win=rest.slice(0,max); let m; while((m=re.exec(win)))cut=m.index+m[0].length;
+      if(cut<max*0.35)cut=max; out.push(rest.slice(0,cut).trim()); rest=rest.slice(cut); }
+    buf=rest;
+  }
+  if(buf.trim())out.push(buf.trim());
+  return out.length?out:[clean];
+}
+
+/* ============================================================
    VOICES — subtitles + local TTS (recorded lines come later)
    ============================================================ */
 const SPEAKERS={
@@ -10601,6 +11463,51 @@ function pickBest(gender){
   const ranked=(pool.length?pool:VOICES).slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
   return ranked[0]||null;
 }
+// ---- different people, different voices (2026-10-01, asked for: Optimus "a different natural voice… different from jack",
+// and whoever Gemini puts into the hall "so they don't all sound like jack"). They had Jack's voice at another pitch, and
+// the online natural voices take little notice of pitch. voicePool is every different natural voice this machine has for
+// a gender, best first: the ranked list above, then the browser's other English natural voices (VOICE_MORE). One entry
+// per person — Andrew's Multilingual and Online voices are one man — and natural voices only (the user, 2026-10-01: "i only
+// want one if there is only one natural one"): the old Windows voices are never in it. Where a browser has one natural voice
+// for a gender (Chrome on Windows: one man), everybody of that gender shares it, at their own pitch, as they always did.
+const VOICE_MORE={
+  male:['microsoft liam','microsoft connor','microsoft mitchell','microsoft luke','microsoft prabhat','microsoft sam','microsoft wayne','microsoft james','microsoft abeo','microsoft chilemba','microsoft elimu'],
+  female:['microsoft molly','microsoft leah','microsoft neerja','microsoft yan','microsoft luna','microsoft rosa','microsoft ezinne','microsoft asilia','microsoft imani']
+};
+function voiceWho(v){ return String((v&&v.name)||'').toLowerCase().replace(/^microsoft\s+/,'').replace('multilingual','').replace(/\s+(?:online\b.*|desktop\b.*|-\s.*|\(.*)$/,'').trim(); }   // whose voice it is: "Microsoft AndrewMultilingual Online (Natural) - English (United States)" → "andrew"
+let VPOOL={key:''};
+function voicePool(gender){
+  const key=VOICE_EPOCH+'|'+VOICES.length+'|'+networkBlocked();
+  if(VPOOL.key!==key)VPOOL={key};
+  if(VPOOL[gender])return VPOOL[gender];
+  const out=[],seen=new Set(), take=(kw,natural)=>{ const v=matchVoice(kw); if(!v)return; const t=voiceTier(v), w=voiceWho(v);
+    if(t==='legacy'||(natural&&t!=='neural')||seen.has(w))return; seen.add(w); out.push(v); };
+  VOICE_RANK[gender].forEach(kw=>take(kw,false)); VOICE_MORE[gender].forEach(kw=>take(kw,true));
+  return VPOOL[gender]=out;
+}
+function voiceOther(gender,taken){ const used=new Set((taken||[]).filter(Boolean).map(voiceWho)); return voicePool(gender).find(v=>!used.has(voiceWho(v)))||null; }   // the best voice of a gender that none of these has
+function voiceNamed(s){                                               // a voice asked for by its name ("Guy", "guy (en-US)"): {voice,gender,who}; null for "male", "female" and names this machine has not got
+  s=String(s==null?'':s).toLowerCase().replace(/\(.*$/,'').replace(/^microsoft\s+/,'').trim(); if(!s||/^(m|f|male|female|man|woman|boy|girl)$/.test(s))return null;
+  for(const g of ['male','female']){ const v=voicePool(g).find(x=>voiceWho(x)===s); if(v)return {voice:v,gender:g,who:s}; }
+  return null;
+}
+function voicesUsed(but){                                             // whose voices are spoken for: Jack's, Optimus's, Elara's, and those of the people Gemini made who are still here
+  const used=new Set();
+  for(const k in SPEAKERS){ const o=SPEAKERS[k]; if(k===but||!o||!o.voice)continue;
+    if(k==='jack'||k==='optimus'||k==='elara'||(o.pick&&GA.made.some(m=>!m.gone&&m.id===k)))used.add(voiceWho(o.voice)); }
+  return used;
+}
+function gaVoicePick(id,sp){                                          // someone Gemini made: the voice it named, if nobody has it; else the best one nobody here has; else the best there is
+  const g=sp.gender==='female'?'female':'male', pool=voicePool(g), used=voicesUsed(id);
+  if(sp.pick&&sp.pick.name&&!used.has(sp.pick.name)){ const v=pool.find(x=>voiceWho(x)===sp.pick.name); if(v)return v; }
+  return pool.find(v=>!used.has(voiceWho(v)))||pool[GA.made.filter(m=>!m.gone&&SPEAKERS[m.id]&&SPEAKERS[m.id].pick).length%Math.max(1,pool.length)]||pickBest(g);
+}
+function gaVoicesLine(){                                              // for the brief: the voices Gemini can give the people it makes, by name — only the ones nobody has (shown them all with who had which, it still named taken ones)
+  if(voicePool('male').length+voicePool('female').length<3)return '';
+  const used=voicesUsed(), cap=t=>t.replace(/(^|\s)\S/g,c=>c.toUpperCase()), tag=v=>cap(voiceWho(v))+' ('+String(v.lang||'').replace('_','-')+')';
+  const free=g=>voicePool(g).filter(v=>!used.has(voiceWho(v))).slice(0,14).map(tag).join(', ')||'none left, the game shares one out';
+  return '\nVOICES. Everyone here speaks in one of this browser’s voices, and nobody you put into the hall should sound like someone already in it. "voice" takes one of these by name, the ones nobody has yet — men: '+free('male')+'; women: '+free('female')+'. With "male" or "female", or nothing, the game picks one of them.\n';
+}
 function chosenVoice(who){ try{ const n=localStorage.getItem('atd:voice:'+who); return n?VOICES.find(v=>v.name===n)||null:null; }catch(e){ return null; } }
 function assignVoices(){
   if(!VOICES.length)return;
@@ -10610,11 +11517,12 @@ function assignVoices(){
   SPEAKERS.visitor.voice  =SPEAKERS.you.voice;          // only heard if a recording will not load
   SPEAKERS.scientist.voice=SPEAKERS.custodian.voice;   // same voice, distinct pitch — never robotic David
   SPEAKERS.jack.voice     =chosenVoice('jack')||SPEAKERS.custodian.voice;   // likewise: the best male voice the machine has, at his own pitch
-  SPEAKERS.optimus.voice  =chosenVoice('optimus')||SPEAKERS.custodian.voice;   // and the robot, lower still
+  SPEAKERS.optimus.voice  =chosenVoice('optimus')||voiceOther('male',[SPEAKERS.jack.voice])||SPEAKERS.custodian.voice;   // the robot: a voice of his own (2026-10-01, asked for) — the next best man this machine has after Jack's; with only one natural voice here, Jack's, lower, as before
   SPEAKERS.instructor.voice=chosenVoice('instructor')||SPEAKERS.custodian.voice;
   SPEAKERS.stranger.voice =SPEAKERS.custodian.voice;   // the best male voice here, at his own pitch
   SPEAKERS.elsa.voice     =pickBest('female');
   SPEAKERS.system.voice   =VOICES[0];
+  for(const k in SPEAKERS){ const sp=SPEAKERS[k]; if(sp&&sp.pick){ try{ sp.voice=gaVoicePick(k,sp)||sp.voice; }catch(e){} } }   // and whoever Gemini made: theirs again, now the list has changed (the natural voices arrive late)
 }
 if('speechSynthesis' in window){
   refreshVoices();
@@ -10704,8 +11612,9 @@ function ttsSpeak(sp,text,onDone){
   const run={cancelled:false,spoke:false,finish:()=>{if(run.finished)return;run.finished=true;if(onDone)onDone();}};
   ttsRun=run;
   if(!('speechSynthesis' in window)){setTimeout(run.finish,Math.max(2000,text.length*60));return run;}
-  const chunks=chunkText(text);
-  startTtsKeepAlive(sp.voice);
+  const LV=ULANG.on?langVoiceFor(sp,text):null;   // (the visitor's language, a supplementary section: null on an English browser, and for the hall's own English lines)
+  const chunks=LV&&LV.dense>1?langChunks(text,Math.round(MAX_CHUNK/LV.dense)):chunkText(text);
+  startTtsKeepAlive(LV?LV.voice:sp.voice);
   const speakChunk=(idx,attempt)=>{
     if(run.cancelled||run!==ttsRun)return;
     if(idx>=chunks.length){
@@ -10717,10 +11626,11 @@ function ttsSpeak(sp,text,onDone){
     const u=new SpeechSynthesisUtterance(part);
     LIVE_UTTER.add(u);
     if(sp.voice){u.voice=sp.voice;u.lang=sp.voice.lang;}
+    if(LV){u.voice=LV.voice;u.lang=LV.lang;}
     u.pitch=sp.pitch;u.rate=sp.rate;u.volume=1;
     let started=false,settled=false,ticks=0,quiet=0,iv=null;
     let sawWord=false,lastWord=0;
-    const expected=(part.length/(14*u.rate))*1000+1500;
+    const expected=((LV?part.length*LV.dense:part.length)/(14*u.rate))*1000+1500;
     const done=retry=>{
       if(settled)return;settled=true;
       LIVE_UTTER.delete(u);
@@ -10777,13 +11687,14 @@ function ttsSpeak(sp,text,onDone){
 //  The recorded mp3s in assets/voices/ and quick-stories are untouched.)
 function say(who,text,onDone){
   const sp=SPEAKERS[who]||SPEAKERS.system;
+  { const mo=GA.made.find(o=>!o.gone&&o.model&&o.id===who); if(mo)mo.talk=Math.max(2.6,spLen(text)*0.07); }   // a Sketchfab character: it stirs while it speaks (gaModelTick)
   if(sp.lips)LIP.who=who;                       // whose mouth the viseme queue drives (lipUpdate checks)
   subEl.innerHTML=(sp.name?'<b style="color:'+sp.color+'">'+sp.name+':</b> ':'')+text;
   subEl.style.opacity='1';
-  clearTimeout(subTimer);subTimer=setTimeout(()=>subEl.style.opacity='0',Math.max(2600,text.length*70));
+  clearTimeout(subTimer);subTimer=setTimeout(()=>subEl.style.opacity='0',Math.max(2600,spLen(text)*70));
   const pp=persons[who];
-  if(pp){pp.talk=Math.max(2.6,text.length*0.07);pp.talkClip=pickTalkClip(pp);}
-  else { const fp=FOLLOWERS.find(f=>f.key===who); if(fp)fp.talk=Math.max(2.6,text.length*0.07); }   // a guest who follows (Jack): he stands to talk, as she does
+  if(pp){pp.talk=Math.max(2.6,spLen(text)*0.07);pp.talkClip=pickTalkClip(pp);}
+  else { const fp=FOLLOWERS.find(f=>f.key===who); if(fp)fp.talk=Math.max(2.6,spLen(text)*0.07); }   // a guest who follows (Jack): he stands to talk, as she does
   if(!narrationOn){if(onDone)setTimeout(onDone,Math.max(1800,text.length*55));return;}
   const file=VOICE_FILES[text];
   if(file){
@@ -10817,7 +11728,7 @@ function saySequence(who,lines,onDone){
     let advanced=false;
     const go=()=>{ if(advanced)return; advanced=true; setTimeout(step,500); };
     say(who,txt,go);                                     // advances when the line truly finishes
-    const est=Math.max(2.8,txt.length*0.07)*1000;
+    const est=Math.max(2.8,spLen(txt)*0.07)*1000;
     setTimeout(go,est*2.5+6000);                         // safety net if no completion ever fires
   };
   step();
@@ -11059,13 +11970,14 @@ addEventListener('keydown',e=>{
     if(menuPage)(menuPage==='map'?closeMenu(false):openMenu('map'));
     else if(!anyModalOpen())openMenu('map');
   }
+  if(e.code==='KeyH'&&state.phase==='play'&&!tour.active&&!menuPage&&!anyModalOpen()&&holoHere())holoOpen('space');   // the Hologram Room's console, from anywhere in it (2026-10-01)
   if(e.code==='KeyC'&&state.phase==='play'&&!tour.active){          // the fountain (AI)
     if(menuPage)(menuPage==='fountain'?closeMenu(false):openMenu('fountain'));
     else if(!anyModalOpen())openMenu('fountain');
   }
   if(e.code==='Escape'){
     // close an open game-select modal first; otherwise toggle the menu
-    const sel=['missionModal','rallyModal','deliveryModal','velocityModal','blindspotsModal','fountainModal','whatModal','todoModal','ideasModal','communityModal','elaraModal','submitModal'].map(id=>document.getElementById(id)).find(m=>m&&m.style.display!=='none');
+    const sel=['missionModal','rallyModal','deliveryModal','velocityModal','blindspotsModal','fountainModal','whatModal','todoModal','ideasModal','communityModal','elaraModal','holoModal','submitModal'].map(id=>document.getElementById(id)).find(m=>m&&m.style.display!=='none');
     if(sel){
       if(sel.id==='fountainModal'||sel.id==='whatModal'||sel.id==='todoModal'||sel.id==='ideasModal'){
         stopFountainVoices();                          // silence the water on the way out
@@ -11073,7 +11985,7 @@ addEventListener('keydown',e=>{
         document.body.classList.remove('qOpen');       // and let the HUD prompts return
         if(sel.id==='fountainModal')fountainAtWater=false;
       }
-      if(sel.id==='elaraModal')document.body.classList.remove('qOpen');   // the people's panel (2026-10-01): the HUD prompts back too
+      if(sel.id==='elaraModal'||sel.id==='holoModal')document.body.classList.remove('qOpen');   // the people's panel, the Hologram Room's (2026-10-01): the HUD prompts back too
       sel.style.display='none';lockPointer();
     }
     else if(menuPage){ if(performance.now()-LOCKX.escAt>400)closeMenu(false); }   // (not the same Esc that just opened it, in a browser that also hands the page that key)
@@ -11081,7 +11993,7 @@ addEventListener('keydown',e=>{
   }
 });
 function anyModalOpen(){
-  return ['menuModal','missionModal','rallyModal','deliveryModal','velocityModal','blindspotsModal','fountainModal','whatModal','todoModal','ideasModal','communityModal','elaraModal','submitModal','devModal']
+  return ['menuModal','missionModal','rallyModal','deliveryModal','velocityModal','blindspotsModal','fountainModal','whatModal','todoModal','ideasModal','communityModal','elaraModal','holoModal','submitModal','devModal']
     .some(id=>{const m=document.getElementById(id);return m&&m.style.display&&m.style.display!=='none';});
 }
 addEventListener('keyup',e=>keys[e.code]=false);
@@ -11303,6 +12215,7 @@ function groundAt(x,z,y){
     if(b.rad){if(Math.hypot(x-b.x,z-b.z)<b.rad+0.25)g=b.h;continue;}
     if(Math.abs(x-b.x)<b.hw+0.25&&Math.abs(z-b.z)<b.hd+0.25)g=b.h;
   }
+  if(HOLO.ground.length&&holoHere()){ const h=holoGroundAt(x,z,y); if(h!==null&&h>g)g=h; }   // the Hologram Room: standing on what was imported
   return g;
 }
 
@@ -11358,6 +12271,7 @@ function update(dt){
   }
   const spd=player.speed*(sprint.active?1.6:1);
   if((fwd||strafe)&&!LIFTX.travel){          // riding the lab lift: the car has your feet — look where you like, but you go with it
+    const hx0=player.pos.x, hz0=player.pos.z;   // (where the step starts: the Hologram Room's solid things, holoBlock)
     camera.getWorldDirection(_f);_f.y=0;_f.normalize();
     _r.crossVectors(_f,_UP).normalize();
     _m.set(0,0,0).addScaledVector(_f,fwd).addScaledVector(_r,strafe);
@@ -11365,13 +12279,14 @@ function update(dt){
     const inAnnexe=player.pos.z<-49&&player.pos.z>ANNEXE.z0&&player.pos.x>ANNEXE.x0&&player.pos.x<ANNEXE.x1;
     // the world's edge: once the city is in, the far edge of its four tiles (walls stand there too); until then the
     // hall and its wings, as before — the garden's back opening leads nowhere until the street has arrived
-    const B=CITY.bounds;
+    const B=holoHere()?HOLO.bounds:CITY.bounds;                           // in the Hologram Room's space, its own edge (HOLO)
     player.pos.x=clamp(player.pos.x+_m.x*spd*dt,B?B[0]+0.6:(inAnnexe?ANNEXE.x0+0.6:HALL.minX+0.6),B?B[2]-0.6:(player.pos.z<-47?RETREAT.x1-0.6:66));   // west into the Annexe, east into the Nexus/Retreat
     const minZ=(player.pos.x>28&&player.pos.x<RETREAT.x1)?RETREAT.z0+0.6
       :(player.pos.x>ANNEXE.x0&&player.pos.x<ANNEXE.x1)?ANNEXE.z0+0.6
       :HALL.minZ+0.6;                                                        // north into the Retreat or the Annexe, else the hall's north face
     player.pos.z=clamp(player.pos.z+_m.z*spd*dt,B?Math.min(minZ,B[1]+0.6):minZ,B?B[3]-0.6:77);   // south into the garden, and out to the street, to the city's far edge
     resolveCollision(player.pos,player.r);
+    if(HOLO.ground.length&&holoHere())holoBlock(hx0,hz0);
   }
   // ---- walking with Elara: steer with WASD any time; three seconds after you stop, your feet fall back in behind her ----
   if(fwd||strafe)PF.last=state.time;
