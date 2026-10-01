@@ -11276,8 +11276,10 @@ function gaLiftBusy(){ return !!(LIFTX.travel||LIFTS.some(L=>L.riding)); }
    'I want to talk to an alien about the cosmos' I would like it to spawn an alien that starts talking about the cosmos, and
    the alien could have questions also") ----
    One action, {"do":"sketchfab","find":"…","as":"thing"|"character"|"place"}. The search and the fetching are the Hologram
-   Room's (holoSearch — keyless models first — the mirror, then the hall's key; a login is never asked for here, because a
-   browser only opens that window on a click). A THING stands where it is put, sized in metres. A CHARACTER is a thing
+   Room's (holoSearch). A chat picks among the models that need NO KEY — the mirror's — whenever the search found any: the
+   hall's key is used only when it found none, or when none of those copies will come (asked for 2026-10-02: the key gives
+   a visitor ten an hour, and what a chat fetches is not the visitor's own pick). A login is never asked for here, because a
+   browser only opens that window on a click. A THING stands where it is put, sized in metres. A CHARACTER is a thing
    that is someone: a voice, a mind of its own when given a persona (the same chat any person put into the hall has), its
    opening line as it arrives, and then ITS chat opens, so the visitor answers it and not the one they asked (GA.after).
    Nothing fetched has the hall's bones, so it cannot play the hall's animations: it plays the ones it came with (anim, by
@@ -11432,7 +11434,7 @@ GA_DO.sketchfab=function*(a,ctx){
     if(a.space!==undefined&&a.space!==null&&String(a.space).trim()!==''){ S=/^(here|this|current|same)$/i.test(String(a.space).trim())?here:holoSpaceOf(a.space);
       if(!S){ ctx.log.push('sketchfab: there is no space "'+gaText(a.space,20)+'" — they are 1 to '+HOLO.spaces.length+' ("here" only while the visitor stands in one)'); return; } }
     if(!S)S=holoPickSpace();
-    const best=holoPlaceRank(res,q)[0];
+    const free=res.filter(r=>r.mirror), best=holoPlaceRank(free.length?free:res,q)[0];   // among the ones that need no key, whenever there are any
     const pick=Object.assign({},best,{role:'environment'}), was=holoTitle(S), go=!(a.go===false||/^(false|no|0|later|stay)$/i.test(String(a.go))); let done=false, ended=[];
     try{ holoBuildSpace(S); if(holoRuns(S))holoEnd(S); }catch(e){}
     const pend=S.picks.filter(q=>!q.made); S.picks=[pick]; HOLO.sp=S;                     // (what the visitor had on their own list for that space waits: only this is made now)
@@ -11450,25 +11452,26 @@ GA_DO.sketchfab=function*(a,ctx){
   if(GA.made.filter(o=>!o.gone&&o.model).length>=GA_MODEL.max){ ctx.log.push('sketchfab: no more models for now — '+GA_MODEL.max+' is the most at once; remove one first'); return; }
   let cands=gaModelRank(res,q,isChar), seen=0;
   if(!cands.length){ ctx.log.push('sketchfab: everything found for "'+q+'" is too big to bring here (over '+GA_MODEL.maxMB+' MB) — other words, or as a "place"'); return; }
+  const keyless=cands.some(r=>r.mirror); if(keyless)cands=cands.filter(r=>r.mirror);   // among the ones that need no key, whenever there are any: the hall's key only when there are none
   if(human){                                                          // the skeletons of the likeliest eight, looked at first: one the hall can animate goes to the front
     const top=cands.filter(r=>r.mirror).slice(0,8); let peeks=null;
     if(top.length){ banner('Looking at their skeletons…'); Promise.all(top.map(r=>holoPeek(r.mirror).catch(()=>null))).then(pk=>{ peeks=pk; },()=>{ peeks=[]; });
       t0=GA.clock; yield ()=>peeks!==null||GA.clock-t0>20; }
     if(peeks){ seen=peeks.filter(Boolean).length; const good=top.filter((r,i)=>peeks[i]&&peeks[i].readable), bad=new Set(top.filter((r,i)=>peeks[i]&&!peeks[i].readable)); good.forEach(r=>{ r.peekOk=true; });
       cands=good.concat(cands.filter(r=>good.indexOf(r)<0&&!bad.has(r))).concat(cands.filter(r=>bad.has(r))); } }   // readable ones, then the ones not looked at, then the ones that are not
-  cands=cands.slice(0,human?(seen&&!cands[0].peekOk?1:3):1); let pick=cands[0];
+  const one=human&&seen>0&&!cands[0].peekOk;                          // the skeletons were looked at and none can be animated: the first that comes is kept (three are not fetched to learn it again)
+  cands=cands.slice(0,(human||keyless)?3:1); let pick=cands[0];       // up to three: someone, until the hall can read a skeleton; anything keyless, until one comes
   const spec=a.at!==undefined?a.at:(a.to!==undefined?a.to:a.place); let pl=spec!==undefined?gaPlace(spec,ctx):null;
   if(!pl){ const f=-3.5; pl={x:player.pos.x+Math.sin(look.yaw)*f,z:player.pos.z+Math.cos(look.yaw)*f,y:player.y,label:'in front of the visitor'}; }
   const at=gaSpotClear(pl); if(!at){ ctx.log.push('sketchfab: nowhere to put it '+gaWhere(pl)); return; }
   let body=null, err=null, fin=false, tried=0, readable=false;
-  const fetchOne=async(pk)=>{                                         // that model, by the first route that has it
-    let L=pk.mirror?{glb:{url:pk.mirror,size:0}}:await holoLinksHall(pk);
+  const fetchOne=async(pk,viaKey)=>{                                  // that model: its keyless copy when it has one (viaKey: through the hall's key all the same)
+    let L=(pk.mirror&&!viaKey)?{glb:{url:pk.mirror,size:0}}:await holoLinksHall(pk);
     if(!L&&HOLO.token&&Date.now()<HOLO.tokenExp)L=await holoLinksUser(pk,HOLO.token);
     if(!L)throw new Error(pk.whyNotHall===429?'the hall’s Sketchfab limit for this hour is used up':'it needs a Sketchfab login — the Hologram Room’s door on lab level 5 asks for one');
     const opts=['glb','gltf'].map(k=>L[k]).filter(o=>o&&o.url).sort((x,y)=>(x.size||1e12)-(y.size||1e12)); let last=null, got=null;
     for(const o of opts){ try{ got=await holoParse(await holoBytes(o.url,o.size,pk,(t)=>banner(t))); break; }catch(e){ last=e; } }
-    if(!got&&pk.mirror){ const L2=await holoLinksHall(pk); if(L2)for(const k of ['glb','gltf'])if(!got&&L2[k]&&L2[k].url){ try{ got=await holoParse(await holoBytes(L2[k].url,L2[k].size,pk,(t)=>banner(t))); }catch(e){ last=e; } } }
-    if(!got)throw last||new Error('the download failed');
+    if(!got)throw last||new Error('the download failed');           // (a keyless copy that will not come is not fetched through the key: the next keyless one is tried)
     return got; };
   (async()=>{ let spare=null;                                         // a human-shaped someone: up to three are tried, until the hall can read one's skeleton
     for(const pk of cands){ tried++;
@@ -11476,8 +11479,11 @@ GA_DO.sketchfab=function*(a,ctx){
         if(!human){ body=got; pick=pk; break; }
         if(gaRigProbe(got)){ body=got; pick=pk; readable=true; break; }
         if(!spare)spare=[got,pk]; else { try{ gaDrop(got); }catch(e){} }
+        if(one)break;
         banner('“'+pk.name+'” cannot be animated here — trying another…');
       }catch(e){ err=String(e&&e.message||e).slice(0,140); } }
+    if(!body&&!spare&&keyless){                                        // none of the keyless copies would come (the mirror cannot be reached from here, perhaps): the first of them, through the hall's key
+      try{ tried++; const got=await fetchOne(cands[0],true); body=got; pick=cands[0]; readable=human&&gaRigProbe(got); }catch(e){ err=String(e&&e.message||e).slice(0,140); } }
     if(!body&&spare){ body=spare[0]; pick=spare[1]; spare=null; }       // none the hall can read: the first that came, with whatever it brought of its own
     if(spare){ try{ gaDrop(spare[0]); }catch(e){} }
     fin=true; })();
