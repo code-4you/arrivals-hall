@@ -429,7 +429,7 @@
     <div class="mpage" id="page-privacy" style="display:none">
       <div class="pvDoc">
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em">PRIVACY &amp; TERMS</div>
-        <div style="font-size:12px;color:#8fa3bf">Last updated 28 September 2026</div>
+        <div style="font-size:12px;color:#8fa3bf">Last updated 2 October 2026</div>
         <p>The Arrivals Hall is a free, experimental game made by <a href="https://mvandiermen.com/" target="_blank" rel="noopener">Michael van Diermen</a>. This page says what the hall keeps about you, why, who else gets it and for how long — and how to delete it.</p>
 
         <h3>Use at your own risk</h3>
@@ -441,7 +441,7 @@
           <li><b>Your save</b> — a save key and your progress: missions, stories heard, doors opened, credits and what you add in the fountain app. <span class="pvWhy">Why: so you can keep playing, here or on another device.</span></li>
           <li><b>Your profile for the organiser / counselor</b> — your things-to-do list, counselling notes and neighbours preference. <span class="pvWhy">Why: so the organiser can read it and help you. Only the organiser can see it.</span></li>
           <li><b>Ideas you post</b> — shown to everyone on the Ideas board. <span class="pvWhy">Why: that is what the board is for. They are kept with your save so you can delete your own.</span></li>
-          <li><b>What you ask Elara or Optimus, and their replies</b> — seen only by the organiser. <span class="pvWhy">Why: to learn what people want from the hall.</span></li>
+          <li><b>Chat and Hologram Room logs</b> — what you ask Elara, Jack, Optimus or anyone else in the hall, and their replies; and in the Hologram Room, what you ask at its console, its replies, the story it begins and the models you pick and build. Seen only by the organiser. <span class="pvWhy">Why: the logs are kept for research on what we build next for you.</span></li>
           <li><b>Visits</b> — your IP address, the country and region it comes from, when you were here and which rooms you spent time in. <span class="pvWhy">Why: to stop abuse — limits are counted per address, for example 60 AI chats an hour — and to count visitors by place. The boards show places, never IP addresses.</span></li>
           <li><b>Messages</b> you send with Contact us — your name, link and message. <span class="pvWhy">Why: to reply to you.</span></li>
           <li><b>On your own device</b> — your browser keeps your progress, settings and where you last stood. That stays on your device.</li>
@@ -450,10 +450,11 @@
 
         <h3>Who else gets it</h3>
         <ul>
-          <li><b>Google (Gemini)</b> gets the words of your chats with Elara and Optimus and your counselling text, to write the replies. They pass through our server, so Google does not get your IP address. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API terms</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy policy</a></li>
+          <li><b>Google (Gemini)</b> gets the words of your chats with the hall’s characters and with the Hologram Room, and your counselling text, to write the replies. They pass through our server, so Google does not get your IP address. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API terms</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy policy</a></li>
           <li><b>ip-api.com</b> gets your IP address from our server, to look up its country and region (Cerebrum also looks up your city). <a href="https://ip-api.com/docs/legal" target="_blank" rel="noopener">ip-api.com legal</a></li>
           <li><b>Where it runs</b> — our server at lightsmithforge.linkpc.net keeps the data; GitHub hosts the hall’s pages; itch.io and Game Jolt show it in a frame if you play it there. Like any website, they see your IP address when you visit.</li>
           <li><b>Code, a font and music</b> load from other sites (jsDelivr, cdnjs, threejs.org, OpenGameArt), which see your IP address when your browser fetches them.</li>
+          <li><b>Sketchfab and Hugging Face</b> — in the Hologram Room, and when someone in the hall fetches a model for you, your browser sends the search words to Sketchfab and downloads the pictures and models from Sketchfab or, for the “no login” ones, from Hugging Face. They see your IP address and what was searched for or downloaded. If you log in to Sketchfab there, that is between you and Sketchfab. <a href="https://sketchfab.com/privacy" target="_blank" rel="noopener">Sketchfab privacy policy</a> · <a href="https://huggingface.co/privacy" target="_blank" rel="noopener">Hugging Face privacy policy</a></li>
         </ul>
 
         <h3>How long we keep it</h3>
@@ -466,8 +467,10 @@
         <p>Your save key and this browser prove the data is yours. Deleting can’t be undone.</p>
         <button class="menuBtn" id="pvDelProfile">✕&nbsp; Delete my profile for the organiser / counselor</button>
         <div class="pvNote">Removes your things-to-do list, counselling notes and neighbours preference — from this device, from your save and from the organiser.</div>
+        <button class="menuBtn" id="pvDelLogs">✕&nbsp; Delete my chat and Hologram Room logs</button>
+        <div class="pvNote">Removes what you asked the hall’s characters and the Hologram Room, their replies, and the record of the stories and models made for you. Your save, your progress and your profile stay.</div>
         <button class="menuBtn" id="pvDelAll">✕&nbsp; Delete everything and start again</button>
-        <div class="pvNote">Removes your save and all its progress, your profile, the ideas and wishes you wrote, what you asked Elara or Optimus and the record of this visit — then the hall starts fresh on this device.</div>
+        <div class="pvNote">Removes your save and all its progress, your profile, the ideas and wishes you wrote, your chat and Hologram Room logs and the record of this visit — then the hall starts fresh on this device.</div>
         <div id="pvStatus" style="min-height:20px;font-size:13px;margin:8px 0"></div>
         <p>Play on more than one device? Delete on each of them. For anything else — older records, or messages you sent — use <a id="pvContact">Contact us</a> and say what to remove (add your save key if you have one).</p>
       </div>
@@ -9806,6 +9809,15 @@ const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals
   +"The room is a simulation of a place: once made, the surroundings repeat in every direction so the visitor can walk on without end, what is imported is solid, saying 'exit' calls the door to them, and 'end program' clears the space. There are "+HOLO.spaces.length+" spaces, so several places can stand at once: the visitor picks which space the list is for (a row of tabs over it; you are told which each turn), and what already stands in the others is listed below. New surroundings picked for a space that has some take their place. Besides the models, you have the hall's own actions (below) — someone with a mind of their own, things, effects, signs, objectives — used as you see fit, or not; what you do, you do in the space being planned, and the visitor is taken into it to see. In \"actions\", a \"say\" with no \"who\" is spoken by the room's own voice: yours. "
   +"When they seem to have what they want, say so and set \"done\": true — the game then offers Make it, which fetches their list (the hall's own Sketchfab key where the licence allows, else their own Sketchfab login), builds the place, stands the people they picked in it and takes the visitor there. Then the game asks you — the visitor having said nothing — to begin: that is when you give each of the people who they are and set the story going, so have the story in mind while you look for its place and its people. Respond with STRICT JSON only, no fences: {\"reply\":\"...\",\"searches\":[...],\"actions\":[],\"done\":false}.";
 function holoRole(v){ v=String(v==null?'':v).trim().toLowerCase(); return /^(environment|surroundings|place|scene|setting|world|landscape)$/.test(v)?'environment':/^(character|person|people|someone|npc|creature|animal|being|human|robot)$/.test(v)?'character':'prop'; }
+// ---- the room's log (2026-10-02, the user: "add logging per user … I dont want it to delay the response time of chats or story
+// building"): what is asked at the console and what it answers, the story it begins, and what Make it made — a row each on the
+// Organiser Room's ASKED board (who: 'hologram room'), under the visitor's save key and visit, so the Privacy page's deletes
+// reach it. Each is sent when its answer is already on the screen, and never waited for (api() is not awaited anywhere here).
+function holoLog(q,ans){ try{ api({a:'asked',vid:visitId(),q:String(q||'').slice(0,600),ans:String(ans||'').slice(0,4000),key:accountKey()||'',who:'hologram room'}); }catch(e){} }
+function holoDid(acts){                                              // what it did, a few words each: change "Mara", objective "Find the…"
+  return (acts&&acts.length)?' [did: '+acts.slice(0,20).map(x=>{ const d=String(x.do||x.action||'?').trim().toLowerCase(), n=x.name||x.title||x.find||x.text||x.what||'';
+    return d+(n&&typeof n==='string'?' "'+(n.length>60?n.slice(0,59)+'…':n)+'"':''); }).join(', ')+(acts.length>20?', …':'')+']':'';
+}
 async function holoSend(text){
   if(HOLO.busy)return;
   const t=text.trim().toLowerCase();                                   // the room's own words, not Gemini's
@@ -9818,7 +9830,7 @@ async function holoSend(text){
   const list='They are planning space '+HOLO.sp.n+' of '+HOLO.spaces.length+(holoHere()?' (they stand in space '+holoHere().n+')':' (they are at the door on lab level 5)')+'. '+(HOLO.picks.length?'On their list for it now: '+HOLO.picks.map(p=>'"'+p.name+'" ('+p.role+', '+holoMB(p.size)+(p.made?', already standing in the space':'')+')').join('; ')+'.':'Their list for it is empty.');
   HOLO.hist.push({role:'user',parts:[{text:list+'\nThe visitor says: '+text}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);
   gaNews('the visitor said to the Hologram Room\'s planner: "'+gaText(text,140)+'"','holo');
-  let reply='', searches=[], done=false, actions=[];
+  let reply='', searches=[], done=false, actions=[], got=false;
   try{
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL,generationConfig:{responseMimeType:'application/json'},systemInstruction:{parts:[{text:HOLO_SYSTEM()+gaBrief('holo',true)+langLine()}]},contents:HOLO.hist})});
     const j=await r.json();
@@ -9827,11 +9839,13 @@ async function holoSend(text){
     if(D&&typeof D==='object'){ langNote(D,out); reply=String(D.reply||'').replace(/\*+/g,'').trim(); searches=(Array.isArray(D.searches)?D.searches:[]).map(x=>({q:String((x&&x.q)||'').slice(0,80).trim(),role:holoRole(x&&x.role)})).filter(x=>x.q).slice(0,5); done=!!D.done;
       actions=Array.isArray(D.actions)?D.actions.filter(x=>x&&typeof x==='object'):[]; }
     else reply=out||(j.error&&('('+j.error.message+')'))||'…';
-    HOLO.hist.push({role:'model',parts:[{text:JSON.stringify({reply,searches,done,actions})}]});
+    HOLO.hist.push({role:'model',parts:[{text:JSON.stringify({reply,searches,done,actions})}]}); got=true;
     gaNews('the Hologram Room\'s planner answered them: "'+gaText(reply,160)+'"','holo');
   }catch(e){ reply='(I lost the thread — is the network alright?)'; }
   HOLO.msgs.push({who:'lab',text:reply}); if(done&&HOLO.picks.some(p=>!p.made))HOLO.msgs.push({who:'sys',text:'When the list is right, press Make it.'});
   HOLO.busy=false; holoView();
+  if(got)holoLog(text,reply+(searches.length?' [looked for: '+searches.map(x=>(x.role==='environment'?'surroundings':x.role==='character'?'someone':'a thing')+' "'+x.q+'"').join('; ')+']':'')+holoDid(actions)
+    +(HOLO.picks.length?' [on their list: '+HOLO.picks.map(p=>'“'+p.name+'”'+(p.made?' ✓':'')).join(', ')+']':''));   // the room's log (the answer is on the screen by now; not waited for)
   if(searches.length)await holoShowSearches(searches);
   if(actions.length){ holoShow(false); let went=false;                   // what it does in the room, with the panel out of the way; back when it is done
     if(holoHere()!==HOLO.sp&&actions.some(x=>/^(spawn|create|make|summon|sketchfab|import|model|conjure|fetch|box|sign|effect|fx|arrange|gather|say|speak|talk|anim|animate|play|walk|go|goto|face|turn|look|expression|change)$/.test(String(x.do||x.action||'').trim().toLowerCase()))){ holoEnter(HOLO.sp); went=true; }   // … in the space being planned: at the door on lab 5 (or in another space) the visitor is taken in to see it — people asked for at the door used to be put down on lab level 5
@@ -10074,6 +10088,7 @@ async function holoStory(S,made){
   if(reply){ const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(reply); if(sm)saySequence('holo',[sm[1],sm[2]],then); else say('holo',reply,then);
     setTimeout(then,Math.max(4000,spLen(reply)*90)+8000); }           // (safety net, as the chats have)
   else then();
+  holoLog('[the story begins — space '+S.n+(env?', in “'+env.name+'”':'')+(folk.length?', '+folk.length+(folk.length===1?' person':' people'):'')+']',(reply||'(no words)')+holoDid(actions));   // the room's log (it is being spoken by now; not waited for)
 }
 async function holoMake(S,go,quiet){                                 // S: the space it is made in (the panel's); go false: the visitor is not taken there (a chat getting a place ready); quiet: a chat's own making — the planner is not asked to begin a story
   S=S||HOLO.sp;
@@ -10123,6 +10138,9 @@ async function holoMake(S,go,quiet){                                 // S: the s
   const made=todo.filter(p=>p.made);
   if(S.made.length&&go!==false)holoEnter(S);
   if(!quiet&&go!==false&&made.length)holoStory(S,made);                 // … and the story, begun by itself
+  if(!quiet){ const kind=(p)=>p.role==='environment'?'surroundings':p.role==='character'?'someone':'a thing', lost=todo.filter(p=>!p.made),   // the room's log: what Make it made and what it could not (after the story's question has gone out; not waited for)
+      one=(p)=>kind(p)+' “'+p.name+'” by '+(p.user||'?')+' ('+holoLic(p.license||'')+(p.q?', found under "'+p.q+'"':'')+(p.via==='mirror'?', no login':p.via==='you'?', their Sketchfab login':p.via==='hall'?', the hall\'s key':'')+') '+(p.viewerUrl||'');
+    holoLog('[Make it — space '+S.n+']',(made.length?'Built: '+made.map(one).join(' · '):'Nothing was built.')+(lost.length?' — Not fetched: '+lost.map(p=>one(p)+' ['+(p.failed||'?')+']').join(' · '):'')); }
 }
 function holoEnter(S){
   S=S||HOLO.sp; holoBuildSpace(S); holoShow(false); if(!HOLO.busy)HOLO.sp=S;
@@ -13308,6 +13326,11 @@ async function pvForget(what,btn){
   btn.disabled=false;
   if(!(r&&r.ok)){ pvStatus(r?('Nothing was deleted — the server said: '+(r.error||'no'))
                              :'Could not reach the server — nothing was deleted. Try again, or use Contact us.',false); return; }
+  if(what==='logs'){                                          // the chat and Hologram Room logs only (2026-10-02): they are kept on the server alone, so nothing on this device changes
+    const n=(r.deleted&&r.deleted.asked)|0;
+    pvStatus(n?'Your chat and Hologram Room logs are deleted ('+n+(n===1?' entry':' entries')+').':'There were no chat or Hologram Room logs of yours to delete.',true);
+    return;
+  }
   if(what==='profile'){
     try{ ['atd:todo','atd:counsel','atd:neighbours'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
     try{ if(wishBoardRefresh)wishBoardRefresh(); }catch(e){}
@@ -13321,6 +13344,7 @@ async function pvForget(what,btn){
   setTimeout(()=>location.replace(location.pathname),2500);
 }
 pvTwoStep('pvDelProfile',b=>pvForget('profile',b));
+pvTwoStep('pvDelLogs',b=>pvForget('logs',b));
 pvTwoStep('pvDelAll',b=>pvForget('all',b));
 document.getElementById('fsBtn').onclick=()=>{
   if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
