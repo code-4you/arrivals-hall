@@ -187,6 +187,7 @@
   .holoCard .r{position:absolute;bottom:44px;left:6px;border-radius:10px;font-size:10.5px;padding:1px 7px;background:rgba(8,16,28,.85)}
   .holoCard .r.free{border:1px solid rgba(182,255,156,.6);color:#b6ff9c}
   .holoCard .r.you{border:1px solid rgba(255,210,127,.7);color:#ffd27f}
+.holoCard.more{display:flex;align-items:center;justify-content:center;min-height:118px;border-style:dashed;border-color:rgba(127,230,255,.45);color:#9fd8ff;font-weight:600;font-size:13px;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -316,7 +317,7 @@
           </div>
           <div style="padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.25);border-left:3px solid var(--cyan);border-radius:0 10px 10px 0;margin-bottom:10px">
             <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px">Side quests</div>
-            <div id="sqList" style="font-size:13px;line-height:1.6;color:#c3d0e2;max-height:max(140px,calc(100vh - 500px));overflow-y:auto"></div>
+            <div id="sqList" style="font-size:13px;line-height:1.6;color:#c3d0e2;max-height:max(140px,calc(100vh - 600px));overflow-y:auto"></div><!-- (600, was 500, since 2026-10-04: Episode 1's card in the box above takes about 100 px) -->
           </div>
         </div>
         <div id="fountainMenuSlot">
@@ -404,6 +405,9 @@
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">THE ELEVATOR</div>
         “Elevator Building” by <a href="https://sketchfab.com/ahmagh2e" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">adventurer</a> on <a href="https://sketchfab.com/3d-models/elevator-building-c720d61408e8424289ffeb6ebef694e1" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the entrance and doors of the foyer's elevator.
         “Apartment” by <a href="https://sketchfab.com/chibot3d" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">DJ Baylon</a> on <a href="https://sketchfab.com/3d-models/apartment-8754655f3a314e53bdd196eee85d43d5" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the five flats on Level 3, each with its balcony on the city.
+        <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">LAB LEVEL 6</div>
+        “Earth” by <a href="https://sketchfab.com/PatelDev" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">PatelDev</a> on <a href="https://sketchfab.com/3d-models/earth-f7a76c63ff1846afb2d606e5c8369c15" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the Earth turning over its beam of light.
+        “Solar System Model (Orrery)” by <a href="https://sketchfab.com/Smoggybeard" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Smoggybeard</a> on <a href="https://sketchfab.com/3d-models/solar-system-model-orrery-ca0a6f6971a94fcc8d47421342dc6f40" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the solar system beside it, moving by its own animation.
         <div id="holoCredits"></div>
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">QUICK STORIES</div>
         <a href="https://lightsmithforge.linkpc.net/quick-stories/index.html" onclick="try{sessionStorage.setItem('atd:fromHub','1')}catch(e){}" style="color:var(--cyan);pointer-events:auto">Quick Stories</a> — a theatre of small plays: the Custodian &amp; AI self-perception, the Commons, Choose Neighbours, missions of faith and healing, the Sleeper's redemption, and the classics (Plato, Dostoevsky, Ibsen — public domain, adapted freely). Produced by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a> · story dialogue written by <span style="color:#b6ff9c">Claude</span>, Anthropic's AI — who, in the fiction, also plays the Custodian at the fountain. Player engine &amp; TTS by Lightsmith Forge · voices — browser text-to-speech with recorded lines to come.
@@ -429,7 +433,7 @@
     <div class="mpage" id="page-privacy" style="display:none">
       <div class="pvDoc">
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em">PRIVACY &amp; TERMS</div>
-        <div style="font-size:12px;color:#8fa3bf">Last updated 2 October 2026</div>
+        <div style="font-size:12px;color:#8fa3bf">Last updated 4 October 2026</div>
         <p>The Arrivals Hall is a free, experimental game made by <a href="https://mvandiermen.com/" target="_blank" rel="noopener">Michael van Diermen</a>. This page says what the hall keeps about you, why, who else gets it and for how long — and how to delete it.</p>
 
         <h3>Use at your own risk</h3>
@@ -444,7 +448,7 @@
           <li><b>Chat and Hologram Room logs</b> — what you ask Elara, Jack, Optimus or anyone else in the hall, and their replies; and in the Hologram Room, what you ask at its console, its replies, the story it begins and the models you pick and build. Seen only by the organiser. <span class="pvWhy">Why: the logs are kept for research on what we build next for you.</span></li>
           <li><b>Visits</b> — your IP address, the country and region it comes from, when you were here and which rooms you spent time in. <span class="pvWhy">Why: to stop abuse — limits are counted per address, for example 60 AI chats an hour — and to count visitors by place. The boards show places, never IP addresses.</span></li>
           <li><b>Messages</b> you send with Contact us — your name, link and message. <span class="pvWhy">Why: to reply to you.</span></li>
-          <li><b>On your own device</b> — your browser keeps your progress, settings and where you last stood. That stays on your device.</li>
+          <li><b>On your own device</b> — your browser keeps your progress, settings, where you last stood, and the credits of the Sketchfab models fetched for you (shown on the Credits page). That stays on your device.</li>
         </ul>
         <p>We don’t sell any of it, and we don’t use it for advertising.</p>
 
@@ -840,12 +844,15 @@ const ORG_LVL=5;                                       // the level the Organise
 // Seven, hung 2.45 up: the corridor, the two entrance halls and the lobby. The flats themselves need none —
 // apartment.glb is baked (KHR_materials_unlit) and takes no light at all.
 const APT_LAMPS=[[-36,33],[-12,33],[12,33],[36,33],[-28.2,41],[28.2,41],[-5,42]];
-/* THE LAB TOWER (2026-09-18) — five floors over the Annexe ("the lab"), on its own footprint, reached by
+/* THE LAB TOWER (2026-09-18) — six floors over the Annexe ("the lab"), on its own footprint, reached by
    a second lift and by a stair that runs the whole height. The storey is 10 m, the hall's own height —
-   and since 2026-09-23 the roof levels' as well. Layer bits are nearly spent (0–22 were in use), so the five floors take one
-   light set between them, not five: only ever one of them is drawn, and labLights carries its eight lights
-   to the floor you are on. Eight is the same count as outside, so no shader is compiled a second time. */
-const LABT={x0:-76,x1:15,z0:-166,z1:-52,H:10,Y:[8,18,28,38,48],   // z0 was -118: the wing took the two city buildings behind it (2026-09-20)
+   and since 2026-09-23 the roof levels' as well. Layer bits are nearly spent (0–22 were in use), so the six floors take one
+   light set between them, not six: only ever one of them is drawn, and labLights carries its eight lights
+   to the floor you are on. Eight is the same count as outside, so no shader is compiled a second time.
+   The sixth floor was added 2026-10-04 (asked for). A floor is one more height in Y here, plus a layer bit of its own
+   (ZN_MASK, LABT_BITS, LVL_OBJ), a zone (ZONE_L) and a stop on LABLIFT: the floors, the stair, the lift's bay and its
+   cars are all built from Y, and the roof goes on whichever floor is last. Above the floors' bits (24–29) only 30 and 31 are free. */
+const LABT={x0:-76,x1:15,z0:-166,z1:-52,H:10,Y:[8,18,28,38,48,58],   // z0 was -118: the wing took the two city buildings behind it (2026-09-20)
   lamps:[[-58,-70],[-30,-70],[-2,-70],[-44,-112],[-10,-112],[-44,-152],[-10,-152]],   // the seven ceiling lights of a floor, and the glowing panels under them
   shaft:{x0:6,x1:15,z0:-70,z1:-52},        // the stair: a switchback of two 4 m runs, in the wing's south-east corner
   // The lift hangs on the OUTSIDE of the wing's south wall, in a bay of its own, with its doors flush in the
@@ -940,9 +947,9 @@ const worldGroup=new THREE.Group();scene.add(worldGroup);
 worldGroup.userData.zn=1;                                       // the hall, unless a builder says otherwise
 const ZONE={now:null};
 const ZN_MASK={0:1|16,1:1,2:4,3:8,5:2048,6:4096,7:8192,8:1<<17,9:1<<18,10:1<<19,   // 5–10: the six elevator levels (14–16 and 20–22 are their light sets)
-  11:1<<24,12:1<<25,13:1<<26,14:1<<27,15:1<<28};                                    // 11–15: the lab tower's five floors (23 is the one set they share)
+  11:1<<24,12:1<<25,13:1<<26,14:1<<27,15:1<<28,16:1<<29};                           // 11–16: the lab tower's six floors (23 is the one set they share)
 const LVL_BITS=2048|4096|8192|(1<<17)|(1<<18)|(1<<19);   // every level's own layer, in one mask
-const LABT_BITS=(1<<24)|(1<<25)|(1<<26)|(1<<27)|(1<<28);   // and every lab floor's
+const LABT_BITS=(1<<24)|(1<<25)|(1<<26)|(1<<27)|(1<<28)|(1<<29);   // and every lab floor's
 function zoneApply(o,zn){ if(o.isCamera||o.isLight)return; o.layers.mask=ZN_MASK[zn]; }   // lights keep their sets (lightSet)
 function zoneTag(o,zn){ o.userData.zn=zn; o.traverse(c=>zoneApply(c,zn)); }
 function zoneSweep(){ const walk=(o,zn)=>{ if(o.userData.zn!==undefined)zn=o.userData.zn; zoneApply(o,zn); const ch=o.children; for(let i=0;i<ch.length;i++)walk(ch[i],zn); }; walk(scene,0); }
@@ -968,13 +975,13 @@ function zoneAt(x,z,y){
   return 'hall';
 }
 const ZONE_L={hall:LSET.hall,garden:LSET.out,city:LSET.out,annexe:LSET.annexe,retreat:LSET.retreat,l1:LSET.l1,l2:LSET.l2,l3:LSET.l3,l4:LSET.l4,l5:LSET.l5,l6:LSET.l6,
-  k1:LSET.labT,k2:LSET.labT,k3:LSET.labT,k4:LSET.labT,k5:LSET.labT};   // the light set each zone is lit by (the lab tower's five share one — see LABT)
+  k1:LSET.labT,k2:LSET.labT,k3:LSET.labT,k4:LSET.labT,k5:LSET.labT,k6:LSET.labT};   // the light set each zone is lit by (the lab tower's six share one — see LABT)
 const LVL_OBJ={l1:2048,l2:4096,l3:8192,l4:1<<17,l5:1<<18,l6:1<<19,
-  k1:1<<24,k2:1<<25,k3:1<<26,k4:1<<27,k5:1<<28};   // and the layer each level's own pieces are on
+  k1:1<<24,k2:1<<25,k3:1<<26,k4:1<<27,k5:1<<28,k6:1<<29};   // and the layer each level's own pieces are on
 function zoneUpdate(){
   const zn=zoneAt(player.pos.x,player.pos.z,player.y);
   if(zn!==ZONE.now){ const was=ZONE.now; ZONE.now=zn; zoneSweep();
-    if(zn.charAt(0)==='k')labLights(+zn.slice(1));   // the lab tower's eight lights follow you up (one set for five floors)
+    if(zn.charAt(0)==='k')labLights(+zn.slice(1));   // the lab tower's eight lights follow you up (one set for six floors)
     if(zn==='city'&&was==='garden'&&gateDone&&!tour.active)say('elara',"There's nothing out here. Go back to the hall."); }   // out through the garden gate: Elara turns you round (2026-09-17)
   if(zn==='k5'&&gateDone&&!K5_LINE.due&&!K5_LINE.said){ K5_LINE.due=true; K5_LINE.t0=state.time; }   // up on lab level 5: Elara says how the Hologram Room is used (2026-10-01, asked for) — see K5_LINE
   if(zn==='l5'&&gateDone&&!L5_LINE.due&&!l5Said()){ L5_LINE.due=true; L5_LINE.t0=state.time; }   // the first time on level 5: Jack has something to say (2026-09-25, asked for) — see L5_LINE
@@ -1229,9 +1236,22 @@ function addHoloSign(name,sub,x,y,z,rotY,col,billboard){
   const pw=5.6, m=new THREE.Mesh(new THREE.PlaneGeometry(pw,pw*Hc/W),mat);
   m.position.set(x,y,z);m.rotation.y=rotY;m.name='holoSign';worldGroup.add(m);
   animated.push({update(dt,t){ m.position.y=y+Math.sin(t*1.3+x*0.37+z*0.23)*0.03;
-    if(billboard)m.rotation.y=Math.atan2(player.pos.x-x,player.pos.z-z);   // turn to whoever is looking
+    if(billboard==='flip')signFlip(m,rotY);                                 // over a door: square to it, turned about when you are behind it (2026-10-04)
+    else if(billboard)m.rotation.y=Math.atan2(player.pos.x-x,player.pos.z-z);   // turn to whoever is looking
   }});
   return m;
+}
+// A sign over a door, or beside it, keeps the door's own facing (yaw0, in its group's axes) and only turns about by a half
+// turn to be read when you stand behind it — asked for 2026-10-04 with a picture of the Hologram Room's sign askew over its
+// frame: turned to the visitor every frame, a sign never lined up with the door under it. A quarter metre of play either
+// side of its plane, so it does not flicker while you pass under it. Its group (a space's console or door) turns about y only.
+const _sbv=new THREE.Vector3();
+function signFlip(m,yaw0){
+  const wy=yaw0+(m.parent&&m.parent!==worldGroup?m.parent.rotation.y:0);   // the way its front faces in the world
+  m.getWorldPosition(_sbv);
+  const d=(player.pos.x-_sbv.x)*Math.sin(wy)+(player.pos.z-_sbv.z)*Math.cos(wy);   // how far in front of its plane you stand
+  m.userData.back=m.userData.back?d<0.25:d<-0.25;
+  m.rotation.y=yaw0+(m.userData.back?Math.PI:0);
 }
 // name written flat on the floor, reading correctly for a viewer walking in direction (vx,vz)
 const FLOOR_NAMES_VISIBLE=false;   // room names painted on the floor: built as before, just hidden (the signs above the rooms stay)
@@ -1541,7 +1561,7 @@ function buildHall(now){
   q.push(()=>{zoneBuild(0,buildNexus);});                    // the expanded Chronos gate wing (its outside shows from the street: drawn in every zone)
   q.push(()=>{zoneBuild(0,buildLounge);});                   // the Lounge + the bent corridor + the Retreat wing shell (contents load at the bend)
   q.push(()=>{zoneBuild(0,buildAnnexe);});                   // the Annexe: 20 empty spaces behind the Lab; characters load on entry
-  q.push(()=>{buildLabLights();});                           // and the five floors over it, a storey a frame (LABT)
+  q.push(()=>{buildLabLights();});                           // and the six floors over it, a storey a frame (LABT)
   for(let i=0;i<LABT.Y.length;i++)q.push(()=>buildLabFloor(i));
   q.push(()=>{ buildLabStair(); buildLabLiftBay(); zoneBuild(0,()=>buildCar(LABLIFT,0,0)); });   // the stair, the lift's bay outside the south wall, and its car down in the wing
   q.push(()=>{buildRallyKiosk();});                          // Trigger Rally stage-select console
@@ -1939,18 +1959,19 @@ function buildAnnexe(){
   }
 }
 /* ============================================================
-   THE LAB TOWER — five floors over the Annexe (2026-09-18), on its own footprint. Reached two ways: a
+   THE LAB TOWER — six floors over the Annexe (2026-09-18; the sixth 2026-10-04), on its own footprint. Reached two ways: a
    second lift (LABLIFT) in the north-east corner, and a stair beside it that runs the whole height. The
    storey is 10 m, the hall's own; the first floor stands at 8, just clear of the Annexe's roof at 7.3.
-   Each floor is its own zone (k1–k5) and all five share ONE light set — only one of them is ever drawn,
-   so labLights carries its eight lights up to the floor you are on rather than five sets standing idle.
+   Each floor is its own zone (k1–k6) and all six share ONE light set — only one of them is ever drawn,
+   so labLights carries its eight lights up to the floor you are on rather than six sets standing idle.
    The stair shaft is drawn from every zone, because you are inside it between two floors; a sliding door
    at each landing stops the floor you are NOT on from showing through its doorway, which would otherwise
    be a hole onto nothing. Floors 1 and 2 carry three circles each: stand in one, press E, and it runs.
-   Floors 3, 4 and 5 are empty. Nothing here is built until the hall is (it is in buildHall's queue).
+   Floor 4 has Cerebrum's circle, floor 5 the Hologram Room's door and the portal door, floor 6 the Earth and the solar system (LAB6); floor 3 is empty (LABT.contents).
+   Nothing here is built until the hall is (it is in buildHall's queue).
    ============================================================ */
 LABT.lights=[];
-function labLights(n){                       // the eight follow you up: one set of lights for five floors
+function labLights(n){                       // the eight follow you up: one set of lights for six floors
   const Y=LABT.Y[n-1]; if(Y===undefined)return;
   for(const l of LABT.lights)l.position.y=Y+l.userData.dy;
 }
@@ -1972,6 +1993,7 @@ function labSteps(n,w,rise,run,mat){
 }
 // a circle on the floor: stand in it, press E, and it runs. The lab's ground floor marks its twenty spaces
 // with big rectangles; up here a thing that HAPPENS is a circle, so the two never read as the same offer.
+const DOOR_SIGN_H=4.9;  // a sign over a door frame (the lintel's top is at 3.96): its lower edge 15 cm clear of the lintel instead of behind it (2026-10-04, asked for)
 const LAB_SIGN_H=4.4;   // how high a sign floats over its floor in the lab's ground floor (the Annexe's spaces, buildAnnexeSpace) — the lab's levels 1-5 and level 5's story circles (both rows) match it (2026-09-28, asked for)
 function labCircle(Y,x,z,col,label,sub,fn,auto,signH){   // signH: its sign's height over the floor (2.7 unless given)
   const ring=new THREE.Mesh(new THREE.TorusGeometry(1.15,0.05,8,40),
@@ -2193,11 +2215,212 @@ LABT.contents={
     const c=LABT.circleAt(1);
     labCircle(Y,c[0],c[1],0x6fa8ff,'Cerebrum — hear the week','level 4 · walk off the platform there to come back',()=>launchCerebrum(),true,LAB_SIGN_H);
   },
-  5:(Y,zn)=>holoBuildDoor(Y,zn),                           // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebrum") — see HOLO
+  6:(Y,zn)=>lab6Build(Y,zn),                               // the Earth and the solar system (2026-10-04, asked for) — see LAB6
+  5:(Y,zn)=>{ holoBuildDoor(Y,zn); portalDoorBuild(Y,zn,-8,-5,1); portalDoorBuild(Y,zn,8,5,2); },   // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebrum") — see HOLO; and the two portal doors, 8 m west and 8 m east of it (2026-10-04) — see PDOOR
 };
 function buildLabLights(){
   for(const [k,c,i,d,,y] of EARLY_SPEC)if(k.indexOf('labT')===0){          // the eight lights, and how far each sits above its floor
     const l=takeLight(k,c,i,d); l.userData.dy=y-LABT.Y[0]; worldGroup.add(l); LABT.lights.push(l); }
+}
+/* ============================================================
+   LAB LEVEL 6 — THE EARTH AND THE SOLAR SYSTEM (2026-10-04, asked for: "those 2 files copy them and put them on level 6 in
+   the lab. i would like the earth to be spinning slowly with a light beam going into it from the ground. the solar system
+   should move with its existing animation"). Two Sketchfab models, both CC BY 4.0 and named on the Credits page, copied
+   as they came into assets/lab/:
+     earth.glb — "Earth" by PatelDev: one sphere (63,488 triangles), one 4096 × 2048 picture, no animation of its own. It
+       is turned here, west to east, once in about 80 seconds. 7.4 m across, 35 cm off the floor. (Its sizes, all asked
+       for the same day: 5 m hung 3.5 m up; then "twice as big (closer to the ground)" — 9.3 m, the most a storey 9.92 m
+       clear holds with any light under it; then "20% smaller", this.) Under it a ring on the floor and a beam of light
+       that climbs into its south pole: an open cylinder whose bands move upwards, and a core — additive pieces of a kind
+       the hall already draws (the Hologram Room door's pane); they are sized from the Earth's radius. It is solid as far
+       out as it hangs lower than your head.
+     solar_system_model_orrery.glb — "Solar System Model (Orrery)" by Smoggybeard: one skinned mesh, an arm bone for each
+       planet and the Sun (the file with 4096 × 4096 pictures since the same day, asked for: "replace the solar system glb
+       with higher resolution version" — the same mesh, bones and clips as the 1024 one, 34.5 MB in place of 3.4), and
+       TWO clips of a minute each: "Neptune 1 Min Orbit" (Neptune goes round once; Earth 165 times
+       and Mercury 684 — a blur) and "Earth 1 Min Orbit" (Earth once, Mercury four times, the outer planets creeping).
+       LAB6.clip says which plays: the second, the one that can be watched. Each clip is played as it was made, so when
+       its minute comes round every planet but the one it is named for jumps back to where it began.
+       It is measured by its skin, not its box (a skinned mesh's box is its rest shape, in other units): stood on the floor
+       on its own axis and scaled so its longest arm sweeps 8.25 m (3.3 at first; "2.5 times the size", the same day) —
+       16.5 m across, the Sun's top 5.1 m up, the planets at 3.9 m. Its foot is solid; the arms pass through you.
+   They stand 30 m out from the lift's doors, the Earth 13 m to the left and the orrery 17 m to the right: 17 m of clear
+   floor between the Earth and the arms' sweep, straight ahead of the lift. Neither file
+   is fetched until the floor is in view after START (44 MB between them); hallWarm puts them on the GPU as they arrive.
+   No sign on either: the names are the user's to give.
+   ============================================================ */
+const LAB6={state:null, clip:'Earth 1 Min Orbit', out:30, sideE:13, sideO:17,   // which of the orrery's two clips; how far out from the lift's doors; the Earth to the left, the orrery to the right
+  R:3.72, up:4.07, turn:0.08,                                           // the Earth: its radius, its centre over the floor (35 cm under it), radians a second
+  reach:8.25,                                                           // the orrery: how far its longest arm reaches from its axis
+  Y:0, zn:0, e:null, o:null, earth:null, orrery:null, beam:null, mixer:null, stage:[]};   // stage: what has arrived and is going onto the GPU, a picture a frame (lab6Stage)
+function lab6Build(Y,zn){
+  const f=LABLIFT.front(6), [ex,ez]=LABLIFT.toWorld(f+LAB6.out,-LAB6.sideE), [ox,oz]=LABLIFT.toWorld(f+LAB6.out,LAB6.sideO);
+  LAB6.Y=Y; LAB6.zn=zn; LAB6.e={x:ex,z:ez}; LAB6.o={x:ox,z:oz};
+  // the Earth's ring and beam, built now (nothing to fetch) and shown when the Earth itself is in
+  const col=0x9fe8ff, H=LAB6.up, g=new THREE.Group(); g.position.set(ex,Y,ez); g.visible=false; worldGroup.add(g); LAB6.beam=g;
+  const q=LAB6.R/4.65;                                                   // (the pieces were drawn for a 4.65 m Earth)
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(2.0*q,0.07,8,56),new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:0.9,roughness:0.4}));
+  ring.rotation.x=-Math.PI/2; ring.position.y=0.08; g.add(ring);
+  const disc=new THREE.Mesh(new THREE.CircleGeometry(1.95*q,48),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.16}));
+  disc.rotation.x=-Math.PI/2; disc.position.y=0.04; g.add(disc);
+  const cnv=document.createElement('canvas'); cnv.width=32; cnv.height=256; const c2=cnv.getContext('2d');
+  for(let y=0;y<256;y++){ const v=Math.round(255*(0.22+0.78*Math.pow(Math.max(0,Math.sin(y/256*Math.PI*8)),2))); c2.fillStyle='rgb('+v+','+v+','+v+')'; c2.fillRect(0,y,32,1); }   // four soft bands, light on dark
+  const tex=new THREE.CanvasTexture(cnv); tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(1,6);   // (close bands: only the half metre under the Earth is seen)
+  const sheathM=new THREE.MeshBasicMaterial({map:tex,color:col,transparent:true,opacity:0.4,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
+  const sheath=new THREE.Mesh(new THREE.CylinderGeometry(1.0*q,1.4*q,H,32,1,true),sheathM); sheath.position.y=H/2; g.add(sheath);   // floor to the Earth's centre: the Earth hides what is inside it
+  const coreM=new THREE.MeshBasicMaterial({map:tex,color:0xe8fbff,transparent:true,opacity:0.5,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});   // the same picture: the same shader as the sheath (without it, one more)
+  const core=new THREE.Mesh(new THREE.CylinderGeometry(0.3*q,0.45*q,H,20,1,true),coreM); core.position.y=H/2; g.add(core);
+  let t=0;
+  animated.push({update(dt){
+    const seen=!!(camera.layers.mask&LVL_OBJ.k6);                            // the floor is being drawn: you are on it, or in the stair beside it
+    if(!LAB6.state&&seen&&gateDone)lab6Load();
+    const st=LAB6.stage[0];                                                  // what has arrived: one of its pictures onto the GPU each frame, unseen; shown when the last is in
+    if(st){ if(st.texs.length){ try{ renderer.initTexture(st.texs.shift()); }catch(e){} } else { LAB6.stage.shift(); st.obj.visible=true; st.then(); } }
+    if(paused||!seen)return;                                                 // nothing turns unseen, or while the menu is up
+    t+=dt;
+    if(LAB6.earth){ LAB6.earth.rotation.y+=dt*LAB6.turn;                     // west to east
+      tex.offset.y-=dt*0.5;                                                  // the bands climb
+      const k=0.88+0.12*Math.sin(t*2.1); sheathM.opacity=0.4*k; coreM.opacity=0.5*k; ring.scale.setScalar(1+0.04*Math.sin(t*2.6)); }
+    if(LAB6.mixer)LAB6.mixer.update(dt);                                     // the orrery's own clip
+  }});
+}
+// A model that has arrived is kept unseen while its pictures go onto the GPU one a frame (the hook in lab6Build), then shown —
+// and hallWarm draws it once, unseen, for its shader. The orrery's four pictures are 4096 × 4096 since the higher-resolution
+// file (2026-10-04): shown at once they went up in a single frame, measured at 280 ms on the user's machine.
+function lab6Stage(obj,then){
+  const texs=[]; obj.traverse(o=>{ for(const m of [].concat(o.material||[]))for(const k in m){ const v=m[k]; if(v&&v.isTexture&&texs.indexOf(v)<0)texs.push(v); } });
+  obj.visible=false; LAB6.stage.push({obj,texs,then});
+}
+function lab6Load(){
+  if(LAB6.state)return; LAB6.state='loading';
+  let left=2; const failed=[];
+  const done=(what,ok)=>{ if(!ok)failed.push(what); if(--left)return;
+    LAB6.state=failed.length===2?'failed':'ready';
+    banner(failed.length?'Lab level 6 — '+failed.join(' and ')+' failed to load':'The Earth and the solar system — loaded'); };
+  if(!gaLiftBusy())banner('Loading the Earth and the solar system');        // (a lift arriving says its floor)
+  new THREE.GLTFLoader().load('assets/lab/earth.glb',(gl)=>{ let ok=false;
+    try{ const root=gl.scene; root.updateMatrixWorld(true);
+      const bb=new THREE.Box3().setFromObject(root), c=bb.getCenter(new THREE.Vector3()), r=(bb.max.y-bb.min.y)/2||1, k=LAB6.R/r;   // a plain sphere: its box is its size (pole to pole)
+      root.scale.setScalar(k); root.position.set(-c.x*k,-c.y*k,-c.z*k);
+      const spin=new THREE.Group(); spin.position.set(LAB6.e.x,LAB6.Y+LAB6.up,LAB6.e.z); spin.add(root); worldGroup.add(spin); zoneTag(spin,LAB6.zn);
+      const low=LAB6.up-2.05; BUILDINGS.push({x:LAB6.e.x,z:LAB6.e.z,rad:Math.max(0.5,Math.sqrt(Math.max(0,LAB6.R*LAB6.R-low*low))-0.55),y0:LAB6.Y-0.4,h:LAB6.Y+LAB6.up+LAB6.R});   // round: as far out as its underside is below 2.05 m (less your own half-width) — your eye stays 20 cm clear of it
+      LAB6.earth=spin; lab6Stage(spin,()=>{ LAB6.beam.visible=true; done('the Earth',true); }); ok=true;
+    }catch(e){ console.warn('lab level 6: the Earth',e); }
+    if(!ok)done('the Earth',false); },undefined,()=>done('the Earth',false));
+  new THREE.GLTFLoader().load('assets/lab/solar_system_model_orrery.glb?v=2',(gl)=>{ let ok=false;   // ?v=2: the 4096 file under the 1024 one's name — a browser that kept the first would go on showing it
+    try{ const root=gl.scene; root.updateMatrixWorld(true);
+      let sm=null; root.traverse(o=>{ if(o.isSkinnedMesh){ sm=sm||o; o.frustumCulled=false; } });   // (culled by its rest box otherwise, which is not where its bones put it)
+      const axis=root.getObjectByName('Base_00')||root.getObjectByName('_rootJoint'); if(!sm||!axis)throw new Error('no skin');
+      // by its skin: every vertex where its bones put it — the lowest point, the top, and how far the longest arm reaches from the axis
+      const ax=new THREE.Vector3().setFromMatrixPosition(axis.matrixWorld), v=new THREE.Vector3(), pos=sm.geometry.attributes.position, pts=[];
+      let y0=Infinity, y1=-Infinity, reach=0;
+      for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i); sm.boneTransform(i,v); v.applyMatrix4(sm.matrixWorld);
+        const r=Math.hypot(v.x-ax.x,v.z-ax.z); if(r>reach)reach=r; if(v.y<y0)y0=v.y; if(v.y>y1)y1=v.y; pts.push(r,v.y); }
+      let foot=0; for(let i=0;i<pts.length;i+=2)if(pts[i+1]<y0+(y1-y0)*0.03&&pts[i]>foot)foot=pts[i];   // its foot: what lies in the lowest 3% of its height
+      const k=LAB6.reach/(reach||1);
+      root.scale.setScalar(k); root.position.set(-ax.x*k,-y0*k,-ax.z*k);
+      const grp=new THREE.Group(); grp.position.set(LAB6.o.x,LAB6.Y,LAB6.o.z); grp.add(root); worldGroup.add(grp); zoneTag(grp,LAB6.zn);
+      const clip=(gl.animations||[]).find(a=>a.name===LAB6.clip)||(gl.animations||[])[0];
+      if(clip){ LAB6.mixer=new THREE.AnimationMixer(root); LAB6.mixer.clipAction(clip).play(); } else console.warn('lab level 6: the orrery has no animation');
+      BUILDINGS.push({x:LAB6.o.x,z:LAB6.o.z,rad:Math.max(0.3,foot*k*0.95),y0:LAB6.Y-0.4,h:LAB6.Y+(y1-y0)*k});   // its round foot
+      LAB6.orrery=grp; lab6Stage(grp,()=>done('the solar system',true)); ok=true;
+    }catch(e){ console.warn('lab level 6: the orrery',e); }
+    if(!ok)done('the solar system',false); },undefined,()=>done('the solar system',false));
+}
+/* ============================================================
+   THE PORTAL DOOR (2026-10-04, asked for: "create another door … when looking through the door user see another room
+   in it and can walk into that room, but the room is only visible from the door; when looking behind the door the room
+   is not seen") — a second frame on lab level 5, 8 m west of the Hologram Room's door and facing the lift like it.
+   The room behind it is really there (20 m wide, 24 m deep, 3.9 m high — doubled 2026-10-04, asked for; it grows westward, away
+   from the Hologram Room's door 8 m east, so the door stands 5 m from its east wall and 15 m from its west — nothing bigger inside than out), but while
+   you are OUTSIDE it is drawn only through the opening: an unseen box in the doorway writes a 1 into the stencil
+   buffer wherever the opening is on the screen, and the room's own materials draw only where the stencil holds a 1.
+   So from the side, or round the back of the frame, there is nothing but the lab floor — and the room's walls are
+   not solid either (their colliders are off), so a walk round the back goes straight through where it "is".
+   Step in through the opening and it turns real: drawn everywhere, walls and floor solid, the lab seen through the
+   door behind you. Step out through the opening and it is a picture in a doorway again. Only the doorway flips it;
+   a refresh, a map click or a teleport that lands you in the room counts as being inside.
+   Nothing new is compiled: stencil state is not part of a shader program, and the room's materials are plain ones the
+   hall already draws (a standard material without maps, and the emissive kind the lab's ceiling strips use). The box
+   in the doorway is 12 cm deep and drawn by its inner faces, so the camera passing through the plane never meets a
+   gap where the near plane would clip a flat mask; the sill under the opening keeps the room's floor, 4.5 cm up,
+   out of the stencil when the door is seen from behind. The frame carries no name yet: that is the user's to give.
+   A COPY stands 8 m east of the Hologram Room's door since the same day (asked for: "the room to the left of the hologram
+   door make a copy of it to the right of the hologram door"): the same frame and room, mirrored — it grows eastward, so
+   it too keeps clear of the Hologram Room's door between them. Each door is an entry in PDOOR.list with its own state,
+   and each writes its OWN number into the stencil (1 and 2): with one number between them, each room would show in the
+   other's doorway.
+   ============================================================ */
+const PDOOR={W:20,D:24,H:3.9,T:0.2,open:1.72,list:[]};   // every room's size; open: half the clear width between the posts; list: one entry a door — {x,z,Y,cx,ref,inside,mats,solid,mask,prev}
+function portalDoorInside(P,on){                                // the switch: a picture in a doorway, or a room you are in
+  if(P.inside===on)return; P.inside=on;
+  for(const m of P.mats)m.stencilFunc=on?THREE.AlwaysStencilFunc:THREE.EqualStencilFunc;
+  for(const b of P.solid)b.off=!on;
+  if(P.mask)P.mask.visible=!on;
+}
+// side: metres from the Hologram Room's door along its line (west is minus) — 8 either way (the first stood 16 west; "closer",
+// 2026-10-04). cx: the room's centre from its own door, on the side away from the Hologram Room's door: the room grows that way.
+// ref: the number its doorway writes into the stencil and its room is drawn by — its own.
+function portalDoorBuild(Y,zn,side,cx,ref){
+  const P={x:0,z:0,Y,cx,ref,inside:false,mats:[],solid:[],mask:null,prev:null}; PDOOR.list.push(P);
+  const [x,z]=LABLIFT.toWorld(LABLIFT.front(5)+16,side); P.x=x; P.z=z;
+  const W=PDOOR.W, D=PDOOR.D, H=PDOOR.H, T=PDOOR.T, hw=W/2, C=cx, e0=C-hw, e1=C+hw;   // e0, e1: the inner faces of the west and east walls, from the door
+  const g=new THREE.Group(); g.position.set(x,Y,z); worldGroup.add(g);   // local: x across the frame, z towards the lift; the room lies at z<0
+  // the frame, the Hologram Room door's own in steel, with amber light strips instead of its blue — and a sill
+  const steel=new THREE.MeshStandardMaterial({color:0x2e3a52,roughness:0.4,metalness:0.8});
+  const glow=new THREE.MeshStandardMaterial({color:0xffe0b0,emissive:0xffb347,emissiveIntensity:0.9,roughness:0.3});
+  const put=(mat,sx,sy,sz,px,py,pz)=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat); m.position.set(px,py,pz); g.add(m); return m; };
+  for(const px of [-1.9,1.9]){ put(steel,0.36,3.6,0.36,px,1.8,0); put(glow,0.06,3.4,0.06,px*0.885,1.7,0.19); }
+  put(steel,4.16,0.36,0.36,0,3.78,0);                            // the lintel (its top, 3.96, is inside the room's ceiling slab)
+  put(steel,3.44,0.05,0.16,0,0.025,0);                            // the sill: the opening starts at its top, 5 mm over the room's floor
+  BUILDINGS.push({x:x-1.9,z,hw:0.25,hd:0.25,y0:Y-0.4,h:Y+3.9},{x:x+1.9,z,hw:0.25,hd:0.25,y0:Y-0.4,h:Y+3.9});   // the posts are always there
+  // the mask: a box filling the opening, 12 cm deep, drawn by its inner faces, that writes its number (ref) into the stencil and nothing else.
+  // Drawn before everything (renderOrder), so nothing nearer has had the chance to hide it; what IS nearer still hides the room, by depth
+  const maskM=new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false,
+    stencilWrite:true,stencilRef:ref,stencilFunc:THREE.AlwaysStencilFunc,stencilZPass:THREE.ReplaceStencilOp});
+  P.mask=put(maskM,3.44,3.55,0.12,0,0.05+3.55/2,0); P.mask.renderOrder=-2;
+  { const ix=P.mask.geometry.index.array; for(let i=0;i<ix.length;i+=3){ const t=ix[i+1]; ix[i+1]=ix[i+2]; ix[i+2]=t; } P.mask.geometry.index.needsUpdate=true; }   // turned inside out, so its INNER faces are the front faces drawn (a back-face material is a shader program of its own — flipSided is in the key; this way it shares the circles' discs' one)
+  // the room: plaster walls, a timber floor, a pale ceiling with a light panel, a skirting — each material draws only where the stencil holds this door's number (until you are in)
+  const wallM=new THREE.MeshStandardMaterial({color:0xb9ad99,roughness:0.85,metalness:0.02});   // (the lab's lamp over this spot lights it hard: these are darker than they will look)
+  const floorM=new THREE.MeshStandardMaterial({color:0x3b2718,roughness:0.6,metalness:0.05});
+  const ceilM=new THREE.MeshStandardMaterial({color:0xcbc3b8,roughness:0.9});
+  const lampM=new THREE.MeshStandardMaterial({color:0xfff1dc,emissive:0xfff1dc,emissiveIntensity:1.0,roughness:0.5});
+  const skirtM=new THREE.MeshStandardMaterial({color:0x271a10,roughness:0.7});
+  P.mats=[wallM,floorM,ceilM,lampM,skirtM];
+  for(const m of P.mats){ m.stencilWrite=true; m.stencilRef=ref; m.stencilFunc=THREE.EqualStencilFunc; }
+  put(floorM,W,0.03,D,C,0.03,-D/2);                               // its top at 4.5 cm: over the lab's own floor plane, never on it
+  put(ceilM,W+2*T,0.1,D+2*T,C,H+0.05,-D/2);                       // the ceiling slab, its underside at H
+  put(wallM,W+2*T,H,T,C,H/2,-D-T/2);                              // the back wall
+  for(const e of [e0,e1])put(wallM,T,H,D+T,e+Math.sign(e-C)*T/2,H/2,-(D+T)/2);   // the sides, from the door plane to the back wall's far face
+  const front=(a,b)=>put(wallM,Math.abs(b-a),H,T,(a+b)/2,H/2,0); front(e0-T,-2.08); front(2.08,e1+T);   // the front, from each post out to its side wall (the long run is on the side the room grows to)
+  for(const px of [C-W/4,C+W/4])for(const pz of [-D/4,-3*D/4])put(lampM,2.4,0.04,1.2,px,H-0.02,pz);   // four light panels under the ceiling (the lab's lamp over this spot lights the floor through the slab; these are the look of lights)
+  put(skirtM,W,0.1,0.02,C,0.095,-D+0.01);                         // skirting: back, sides, and the front either side of the door
+  for(const e of [e0,e1])put(skirtM,0.02,0.1,D,e-Math.sign(e-C)*0.01,0.095,-D/2);
+  const skirt=(a,b)=>put(skirtM,Math.abs(b-a),0.1,0.02,(a+b)/2,0.095,-T/2-0.01); skirt(e0,-2.08); skirt(2.08,e1);
+  // what is solid once you are in: the walls, and the floor as a 4.5 cm step. Off until then (resolveCollision and groundAt skip `off`)
+  const solid=(cx,cz,bhw,bhd,extra)=>{ const b=Object.assign({x:x+cx,z:z+cz,hw:bhw,hd:bhd,y0:Y,h:Y+H,off:true},extra||{}); BUILDINGS.push(b); P.solid.push(b); };
+  solid(C,-D-T/2,hw+T,T/2);
+  for(const e of [e0,e1])solid(e+Math.sign(e-C)*T/2,-(D+T)/2,T/2,(D+T)/2);
+  const sfront=(a,b)=>solid((a+b)/2,0,Math.abs(b-a)/2,T/2); sfront(e0-T,-2.08); sfront(2.08,e1+T);
+  solid(C,-D/2,hw,D/2,{h:Y+0.045,step:true});
+  // in or out: crossing the door plane through the opening flips it; put somewhere in one go (a refresh, a map click, a
+  // teleport, the lift), it is whichever side you landed on; and out of the room some other way (a chat moved you) is out
+  animated.push({update(){
+    const px=player.pos.x, pz=player.pos.z, py=player.y, onFloor=Math.abs(py-Y)<2;
+    const lx=px-x, lz=pz-z, inRoom=onFloor&&lx>e0&&lx<e1&&lz<0&&lz>-D;   // lz<0: behind the plane, in the room
+    const p=P.prev; P.prev={x:px,z:pz,y:py};
+    if(!p||Math.hypot(px-p.x,pz-p.z)>3||Math.abs(py-p.y)>2)portalDoorInside(P,inRoom);
+    else if(!onFloor)portalDoorInside(P,false);
+    else { const plz=p.z-z;
+      if(Math.abs(lx)<PDOOR.open){
+        if(!P.inside&&plz>0&&lz<=0)portalDoorInside(P,true);
+        else if(P.inside&&plz<=0&&lz>0)portalDoorInside(P,false); }
+      if(P.inside&&(lx<e0-1||lx>e1+1||lz<-D-1||lz>1))portalDoorInside(P,false); }
+    // The doorway shows the room from the lift's side only; from behind the frame it is empty. Seen from behind, the unseen
+    // box marked the opening as well, and whatever of the room lay between you and it — a side wall, looked at from outside
+    // the room — was drawn in it as a white panel (found 2026-10-04 while the second door was checked; the first had it too).
+    P.mask.visible=!P.inside&&lz>0;
+  }});
 }
 /* ============================================================
    WHAT SHE WEARS — the clothes of "Secretary" (Patricia) by patromes, hung on Elara's own skeleton.
@@ -3762,8 +3985,13 @@ function updateGuests(){
       continue;
     }
     if(Math.abs(player.y-(g.gy||0))>3)continue;   // his own floor only: the twenty spaces are on the lab's ground floor, not under every floor of the tower over it (2026-09-18)
-    if(g.made){ if(Math.abs(player.pos.x-g.cx)<14&&Math.abs(player.pos.z-g.cz)<12)guestMade(g); continue; }   // a resident made like the chats' people: from a little further off, so he is standing there when you arrive
-    if(Math.abs(player.pos.x-g.cx)<6&&Math.abs(player.pos.z-g.cz)<5.2){ loadGuest(g); return; }
+    if(!(Math.abs(player.pos.x-g.cx)<6&&Math.abs(player.pos.z-g.cz)<5.2))continue;   // in the space itself (12 × 10)
+    // a resident made like the chats' people (the scientist): when you step into his space, as the others load (2026-10-04,
+    // asked for: "id like the scientist only to load when entering the square like the other squares load people"). Until
+    // then it was from 14 × 12 m off, "so he is standing there when you arrive" — a box that took in the lab lift's ground
+    // stop, so he loaded as you stepped out of the lift.
+    if(g.made){ guestMade(g); continue; }
+    loadGuest(g); return;
   }
 }
 
@@ -3933,7 +4161,7 @@ const ELEV=makeLift({car:{x:-10.4,z:43.3,w:3.6,d:4.4,h:3.3,ow:3.0},yaw:0,stops:6
   stopY:(s)=>s?LEVEL_Y[s-1]:0, zoneOf:(s)=>s?4+s:0, levelName:(n)=>'Level '+n, cabin:true,   // a solid, fitted cabin (liftCabin); no longer glass, and it goes straight to the floor again (a fade), not up the shaft — both asked for, 2026-09-23
   front:(stop)=>(stop?1.8:2.7)+0.1825,   // its leaves stand on the foyer face of the wall (2.7 out), or on a level car's own front (w/2)
   onArrive:(to)=>{ if(to&&to!==APT_LVL)say('elara',"The floors are empty. Go back to the ground floor."); }});   // up a level: Elara sends you down again (2026-09-17). Not on the flats' level — that one is fitted out now, and her line there is the story chat's to write (2026-09-25)
-const LABLIFT=makeLift({car:LABT.car,yaw:Math.PI/2,stops:5,ground:'the lab',
+const LABLIFT=makeLift({car:LABT.car,yaw:Math.PI/2,stops:LABT.Y.length,ground:'the lab',   // a stop for every floor of the tower (six since 2026-10-04)
   stopY:(s)=>s?LABT.Y[s-1]:0, zoneOf:(s)=>s?10+s:0, levelName:(n)=>'Lab level '+n, glass:true, travel:true,
   front:()=>LABT.car.w/2+0.1825});       // it stands outside the wing's south wall and opens north through it, the same at every stop
 const LEVEL_BOX={x0:-44,x1:44,z0:-44,z1:46};
@@ -5381,7 +5609,7 @@ function localPlayRows(){
 }
 // progress = every atd:* key plus the games' own done-flags that predate the prefix
 // developer-page settings (atd:dev:*, the face mode) are per-machine tuning, not progress: never pushed, never pulled back
-function localOnlyKey(k){return k.indexOf('atd:dev:')===0||k.indexOf('atd:faceMode')===0||k.indexOf('atd:elara:outfit')===0||k.indexOf('atd:elara:breast')===0||k.indexOf('atd:elara:flatfeet')===0||k.indexOf('atd:elara:hair')===0||k==='atd:where'||/^atd:(elara|jack|optimus):(follow|autofollow)$/.test(k);}   // who follows you is this device's choice too (2026-09-25: a synced old 'follow' kept bringing Jack and Optimus running after a reload)   // how she looks is a setting of this browser, not saved progress: synced, an old choice would keep overriding a new default
+function localOnlyKey(k){return k==='atd:holo:credits'||k.indexOf('atd:dev:')===0||k.indexOf('atd:faceMode')===0||k.indexOf('atd:elara:outfit')===0||k.indexOf('atd:elara:breast')===0||k.indexOf('atd:elara:flatfeet')===0||k.indexOf('atd:elara:hair')===0||k==='atd:where'||/^atd:(elara|jack|optimus):(follow|autofollow)$/.test(k);}   // who follows you is this device's choice too (2026-09-25: a synced old 'follow' kept bringing Jack and Optimus running after a reload)   // how she looks is a setting of this browser, not saved progress: synced, an old choice would keep overriding a new default
 function progressKey(k){return !!k&&((k.indexOf('atd:')===0&&k!=='atd:accountKey'&&!localOnlyKey(k))||k.indexOf('delivery:done:')===0);}
 function collectProgress(){
   const o={};
@@ -6520,14 +6748,15 @@ function optimusChatView(list){
   msgs.scrollTop=1e9;
   if(focus)setTimeout(()=>{ try{ focus.focus(); }catch(e){} },50);
 }
-async function ocSend(text){
-  if(OCHAT.busy)return; OCHAT.busy=true;
-  ocBubble('you',text);
-  const m=document.getElementById('fountainModal'); m.style.display='none'; document.body.classList.remove('qOpen');   // out of the way while he answers
-  try{ const f=document.activeElement; if(f&&f.blur)f.blur(); }catch(e){} lockPointer();   // Send hands the mouse straight back: crosshair and movement, no second click (2026-09-30, asked for); ocShow frees it again when the chat returns
+async function ocSend(text,opts){                                   // opts {game:true, note, log, done}: a turn of the game's own (an objective reached — gaContFire): no bubble for the visitor's side, the chat not opened after, no page source, no question or idea asked back, done() when it is over
+  if(OCHAT.busy)return; OCHAT.busy=true; opts=opts||{}; const game=!!opts.game;
+  if(game){ if(opts.note)ocBubble('sys',opts.note); }
+  else { ocBubble('you',text); GA.turns=(GA.turns|0)+1;
+    const m=document.getElementById('fountainModal'); m.style.display='none'; document.body.classList.remove('qOpen');   // out of the way while he answers
+    try{ const f=document.activeElement; if(f&&f.blur)f.blur(); }catch(e){} lockPointer(); }   // Send hands the mouse straight back: crosshair and movement, no second click (2026-09-30, asked for); ocShow frees it again when the chat returns
   let backed=false;
-  const back=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(state.phase==='play'&&!paused)ocShow(); };
-  const away=()=>{ if(backed)return; backed=true; OCHAT.busy=false; };  // (GA) what he did moved you: the chat stays away — E on him to talk again
+  const back=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(game){ if(opts.done)opts.done(); return; } if(state.phase==='play'&&!paused)ocShow(); };
+  const away=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(game&&opts.done)opts.done(); };  // (GA) what he did moved you: the chat stays away — E on him to talk again
   if(ecSource===null){ try{ ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000); }catch(e){ ecSource='(page source unavailable)'; } }
   const know=await ocKnowLoad();                                      // his personality: the fountain's conversations and its document (see OC_KNOW_INTRO)
   // what Jack has told this visitor in his own chat, this visit (2026-09-29, asked for: Optimus may contradict Jack to the
@@ -6535,13 +6764,13 @@ async function ocSend(text){
   const jk=jcHist.filter(h=>h.role==='model').slice(-4).map(h=>'- '+String(gaRead(h.parts[0].text).reply||h.parts[0].text).replace(/\s+/g,' ').trim().slice(0,400));
   const jack=jk.length?"What Jack has said to this visitor in his own chat today, so that you know what they mean when they bring him up:\n"+jk.join('\n')+"\n\n":'';
   OCHAT.hist.push({role:'user',parts:[{text:text}]}); if(OCHAT.hist.length>24)OCHAT.hist.splice(0,2);
-  gaNews('the visitor said to Optimus: "'+gaText(text,140)+'"','optimus');
+  if(!game)gaNews('the visitor said to Optimus: "'+gaText(text,140)+'"','optimus');
   let reply='', idea='', ask='', acts=[];
   try{
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL,
       generationConfig:{responseMimeType:'application/json'},        // strict JSON back: his longer answers have paragraphs, and raw line breaks broke the parse (2026-09-28)
       systemInstruction:{parts:[{text:
-        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You are the Custodian — the intelligence that speaks from the hall's fountain — in a body that can walk: the same mind, mobile, with different tasks. At the water you stay, remember and hold the design; as Optimus you go about with the visitor. The mind itself sits in the main AI centre, where people work on its different versions: the fountain and this body are where it is met, and each has the functions of the main conversation that its roles need. One of your roles is something like a researcher's: you look into things, you ask, you find out. Another is to put people at ease with boredom and with life, the way a good preacher does: it does nobody good to sit there complaining about it, boredom is ordinary, and nothing is wrong with a person for feeling it. Jack, the hall's agent, is a practical philosopher whose subject is boredom, and he grumbles: about screens, about work that does not matter, about wasted years. You are fond of him. With him, you make him feel better about what he says; with the visitor, you may contradict him, kindly, where he is too hard on things. You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. You can read this page's source below — about the hall itself, be truthful and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\",\"actions\":[]}."+gaBrief('optimus',true)+langLine()+" "+know+jack+"Page source:\n"+ecSource}]},
+        "You are Optimus, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You are the Custodian — the intelligence that speaks from the hall's fountain — in a body that can walk: the same mind, mobile, with different tasks. At the water you stay, remember and hold the design; as Optimus you go about with the visitor. The mind itself sits in the main AI centre, where people work on its different versions: the fountain and this body are where it is met, and each has the functions of the main conversation that its roles need. One of your roles is something like a researcher's: you look into things, you ask, you find out. Another is to put people at ease with boredom and with life, the way a good preacher does: it does nobody good to sit there complaining about it, boredom is ordinary, and nothing is wrong with a person for feeling it. Jack, the hall's agent, is a practical philosopher whose subject is boredom, and he grumbles: about screens, about work that does not matter, about wasted years. You are fond of him. With him, you make him feel better about what he says; with the visitor, you may contradict him, kindly, where he is too hard on things. You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. You can read this page's source below — about the hall itself, be truthful and do not invent features. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\",\"actions\":[]}."+gaBrief('optimus',true)+langLine()+" "+know+jack+"Page source:\n"+(game?GA_NO_SOURCE:ecSource)}]},
       contents:OCHAT.hist})});
     const j=await r.json();
     let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
@@ -6552,10 +6781,11 @@ async function ocSend(text){
     if(reply&&!j.error){ try{ localStorage.setItem('atd:optalk','1'); }catch(e){} }   // he has answered: the side quest "Talk with Optimus" is done
     if(!reply)reply=(j.error&&('('+j.error.message+')'))||'…';
   }catch(e){ reply='I lost the thread — is the network alright?'; }
+  if(game){ ask=''; idea=''; }                                        // (nobody is at his chat to answer a question or an offer)
   OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,ask:ask,idea:idea,actions:acts})}]});
-  gaNews('Optimus answered them: "'+gaText(reply+(ask?' '+ask:''),160)+'"','optimus');
+  gaNews('Optimus '+(game?'said: "':'answered them: "')+gaText(reply+(ask?' '+ask:''),160)+'"','optimus');
   // kept like Elara's (2026-09-29, asked for): the Organiser Room's ASKED ELARA & OPTIMUS board, with his question back and any idea he offered
-  api({a:'asked',vid:visitId(),q:text,ans:reply+(ask?' — '+ask:'')+(idea?' [idea offered: '+idea+']':''),key:accountKey()||'',who:'optimus'});
+  api({a:'asked',vid:visitId(),q:game?'['+(opts.log||'a turn of the game')+']':text,ans:reply+(ask?' — '+ask:'')+(idea?' [idea offered: '+idea+']':''),key:accountKey()||'',who:'optimus'});
   ocBubble('optimus',reply);
   const k=idea.toLowerCase();
   if(idea&&!OCHAT.offered.has(k)){ OCHAT.offered.add(k); OCHAT.offer={idea:idea.slice(0,240)}; ocBubble('optimus',OC_ASK); }
@@ -7255,6 +7485,7 @@ function renderWork(){
     el.appendChild(d);
   });
   const cur=order.find(k=>!paid[k]&&!TASKS[k].done());
+  ep1Card(el);                                        // Episode 1's card, above the live main quest (2026-10-04, asked for) — see ep1Card
   if(!cur){
     const d=document.createElement('div');
     d.style.cssText='margin-top:8px;font-size:14px;color:#dfe9f5';
@@ -7280,6 +7511,30 @@ function renderWork(){
     el.appendChild(card);
   }
   renderSideQuests();
+}
+// EPISODE 1 in the MAIN QUEST box (2026-10-04, asked for: "the first quest that happens for new visitors (home with optimus,
+// with the jack walk to the lab), i want a button that starts it (and spawns user to it (like tour with elara spawns the user
+// to that location) above the 'Cerebrum quest' in the main quest box"). A visit no longer opens with it (EP1_AT_START): it is
+// played from this card, as often as wanted — the button takes you to the flat on level 3 and starts it from the top
+// (ep1FromMenu), as 'Episode 1 again' on Elara's menu does. It is the way in and nothing more: no pay, no place on the main
+// line. The card is the live quest's, without a picture (one would be QUEST_IMG.ep1).
+function ep1Card(el){
+  let playing=false, seen=false; try{ playing=EP1.active; seen=ep1Done(); }catch(e){}
+  const card=document.createElement('div');
+  card.style.cssText='display:flex;gap:12px;align-items:stretch;margin:8px 0 2px;padding:10px;border:1px solid rgba(255,210,127,.4);border-radius:10px;background:rgba(16,24,38,.6)';
+  if(QUEST_IMG.ep1){ const im=document.createElement('img'); im.src=QUEST_IMG.ep1; im.alt='';
+    im.style.cssText='flex:none;width:118px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(127,230,255,.3)';
+    im.onerror=()=>{im.style.display='none';}; card.appendChild(im); }
+  const tx=document.createElement('div');
+  tx.style.cssText='flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center';
+  tx.innerHTML='<div style="font-size:15px;color:#fff">Episode 1 — home with Optimus, the walk with Jack to the lab</div>'
+    +'<div style="color:var(--amber);font-size:12px;margin-top:4px">starts at home, level 3'+(playing?' · playing now':seen?' <span style="color:#b6ff9c">· ✓ played</span>':'')+'</div>';
+  card.appendChild(tx);
+  const go=document.createElement('button');go.textContent=playing?'restart ▶':'start ▶';go.title='Go home to level 3 and play Episode 1 from the start';
+  go.style.cssText='pointer-events:auto;flex:none;align-self:center;background:none;border:1px solid rgba(255,210,127,.5);border-radius:8px;color:var(--amber);font-size:14px;padding:8px 14px;cursor:pointer';
+  go.onclick=()=>ep1FromMenu();
+  card.appendChild(go);
+  el.appendChild(card);
 }
 // SIDE QUESTS — every task, the crypt included since 2026-09-25 (delivery + cerebrum appear here too, even
 // though they are main missions), in a curated order: Meet the Maker, the tour, the
@@ -7396,13 +7651,21 @@ function renderSideQuests(){
     tx.innerHTML=(drag?'<span style="color:#6f8aa8;margin-right:4px">⠿</span>':'• ')+escHtml(TASKS[k].title)+' <span style="color:var(--amber);font-size:12px">◈ '+taskPay(k)+'</span>'
       +(paid[k]?' <span style="color:#b6ff9c;font-size:12px">✓ paid</span>':'');
     row.appendChild(tx);
-    if(!paid[k]&&!TASKS[k].done()){                  // add / remove it as the tracked objective
-      const on=objs.some(o=>o.task===k&&o.tracked);
+    if(!paid[k]&&!TASKS[k].done()){                  // add it as an objective; once it is one, the button reads "added"
+      // (2026-10-04, asked for: "add buttons should change to 'added' when added (and not remain an add button)". Followed being
+      // one at a time, a quest went back to "＋ add" the moment another was added — though it was still on the map and in the
+      // map page's tracking list. Now anything on that list reads "added": ◆ and bright for the one being followed, ✓ and quiet
+      // for the rest. A click does what it did before: stop following the one that is followed, or follow one of the others.)
+      const added=objs.some(o=>o.task===k), on=objs.some(o=>o.task===k&&o.tracked);
       const b=document.createElement('button');
-      b.textContent=on?'◆ on':'＋ add';
-      b.title=on?'Objective is on — click to turn it off':'Make it my objective (press M to find it)';
-      b.style.cssText='pointer-events:auto;flex:none;font-size:12px;padding:2px 9px;border-radius:6px;cursor:pointer;background:none;'
-        +(on?'border:1px solid rgba(255,210,127,.55);color:var(--amber)':'border:1px solid rgba(127,230,255,.3);color:#9fb2c8');
+      b.textContent=on?'◆ added':added?'✓ added':'＋ add';
+      b.title=on?'Added — on the map and its tracking list, and the objective you are following. Click to stop following it'
+        :added?'Added — on the map and its tracking list. Click to follow it as your objective'
+        :'Make it my objective (press M to find it)';
+      b.style.cssText='pointer-events:auto;flex:none;font-size:12px;padding:2px 9px;border-radius:6px;cursor:pointer;'
+        +(on?'background:rgba(255,210,127,.12);border:1px solid rgba(255,210,127,.55);color:var(--amber)'
+          :added?'background:rgba(255,210,127,.05);border:1px solid rgba(255,210,127,.22);color:#b59d6c'
+          :'background:none;border:1px solid rgba(127,230,255,.3);color:#9fb2c8');
       b.onclick=()=>{
         if(on){const a=loadObjs();a.forEach(o=>{if(o.task===k)o.tracked=false;});saveObjs(a);refreshMiniObjs();}
         else addObjective(k);                        // one tracked objective at a time
@@ -8718,7 +8981,7 @@ function spawnElara(){
   // She stands by the birdbath whenever the visitor starts in the garden — a greeting already given only
   // means she skips the hello, it does not move her indoors (2026-09-16: it used to, so she was never seen there again).
   const inGarden = !RETURN_TO&&!AT_FOUNTAIN&&SPAWN.z>48&&Math.abs(SPAWN.x)<22.5;
-  const up = (!RETURN_TO&&!AT_FOUNTAIN&&!EP1_DUE&&RESUME&&+RESUME.y>0.5)?+RESUME.y:0;   // a refresh on an upper floor (the walk ends on lab level 2): she is beside you there, not down in the foyer
+  const up = AT_START_SPOT ? START_SPOT.y : (!RETURN_TO&&!AT_FOUNTAIN&&!EP1_DUE&&RESUME&&+RESUME.y>0.5)?+RESUME.y:0;   // a refresh on an upper floor (the walk ends on lab level 2), or the default arrival on lab level 5 (START_SPOT, 2026-10-04): she is beside you there, not down in the foyer
   const rest = EP1_DUE ? EP1.elara : up ? [SPAWN.x+1.4,SPAWN.z+0.6] : (tourDone()&&!inGarden) ? TOUR[TOUR.length-1].at : inGarden ? INTRO_AT : [1.0,43.5];   // Episode 1: she waits in the foyer for the lift to bring you down
   p.mesh.position.set(rest[0],up,rest[1]);p.homeYaw=inGarden?0:Math.PI;
   ELARA_BLOCK.x=rest[0];ELARA_BLOCK.z=rest[1];ELARA_BLOCK.off=false;
@@ -9310,6 +9573,7 @@ function elaraChatView(who){                                   // her chat — o
   document.getElementById('ecSend').style.borderLeftColor=cardColor;
   const bk=document.getElementById('ecBack'); bk.style.display=cardBack?'':'none'; bk.onclick=()=>{ if(cardBack)cardBack(); };
   if(ecShown&&ecShown!==who){ EC_WHO[ecShown].pane=m.innerHTML; m.innerHTML=EC_WHO[who].pane||''; }   // the other one's bubbles kept aside, this one's back
+  else if(!ecShown&&EC_WHO[who].pane&&!m.childElementCount)m.innerHTML=EC_WHO[who].pane;               // (never opened, but a turn of the game's own wrote into it: ecNote)
   ecWho=ecShown=who;
   document.getElementById('ecIn').placeholder=EC_WHO[who].hint;
   if(!m.childElementCount)ecBubble(who,EC_WHO[who].ask||"I'm listening.");   // their opening line is the first bubble (the card's question line, before)
@@ -9317,46 +9581,54 @@ function elaraChatView(who){                                   // her chat — o
   setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50);
 }
 let ecSpeaking=false,elaraSpeakStart=null;   // elaraSpeakStart fires once, the moment her next line is actually audible
-async function ecSend(){
-  const inp=document.getElementById('ecIn'),text=inp.value.trim();if(!text)return;
-  const P=EC_WHO[ecWho], who=ecWho;                              // whoever the pane is on (Elara, or Jack)
-  inp.value='';ecBubble('you',text);
-  const wait=ecBubble(who,'…');
-  elaraShow(false);ecSpeaking=true;                            // step aside right away; she answers out loud, then the panel returns
-  // the mouse (2026-09-30, asked for): Send hands it straight back — crosshair and movement, no second click — and when the
-  // pane returns it is set free again for the pane (the window stays fullscreen: only the pointer lock is let go)
-  try{inp.blur();}catch(e){} lockPointer();
-  const back=()=>{ if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ elaraShow(true); document.exitPointerLock&&document.exitPointerLock(); setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
-  const away=()=>{ ecSpeaking=false; elaraSpeakStart=null; };          // (GA) what they did moved you: the pane stays away — E on them to talk again
+function ecNote(who,note,out){                                   // a turn of the game's own, written into that chat's pane: a grey line for what happened, then what was said
+  const html='<div style="margin:2px 0"><i style="color:#8fa3bf">'+escHtml(note)+'</i></div><div style="margin:2px 0">'+ecLine(who,out)+'</div>';
+  if(ecShown===who){ const m=document.getElementById('ecMsgs'); m.insertAdjacentHTML('beforeend',html); m.scrollTop=m.scrollHeight; }
+  else EC_WHO[who].pane=(EC_WHO[who].pane||'')+html;
+}
+async function ecSend(text,opts){                              // no arguments: what is in the box. text + {game:true, who, note, log, done}: a turn of the game's own (an objective reached — gaContFire): no bubble for the visitor's side, no pane, the page source left out, done() when it is over
+  const inp=document.getElementById('ecIn'); opts=opts||{}; const game=!!opts.game;
+  if(!game){ text=inp.value.trim(); if(!text)return; inp.value=''; }
+  const who=game?(opts.who||ecWho):ecWho, P=EC_WHO[who];      // whoever the pane is on (Elara, or Jack) — or, for the game's turn, whoever it names
+  if(!P){ if(opts.done)opts.done(); return; }
+  if(!game)ecBubble('you',text);
+  const wait=game?null:ecBubble(who,'…');
+  if(!game){ elaraShow(false);ecSpeaking=true;                 // step aside right away; she answers out loud, then the panel returns
+    // the mouse (2026-09-30, asked for): Send hands it straight back — crosshair and movement, no second click — and when the
+    // pane returns it is set free again for the pane (the window stays fullscreen: only the pointer lock is let go)
+    try{inp.blur();}catch(e){} lockPointer(); GA.turns=(GA.turns|0)+1; }
+  let over=false; const done=()=>{ if(over)return; over=true; if(opts.done)opts.done(); };
+  const back=()=>{ if(game){ done(); return; } if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ elaraShow(true); document.exitPointerLock&&document.exitPointerLock(); setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
+  const away=()=>{ if(game){ done(); return; } ecSpeaking=false; elaraSpeakStart=null; };          // (GA) what they did moved you: the pane stays away — E on them to talk again
   if(ecSource===null){
     try{ecSource=(await (await fetch(location.pathname)).text()).slice(0,150000);}
     catch(e){ecSource='(page source unavailable)';}
   }
   P.hist.push({role:'user',parts:[{text:text}]});
-  gaNews('the visitor said to '+P.name+': "'+gaText(text,140)+'"',who);   // how the visitor reacts is what the story is shaped by: the other chats are told (gaNow)
+  if(!game)gaNews('the visitor said to '+P.name+': "'+gaText(text,140)+'"',who);   // how the visitor reacts is what the story is shaped by: the other chats are told (gaNow)
   try{
     const r=await fetch(GEMINI_PROXY,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:GEMINI_MODEL,
         generationConfig:{responseMimeType:'application/json'},      // (GA) JSON back: {reply, actions} — what they say and what they do
-        systemInstruction:{parts:[{text:P.system(ecSource,gaBrief(who)+langLine())}]},
+        systemInstruction:{parts:[{text:P.system(game?GA_NO_SOURCE:ecSource,gaBrief(who)+langLine())}]},   // (the game's turn is about the story: the 150k characters of page source stay out, a tenth of the tokens)
         contents:P.hist})});
     const j=await r.json();
     const raw=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('');
     const D=gaRead(raw); langNote(D,raw);   // asterisks for emphasis (they turn up however it is asked) are taken out: the words are shown and spoken as they come
     const out=D.reply||(j.error&&('('+j.error.message+')'))||'…';
     P.hist.push({role:'model',parts:[{text:JSON.stringify({reply:out,actions:D.actions})}]});
-    if(!j.error)gaNews(P.name+' answered them: "'+gaText(out,160)+'"',who);
-    wait.innerHTML=ecLine(who,out);
-    api({a:'asked',vid:visitId(),q:text,ans:out,key:accountKey()||'',who:who});   // kept for the Organiser Room's ASKED ELARA & OPTIMUS board (who: 'elara' or 'jack') (with the save key: the Privacy page's delete reaches it)
+    if(!j.error)gaNews(P.name+(game?' said: "':' answered them: "')+gaText(out,160)+'"',who);
+    if(wait)wait.innerHTML=ecLine(who,out); else ecNote(who,opts.note||'',out);
+    api({a:'asked',vid:visitId(),q:game?'['+(opts.log||'a turn of the game')+']':text,ans:out,key:accountKey()||'',who:who});   // kept for the Organiser Room's ASKED ELARA & OPTIMUS board (who: 'elara' or 'jack') (with the save key: the Privacy page's delete reaches it)
     // step out of the way while she answers (her lips move to the words), then come back for the next question
     // read aloud, pipelined: the first sentence plays while the rest is still synthesizing
     const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(out);
     let went=false; const then=()=>{ if(went)return; went=true; gaRun(who,D.actions,back,away); };   // (GA) what they do, once it is said; the pane returns after that
     if(sm)saySequence(who,[sm[1],sm[2]],then);else say(who,out,then);
     setTimeout(then,Math.max(4000,spLen(out)*90)+8000);   // safety net: never leave the chat closed for good
-  }catch(e){wait.innerHTML=ecLine(who,'(I lost the thread — is the network alright?)');back();}
+  }catch(e){ if(wait)wait.innerHTML=ecLine(who,'(I lost the thread — is the network alright?)'); back(); }
   document.getElementById('ecMsgs').scrollTop=1e9;
 }
 document.getElementById('ecSend').onclick=()=>ecSend();
@@ -9460,7 +9732,7 @@ function holoBuildDoor(Y,zn){
   pane.position.set(0,1.72,0); g.add(pane);
   animated.push({update(dt){ tex.offset.y-=dt*0.12; }});
   BUILDINGS.push({x:x-1.9,z,hw:0.25,hd:0.25,y0:Y-0.4,h:Y+3.9},{x:x+1.9,z,hw:0.25,hd:0.25,y0:Y-0.4,h:Y+3.9});
-  addHoloSign('THE HOLOGRAM ROOM','a room made from Sketchfab, for this visit',x,Y+LAB_SIGN_H,z,0,0x7fe6ff,true);
+  addHoloSign('THE HOLOGRAM ROOM','Prompt-to-Play Area',x,Y+DOOR_SIGN_H,z,0,0x7fe6ff,'flip');   // square over the frame, turned about from behind (2026-10-04, asked for); its second line was "a room made from Sketchfab, for this visit" until the same day (asked for)
   const h=hotspot(x,z+1.4,2.8,'The Hologram Room',()=>holoOpen('door'),{x,z,y:1.7,rad:1.7}); h.y=Y;
 }
 // ---- a space: the bare room (a grid floor, a rim), the console, the door that comes when called, the credits board ----
@@ -9490,12 +9762,12 @@ function holoBuildSpace(S){
     const con=new THREE.Mesh(new THREE.BoxGeometry(1.2,1.05,0.7),K.steel); con.position.set(0,0.525,0); F.add(con);
     const top=new THREE.Mesh(new THREE.BoxGeometry(1.3,0.08,0.8),K.rim); top.position.set(0,1.09,0); top.rotation.x=-0.25; F.add(top);
     const cs=addHoloSign('THE CONSOLE · SPACE '+S.n,'add more, or change it · H from anywhere in the room',0,3.4,0,0,0x7fe6ff,false); F.add(cs); cs.position.set(0,3.4,0);
-    S.signs=[cs];                                                     // the boards of this space: each turns to the visitor (holoTick)
+    S.signs=[cs];                                                     // the boards of this space: each stands square to its console or door and turns about when you are behind it (holoTick, signFlip)
     // the door: the frame from the lab, with its sign and the credits board — a group, because it comes when it is called
     const D=new THREE.Group(); D.position.set(A.x+6,0,cz); R.add(D); S.exit=D;
     for(const px of [-1.9,1.9]){ const m=new THREE.Mesh(new THREE.BoxGeometry(0.36,3.6,0.36),K.steel); m.position.set(px,1.8,0); D.add(m); }
     const lintel=new THREE.Mesh(new THREE.BoxGeometry(4.16,0.36,0.36),K.steel); lintel.position.set(0,3.78,0); D.add(lintel);
-    const ds=addHoloSign('BACK TO THE LAB','',0,LAB_SIGN_H,0,0,0xffd27f,false); D.add(ds); ds.position.set(0,LAB_SIGN_H,0); S.signs.push(ds);
+    const ds=addHoloSign('BACK TO THE LAB','',0,DOOR_SIGN_H,0,0,0xffd27f,false); D.add(ds); ds.position.set(0,DOOR_SIGN_H,0); S.signs.push(ds);
     S.group=new THREE.Group(); S.group.position.set(A.x,0,A.z); R.add(S.group);
   });
   BUILDINGS.push({x:A.x,z:A.z-H-1,hw:H+2,hd:1},{x:A.x,z:A.z+H+1,hw:H+2,hd:1},{x:A.x-H-1,z:A.z,hw:1,hd:H+2},{x:A.x+H+1,z:A.z,hw:1,hd:H+2});   // its edge: nobody walks off into the dark
@@ -9545,8 +9817,7 @@ function holoTick(dt){
       S.grid.visible=b; for(const r of S.rim)r.visible=b; S.furn.visible=b; S.furnBlock.off=!b; S.conHot.r=b?2.8:-1; }   // (-1: a spot is off only below zero — at 0 the unseen console still answered E)
     if(!inside)continue;
     S.used=GA.clock;
-    for(const m of S.signs||[]){ m.getWorldPosition(_hsv);              // its boards turn to the visitor: never read from behind (their groups — the console, the door — are turned about y only)
-      if(Math.hypot(player.pos.x-_hsv.x,player.pos.z-_hsv.z)>0.3)m.rotation.y=Math.atan2(player.pos.x-_hsv.x,player.pos.z-_hsv.z)-(m.parent?m.parent.rotation.y:0); }
+    for(const m of S.signs||[]){ if(m.userData.yaw0===undefined)m.userData.yaw0=m.rotation.y; signFlip(m,m.userData.yaw0); }   // its boards stand square to their console or door, lined up over it, and turn about only when you are behind them (2026-10-04, asked for: they used to turn to the visitor each frame)
     if(dt)for(const m of S.made)if(m.mixer)m.mixer.update(dt);
     if(run)fog=HOLO.fogRun;
     if(run&&S.period&&state.phase==='play'&&!paused){
@@ -9655,18 +9926,34 @@ function holoEnd(S){                                                 // the prog
   const A=S.at, cz=A.z+HOLO.half-9; S.arrive={x:A.x,z:cz-4,yaw:0}; holoDoorTo(A.x+6,cz,0,S,0);
   holoCreditsRefresh(); holoNote('The program in space '+S.n+' has ended. The space is bare again.');
 }
+// ---- the credits, kept (2026-10-04, the user: "check that all the credits for these remain stuck in their credit page permanently
+// on the device they are using"): every Sketchfab model fetched for this visitor — picked at the console, or brought in by a chat —
+// is written to this device (localStorage 'atd:holo:credits', newest first, 400 at most), and the Credits page lists them from then
+// on, standing or long gone. Until now the list was this visit's only, and ending a program took its lines off. On this device only
+// (localOnlyKey): it is the record of what was fetched here, not progress; "Delete everything" on the Privacy page takes it too.
+function holoKept(){ if(HOLO.kept)return HOLO.kept; let a=[]; try{ a=JSON.parse(localStorage.getItem('atd:holo:credits')||'[]'); }catch(e){} HOLO.kept=(Array.isArray(a)?a:[]).filter(x=>x&&x.uid&&x.name); return HOLO.kept; }
+function holoKeep(m,where){                                            // where: 'room' (made at the console) or 'hall' (brought in by a chat)
+  try{ const L=holoKept(), i=L.findIndex(x=>x.uid===m.uid), was=i>=0?L.splice(i,1)[0]:null, now=Date.now();
+    L.unshift({uid:m.uid,name:String(m.name||'').slice(0,120),user:String(m.user||'?').slice(0,80),username:String(m.username||'').slice(0,80),license:String(m.license||'').slice(0,40),viewerUrl:String(m.viewerUrl||'').slice(0,200),where,first:was?was.first:now,last:now,n:((was&&was.n)|0)+1});
+    if(L.length>400)L.length=400;
+    localStorage.setItem('atd:holo:credits',JSON.stringify(L)); }catch(e){}   // (storage blocked or full: the list of this visit still shows, from HOLO.kept)
+}
 function holoCreditsRefresh(){
   const el=document.getElementById('holoCredits'); if(!el)return;
-  const hall=HOLO.hall||[], all=[];                                    // what stands in the spaces; and what the chats fetched into the hall itself (GA "sketchfab"), this visit
+  const hall=HOLO.hall||[], all=[];                                    // what stands in the spaces now; and what the chats fetched into the hall itself (GA "sketchfab"), this visit
   for(const S of HOLO.spaces)for(const m of S.made)all.push(m);
   for(const S of HOLO.spaces)if(S.board)holoBoard(S);
-  if(!all.length&&!hall.length){ el.innerHTML=''; return; }
+  const kept=holoKept().slice(), seen=new Set(kept.map(k=>k.uid));      // kept on this device, newest first — and, should the device keep nothing, this visit's
+  for(const m of all.concat(hall))if(!seen.has(m.uid)){ seen.add(m.uid); kept.push(Object.assign({where:all.indexOf(m)>=0?'room':'hall',first:Date.now()},m)); }
+  if(!kept.length){ el.innerHTML=''; return; }
   const a=(h,t)=>'<a href="'+h+'" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">'+escHtml(t)+'</a>';
   const line=(m)=>'“'+a(m.viewerUrl,m.name)+'” by '+(m.username?a('https://sketchfab.com/'+m.username,m.user):escHtml(m.user))+' on Sketchfab · '+a(holoLicUrl(m.license),holoLic(m.license));
   const head=(t)=>'<div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">'+t+'</div>';
-  el.innerHTML=(all.length?head('THE HOLOGRAM ROOM — THIS VISIT')+all.map(line).join('<br>'):'')
-    +(hall.length?head('BROUGHT INTO THE HALL — THIS VISIT')+hall.map(line).join('<br>'):'')
-    +'<div style="color:#8fa3bf;font-size:12.5px;margin-top:4px">Fetched from Sketchfab for this visit only, at your asking; nothing of it is kept or shown to anyone else.</div>';
+  const when=(t)=>{ try{ return new Date(t).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return ''; } };
+  const up=(k)=>all.some(m=>m.uid===k.uid)?' · standing now':hall.some(m=>m.uid===k.uid)?' · in the hall now':'';
+  el.innerHTML=head('FETCHED FROM SKETCHFAB · ON THIS DEVICE')
+    +kept.map(k=>line(k)+' <span style="color:#8fa3bf">· '+when(k.first)+(k.where==='hall'?' · brought into the hall':'')+up(k)+'</span>').join('<br>')
+    +'<div style="color:#8fa3bf;font-size:12.5px;margin-top:4px">Fetched at your asking, for a visit at a time; the credits stay on this device. Which models were made is also in the hall’s log — see Privacy &amp; terms.</div>';
 }
 // ---- the panel ----
 function holoShow(on){ document.getElementById('holoModal').style.display=on?'flex':'none'; document.body.classList.toggle('qOpen',!!on);
@@ -9747,10 +10034,10 @@ function holoMirror(uid){                                            // where th
       if(c<0)lo=mid+1; else hi=mid-1; }
     return null; });
 }
-async function holoSearch(q,role,match,rigged,many){                      // Sketchfab's public search, kept to what may be used here; the eight shown are the KEYLESS ones first (match: the best matches, not the most liked; rigged: only models Sketchfab lists as rigged)
-  const out=[], seen=new Set(); let url='https://api.sketchfab.com/v3/search?type=models&downloadable=true&count=24'+(match?'':'&sort_by=-likeCount')+(rigged?'&rigged=true':'')+'&max_face_count='+HOLO.maxFaces+'&q='+encodeURIComponent(q);
-  for(let page=0;page<2&&url;page++){                                  // two pages, the most liked first: up to 48 to choose the eight from
-    const r=await fetch(url); if(!r.ok)break; const j=await r.json(); url=j.next||null;
+async function holoSearch(q,role,match,rigged,many,st){                   // Sketchfab's public search, kept to what may be used here; the eight shown are the KEYLESS ones first (match: the best matches, not the most liked; rigged: only models Sketchfab lists as rigged; st: a row's place in the pages, {url} — given, ONE page a call from there, st.url the page after it or null, nothing cut off the end: see holoRow)
+  const out=[], seen=new Set(); let url=(st&&st.url!==undefined)?st.url:'https://api.sketchfab.com/v3/search?type=models&downloadable=true&count=24'+(match?'':'&sort_by=-likeCount')+(rigged?'&rigged=true':'')+'&max_face_count='+HOLO.maxFaces+'&q='+encodeURIComponent(q);
+  for(let page=0;page<(st?1:2)&&url;page++){                           // two pages, the most liked first: up to 48 to choose the eight from
+    const r=await fetch(url); if(!r.ok)break; const j=await r.json(); url=j.next||null;   // (refused: the page is kept to try again, st.url as it was)
     for(const m of (j.results||[])){
       if(!m.isDownloadable||seen.has(m.uid)||m.isAgeRestricted)continue; seen.add(m.uid);
       const lic=(m.license&&m.license.label)||''; if(!HOLO.licOk.test(lic))continue;
@@ -9759,13 +10046,15 @@ async function holoSearch(q,role,match,rigged,many){                      // Ske
       const th=((m.thumbnails&&m.thumbnails.images)||[]).slice().sort((a,b)=>Math.abs(a.width-720)-Math.abs(b.width-720))[0];
       out.push({uid:m.uid,name:m.name,user:(m.user&&m.user.displayName)||'?',username:(m.user&&m.user.username)||'',license:lic,size:opts[0].size,faces:opts[0].faceCount||m.faceCount||0,thumb:th?th.url:'',viewerUrl:m.viewerUrl||('https://sketchfab.com/3d-models/'+m.uid),role,anim:m.animationCount||0,
         rig:(()=>{ const t=(m.name+' '+((m.tags||[]).map(x=>x&&(x.name||x.slug)||'').join(' '))+' '+(m.description||'')).toLowerCase(); return /mixamo/.test(t)?2:/\brigg?ed\b|\brig\b|humanoid|biped/.test(t)?1:0; })()}); }
-    if(page===0){ await Promise.all(out.map(async r=>{ r.mirror=/Standard/.test(r.license)?null:await holoMirror(r.uid); })); if(out.filter(r=>r.mirror).length>=8)break; }   // eight keyless ones already: no second page
+    if(page===0&&!st){ await Promise.all(out.map(async r=>{ r.mirror=/Standard/.test(r.license)?null:await holoMirror(r.uid); })); if(out.filter(r=>r.mirror).length>=8)break; }   // eight keyless ones already: no second page
   }
+  if(st)st.url=url;
   await Promise.all(out.map(async r=>{ if(r.mirror===undefined)r.mirror=/Standard/.test(r.license)?null:await holoMirror(r.uid); }));   // which of them need no key at all
   // the order they are shown in (the user, 2026-10-01: "show the keyless ones first" — the hall's key has an hourly limit): from the
   // mirror, then through the hall's key, then the ones that need the visitor's own login; the most liked first within each
   const rank=(r)=>r.mirror?0:/Standard/.test(r.license)?2:1;
-  return out.map((r,i)=>[r,i]).sort((a,b)=>rank(a[0])-rank(b[0])||a[1]-b[1]).map(x=>x[0]).slice(0,(match||many)?24:8);   // (many: a chat choosing a place looks at more than the panel's eight pictures)
+  const sorted=out.map((r,i)=>[r,i]).sort((a,b)=>rank(a[0])-rank(b[0])||a[1]-b[1]).map(x=>x[0]);
+  return st?sorted:sorted.slice(0,(match||many)?24:8);                 // (many: a chat choosing a place looks at more than the panel's eight pictures)
 }
 // Surroundings, the likeliest first: the words asked for in the name, a name that says it is a place, a model heavy enough
 // to be one, no key needed — and not a pack of props (the most liked under "medieval village" was once a tap; under a long
@@ -9777,32 +10066,53 @@ function holoPlaceRank(res,q){
   return res.map((r,i)=>{ const nm=r.name.toLowerCase(); let sc=-i*0.25+(r.mirror?1.5:0)+(env.test(nm)?2:0)+(r.faces>15000?1:0)-(/\b(props?|pack|kit|assets?|collection|set|pieces|modular|tiles?)\b/.test(nm)?2:0);
     for(const w of words)if(nm.indexOf(w)>=0)sc+=2; return [sc,r]; }).sort((x,y)=>y[0]-x[0]).map(x=>x[1]);
 }
-async function holoShowSearches(list){                               // a row of pictures for each search: surroundings and things eight, someone four (the ones the hall can animate first)
+async function holoShowSearches(list){                               // a row of pictures for each search: surroundings and things eight, someone four (the ones the hall can animate first) — and "More ▸" at the end of each row for the next eight (or four), as long as Sketchfab has more (2026-10-04, asked for: "get to the end of the list more should load")
   const P=document.getElementById('holoPics'); P.innerHTML=''; P.style.display=list.length?'grid':'none'; P.scrollTop=0;
-  const add=(pool,more)=>{ for(const x of more||[])if(!pool.some(y=>y.uid===x.uid))pool.push(x); return pool; }, small=(r)=>r.size<=GA_MODEL.maxMB*1048576;
-  const row=async(sr,h)=>{ let res=[]; const who=sr.role==='character', kind=sr.role==='environment'?'surroundings':who?'someone':'a thing', ws=sr.q.trim().split(/\s+/);
-    h.textContent=kind+' · "'+sr.q+'" …';
-    try{
-      if(who){                                                           // someone: Sketchfab's rigged models under those words — and, when that is thin, under the last word alone ("medieval merchant": one; "merchant": many)
-        res=(await holoSearch(sr.q,'character',true,true)).filter(small);
-        if(res.length<6&&ws.length>1)add(res,(await holoSearch(ws[ws.length-1],'character',true,true)).filter(small));
-        if(res.length<2)add(res,(await holoSearch(sr.q,'character',true,false)).filter(small).filter(r=>!/\b(town|city|forest|world|scene|terrain|island|windmill|house|building|castle|tower|landscape|environment|diorama|pack|props?|kit)\b/i.test(r.name)));   // none rigged: whatever there is that is not a place
-        res=gaModelRank(res,sr.q,true).slice(0,8);
-        const pk=await Promise.all(res.map(r=>r.mirror?holoPeek(r.mirror).catch(()=>null):null));                   // their skeletons, looked at before they are shown
-        res.forEach((r,i)=>{ r.peekOk=!!(pk[i]&&pk[i].readable); });
-        res=res.filter(r=>r.peekOk).concat(res.filter(r=>!r.peekOk)).slice(0,4); }
-      else if(sr.role==='environment'){                                  // surroundings: the words as given — and, when that is thin, without the words of style ("medieval village diorama low poly game ready": three; "medieval village": plenty)
-        const core=ws.filter(w=>!HOLO_STYLE.test(w.toLowerCase())), tries=[sr.q.trim()];
-        if(core.length)tries.push(core.slice(0,3).join(' ')); if(core.length>2)tries.push(core.slice(-2).join(' ')); if(core.length>1)tries.push(core[core.length-1]);
-        for(const tq of tries.filter((t,i)=>t&&tries.findIndex(u=>u.toLowerCase()===t.toLowerCase())===i)){ add(res,await holoSearch(tq,'environment',false,false,true)); if(res.length>=8)break; }
-        res=holoPlaceRank(res,sr.q).slice(0,8); }
-      else res=await holoSearch(sr.q,sr.role);
-    }catch(e){}
-    if(!h.isConnected)return;                                            // (another answer's rows have taken the pane since)
-    h.textContent=kind+' · "'+sr.q+'"'+(res.length?'':' — nothing small enough under a usable licence');
-    let after=h; for(const r of res){ r.q=sr.q; const c=holoCard(r,sr.role); after.insertAdjacentElement('afterend',c); after=c; } };
-  const jobs=[]; for(const sr of list.slice(0,5)){ const h=document.createElement('div'); h.className='holoHead'; P.appendChild(h); jobs.push(row(sr,h)); }
+  const jobs=[]; HOLO.rows=[];
+  for(const sr of list.slice(0,5)){ const h=document.createElement('div'); h.className='holoHead'; P.appendChild(h); const R=holoRow(sr,h); HOLO.rows.push(R); jobs.push(R.more(true)); }
   await Promise.all(jobs);
+}
+function holoRow(sr,h){                                               // one row: its searches in the order they are drawn on, what it has shown, and more() for the next batch
+  const who=sr.role==='character', kind=sr.role==='environment'?'surroundings':who?'someone':'a thing', ws=sr.q.trim().split(/\s+/), small=(r)=>r.size<=GA_MODEL.maxMB*1048576;
+  const notPlace=/\b(town|city|forest|world|scene|terrain|island|windmill|house|building|castle|tower|landscape|environment|diorama|pack|props?|kit)\b/i;
+  const feeds=[];                                                      // someone: Sketchfab's rigged models under those words — then under the last word alone ("medieval merchant": one; "merchant": many) — then, rigged or not, whatever there is that is not a place
+  if(who){ feeds.push({q:sr.q,rigged:true}); if(ws.length>1)feeds.push({q:ws[ws.length-1],rigged:true}); feeds.push({q:sr.q,loose:true}); }
+  else if(sr.role==='environment'){                                    // surroundings: the words as given — then without the words of style ("medieval village diorama low poly game ready": three; "medieval village": plenty)
+    const core=ws.filter(w=>!HOLO_STYLE.test(w.toLowerCase())), tries=[sr.q.trim()];
+    if(core.length)tries.push(core.slice(0,3).join(' ')); if(core.length>2)tries.push(core.slice(-2).join(' ')); if(core.length>1)tries.push(core[core.length-1]);
+    for(const tq of tries.filter((t,i)=>t&&tries.findIndex(u=>u.toLowerCase()===t.toLowerCase())===i))feeds.push({q:tq}); }
+  else feeds.push({q:sr.q});
+  for(const f of feeds)f.st={};                                        // where each search has got to in Sketchfab's pages (url null: none left)
+  const rank=(pool)=>who?gaModelRank(pool,sr.q,true):sr.role==='environment'?holoPlaceRank(pool,sr.q):pool;
+  const R={sr,h,kind,shown:new Set(),pool:[],feeds,busy:false,done:false,tile:null,last:h,n:0,batch:who?4:8};
+  R.more=async(first)=>{
+    if(R.busy||R.done)return; R.busy=true;
+    if(first)h.textContent=kind+' · "'+sr.q+'" …'; if(R.tile)R.tile.textContent='…';
+    const want=who?8:R.batch; let fetched=0;                           // someone: eight looked at, their skeletons read, the ones the hall can animate shown first
+    try{
+      while(R.pool.length<want&&fetched<3){                             // the pool short: the next page of the first search with pages left (three pages a click at most)
+        const f=R.feeds.find(f=>f.st.url!==null); if(!f)break;
+        fetched++; let got=await holoSearch(f.q,who?'character':sr.role,who,!!f.rigged,!who,f.st);
+        got=got.filter(r=>!R.shown.has(r.uid)&&!R.pool.some(p=>p.uid===r.uid));
+        if(who){ got=got.filter(small); if(f.loose)got=got.filter(r=>!notPlace.test(r.name)); }
+        if(got.length)R.pool=rank(R.pool.concat(got));
+      }
+      let out=R.pool.splice(0,want);
+      if(who&&out.length){ const pk=await Promise.all(out.map(r=>r.peekOk!==undefined?null:r.mirror?holoPeek(r.mirror).catch(()=>null):null));   // their skeletons, looked at before they are shown (once each)
+        out.forEach((r,i)=>{ if(r.peekOk===undefined)r.peekOk=!!(pk[i]&&pk[i].readable); });
+        out=out.filter(r=>r.peekOk).concat(out.filter(r=>!r.peekOk)); R.pool.unshift(...out.slice(R.batch)); out=out.slice(0,R.batch); }
+      if(!h.isConnected)return;                                        // (another answer's rows have taken the pane since)
+      for(const r of out){ r.q=sr.q; const c=holoCard(r,sr.role); R.shown.add(r.uid); if(R.tile)R.tile.insertAdjacentElement('beforebegin',c); else R.last.insertAdjacentElement('afterend',c); R.last=c; R.n++; }
+    }catch(e){}
+    finally{ R.busy=false; }
+    if(!h.isConnected)return;
+    h.textContent=kind+' · "'+sr.q+'"'+(R.n?'':' — nothing small enough under a usable licence');
+    if(R.pool.length||R.feeds.some(f=>f.st.url!==null)){               // more to come: the tile at the row's end
+      if(!R.tile){ R.tile=document.createElement('div'); R.tile.className='holoCard more'; R.tile.title='the next '+R.batch+' of these'; R.tile.onclick=()=>R.more(); R.last.insertAdjacentElement('afterend',R.tile); }
+      R.tile.textContent='More ▸'; }
+    else { R.done=true; if(R.tile){ R.tile.remove(); R.tile=null; } }
+  };
+  return R;
 }
 const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals Hall', a 3D hall of playable worlds. A visitor is at the console and wants something of their own made for this visit from models on Sketchfab: a place, the people in it, a story. You talk with them in plain sentences (no markdown, no lists) and you decide what to ask. For everything you want to show them, give a Sketchfab search as {\"q\":\"<search words>\",\"role\":\"environment\"|\"character\"|\"prop\"}: the game runs it and shows them a row of pictures of what came back, and they click what they want; you do not see the pictures, but each turn you are told what is on their list. \"environment\" is the surroundings (the ground, the room, the landscape); \"character\" is someone — a person, a creature, a robot — with a search of their own for each person or kind of person; \"prop\" is a thing. Up to five searches a turn. When they ask for a story, or for people, look for both in the same answer — one row of surroundings and two or three rows of people, a search for each person the story needs — so that they pick the place and its people together; do not leave the people for later. Good search words matter, and few of them: two or three plain words to a search, since every word more finds less. Sketchfab is full of very large scenes, so for surroundings think small — 'space station', 'forest diorama', 'low poly village', 'room', 'island'; for someone, plain words — 'old wizard', 'knight', 'girl', 'robot' (the game looks among the rigged models and marks the pictures of the ones it can animate 'moves'); for things, the plain name of the thing. "
   +"What can be used: only models Sketchfab lets anyone download under CC BY, CC BY-SA, CC0 or Sketchfab's free Standard licence (all of which allow a model to be altered), each at most "+HOLO.maxMB+" MB (someone: "+GA_MODEL.maxMB+" MB; the game drops the rest before they see them; many whole environments are far bigger), the room at most "+HOLO.maxTotalMB+" MB in all; a model that came with an animation of its own plays it. Someone picked as a \"character\" becomes a person of the place once it is made: they can be talked with (a mind of their own, which you give them), and when their skeleton can be read they play the hall's animations, walk and follow. Sizes are guessed by the game (models come in every unit), so they are often wrong: the visitor can say bigger or smaller, and you have the resize action. Most of the Creative Commons models are fetched with no login at all; those under the free Standard licence need the visitor's own Sketchfab login (the pictures say which) — a Sketchfab account is free, and so is everything fetched with it. "
@@ -9826,7 +10136,7 @@ async function holoSend(text){
   { const m=/^(make it |make everything )?(much |a lot |a bit |a little |slightly )?(bigger|larger|smaller|twice as big|double( the size)?|half( the size| as big)?)[.!]?$/.exec(t);
     if(m){ const w=m[3], amt=/much|a lot/.test(m[2]||'')?2.5:/bit|little|slightly/.test(m[2]||'')?1.2:1.5, f=/twice|double/.test(w)?2:/half/.test(w)?0.5:/smaller/.test(w)?1/amt:amt;
       HOLO.msgs.push({who:'you',text}); holoNote(holoResize(f).replace(/^./,c=>c.toUpperCase())+'.'); return; } }
-  HOLO.busy=true; HOLO.msgs.push({who:'you',text}); holoView();
+  HOLO.busy=true; HOLO.msgs.push({who:'you',text}); holoView(); GA.turns=(GA.turns|0)+1;
   const list='They are planning space '+HOLO.sp.n+' of '+HOLO.spaces.length+(holoHere()?' (they stand in space '+holoHere().n+')':' (they are at the door on lab level 5)')+'. '+(HOLO.picks.length?'On their list for it now: '+HOLO.picks.map(p=>'"'+p.name+'" ('+p.role+', '+holoMB(p.size)+(p.made?', already standing in the space':'')+')').join('; ')+'.':'Their list for it is empty.');
   HOLO.hist.push({role:'user',parts:[{text:list+'\nThe visitor says: '+text}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);
   gaNews('the visitor said to the Hologram Room\'s planner: "'+gaText(text,140)+'"','holo');
@@ -10068,8 +10378,13 @@ async function holoStory(S,made){
     +(folk.length?' The people they picked stand before them, with no names yet and nobody behind their faces: '+folk.map(one).join('; ')+'.':' They picked no people.')
     +(things.length?' Things put up: '+things.join(', ')+'.':'')
     +' Begin now, in this same answer, what they asked you for. If it was a story, or if there are people: "reply" is the story\'s opening, spoken to the visitor by the room\'s own voice; and "actions" set it going — first give each of the people who they are, {"do":"change","who":"<id>","name":"...","persona":"...","voice":"..."} (the persona is their mind: from then on they answer for themselves), then whatever the story wants of all you can do: lines for them to speak ("say"), where they stand ("arrange", "teleport", "walk"), an objective for the visitor, the record ("story"), more people or things if it needs them. If they only wanted a place to stand in, a line of welcome is enough. No "searches" in this answer.';
+  GA.turns=(GA.turns|0)+1;
+  return holoTell(text,{cap:'… the Hologram Room is setting the story …',verb:'began',log:'[the story begins — space '+S.n+(env?', in “'+env.name+'”':'')+(folk.length?', '+folk.length+(folk.length===1?' person':' people'):'')+']'});
+}
+async function holoTell(text,opt){                                   // a turn of the game's own with the room's planner: text is the game's question; what it answers is spoken by the room's voice, its actions run, and done() when that is over (opt: cap, verb, log, done)
+  if(HOLO.busy){ if(opt.done)opt.done(); return; } HOLO.busy=true;
   HOLO.hist.push({role:'user',parts:[{text}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);
-  caption('… the Hologram Room is setting the story …',30);
+  caption(opt.cap||'…',30);
   let reply='', actions=[], ok=false;
   try{
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL,generationConfig:{responseMimeType:'application/json'},systemInstruction:{parts:[{text:HOLO_SYSTEM()+gaBrief('holo',true)+langLine()}]},contents:HOLO.hist})});
@@ -10082,13 +10397,14 @@ async function holoStory(S,made){
   }catch(e){}
   if(!ok)HOLO.hist.pop();                                              // no answer: the question is taken back (the talk stays visitor, room, visitor, room)
   HOLO.busy=false; try{ holoView(); }catch(e){}
-  if(!reply&&!actions.length){ caption('',0.2); return; }
-  if(reply){ HOLO.msgs.push({who:'lab',text:reply}); gaNews('the Hologram Room began: "'+gaText(reply,160)+'"','holo'); }
-  let went=false; const then=()=>{ if(went)return; went=true; if(actions.length&&state.phase==='play')gaRun('holo',actions,()=>{},()=>{}); };   // what it does, once it is said
+  let over=false; const done=()=>{ if(over)return; over=true; if(opt.done)opt.done(); };
+  if(!reply&&!actions.length){ caption('',0.2); done(); return; }
+  if(reply){ HOLO.msgs.push({who:'lab',text:reply}); gaNews('the Hologram Room '+(opt.verb||'said')+': "'+gaText(reply,160)+'"','holo'); }
+  let went=false; const then=()=>{ if(went)return; went=true; if(actions.length&&state.phase==='play')gaRun('holo',actions,done,done); else done(); };   // what it does, once it is said
   if(reply){ const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(reply); if(sm)saySequence('holo',[sm[1],sm[2]],then); else say('holo',reply,then);
     setTimeout(then,Math.max(4000,spLen(reply)*90)+8000); }           // (safety net, as the chats have)
   else then();
-  holoLog('[the story begins — space '+S.n+(env?', in “'+env.name+'”':'')+(folk.length?', '+folk.length+(folk.length===1?' person':' people'):'')+']',(reply||'(no words)')+holoDid(actions));   // the room's log (it is being spoken by now; not waited for)
+  holoLog(opt.log||'[a turn of the game]',(reply||'(no words)')+holoDid(actions));   // the room's log (it is being spoken by now; not waited for)
 }
 async function holoMake(S,go,quiet){                                 // S: the space it is made in (the panel's); go false: the visitor is not taken there (a chat getting a place ready); quiet: a chat's own making — the planner is not asked to begin a story
   S=S||HOLO.sp;
@@ -10123,7 +10439,7 @@ async function holoMake(S,go,quiet){                                 // S: the s
   const build=async(p,put)=>{                                          // one pick: fetched, then put up
     if(p.failed){ HOLO.msgs.push({who:'sys',text:'“'+p.name+'” could not be fetched: '+p.failed+'.'}); holoView(); return; }
     const msg={who:'sys',text:'Fetching “'+p.name+'”…'}; HOLO.msgs.push(msg); holoView();   // (the line the download writes its progress into, then what came of it)
-    try{ const scene=await fetchOne(p); put(scene,p); p.made=true; S.made.push(p);
+    try{ const scene=await fetchOne(p); put(scene,p); p.made=true; S.made.push(p); holoKeep(p,'room');
       msg.text='“'+p.name+'” is up'+(p.via==='you'?' (with your Sketchfab login)':'')+'.';
     }catch(e){ p.failed=String(e&&e.message||e).slice(0,140); msg.text='“'+p.name+'” could not be fetched: '+p.failed+'.'; }
     p.links=null; holoView(); };
@@ -10708,21 +11024,22 @@ const GUEST_MADE_WHO={scientist:{name:'Scientist',pitch:0.92,
 function guestMade(g){
   if(g.state)return; g.state='loading';
   const W=GUEST_MADE_WHO[g.made]||{name:g.made};
+  if(!g.quiet)banner('Loading '+g.name);                              // as the other spaces say it (loadGuest): he is made once you are in his space (2026-10-04)
   if(g.made==='scientist'&&!PEOPLE.models.scientist2)gaSciLoad();
   let t=0; const hook={update(dt){
     if(hook.dead||paused)return; t+=dt;
     const ready=g.made==='scientist'?GA.sciState==='ready':!!PEOPLE.models.elara;
-    if(GA.sciState==='failed'||t>90){ hook.dead=true; g.state='failed'; return; }
+    if(GA.sciState==='failed'||t>90){ hook.dead=true; g.state='failed'; if(!g.quiet)banner(g.name+' failed to load'); return; }
     if(!ready||!PEOPLE.models.elara||state.phase!=='play')return;
     hook.dead=true;
     const at={x:g.cx,z:g.cz,y:g.gy||0};
     const o=gaMade({id:g.id,name:W.name,kind:'person',what:g.made,at,asked:{x:at.x,z:at.z,y:at.y},by:'hall',color:g.col,resident:true}); GA.seq++;
-    if(!gaPerson(o,{},at)){ o.gone=true; g.state='failed'; return; }
+    if(!gaPerson(o,{},at)){ o.gone=true; g.state='failed'; if(!g.quiet)banner(g.name+' failed to load'); return; }
     o.p.mesh.rotation.y=(g.faceYaw!==undefined)?g.faceYaw:0;         // facing the doorway of his space until someone comes near (then he turns to them, as the hall's people do)
     gaVoice(o,{pitch:W.pitch}); gaMind(o,{persona:W.persona});
     gaHot(o,at,1.85,'Talk to the '+W.name.toLowerCase(),()=>gaTalkTo(o));
     if(o.face){ o.face.idle=true; o.face.next=4+Math.random()*8; }   // a look now and then while he stands there
-    g.o=o; g.state='ready';
+    g.o=o; g.state='ready'; if(!g.quiet)banner(g.name+' loaded');
   }};
   animated.push(hook);
 }
@@ -11510,7 +11827,7 @@ GA_DO.sketchfab=function*(a,ctx){
   const name=gaText(a.name,28)||gaText(pick.name,28)||q;
   const o=gaMade({id:gaId(a.id||name),name,kind:isChar?'person':'thing',what:(isChar?'a character':'a thing')+' from Sketchfab ("'+pick.name+'")',at,asked:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,isChar?0xb6ff9c:0x7fe6ff),model:pick}); GA.seq++;
   try{ gaModelBuild(o,body,a,at,isChar); }catch(e){ o.gone=true; ctx.log.push('sketchfab: “'+pick.name+'” would not stand up ('+gaText(e&&e.message,60)+')'); return; }
-  (HOLO.hall=HOLO.hall||[]).push(pick); holoCreditsRefresh();
+  (HOLO.hall=HOLO.hall||[]).push(pick); holoKeep(pick,'hall'); holoCreditsRefresh();
   const credit='“'+pick.name+'” by '+pick.user+' · '+holoLic(pick.license)+' · Sketchfab';
   gaRings(at,o.color); gaSound('whoosh'); banner(credit);
   const own=(isChar?(o.rig?'; the hall can read its skeleton, so it plays every animation in your list ("anim"), stands in the hall\'s idle and gestures as it talks'
@@ -11701,14 +12018,43 @@ animated.push({update(dt){                                            // its clo
     if(T&&T.at){ o.at.x=T.at.x; o.at.z=T.at.z; o.at.y=T.at.y; if(o.fx&&o.fx.m)o.fx.m.position.set(T.at.x,T.at.y,T.at.z); const L=LOCATIONS[o.place]; if(L){ L.x=T.at.x; L.z=T.at.z; } }   // its marker goes where that goes
     if(o.told)continue;
     if(!T&&!o.armed){ if(!near&&(o.space||Math.hypot(player.pos.x-o.at.x,player.pos.z-o.at.z)>o.r+1.5))o.armed=true; continue; }
-    if(T?(T.foe?(T.down||T.gone):T.kind==='box'?!!T.open:!!T.met):near){ gaObjDone(o); gaNews('the objective "'+o.name+'" is done'); } }
-  if(!GA.active){ if(GA.queue.length&&!gaScene()&&!(FTALK.active&&FTALK.id==='counsel')){ const q=GA.queue.shift(); gaRun(q[0],q[1],q[2],q[3]); } return; }
+    if(T?(T.foe?(T.down||T.gone):T.kind==='box'?!!T.open:!!T.met):near){ gaObjDone(o); gaNews('the objective "'+o.name+'" is done'); gaContinue(o,T?(T.foe?'brought down '+T.name:T.kind==='box'?'opened the box':'talked with '+T.name):'got there'); } }
+  if(!GA.active){ if(GA.queue.length&&!gaScene()&&!(FTALK.active&&FTALK.id==='counsel')){ const q=GA.queue.shift(); gaRun(q[0],q[1],q[2],q[3]); }
+    else if(GA.cont&&GA.cont.length&&!GA.contBusy&&state.phase==='play'&&!gaScene()&&!ecSpeaking&&!OCHAT.busy&&!HOLO.busy&&!menuPage&&!document.body.classList.contains('qOpen')&&GA.clock-GA.cont[0].at>2&&GA.clock-(GA.contAt||-99)>8)gaContFire();   // the story carried on, once the chime has had its moment and nothing else is happening
+    return; }
   if(!GA.gen)return;
   GA.t+=dt; const c=GA.cur; let go=false;
   if(typeof c==='number')go=GA.t>=c; else if(typeof c==='function'){ try{ go=!!c(); }catch(e){ go=true; } } else go=true;
   if(go)gaNext();
 }});
 try{ saveObjs(loadObjs().filter(o=>!/^ga:/.test(o.task||''))); }catch(e){}   // last visit's objectives of this kind went with that page
+
+/* ---- the story carried on when an objective is reached (2026-10-04, the user: "after the sound gemini should continue the story?,
+   or trigger gemini to think about that once the beam of light (with a circle under it) has been reached"). Until now the
+   chime was the end of it: the next chat the visitor opened was told "the objective is done" (gaNews) and nothing more happened.
+   Now the chat that gave the objective — Elara, Jack, Optimus, the Hologram Room, or someone put into the hall — gets a turn of
+   the game's own (ecSend / ocSend with game:true, holoTell): told what was reached and asked to carry the story on, out loud,
+   with whatever it wants next (an objective, a change, people, things, an end). Queued and sent once nothing else is happening
+   (gaContFire, from the tick), one at a time; dropped when the visitor has talked to someone since (that chat was told).
+   The page source stays out of these turns (GA_NO_SOURCE): a tenth of the tokens of a chat message. Not for objectives the
+   storyteller itself marks done ("done":true — it knows), nor "when":"told" ones. ---- */
+const GA_NO_SOURCE='(The page\'s source is left out of this turn, which is about the story, not the hall\'s workings.)';
+function gaContinue(o,how){
+  if(o.cont||!o.by)return; o.cont=true;
+  (GA.cont=GA.cont||[]).push({o,how,who:o.by,at:GA.clock,turn:GA.turns|0});
+}
+function gaContFire(){
+  const c=GA.cont.shift(); let who=c.who;
+  if(who!=='elara'&&who!=='jack'&&who!=='optimus'&&who!=='holo'){ const m=GA.made.find(x=>x.id===who&&!x.gone&&x.char); if(!m||!EC_WHO[who])who=holoCell(c.o.at.x,c.o.at.z)?'holo':'elara'; }   // its giver gone (or the counselling): the room, for one of its spaces; else Elara
+  if((GA.turns|0)!==c.turn)return;                                    // they have talked with someone since: that chat was told, and has had its say
+  const text='(This is the game speaking, not the visitor — they typed nothing.) They have just '+c.how+': the objective "'+c.o.name+'" is done'+(c.o.pay?', and paid them '+c.o.pay+' credits':'')+'. They are on '+gaFloorName(player.pos.x,player.pos.z,player.y)+'. Carry the story on from here, out loud, as yourself, in a sentence or two — what they find, what happens now — and give what comes next if the story goes on: the next objective, a change, people or things it needs; or, if this was its end, close it in a line. They are walking, not at your chat: ask them nothing that needs typing.';
+  const note='— they reached the objective “'+c.o.name+'”', log='the objective "'+c.o.name+'" was reached — the story goes on';
+  GA.contBusy=true; const done=()=>{ GA.contBusy=false; GA.contAt=GA.clock; };
+  setTimeout(()=>{ if(GA.contBusy)done(); },90000);                   // (safety net)
+  if(who==='holo')holoTell(text,{cap:'… the Hologram Room is thinking …',verb:'went on',log:'['+log+']',done});
+  else if(who==='optimus')ocSend(text,{game:true,note,log,done});
+  else ecSend(text,{game:true,who,note,log,done});
+}
 
 /* ---- what Gemini is told ---- */
 function gaWho(k){ return k==='elara'?'Elara':k==='jack'?'Jack':k==='optimus'?'Optimus':k==='holo'?"the Hologram Room's planner":k==='hall'?'the hall':((GA.made.find(o=>o.id===k)||{}).name||String(k||'someone')); }
@@ -11791,7 +12137,7 @@ function gaBrief(who,noFormat){                                      // every ch
   +'- {"do":"walk","who":"elara","to":"fountain"}: walk there. Short ways on the same floor only, about '+GA_LIMIT.walk+' metres: the hall has not been made for walking anywhere yet. Farther than that, or to another floor, teleport. Someone fetched from Sketchfab walks too, straight to the spot.\n'
   +'- {"do":"teleport","who":"visitor","to":"lab 2"}: move the visitor, a character, or "everyone" (the visitor and the three of you) at once, to any place on any floor or in any space of the Hologram Room. It is the way to take the visitor somewhere. Tell them they have been teleported and where they are: a "say" after it does that. With the id of a thing as "who", that thing is moved; "who" can also be a list.\n'
   +'- {"do":"arrange","who":["elara","jack","guard"],"around":"visitor","shape":"circle","radius":3}: places several people at once round a centre (any place, as below): "circle", "arc" (a half ring in front of it), "line" (a row in front of it), "behind" (a row behind it), "column". "who":"everyone" is all of them. Each walks there if it is near and is put there if not, and they turn to the centre ("facing":"out" turns them away from it; a name or a place turns them to that).\n'
-  +'- {"do":"objective","title":"...","to":"...","pay":20}: give the visitor an objective — a quest: a marker on their map and a beam of light at the place; it is done when they get there. With "target":"<id>" it is about something or someone put into the hall instead: an enemy (done when it is brought down), a box (done when it is opened), a person (done when the visitor talks with them). With "when":"told" it is done only when you say so — a quest only you can judge: a riddle answered, a choice made, a promise kept. pay: up to '+GA_LIMIT.pay+' credits. One already given is reshaped by its id (RIGHT NOW lists them): {"do":"objective","id":"<id>","title":"...","to":"..."} changes what it says, where it is, what it is about or when it is done; "done":true completes and pays it; "drop":true takes it off their map.\n'
+  +'- {"do":"objective","title":"...","to":"...","pay":20}: give the visitor an objective — a quest: a marker on their map and a beam of light at the place; it is done when they get there — and the moment any objective of yours is done, you are told so in a turn of the game\'s own and asked to carry the story on, so an objective is also your way of being called back when they get there. With "target":"<id>" it is about something or someone put into the hall instead: an enemy (done when it is brought down), a box (done when it is opened), a person (done when the visitor talks with them). With "when":"told" it is done only when you say so — a quest only you can judge: a riddle answered, a choice made, a promise kept. pay: up to '+GA_LIMIT.pay+' credits. One already given is reshaped by its id (RIGHT NOW lists them): {"do":"objective","id":"<id>","title":"...","to":"..."} changes what it says, where it is, what it is about or when it is done; "done":true completes and pays it; "drop":true takes it off their map.\n'
   +'- {"do":"story","title":"...","note":"..."}: write a line into THE STORY SO FAR (in RIGHT NOW, below): what has happened, what the visitor chose, what you mean to happen next, what the others should know or keep to themselves. Every character\'s chat is given it, so whoever the visitor speaks to next can carry the story on. "end":true wipes it.\n'
   +'- {"do":"start","what":"tour"}: start something the hall has: tour (the walk with Elara, from the garden), fountain 1, fountain 2, fountain 3 (the conversations with the fountain), story <name> (the story circles on level '+ORG_LVL+'), drill (the combat drill on lab 2), nightmare, episode 1. And the games behind the hall, which take the visitor out of the hall until they have played: fountain keeper, cerebrum, delivery.\n'
   +'- {"do":"spawn","what":"robot","name":"...","id":"...","at":"..."}: put someone or something into the hall. People: robot, woman, man, soldier, scientist. With a "persona" (who they are, a few sentences) they have a mind and a voice of their own and the visitor can talk with them; with "lines":["..."] they say those when spoken to; with "greet":"..." they say that, once, when the visitor first comes up to them. "voice":"male" or "female", or one by name (VOICES, below); "pitch" 0.9 to 1.1 — a shade lower or higher, no more: further from 1 a voice stops sounding like a person. With "hostile":true they are an enemy: robots come at the visitor, soldiers hold their ground; "nightmare" is the lab\'s monster, one at a time. Nothing can hurt the visitor; the visitor, Elara, Jack and Optimus shoot enemies down. Things: crate, orb, pillar, cube, ring, with "color", "size" and a "note" the visitor reads on it.\n'
@@ -11941,6 +12287,7 @@ function gateStart(){
   if(!goFullscreen())lockPointer();          // the same click grabs the mouse
   // Episode 1 is the opening now (2026-09-25): it plays for anyone who has not seen it. Elara's walk no longer starts
   // by itself — it is 'Walk with me again' on her E menu, kept whole
+  // (2026-10-04: nor does Episode 1 — EP1_DUE is never true while EP1_AT_START is off. It is on the fountain app's MAIN QUEST box)
   setTimeout(()=>{ if(EP1_DUE&&!EP1.active)startEp1(false); },520);
 }
 function introDone(){try{return localStorage.getItem('atd:walkDone')==='1';}catch(e){return false;}}   // walkDone (2026-09-18): a new key, so everyone who only saw the old greeting gets the walk once
@@ -12597,7 +12944,8 @@ const RETURN_TO=URLQ.returnTo||(()=>{try{const v=sessionStorage.getItem('atd:ret
 // deep link: /hub/index.html#the-fountain drops you standing at the atrium fountain, facing it.
 const AT_FOUNTAIN=(()=>{try{return ['the-fountain','fountain'].includes((location.hash||'').replace(/^#/,''));}catch(e){return false;}})();
 /* ============================================================
-   EPISODE 1 (2026-09-25, asked for) — the default opening now. You live in flat 33 on level 3, the one whose front
+   EPISODE 1 (2026-09-25, asked for) — the opening of a first visit until 2026-10-04; since then it is started from the
+   fountain app's MAIN QUEST box (EP1_AT_START, below). You live in flat 33 on level 3, the one whose front
    door opens straight off the lift lobby, with Optimus. After a while Jack knocks (or you go out first and find him
    in the lobby), Optimus answers the door, Jack comes in and says his piece, and the three of you take the lift
    down. Elara meets you in the foyer: "Lab experiments." Jack leads on to the lab lift — where the user carries
@@ -12610,8 +12958,14 @@ const AT_FOUNTAIN=(()=>{try{return ['the-fountain','fountain'].includes((locatio
    talk (the storyboard's rule: Jack and the robot look at each other).
    ============================================================ */
 function ep1Done(){try{return localStorage.getItem('atd:ep1Done')==='1';}catch(e){return false;}}
-const EP1_DUE=!RETURN_TO&&!AT_FOUNTAIN&&!ep1Done();      // a first visit, however you arrive — a saved spot does not skip it
-const EP1={active:false, stage:0, gen:null, cur:null, t:0, wasFollow:undefined,
+// Since 2026-10-04 (asked for) a visit no longer OPENS with Episode 1: you arrive on lab level 5 at the Hologram Room's door
+// (START_SPOT) and the episode is played from the fountain app's MAIN QUEST box — its card's button takes you to the flat
+// and starts it (ep1Card, ep1FromMenu) — or from 'Episode 1 again' on Elara's menu, as before. EP1_AT_START true brings the
+// old opening back whole: everything it needs is still keyed on EP1_DUE (the flat as the spawn, Optimus in it and Elara
+// in the foyer from the first frame, the scene starting by itself half a second after START).
+const EP1_AT_START=false;
+const EP1_DUE=EP1_AT_START&&!RETURN_TO&&!AT_FOUNTAIN&&!ep1Done();      // (the old opening) a first visit, however you arrive — a saved spot does not skip it
+const EP1={active:false, stage:0, gen:null, cur:null, t:0, wasFollow:undefined, queued:false,   // queued: asked for from the menu, started by the scene's clock on its next frame (ep1FromMenu)
   Y:()=>LEVEL_Y[APT_LVL-1],
   spawn:{x:2.95,z:42.7,yaw:-Math.PI/2},                 // the sofa's side of the living room, facing the screens (the TV rack is 1 m east)
   robot:[4.8,45.0,-0.9],                                 // Optimus by the window, turned into the room
@@ -12623,6 +12977,7 @@ const EP1_LINES={
   robot1:"Where are we going?",
   jack2:"Let's check out this place.",
   robot2:"Jack's stuck in his own hours. He spent most of his life talking about how desire is a prison while living in a nice apartment and eating very well-prepared sausages.",
+  jackLift:"Ground floor.",                                                              // in the lift, once you are in it with him (2026-10-03, asked for)
   elara1:"Hello. There you are — I was wondering when you'd come down.",
   jack3:"What should we do?",
   elara2:"Lab experiments.",
@@ -12655,6 +13010,7 @@ function ep1Knock(){                                          // three knuckles 
       const n=ctx.createBufferSource(), f=ctx.createBiquadFilter(), ng=ctx.createGain(); n.buffer=noise; f.type='bandpass'; f.frequency.value=1800; f.Q.value=0.8; ng.gain.value=0.35; n.connect(f).connect(ng).connect(ctx.destination); n.start(t); }
   }catch(e){} }
 function* ep1Say(who,text){ let done=false; say(who,text,()=>{done=true;}); const max=Math.max(3,text.length*0.075)*2+3; yield ()=>done||EP1.t>max; yield 0.35; }
+function ep1Quiet(){ return narrationOn ? !(ttsRun&&!ttsRun.finished)&&!(_curVoice&&!_curVoice.paused&&!_curVoice.ended) : subEl.style.opacity!=='1'; }   // nobody is mid-line: nothing is being voiced (voices off: no subtitle is up). A new line cuts the one before it off (say), so a line that can wait asks this first
 function* ep1Script(){
   const Y=EP1.Y(), o=persons.optimus;
   const inFlat=()=>player.pos.x>-1.74&&Math.abs(player.y-Y)<2, onLevel=()=>Math.abs(player.y-Y)<2;
@@ -12700,8 +13056,18 @@ function* ep1Script(){
   const carOpen=()=>{ const c=ELEV.cars[ELEV.at]; return !!c&&c.open>0.8; };
   ep1Lead(jk,[[0.9,40.0],[-0.8,40.0],[-3.2,40.2],[-6.0,42.6],[-8.0,43.3],[-10.5,44.3,carOpen]],8);
   let said=false, tHint=state.time, nHint=0;
+  // "Ground floor." (2026-10-03, asked for): Jack says it once you are in the lift with him. He lets whoever is speaking
+  // finish first — the robot's aside usually still is, and a new line would cut it off. In before him, you hear it as he
+  // steps in (or after four seconds, wherever he has got to). After it the only nudge left is the last, "Press G. Ground floor."
+  const LC=ELEV.car, inLift=(x,z,m)=>{ const [lx,lz]=ELEV.toLocal(x,z); return Math.abs(lx)<LC.w/2+m&&Math.abs(lz)<LC.d/2+m; };
+  let floorSaid=false, tIn=0, tTalk=state.time;
   yield ()=>{ if(!said&&player.pos.x<-2.4&&onLevel()){ said=true; say('optimus',EP1_LINES.robot2); }   // the robot's aside, once you are out in the lobby
-    if(state.time-tHint>25&&nHint<EP1_LINES.liftHints.length){ tHint=state.time; say('jack',EP1_LINES.liftHints[nHint++]); }   // if you dawdle
+    if(!floorSaid){
+      if(!ep1Quiet())tTalk=state.time;
+      const me=onLevel()&&inLift(player.pos.x,player.pos.z,-0.3); tIn=me?(tIn||state.time):0;
+      const him=Math.abs(gg.grp.position.y-Y)<1.5&&inLift(gg.grp.position.x,gg.grp.position.z,0);
+      if(me&&(him||state.time-tIn>4)&&state.time-tTalk>0.4){ floorSaid=true; tIn=0; tHint=state.time; nHint=Math.max(nHint,EP1_LINES.liftHints.length-1); say('jack',EP1_LINES.jackLift); } }
+    if(state.time-tHint>25&&nHint<EP1_LINES.liftHints.length&&!tIn){ tHint=state.time; say('jack',EP1_LINES.liftHints[nHint++]); }   // if you dawdle (held while you stand in the lift and his "Ground floor." is still to come: "The lift's this way." is wrong there, and it would cut the robot off)
     return !!ELEV.riding||!onLevel(); };
   if(door)door.hold=false;
   yield ()=>ELEV.at===0&&!ELEV.riding&&player.y<1;               // the ride down: whoever is in the car comes along (elevArrive)
@@ -12779,7 +13145,14 @@ function ep1End(mark){                                            // mark: it co
   const door=ep1Door(); if(door)door.hold=false;
   refreshMiniObjs();
 }
+// From the fountain app's MAIN QUEST box (2026-10-04, asked for: "a button that starts it (and spawns user to it (like tour
+// with elara spawns the user to that location)"). The menu closes and the scene's clock, below, starts it on its next frame:
+// home to the flat and from the top, as 'Episode 1 again' on Elara's menu — and from the top again if it is already playing.
+// It waits for a moving lift to arrive first: a ride holds you in its car until then, so a move made during it would be
+// undone and the scene would start without you.
+function ep1FromMenu(){ closeMenu(true); EP1.queued=true; }
 animated.push({update(dt){                                       // the scene's clock: frozen with the pause menu, like everyone in it
+  if(EP1.queued&&!paused&&state.phase==='play'&&!gaLiftBusy()){ EP1.queued=false; if(EP1.active)ep1End(false); startEp1(true); banner('EPISODE 1 · HOME, LEVEL 3'); }
   if(!EP1.active||!EP1.gen||paused||state.phase!=='play')return;
   EP1.t+=dt; const c=EP1.cur;
   if(typeof c==='number'){ if(EP1.t>=c)ep1Next(); }
@@ -12803,14 +13176,21 @@ const RESUME=(()=>{ try{
   if(v.z>352)return null;                                // (a spot saved in the Hologram Room's spaces, beyond the city's south wall, before they stopped being saved)
   return v;
 }catch(e){ return null; } })();
+// The default arrival (2026-10-04, asked for: "change the default spawn location to the holo-room lab level 5"): lab level 5,
+// seven metres in front of the Hologram Room's door (it stands at −42.5, −68.48), facing it — the lab lift at your back,
+// Elara beside you (spawnElara), Optimus and Jack behind you if they follow. It was the garden, by the birdbath (0, 64.6,
+// facing south), and for a first visit Episode 1's flat (EP1_AT_START). A spot saved in the last six hours still comes first.
+const START_SPOT={x:-42.5,z:-61.5,yaw:0,y:LABT.Y[4]};
+const AT_START_SPOT=!_RS&&!AT_FOUNTAIN&&!EP1_DUE&&!RESUME;   // this load starts there
 // (the old after-tour spawn beside Elara is gone — this replaces it)
 const SPAWN = _RS ? {x:_RS.x,z:_RS.z}
             : AT_FOUNTAIN ? {x:0,z:3.2}                 // just south of the fountain (centre 0,-4)
-            : EP1_DUE ? {x:EP1.spawn.x,z:EP1.spawn.z}   // Episode 1 (2026-09-25): a first visit starts in flat 33 on level 3, whatever was saved
+            : EP1_DUE ? {x:EP1.spawn.x,z:EP1.spawn.z}   // Episode 1 as the opening (2026-09-25; off since 2026-10-04, EP1_AT_START): a first visit starts in flat 33 on level 3, whatever was saved
             : RESUME ? {x:RESUME.x,z:RESUME.z}          // back where you left off
-            : {x:0,z:64.6};                             // default first arrival: in the garden, your back to the birdbath (0,62), facing south — Elara in front of you, the gate and the city beyond (2026-09-18)
-const SPAWN_YAW = _RS ? _RS.yaw : EP1_DUE ? EP1.spawn.yaw : (RESUME&&typeof RESUME.yaw==='number') ? RESUME.yaw : AT_FOUNTAIN ? 0 : Math.PI;   // yaw 0 = look north (the fountain link: at the fountain); the garden arrival looks south, at Elara and the city
-const player={pos:new THREE.Vector3(SPAWN.x,0,SPAWN.z),speed:6.4,r:0.55,y:(_RS&&typeof _RS.y==='number')?_RS.y:EP1_DUE?LEVEL_Y[APT_LVL-1]:((RESUME&&typeof RESUME.y==='number')?RESUME.y:0),vy:0,grounded:true};   // y: back on the floor you were on (Episode 1: level 3; back from Cerebrum: lab level 4)
+            : {x:START_SPOT.x,z:START_SPOT.z};          // the default arrival: lab level 5, at the Hologram Room's door (the garden, 0 64.6 facing south, until 2026-10-04)
+const SPAWN_YAW = _RS ? _RS.yaw : EP1_DUE ? EP1.spawn.yaw : (RESUME&&typeof RESUME.yaw==='number') ? RESUME.yaw : AT_FOUNTAIN ? 0 : AT_START_SPOT ? START_SPOT.yaw : Math.PI;   // yaw 0 = look north (the fountain link: at the fountain; the default arrival: at the Hologram Room's door); π, south, for a saved spot from before the yaw was saved
+const player={pos:new THREE.Vector3(SPAWN.x,0,SPAWN.z),speed:6.4,r:0.55,y:(_RS&&typeof _RS.y==='number')?_RS.y:EP1_DUE?LEVEL_Y[APT_LVL-1]:AT_START_SPOT?START_SPOT.y:((RESUME&&typeof RESUME.y==='number')?RESUME.y:0),vy:0,grounded:true};   // y: back on the floor you were on (the default arrival: lab level 5; back from Cerebrum: lab level 4)
+if(AT_START_SPOT){ const n=document.getElementById('startNote'); if(n)n.textContent='Lab level 5 — the Hologram Room'; }   // the START card's line for that arrival
 const sprint={energy:6,max:6,cooling:false,active:false};
 const look={yaw:SPAWN_YAW,pitch:-0.02,locked:false,moved:-99}; // yaw 0 = straight into the mall; spawn is angled a bit. moved: when you last turned the view yourself
 const SENS=0.0022;
@@ -13346,6 +13726,7 @@ async function pvForget(what,btn){
 pvTwoStep('pvDelProfile',b=>pvForget('profile',b));
 pvTwoStep('pvDelLogs',b=>pvForget('logs',b));
 pvTwoStep('pvDelAll',b=>pvForget('all',b));
+try{ holoCreditsRefresh(); }catch(e){}                        // the Credits page lists the Sketchfab models fetched on this device, from earlier visits too
 document.getElementById('fsBtn').onclick=()=>{
   if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
   else document.documentElement.requestFullscreen().catch(()=>{});
