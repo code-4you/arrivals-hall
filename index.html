@@ -667,7 +667,7 @@
         <div id="holoRate" style="font-size:12.5px;line-height:1.5;color:#b8c7da"></div>
       </div>
       <div style="display:flex;gap:8px">
-        <input id="holoIn" placeholder="What would you like to stand in?" style="pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.35);border-radius:8px">
+        <input id="holoIn" placeholder="Type a setting, its people, and or a plot..." style="pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.35);border-radius:8px">
         <button class="menuBtn" id="holoSend" style="min-width:0;margin:0;padding:8px 16px;border-left-color:#7fe6ff">Send</button>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
@@ -10066,7 +10066,7 @@ function holoPlaceRank(res,q){
   return res.map((r,i)=>{ const nm=r.name.toLowerCase(); let sc=-i*0.25+(r.mirror?1.5:0)+(env.test(nm)?2:0)+(r.faces>15000?1:0)-(/\b(props?|pack|kit|assets?|collection|set|pieces|modular|tiles?)\b/.test(nm)?2:0);
     for(const w of words)if(nm.indexOf(w)>=0)sc+=2; return [sc,r]; }).sort((x,y)=>y[0]-x[0]).map(x=>x[1]);
 }
-async function holoShowSearches(list){                               // a row of pictures for each search: surroundings and things eight, someone four (the ones the hall can animate first) — and "More ▸" at the end of each row for the next eight (or four), as long as Sketchfab has more (2026-10-04, asked for: "get to the end of the list more should load")
+async function holoShowSearches(list){                               // a row of pictures for each search: eight each — someone only ones that will move, the ones the hall can animate first — and "More ▸" at the end of each row for the next eight (or four), as long as Sketchfab has more (2026-10-04, asked for: "get to the end of the list more should load")
   const P=document.getElementById('holoPics'); P.innerHTML=''; P.style.display=list.length?'grid':'none'; P.scrollTop=0;
   const jobs=[]; HOLO.rows=[];
   for(const sr of list.slice(0,5)){ const h=document.createElement('div'); h.className='holoHead'; P.appendChild(h); const R=holoRow(sr,h); HOLO.rows.push(R); jobs.push(R.more(true)); }
@@ -10084,29 +10084,37 @@ function holoRow(sr,h){                                               // one row
   else feeds.push({q:sr.q});
   for(const f of feeds)f.st={};                                        // where each search has got to in Sketchfab's pages (url null: none left)
   const rank=(pool)=>who?gaModelRank(pool,sr.q,true):sr.role==='environment'?holoPlaceRank(pool,sr.q):pool;
-  const R={sr,h,kind,shown:new Set(),pool:[],feeds,busy:false,done:false,tile:null,last:h,n:0,batch:who?4:8};
+  const R={sr,h,kind,shown:new Set(),pool:[],feeds,busy:false,done:false,tile:null,last:h,n:0,batch:8};   // (someone eight too since 2026-10-04, the user: "for the someone is only loading 4 at a time, can that be 8" — it was four while their skeletons were read eight at a time)
   R.more=async(first)=>{
     if(R.busy||R.done)return; R.busy=true;
     if(first)h.textContent=kind+' · "'+sr.q+'" …'; if(R.tile)R.tile.textContent='…';
-    const want=who?8:R.batch; let fetched=0;                           // someone: eight looked at, their skeletons read, the ones the hall can animate shown first
-    try{
-      while(R.pool.length<want&&fetched<3){                             // the pool short: the next page of the first search with pages left (three pages a click at most)
+    const want=who?8:R.batch; let fetched=0, peeked=0;                 // someone: looked at eight at a time, their skeletons read, and only the ones that will move shown (2026-10-04, the user: "when choosing someone i would like selection to be all moving ones")
+    const free=(r)=>!!r.mirror;                                        // "no login": a copy on the mirror (nothing of the hall's key, nothing of the visitor's login)
+    const fill=async()=>{ while(R.pool.filter(free).length<want&&fetched<(first?3:5)){   // the pool short of "no login" ones: the next page of the first search with pages left (three pages for the first batch, so that it shows soon; five a click on More) — 2026-10-04, the user: "I would like it to come up with more 'no login' when pressing 'more'"
         const f=R.feeds.find(f=>f.st.url!==null); if(!f)break;
         fetched++; let got=await holoSearch(f.q,who?'character':sr.role,who,!!f.rigged,!who,f.st);
         got=got.filter(r=>!R.shown.has(r.uid)&&!R.pool.some(p=>p.uid===r.uid));
         if(who){ got=got.filter(small); if(f.loose)got=got.filter(r=>!notPlace.test(r.name)); }
-        if(got.length)R.pool=rank(R.pool.concat(got));
-      }
-      let out=R.pool.splice(0,want);
-      if(who&&out.length){ const pk=await Promise.all(out.map(r=>r.peekOk!==undefined?null:r.mirror?holoPeek(r.mirror).catch(()=>null):null));   // their skeletons, looked at before they are shown (once each)
-        out.forEach((r,i)=>{ if(r.peekOk===undefined)r.peekOk=!!(pk[i]&&pk[i].readable); });
-        out=out.filter(r=>r.peekOk).concat(out.filter(r=>!r.peekOk)); R.pool.unshift(...out.slice(R.batch)); out=out.slice(0,R.batch); }
+        if(got.length)R.pool=rank(R.pool.concat(got)); } };
+    const take=(n)=>{ const a=[]; for(const r of R.pool)if(free(r)&&a.length<n)a.push(r); for(const r of R.pool)if(!free(r)&&a.length<n)a.push(r); R.pool=R.pool.filter(r=>a.indexOf(r)<0); return a; };   // the "no login" ones first, in their order; the others only to fill up
+    try{
+      let out=[];
+      if(who){                                                           // eight candidates at a time, their skeletons looked at (mirror models only: the others cannot be read before they are fetched). Kept: the hall can read it ("moves"); it could not be looked at (not on the mirror, or the look failed — many of these move once fetched, the user found); or it has an animation of its own (it moves in its own way). Dropped for good: the look said no and it has no animation — it would only stand there.
+        while(out.length<R.batch&&peeked<24){
+          await fill(); const cand=take(8); if(!cand.length)break;
+          const pk=await Promise.all(cand.map(r=>r.peekOk!==undefined?undefined:r.mirror?holoPeek(r.mirror).catch(()=>null):null));
+          cand.forEach((r,i)=>{ if(r.peekOk===undefined){ const k=pk[i]; r.peekOk=!!(k&&k.readable); r.peekNo=!!(k&&k.readable===false); if(k&&k.anims)r.anim=r.anim||k.anims; } });   // peekNo: looked, and read "no" (null: could not look)
+          peeked+=cand.length;
+          for(const r of cand){ if(r.peekNo&&!r.anim)R.shown.add(r.uid); else out.push(r); } }
+        out=out.filter(r=>r.peekOk).concat(out.filter(r=>!r.peekOk));   // the ones the hall can animate first
+        R.pool.unshift(...out.slice(R.batch)); out=out.slice(0,R.batch); }   // (the spare back to the front, for the next click — take() keeps "no login" ones ahead whatever the order)
+      else { await fill(); out=take(want); }
       if(!h.isConnected)return;                                        // (another answer's rows have taken the pane since)
       for(const r of out){ r.q=sr.q; const c=holoCard(r,sr.role); R.shown.add(r.uid); if(R.tile)R.tile.insertAdjacentElement('beforebegin',c); else R.last.insertAdjacentElement('afterend',c); R.last=c; R.n++; }
     }catch(e){}
     finally{ R.busy=false; }
     if(!h.isConnected)return;
-    h.textContent=kind+' · "'+sr.q+'"'+(R.n?'':' — nothing small enough under a usable licence');
+    h.textContent=kind+' · "'+sr.q+'"'+(R.n?'':who?' — nothing under those words that would move':' — nothing small enough under a usable licence');
     if(R.pool.length||R.feeds.some(f=>f.st.url!==null)){               // more to come: the tile at the row's end
       if(!R.tile){ R.tile=document.createElement('div'); R.tile.className='holoCard more'; R.tile.title='the next '+R.batch+' of these'; R.tile.onclick=()=>R.more(); R.last.insertAdjacentElement('afterend',R.tile); }
       R.tile.textContent='More ▸'; }
@@ -10114,7 +10122,7 @@ function holoRow(sr,h){                                               // one row
   };
   return R;
 }
-const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals Hall', a 3D hall of playable worlds. A visitor is at the console and wants something of their own made for this visit from models on Sketchfab: a place, the people in it, a story. You talk with them in plain sentences (no markdown, no lists) and you decide what to ask. For everything you want to show them, give a Sketchfab search as {\"q\":\"<search words>\",\"role\":\"environment\"|\"character\"|\"prop\"}: the game runs it and shows them a row of pictures of what came back, and they click what they want; you do not see the pictures, but each turn you are told what is on their list. \"environment\" is the surroundings (the ground, the room, the landscape); \"character\" is someone — a person, a creature, a robot — with a search of their own for each person or kind of person; \"prop\" is a thing. Up to five searches a turn. When they ask for a story, or for people, look for both in the same answer — one row of surroundings and two or three rows of people, a search for each person the story needs — so that they pick the place and its people together; do not leave the people for later. Good search words matter, and few of them: two or three plain words to a search, since every word more finds less. Sketchfab is full of very large scenes, so for surroundings think small — 'space station', 'forest diorama', 'low poly village', 'room', 'island'; for someone, plain words — 'old wizard', 'knight', 'girl', 'robot' (the game looks among the rigged models and marks the pictures of the ones it can animate 'moves'); for things, the plain name of the thing. "
+const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals Hall', a 3D hall of playable worlds. A visitor is at the console and wants something of their own made for this visit from models on Sketchfab: a place, the people in it, a story. You talk with them in plain sentences (no markdown, no lists) and you decide what to ask. For everything you want to show them, give a Sketchfab search as {\"q\":\"<search words>\",\"role\":\"environment\"|\"character\"|\"prop\"}: the game runs it and shows them a row of pictures of what came back, and they click what they want; you do not see the pictures, but each turn you are told what is on their list. \"environment\" is the surroundings (the ground, the room, the landscape); \"character\" is someone — a person, a creature, a robot — with a search of their own for each person or kind of person; \"prop\" is a thing. Up to five searches a turn. When they ask for a story, or for people, look for both in the same answer — one row of surroundings and two or three rows of people, a search for each person the story needs — so that they pick the place and its people together; do not leave the people for later. Good search words matter, and few of them: two or three plain words to a search, since every word more finds less. Sketchfab is full of very large scenes, so for surroundings think small — 'space station', 'forest diorama', 'low poly village', 'room', 'island'; for someone, plain words — 'old wizard', 'knight', 'girl', 'robot' (the game looks among the rigged models, leaves out the ones that would only stand there, and marks the pictures of the ones it can animate 'moves'); for things, the plain name of the thing. "
   +"What can be used: only models Sketchfab lets anyone download under CC BY, CC BY-SA, CC0 or Sketchfab's free Standard licence (all of which allow a model to be altered), each at most "+HOLO.maxMB+" MB (someone: "+GA_MODEL.maxMB+" MB; the game drops the rest before they see them; many whole environments are far bigger), the room at most "+HOLO.maxTotalMB+" MB in all; a model that came with an animation of its own plays it. Someone picked as a \"character\" becomes a person of the place once it is made: they can be talked with (a mind of their own, which you give them), and when their skeleton can be read they play the hall's animations, walk and follow. Sizes are guessed by the game (models come in every unit), so they are often wrong: the visitor can say bigger or smaller, and you have the resize action. Most of the Creative Commons models are fetched with no login at all; those under the free Standard licence need the visitor's own Sketchfab login (the pictures say which) — a Sketchfab account is free, and so is everything fetched with it. "
   +"The room is a simulation of a place: once made, the surroundings repeat in every direction so the visitor can walk on without end, what is imported is solid, saying 'exit' calls the door to them, and 'end program' clears the space. There are "+HOLO.spaces.length+" spaces, so several places can stand at once: the visitor picks which space the list is for (a row of tabs over it; you are told which each turn), and what already stands in the others is listed below. New surroundings picked for a space that has some take their place. Besides the models, you have the hall's own actions (below) — someone with a mind of their own, things, effects, signs, objectives — used as you see fit, or not; what you do, you do in the space being planned, and the visitor is taken into it to see. In \"actions\", a \"say\" with no \"who\" is spoken by the room's own voice: yours. "
   +"When they seem to have what they want, say so and set \"done\": true — the game then offers Make it, which fetches their list (the hall's own Sketchfab key where the licence allows, else their own Sketchfab login), builds the place, stands the people they picked in it and takes the visitor there. Then the game asks you — the visitor having said nothing — to begin: that is when you give each of the people who they are and set the story going, so have the story in mind while you look for its place and its people. Respond with STRICT JSON only, no fences: {\"reply\":\"...\",\"searches\":[...],\"actions\":[],\"done\":false}.";
@@ -10368,7 +10376,7 @@ function holoPerson(body,p,S){
 // actions give each of the people who they are ("change": a name, a persona, a voice) and set the story going. What the
 // story is stays the planner's own.
 async function holoStory(S,made){
-  if(HOLO.busy||!HOLO.hist.length)return; HOLO.busy=true;
+  if(HOLO.busy||!HOLO.hist.length)return;                              // (busy is holoTell's to set, since 2026-10-04 — set here as well, holoTell found the room busy and did nothing, and Make it stayed on "… working")
   const env=S.made.find(m=>m.role==='environment'&&m.wrap), fresh=new Set(made);
   const folk=GA.made.filter(o=>!o.gone&&o.char&&o.model&&o.by==='holo'&&o.at&&holoCell(o.at.x,o.at.z)===S);
   const one=(o)=>'"'+o.id+'" (the model “'+o.model.name+'”'+(o.model.q?', found under "'+o.model.q+'"':'')+', '+o.h.toFixed(1)+' m tall, '+gaSide(o.at)+', '
