@@ -433,7 +433,7 @@
     <div class="mpage" id="page-privacy" style="display:none">
       <div class="pvDoc">
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em">PRIVACY &amp; TERMS</div>
-        <div style="font-size:12px;color:#8fa3bf">Last updated 4 October 2026</div>
+        <div style="font-size:12px;color:#8fa3bf">Last updated 5 October 2026</div>
         <p>The Arrivals Hall is a free, experimental game made by <a href="https://mvandiermen.com/" target="_blank" rel="noopener">Michael van Diermen</a>. This page says what the hall keeps about you, why, who else gets it and for how long — and how to delete it.</p>
 
         <h3>Use at your own risk</h3>
@@ -445,6 +445,7 @@
           <li><b>Your save</b> — a save key and your progress: missions, stories heard, doors opened, credits and what you add in the fountain app. <span class="pvWhy">Why: so you can keep playing, here or on another device.</span></li>
           <li><b>Your profile for the organiser / counselor</b> — your things-to-do list, counselling notes and neighbours preference. <span class="pvWhy">Why: so the organiser can read it and help you. Only the organiser can see it.</span></li>
           <li><b>Ideas you post</b> — shown to everyone on the Ideas board. <span class="pvWhy">Why: that is what the board is for. They are kept with your save so you can delete your own.</span></li>
+          <li><b>Worlds you make in the Hologram Room</b> — what you typed for it, the models picked and the story’s opening, kept with your save so you can build it again. Shown to everyone on the room’s WORLDS OTHERS MADE board only while you have marked that world Shared on its MY WORLDS board; nothing about you is shown with it. <span class="pvWhy">Why: so you can bring a world back, and share it if you choose.</span></li>
           <li><b>Chat and Hologram Room logs</b> — what you ask Elara, Jack, Optimus or anyone else in the hall, and their replies; and in the Hologram Room, what you ask at its console, its replies, the story it begins and the models you pick and build. Seen only by the organiser. <span class="pvWhy">Why: the logs are kept for research on what we build next for you.</span></li>
           <li><b>Visits</b> — your IP address, the country and region it comes from, when you were here and which rooms you spent time in. <span class="pvWhy">Why: to stop abuse — limits are counted per address, for example 60 AI chats an hour — and to count visitors by place. The boards show places, never IP addresses.</span></li>
           <li><b>Messages</b> you send with Contact us — your name, link and message. <span class="pvWhy">Why: to reply to you.</span></li>
@@ -474,7 +475,7 @@
         <button class="menuBtn" id="pvDelLogs">✕&nbsp; Delete my chat and Hologram Room logs</button>
         <div class="pvNote">Removes what you asked the hall’s characters and the Hologram Room, their replies, and the record of the stories and models made for you. Your save, your progress and your profile stay.</div>
         <button class="menuBtn" id="pvDelAll">✕&nbsp; Delete everything and start again</button>
-        <div class="pvNote">Removes your save and all its progress, your profile, the ideas and wishes you wrote, your chat and Hologram Room logs and the record of this visit — then the hall starts fresh on this device.</div>
+        <div class="pvNote">Removes your save and all its progress, your profile, the ideas and wishes you wrote, your worlds, your chat and Hologram Room logs and the record of this visit — then the hall starts fresh on this device.</div>
         <div id="pvStatus" style="min-height:20px;font-size:13px;margin:8px 0"></div>
         <p>Play on more than one device? Delete on each of them. For anything else — older records, or messages you sent — use <a id="pvContact">Contact us</a> and say what to remove (add your save key if you have one).</p>
       </div>
@@ -2216,7 +2217,7 @@ LABT.contents={
     labCircle(Y,c[0],c[1],0x6fa8ff,'Cerebrum — hear the week','level 4 · walk off the platform there to come back',()=>launchCerebrum(),true,LAB_SIGN_H);
   },
   6:(Y,zn)=>lab6Build(Y,zn),                               // the Earth and the solar system (2026-10-04, asked for) — see LAB6
-  5:(Y,zn)=>{ holoBuildDoor(Y,zn); portalDoorBuild(Y,zn,-8,-5,1); portalDoorBuild(Y,zn,8,5,2); },   // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebrum") — see HOLO; and the two portal doors, 8 m west and 8 m east of it (2026-10-04) — see PDOOR
+  5:(Y,zn)=>{ holoBuildDoor(Y,zn); portalDoorBuild(Y,zn,-18,-5,1); portalDoorBuild(Y,zn,21,5,2); holoBoardsLab(Y,zn); },   // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebrum") — see HOLO; the two portal doors (2026-10-04) — see PDOOR — moved out to 18 m west and 21 m east since 2026-10-05 (their rooms span x −75.5…−55.5 and −26.5…−6.5) to make room for the room's three boards between them (asked for: "put those boards in the lab level 5 too, you can move the 2 rooms to make space"; "the 'worlds others made' can be on the right of the hologram door")
 };
 function buildLabLights(){
   for(const [k,c,i,d,,y] of EARLY_SPEC)if(k.indexOf('labT')===0){          // the eight lights, and how far each sits above its floor
@@ -2359,7 +2360,7 @@ function portalDoorInside(P,on){                                // the switch: a
   if(P.mask)P.mask.visible=!on;
 }
 // side: metres from the Hologram Room's door along its line (west is minus) — 8 either way (the first stood 16 west; "closer",
-// 2026-10-04). cx: the room's centre from its own door, on the side away from the Hologram Room's door: the room grows that way.
+// 2026-10-04); 18 west and 21 east since 2026-10-05, the boards standing between them (asked for). cx: the room's centre from its own door, on the side away from the Hologram Room's door: the room grows that way.
 // ref: the number its doorway writes into the stencil and its room is drawn by — its own.
 function portalDoorBuild(Y,zn,side,cx,ref){
   const P={x:0,z:0,Y,cx,ref,inside:false,mats:[],solid:[],mask:null,prev:null}; PDOOR.list.push(P);
@@ -9695,7 +9696,7 @@ const HOLO={
   spaces:[], sp:null, was:null, kit:null, ticking:false};
 const HOLO_AT=[[0,560],[400,560],[-400,560],[0,960],[400,960],[-400,960]];   // their centres: far south of the city's edge (its wall stands at z 345), 400 m from one another
 HOLO.spaces=HOLO_AT.map(([x,z],i)=>({i,n:i+1,at:{x,z},bounds:[x-HOLO.half,z-HOLO.half,x+HOLO.half,z+HOLO.half],built:false,root:null,group:null,ground:[],picks:[],made:[],board:null,arrive:null,
-  tiles:[],period:null,rings:0,grid:null,rim:[],furn:null,exit:null,exitHot:null,conHot:null,bare:true,furnBlock:null,exitBlocks:null,note:null,by:'',used:0,parts:[],spots:[]}));
+  tiles:[],period:null,rings:0,grid:null,rim:[],furn:null,exit:null,exitHot:null,conHot:null,bare:true,furnBlock:null,exitBlocks:null,note:null,by:'',used:0,parts:[],spots:[],prompts:[],opening:null,boards:null,boardsG:null,boardHots:[]}));
 HOLO.sp=HOLO.spaces[0];
 for(const k of ['at','bounds','built','root','group','ground','picks','made','board','arrive','tiles','period','grid','rim','furn','exit','exitHot','conHot','bare','furnBlock','exitBlocks','note'])
   Object.defineProperty(HOLO,k,{get(){ return HOLO.sp[k]; },set(v){ HOLO.sp[k]=v; }});   // HOLO.made, HOLO.ground…: the space the panel is about
@@ -9776,7 +9777,7 @@ function holoBuildSpace(S){
   S.conHot=hotspot(A.x-6,cz+1.2,2.8,'The console',()=>holoOpen('space'),{x:A.x-6,z:cz,y:1.0,rad:1.3});
   S.exitHot=hotspot(A.x+6,cz+1.4,2.8,'Back to the lab',()=>holoLeave(),{x:A.x+6,z:cz,y:1.7,rad:1.7});
   S.arrive={x:A.x,z:cz-4,yaw:0};
-  holoBoard(S);
+  holoBoard(S); holoBoardsBuild(S);
   if(!HOLO.ticking){ HOLO.ticking=true; animated.push({update(dt){ holoTick(dt); }}); }
 }
 function holoDoorTo(x,z,yaw,S,y){                                    // the door put down here, facing yaw, on the floor at height y: its blocks and its hotspot with it
@@ -9807,17 +9808,19 @@ function holoBoard(S){
 function holoTick(dt){
   const here=holoHere();
   if(here!==HOLO.was){                                              // into a space, or out of one: the chats are told (it is how the visitor reacted), and the panel is about the one they stand in
-    if(here){ const t=holoTitle(here); gaNews('the visitor is now in Hologram Room space '+here.n+(t?' (“'+t+'”)':' (bare)')); if(!HOLO.busy)HOLO.sp=here; }
+    if(here){ const t=holoTitle(here); gaNews('the visitor is now in Hologram Room space '+here.n+(t?' (“'+t+'”)':' (bare)')); if(!HOLO.busy)HOLO.sp=here; holoWorldsLoad(); }
     else if(HOLO.was)gaNews('the visitor has left the Hologram Room');
     HOLO.was=here; }
   let fog=HOLO.fogWas;
   for(const S of HOLO.spaces){ if(!S.built)continue; const inside=S===here, run=holoRuns(S);
     if(S.root.visible!==inside)S.root.visible=inside;                  // only the space the visitor stands in is drawn
     if(S.bare===run){ S.bare=!run; const b=S.bare;                     // the grid, the rim and the console show only while nothing runs
-      S.grid.visible=b; for(const r of S.rim)r.visible=b; S.furn.visible=b; S.furnBlock.off=!b; S.conHot.r=b?2.8:-1; }   // (-1: a spot is off only below zero — at 0 the unseen console still answered E)
+      S.grid.visible=b; for(const r of S.rim)r.visible=b; S.furn.visible=b; S.furnBlock.off=!b; S.conHot.r=b?2.8:-1;
+      if(S.boardsG)S.boardsG.visible=b; for(const h of S.boardHots)h.r=b?HOLO_BOARD_REACH:-1; }   // (-1: a spot is off only below zero — at 0 the unseen console still answered E)
     if(!inside)continue;
     S.used=GA.clock;
     for(const m of S.signs||[]){ if(m.userData.yaw0===undefined)m.userData.yaw0=m.rotation.y; signFlip(m,m.userData.yaw0); }   // its boards stand square to their console or door, lined up over it, and turn about only when you are behind them (2026-10-04, asked for: they used to turn to the visitor each frame)
+    holoBoardsHover(S);
     if(dt)for(const m of S.made)if(m.mixer)m.mixer.update(dt);
     if(run)fog=HOLO.fogRun;
     if(run&&S.period&&state.phase==='play'&&!paused){
@@ -9828,6 +9831,7 @@ function holoTick(dt){
     }
   }
   if(scene.fog&&HOLO.fogWas!==null&&scene.fog.density!==fog)scene.fog.density=fog;
+  if(HOLO.lab5&&ZONE.now==='k5'){ for(const m of HOLO.lab5.signs){ if(m.userData.yaw0===undefined)m.userData.yaw0=m.rotation.y; signFlip(m,m.userData.yaw0); } holoBoardsHover(HOLO.lab5); holoWorldsLoad(); }   // lab level 5's boards (2026-10-05)
 }
 // Everyone and everything in the space moved by one repeat, with the visitor: nobody sees it. And nothing is ever lost in a
 // place that goes on without end (a quest's people and its objective must still be there): what the visitor has left more
@@ -9920,7 +9924,7 @@ function holoEnd(S){                                                 // the prog
         for(const mt of [].concat(o.material||[])){ if(!mt)continue; for(const k in mt){ const v=mt[k]; if(v&&v.isTexture)v.dispose(); } mt.dispose(); } }); }
     if(m.mixer){ try{ m.mixer.stopAllAction(); }catch(e){} m.mixer=null; }
     m.made=false; m.wrap=null; m.person=null; }
-  S.ground=[]; S.picks=S.picks.filter(p=>!S.made.includes(p)); for(const p of S.picks)p.failed=null; S.made=[]; S.parts=[]; S.spots=[]; S.by='';
+  S.ground=[]; S.picks=S.picks.filter(p=>!S.made.includes(p)); for(const p of S.picks)p.failed=null; S.made=[]; S.parts=[]; S.spots=[]; S.by=''; S.prompts=[]; S.opening=null;
   for(const o of GA.made.slice()){ if(o.gone||o.resident)continue;      // whoever and whatever was put into it goes with it (a quest's marker there too)
     const q=o.char?gaAt(o.char):(o.at||(o.body&&o.body.position)); if(q&&Math.abs(q.x-S.at.x)<200&&Math.abs(q.z-S.at.z)<200)gaGone(o); }
   const A=S.at, cz=A.z+HOLO.half-9; S.arrive={x:A.x,z:cz-4,yaw:0}; holoDoorTo(A.x+6,cz,0,S,0);
@@ -9955,6 +9959,166 @@ function holoCreditsRefresh(){
     +kept.map(k=>line(k)+' <span style="color:#8fa3bf">· '+when(k.first)+(k.where==='hall'?' · brought into the hall':'')+up(k)+'</span>').join('<br>')
     +'<div style="color:#8fa3bf;font-size:12.5px;margin-top:4px">Fetched at your asking, for a visit at a time; the credits stay on this device. Which models were made is also in the hall’s log — see Privacy &amp; terms.</div>';
 }
+// ---- worlds (2026-10-05, the user: boards floating in the room — "shareable (make my worlds shareable)", "lists of worlds they made
+// that can be recreated by clicking on them or they can delete them or modify them", "list of other worlds people made that can be
+// clicked to just go straight in", "delete my data options"; "the share my worlds can be a log of the prompt and what gemini made
+// in first quests and glb selections"). A world is the recipe: what was typed at the console for its space, the models picked and
+// made, and the story's opening — the room's first words and what they set going (who the people are, the first objective). What
+// came after is not kept: it varies with every play, and the story is live again once the opening has been replayed. Kept on this
+// device (atd:holo:worlds, 40 at most) and on the server under the save key (api world_save), and shown to everyone on the WORLDS
+// OTHERS MADE board while the visitor's Shareable switch is on (api world_share). Nothing of the maker is shown with a shared world.
+const HOLO_BOARD_REACH=6;
+function holoWorlds(){ if(HOLO.worlds)return HOLO.worlds; let a=[]; try{ a=JSON.parse(localStorage.getItem('atd:holo:worlds')||'[]'); }catch(e){} HOLO.worlds=(Array.isArray(a)?a:[]).filter(w=>w&&w.picks&&w.title); return HOLO.worlds; }
+function holoWorldsKeep(){ try{ localStorage.setItem('atd:holo:worlds',JSON.stringify(holoWorlds().slice(0,40))); }catch(e){} }
+function holoWorldShare(w,on){                                        // one world shared, or private again (2026-10-05, the user: "each of MY WORLDS can be switched to on/off sharable independently" — there was one switch for all before)
+  w.shared=!!on; holoWorldsKeep();
+  if(w.id)api({a:'world_share',key:accountKey()||'',id:w.id,on:!!on}).then(()=>holoSharedLoad(true));   // (no id yet: the save's answer carries it over — holoWorldSave)
+  holoBoardsDraw();
+}
+function holoDate(t){ try{ return new Date(t).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return ''; } }
+function holoWorldSave(S){                                             // the world of this space, once its story has begun: kept here and under the save key
+  const made=S.made.filter(m=>m.uid), prompts=(S.prompts||[]).slice(-6); if(!made.length||!S.opening)return;
+  const w={id:0,t:Date.now(),title:gaText(prompts[0]||('Space '+S.n),60),prompt:prompts.join(' / ').slice(0,2000),shared:false,
+    picks:made.map(m=>({uid:m.uid,name:String(m.name||'').slice(0,120),user:String(m.user||'?').slice(0,80),username:String(m.username||'').slice(0,80),license:String(m.license||'').slice(0,40),viewerUrl:String(m.viewerUrl||'').slice(0,200),role:m.role,size:m.size|0,q:String(m.q||'').slice(0,80)})),
+    opening:{reply:String(S.opening.reply||'').slice(0,2000),actions:(S.opening.actions||[]).slice(0,30)}};
+  const L=holoWorlds(); L.unshift(w); if(L.length>40)L.length=40; holoWorldsKeep(); holoBoardsDraw();
+  api({a:'world_save',key:accountKey()||'',vid:visitId(),title:w.title,prompt:w.prompt,picks:w.picks,opening:w.opening,shared:false}).then(r=>{ if(r&&r.ok&&r.id){ w.id=r.id; holoWorldsKeep(); holoBoardsDraw(); if(w.shared)holoWorldShare(w,true); } });   // (marked Shared before the id came: told now)
+}
+function holoWorldsLoad(){                                             // once a visit, on entering a space: this save's worlds from the server (another device may have made them), and everyone's shared ones
+  if(HOLO.worldsLoaded)return; HOLO.worldsLoaded=true;
+  if(accountKey())api({a:'worlds',key:accountKey()}).then(r=>{ if(!(r&&r.ok&&Array.isArray(r.rows)))return; const L=holoWorlds(); let n=0;
+    for(const x of r.rows){ if(L.some(w=>w.id===x.id))continue; L.push({id:x.id,t:(+x.t||0)*1000,title:x.title,prompt:x.prompt||'',shared:!!x.shared,picks:x.picks||[],opening:x.opening||{reply:'',actions:[]}}); n++; }
+    if(n){ L.sort((a,b)=>b.t-a.t); if(L.length>40)L.length=40; holoWorldsKeep(); holoBoardsDraw(); } });
+  holoSharedLoad();
+}
+function holoSharedLoad(force){ if(!force&&HOLO.sharedAt&&Date.now()-HOLO.sharedAt<120000)return; HOLO.sharedAt=Date.now();
+  api({a:'worlds_shared'}).then(r=>{ if(r&&r.ok&&Array.isArray(r.rows)){ HOLO.shared=r.rows; holoBoardsDraw(); } }); }
+async function holoWorldBuild(w,mine){                                 // the world again: its models fetched into a free space, the visitor taken there, and the story's opening replayed as it was — from there on it is live
+  if(HOLO.busy){ banner('The room is busy — a moment.'); return; }
+  let full=w; if(!(w.picks&&w.picks.length&&w.opening)){ const r=await api({a:'world_get',id:w.id,key:accountKey()||''}); if(!(r&&r.ok&&r.world)){ banner('That world could not be fetched.'); return; } full=r.world; }
+  const S=holoPickSpace(); if(!S)return; if(holoRuns(S))holoEnd(S); holoBuildSpace(S);
+  const picks=[]; for(const p of (full.picks||[]).slice(0,12)){ const q=Object.assign({},p); q.mirror=/Standard/.test(q.license||'')?null:await holoMirror(q.uid); q.made=false; q.failed=null; q.links=null; q.thumb=''; picks.push(q); }
+  if(!picks.length){ banner('That world has no models to build.'); return; }
+  S.picks=picks; HOLO.sp=S; S.prompts=[String(full.prompt||'').slice(0,300)];
+  banner('Building “'+full.title+'” in space '+S.n+'…'); if(!mine&&full.id)api({a:'world_play',id:full.id});
+  await holoMake(S,true,true);
+  const made=S.picks.filter(p=>p.made); if(!made.length){ holoNote('None of its models could be fetched.'); return; }
+  const o=full.opening||{}, acts=Array.isArray(o.actions)?o.actions:[], reply=String(o.reply||'');
+  HOLO.hist.push({role:'user',parts:[{text:'(This is the game speaking, not the visitor.) The world “'+full.title+'” is built again from its record, in space '+S.n+'. What was asked for it: '+(full.prompt||'')+'. Its story begins as it did:'}]},
+    {role:'model',parts:[{text:JSON.stringify({reply,searches:[],done:true,actions:acts})}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);   // the planner's memory: from here the story is live
+  if(reply){ HOLO.msgs.push({who:'lab',text:reply}); gaNews('the Hologram Room began again: "'+gaText(reply,160)+'"','holo'); }
+  let went=false; const then=()=>{ if(went)return; went=true; if(acts.length&&state.phase==='play')gaRun('holo',acts,()=>{},()=>{}); };
+  if(reply){ const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(reply); if(sm)saySequence('holo',[sm[1],sm[2]],then); else say('holo',reply,then); setTimeout(then,Math.max(4000,spLen(reply)*90)+8000); } else then();
+  holoLog('[built again — “'+full.title+'”'+(mine?'':' (shared)')+' — space '+S.n+']','Built: '+made.map(p=>p.name).join(' · '));
+}
+async function holoWorldEdit(w){                                       // the world's list back on the console, to change before Make it
+  if(HOLO.busy){ banner('The room is busy — a moment.'); return; }
+  const S=holoPickSpace(); if(!S)return; holoBuildSpace(S);
+  const picks=[]; for(const p of (w.picks||[]).slice(0,12)){ if(S.picks.some(q=>q.uid===p.uid))continue; const q=Object.assign({},p); q.mirror=/Standard/.test(q.license||'')?null:await holoMirror(q.uid); q.made=false; q.failed=null; q.links=null; q.thumb=''; picks.push(q); }
+  S.picks=S.picks.filter(p=>p.made).concat(picks); HOLO.sp=S; S.prompts=[String(w.prompt||'').slice(0,300)];
+  HOLO.hist.push({role:'user',parts:[{text:'(This is the game speaking, not the visitor.) The visitor has taken their world “'+w.title+'” back to the console to change it, in space '+S.n+'. What was asked for it: '+(w.prompt||'')+'. Its list is on the console; they may ask you for more.'}]},
+    {role:'model',parts:[{text:JSON.stringify({reply:'Its list is on the console. Change it, or press Make it.',searches:[],done:true,actions:[]})}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);
+  HOLO.msgs.push({who:'sys',text:'The list of “'+w.title+'” is on the console for space '+S.n+' — change it, or press Make it.'});
+  holoOpen(holoHere()?'space':'door');
+}
+function holoWorldDel(w){ const L=holoWorlds(); const i=L.indexOf(w); if(i>=0)L.splice(i,1); holoWorldsKeep(); if(w.id)api({a:'world_del',key:accountKey()||'',id:w.id}); holoBoardsDraw(); }
+function holoWorldsForget(){ HOLO.worlds=[]; holoWorldsKeep(); return api({a:'world_del',key:accountKey()||'',id:0}); }
+// the boards: three planes of the bare space, in a line with the console and the door; a hotspot each (E, or a click, as every hotspot),
+// and the line under the crosshair found by a ray on the plane (a row per line; a world's line has its Build, Edit and Delete parts)
+const HOLO_BOARDS=[{k:'mine',title:'MY WORLDS',dx:-13,lx:-7,col:'#b6ff9c'},{k:'data',title:'MY DATA',dx:-20,lx:12.5,col:'#ff8a7a'},{k:'others',title:'WORLDS OTHERS MADE',dx:13,lx:5.5,col:'#7fe6ff'}];   // dx: from the console line's middle in a space; lx: from the door on lab level 5 — MY WORLDS west of it, WORLDS OTHERS MADE and MY DATA east (the user: "the 'worlds others made' can be on the right of the hologram door"), the two portal rooms beyond them
+const _hbRay=new THREE.Raycaster(); _hbRay.layers.mask=0xffffffff;
+function holoBoardsBuild(S){ if(S.boards||!S.furn)return; const A=S.at; holoBoardsAt(S,S.root,A.x,0,A.z+HOLO.half-9,2,'dx'); }   // a space's: with its console and door
+function holoBoardsLab(Y,zn){                                          // lab level 5's (2026-10-05, asked for): either side of the Hologram Room's door, in its line, on the lab's floor
+  if(HOLO.lab5||!HOLO.door)return; const d=HOLO.door;
+  HOLO.lab5={lab:true,at:{x:d.x,z:d.z},Y,boards:null,boardsG:null,boardHots:[],signs:[]};
+  holoBoardsAt(HOLO.lab5,worldGroup,d.x,Y,d.z,zn,'lx');
+}
+function holoBoardsAt(S,parent,cx,y,cz,zn,key){                        // the three planes along the line z = cz, their canvases, their hotspots
+  S.boards={}; const G=new THREE.Group(); parent.add(G); S.boardsG=G;
+  for(const B of HOLO_BOARDS){ const x=cx+B[key];
+    const cnv=document.createElement('canvas'); cnv.width=1024; cnv.height=768; const tex=new THREE.CanvasTexture(cnv); tex.encoding=THREE.sRGBEncoding;
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(6,4.5),new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.95,depthWrite:false,side:THREE.DoubleSide}));
+    m.position.set(x,y+2.75,cz); G.add(m); zoneTag(m,zn); S.signs.push(m);
+    S.boards[B.k]={B,m,tex,cnv,rows:[],page:0,hover:-1,armed:-1,armedAt:0,status:'',statusAt:0};
+    const hs=hotspot(x,cz+1.2,HOLO_BOARD_REACH,B.title.charAt(0)+B.title.slice(1).toLowerCase()+' — aim at a line',()=>holoBoardUse(S,B.k),{x,z:cz,y:2.75,rad:2.6}); if(y)hs.y=y;
+    S.boardHots.push(hs); S.boards[B.k].hot=hs;
+  }
+  holoBoardsDraw(S);
+}
+function holoBoardRows(S,k){
+  const b=S.boards[k], per=6;
+  if(k==='mine'){ const L=holoWorlds(), pages=Math.max(1,Math.ceil(L.length/per)); b.page=Math.min(b.page,pages-1);
+    const rows=[];
+    for(const w of L.slice(b.page*per,b.page*per+per))rows.push({kind:'world',w,text:w.title,sub:holoDate(w.t)+' · '+w.picks.length+(w.picks.length===1?' model':' models')+(w.shared?' · shown to everyone on WORLDS OTHERS MADE':' · private')+(w.id?'':' · on this device only')});
+    if(!L.length)rows.push({kind:'note',text:'Nothing yet.',sub:'A world is kept here each time Make it builds one and its story begins.'});
+    if(pages>1)rows.push({kind:'page',text:'more ▸',sub:'page '+(b.page+1)+' of '+pages});
+    return rows; }
+  if(k==='others'){ const L=HOLO.shared||[], pages=Math.max(1,Math.ceil(L.length/per)); b.page=Math.min(b.page,pages-1);
+    const rows=[]; for(const w of L.slice(b.page*per,b.page*per+per))rows.push({kind:'go',w,text:w.title,sub:(w.n||0)+(w.n===1?' model':' models')+' · built '+(w.plays||0)+(w.plays===1?' time':' times')+' · '+holoDate((+w.t||0)*1000)});
+    if(!L.length)rows.push({kind:'note',text:HOLO.shared?'Nobody has shared a world yet.':'…',sub:HOLO.shared?'Mark one of yours Shared at MY WORLDS to share it.':'looking'});
+    if(pages>1)rows.push({kind:'page',text:'more ▸',sub:'page '+(b.page+1)+' of '+pages});
+    return rows; }
+  return [{kind:'del',what:'profile',text:'Delete my profile for the organiser / counselor',sub:'the things-to-do list, counselling notes and neighbours preference'},
+    {kind:'del',what:'logs',text:'Delete my chat and Hologram Room logs',sub:'what I asked the characters and the room, and their answers'},
+    {kind:'del',what:'worlds',text:'Delete my worlds',sub:'from this device, from my save and from the shared list'},
+    {kind:'del',what:'all',text:'Delete everything and start again',sub:'my save and all its progress, profile, ideas, logs, worlds — the hall starts fresh'}];
+}
+function holoBoardDraw(S,k){
+  const b=S.boards[k], B=b.B, c=b.cnv.getContext('2d'), W=1024, H=768; b.rows=holoBoardRows(S,k);
+  c.clearRect(0,0,W,H); c.fillStyle='rgba(8,18,30,0.72)'; roundRect(c,8,8,W-16,H-16,26); c.fill();
+  c.lineWidth=5; c.strokeStyle=B.col; c.globalAlpha=0.9; roundRect(c,8,8,W-16,H-16,26); c.stroke(); c.globalAlpha=1;
+  c.textAlign='left'; c.fillStyle=B.col; c.font='bold 54px Segoe UI'; c.fillText(B.title,48,86);
+  c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(k==='mine'?'aim at a line: build it again · Shared or private · Edit · Delete':k==='others'?'aim at a world and press E, or click, to go straight in':'aim at a line and press E, or click — then Yes or No',48,124);
+  let y=160; const cut=(t,max)=>{ t=String(t||''); while(t.length>2&&c.measureText(t).width>max)t=t.slice(0,-2)+'…'; return t; };
+  b.rows.forEach((r,i)=>{ const h=r.kind==='page'?54:74; r.y0=y; r.y1=y+h;
+    if(i===b.hover&&r.kind!=='note'){ c.fillStyle='rgba(127,230,255,0.16)'; roundRect(c,28,y-6,W-56,h,12); c.fill(); }
+    const armed=b.armed===i;
+    c.fillStyle=armed?'#ffd27f':r.kind==='note'?'#8fa3bf':'#eaf4ff'; c.font=(r.kind==='page'?'':'bold ')+'30px Segoe UI';
+    c.fillText(cut(armed?(r.kind==='world'?'Delete “'+r.text+'”?':r.text+'?'):r.text,(armed||r.kind==='world')?(armed?620:500):W-100),48,y+30);
+    if(r.sub&&!armed){ c.fillStyle='#cfe0f2'; c.font='24px Segoe UI'; c.fillText(cut(r.sub,W-100),48,y+60); }
+    if(armed){ c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(r.kind==='world'?'this cannot be undone':'this cannot be undone — aim at Yes or No',48,y+60);   // the question's two answers (2026-10-05, asked for: "a confirmation that needs a yes no button")
+      c.font='bold 26px Segoe UI'; c.textAlign='center'; c.fillStyle='#b6ff9c'; c.fillText('Yes, delete',760,y+30); c.fillStyle='#cfe0f2'; c.fillText('No',900,y+30); c.textAlign='left';
+      c.lineWidth=2; c.strokeStyle='rgba(182,255,156,0.65)'; roundRect(c,700,y-2,120,44,10); c.stroke(); c.strokeStyle='rgba(207,224,242,0.5)'; roundRect(c,840,y-2,120,44,10); c.stroke(); }
+    if(r.kind==='world'&&!armed){ c.font='bold 26px Segoe UI'; c.textAlign='center';   // its three parts: Shared / private, Edit, Delete (holoBoardUse reads the hit's x against the same bounds)
+      c.fillStyle=r.w.shared?'#b6ff9c':'#8fa3bf'; c.fillText(r.w.shared?'● shared':'○ private',630,y+30); c.fillStyle='#9fd8ff'; c.fillText('Edit',770,y+30); c.fillStyle='#ff8a7a'; c.fillText('Delete',905,y+30); c.textAlign='left';
+      c.strokeStyle='rgba(127,230,255,0.35)'; c.lineWidth=2; roundRect(c,560,y-2,140,44,10); c.stroke(); roundRect(c,715,y-2,110,44,10); c.stroke(); roundRect(c,845,y-2,120,44,10); c.stroke(); }
+    y+=h; });
+  if(b.status){ c.fillStyle='#b6ff9c'; c.font='26px Segoe UI'; c.fillText(cut(b.status,W-100),48,H-44); }
+  b.tex.needsUpdate=true;
+}
+function holoBoardsDraw(S){ for(const T of (S?[S]:HOLO.spaces.concat(HOLO.lab5?[HOLO.lab5]:[])))if(T.boards)for(const k in T.boards)holoBoardDraw(T,k); }
+const _hbO=new THREE.Vector3(), _hbD=new THREE.Vector3();
+function holoBoardHit(b){ camera.getWorldPosition(_hbO); camera.getWorldDirection(_hbD); _hbRay.set(_hbO,_hbD); const h=_hbRay.intersectObject(b.m,false)[0]; if(!h||!h.uv)return null;   // (the camera's own position and direction: setFromCamera missed the boards here)
+  const x=h.uv.x*1024, y=(1-h.uv.y)*768, i=b.rows.findIndex(r=>y>=r.y0-6&&y<r.y1-6); return i<0?null:{i,x}; }
+function holoBoardsHover(S){                                           // the line under the crosshair lit, while a board is the hotspot in reach
+  for(const k in S.boards||{}){ const b=S.boards[k]; let i=-1;
+    if(curHot&&curHot===b.hot){ const h=holoBoardHit(b); if(h)i=h.i; }
+    if(b.armed>=0&&Date.now()-b.armedAt>12000){ b.armed=-1; holoBoardDraw(S,k); }
+    if(b.status&&Date.now()-b.statusAt>9000){ b.status=''; holoBoardDraw(S,k); }
+    if(i!==b.hover){ b.hover=i; holoBoardDraw(S,k); } }
+}
+function holoBoardSay(S,k,t){ const b=S.boards[k]; b.status=t; b.statusAt=Date.now(); holoBoardDraw(S,k); }
+function holoBoardUse(S,k){
+  const b=S.boards[k], h=holoBoardHit(b); if(!h)return; const r=b.rows[h.i];
+  if(b.armed===h.i){                                                  // the question is up on this line: Yes, delete (700–820) or No (840–); anything else on the line leaves it standing
+    if(h.x>=840){ b.armed=-1; holoBoardDraw(S,k); return; }
+    if(h.x<700)return;
+    b.armed=-1;
+    if(r.kind==='world'){ holoWorldDel(r.w); holoBoardSay(S,k,'“'+r.w.title+'” is deleted.'); return; }
+    if(r.kind==='del'){ const say_=(t)=>holoBoardSay(S,k,t);
+      if(r.what==='worlds'){ say_('Deleting…'); holoWorldsForget().then(x=>{ say_(x&&x.ok?'Your worlds are deleted.':'Could not reach the server — the ones on this device are gone, the rest not.'); holoBoardsDraw(); }); }
+      else pvForget(r.what,null,say_); }
+    return; }
+  if(b.armed>=0){ b.armed=-1; holoBoardDraw(S,k); }                   // a press on another line: the question goes
+  const ask=(i)=>{ b.armed=i; b.armedAt=Date.now(); holoBoardDraw(S,k); };
+  if(r.kind==='page'){ b.page++; holoBoardDraw(S,k); return; }
+  if(r.kind==='world'){ if(h.x>=840){ ask(h.i); return; }
+    if(h.x>=710){ holoWorldEdit(r.w); return; }
+    if(h.x>=555){ holoWorldShare(r.w,!r.w.shared); holoBoardSay(S,k,r.w.shared?'“'+r.w.title+'” is shared: everyone sees it on WORLDS OTHERS MADE.':'“'+r.w.title+'” is private again.'); return; }
+    holoWorldBuild(r.w,true); return; }
+  if(r.kind==='go'){ holoWorldBuild(r.w,false); return; }
+  if(r.kind==='del'){ ask(h.i); return; }
+}
 // ---- the panel ----
 function holoShow(on){ document.getElementById('holoModal').style.display=on?'flex':'none'; document.body.classList.toggle('qOpen',!!on);
   clearInterval(HOLO.rateT); HOLO.rateT=on?setInterval(holoRateView,1000):null; }
@@ -9981,7 +10145,7 @@ function holoNote(text){ HOLO.msgs.push({who:'sys',text}); if(HOLO.msgs.length>6
 function holoOpen(from){
   HOLO.from=from||'door'; document.exitPointerLock&&document.exitPointerLock();
   const here=holoHere(); if(here&&!HOLO.busy)HOLO.sp=here;                 // at a console: the panel is about the space you stand in
-  if(!HOLO.msgs.length)HOLO.msgs.push({who:'lab',text:"Welcome. Tell me what you'd like to stand in, and who should be there — a forest, a space station, a kitchen; its people; a story — and I'll find what Sketchfab lets us use. You pick from the pictures, I build it and set the story going. Or just enter."});
+  if(!HOLO.msgs.length)HOLO.msgs.push({who:'lab',text:"Welcome. Tell me what you'd like to stand in, and who should be there — a forest, a space station, a kitchen; its people; a story — and I'll find what we can use. You pick from the pictures, I build it and set the story going. Or just enter."});
   document.getElementById('holoWhere').textContent=here?'· the console, space '+here.n:'· lab level 5';
   holoView(); holoShow(true); holoRateView(); holoRate();
   setTimeout(()=>{ try{ document.getElementById('holoIn').focus(); }catch(e){} },50);
@@ -10145,6 +10309,7 @@ async function holoSend(text){
     if(m){ const w=m[3], amt=/much|a lot/.test(m[2]||'')?2.5:/bit|little|slightly/.test(m[2]||'')?1.2:1.5, f=/twice|double/.test(w)?2:/half/.test(w)?0.5:/smaller/.test(w)?1/amt:amt;
       HOLO.msgs.push({who:'you',text}); holoNote(holoResize(f).replace(/^./,c=>c.toUpperCase())+'.'); return; } }
   HOLO.busy=true; HOLO.msgs.push({who:'you',text}); holoView(); GA.turns=(GA.turns|0)+1;
+  (HOLO.sp.prompts=HOLO.sp.prompts||[]).push(text.slice(0,300));         // what was typed for this space: a world's record (holoWorldSave)
   const list='They are planning space '+HOLO.sp.n+' of '+HOLO.spaces.length+(holoHere()?' (they stand in space '+holoHere().n+')':' (they are at the door on lab level 5)')+'. '+(HOLO.picks.length?'On their list for it now: '+HOLO.picks.map(p=>'"'+p.name+'" ('+p.role+', '+holoMB(p.size)+(p.made?', already standing in the space':'')+')').join('; ')+'.':'Their list for it is empty.');
   HOLO.hist.push({role:'user',parts:[{text:list+'\nThe visitor says: '+text}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);
   gaNews('the visitor said to the Hologram Room\'s planner: "'+gaText(text,140)+'"','holo');
@@ -10387,7 +10552,7 @@ async function holoStory(S,made){
     +(things.length?' Things put up: '+things.join(', ')+'.':'')
     +' Begin now, in this same answer, what they asked you for. If it was a story, or if there are people: "reply" is the story\'s opening, spoken to the visitor by the room\'s own voice; and "actions" set it going — first give each of the people who they are, {"do":"change","who":"<id>","name":"...","persona":"...","voice":"..."} (the persona is their mind: from then on they answer for themselves), then whatever the story wants of all you can do: lines for them to speak ("say"), where they stand ("arrange", "teleport", "walk"), an objective for the visitor, the record ("story"), more people or things if it needs them. If they only wanted a place to stand in, a line of welcome is enough. No "searches" in this answer.';
   GA.turns=(GA.turns|0)+1;
-  return holoTell(text,{cap:'… the Hologram Room is setting the story …',verb:'began',log:'[the story begins — space '+S.n+(env?', in “'+env.name+'”':'')+(folk.length?', '+folk.length+(folk.length===1?' person':' people'):'')+']'});
+  return holoTell(text,{story:S,cap:'… the Hologram Room is setting the story …',verb:'began',log:'[the story begins — space '+S.n+(env?', in “'+env.name+'”':'')+(folk.length?', '+folk.length+(folk.length===1?' person':' people'):'')+']'});
 }
 async function holoTell(text,opt){                                   // a turn of the game's own with the room's planner: text is the game's question; what it answers is spoken by the room's voice, its actions run, and done() when that is over (opt: cap, verb, log, done)
   if(HOLO.busy){ if(opt.done)opt.done(); return; } HOLO.busy=true;
@@ -10402,6 +10567,7 @@ async function holoTell(text,opt){                                   // a turn o
     if(D&&typeof D==='object'){ langNote(D,out); reply=String(D.reply||'').replace(/\*+/g,'').trim(); actions=Array.isArray(D.actions)?D.actions.filter(x=>x&&typeof x==='object'):[]; ok=true; }
     else if(out&&out.charAt(0)!=='{'){ reply=out; ok=true; }
     if(ok)HOLO.hist.push({role:'model',parts:[{text:JSON.stringify({reply,searches:[],done:true,actions})}]});
+    if(ok&&opt.story&&(reply||actions.length)){ opt.story.opening={reply,actions}; try{ holoWorldSave(opt.story); }catch(e){} }   // the story's opening: the world is kept now (holoWorldSave)
   }catch(e){}
   if(!ok)HOLO.hist.pop();                                              // no answer: the question is taken back (the talk stays visitor, room, visitor, room)
   HOLO.busy=false; try{ holoView(); }catch(e){}
@@ -13707,28 +13873,29 @@ function pvTwoStep(id,run){
     clearTimeout(t); reset(); run(btn);
   };
 }
-async function pvForget(what,btn){
+async function pvForget(what,btn,status){                     // btn and status are the Privacy page's; the Hologram Room's MY DATA board passes null and its own line (2026-10-05)
+  const say_=status||pvStatus;
   let pid='';try{pid=localStorage.getItem('atd:pid')||'';}catch(e){}
-  btn.disabled=true; pvStatus('Deleting…',true);
+  if(btn)btn.disabled=true; say_('Deleting…',true);
   const r=await api({a:'forget',what,key:accountKey()||'',pid,vids:[visitId()]});
-  btn.disabled=false;
-  if(!(r&&r.ok)){ pvStatus(r?('Nothing was deleted — the server said: '+(r.error||'no'))
+  if(btn)btn.disabled=false;
+  if(!(r&&r.ok)){ say_(r?('Nothing was deleted — the server said: '+(r.error||'no'))
                              :'Could not reach the server — nothing was deleted. Try again, or use Contact us.',false); return; }
   if(what==='logs'){                                          // the chat and Hologram Room logs only (2026-10-02): they are kept on the server alone, so nothing on this device changes
     const n=(r.deleted&&r.deleted.asked)|0;
-    pvStatus(n?'Your chat and Hologram Room logs are deleted ('+n+(n===1?' entry':' entries')+').':'There were no chat or Hologram Room logs of yours to delete.',true);
+    say_(n?'Your chat and Hologram Room logs are deleted ('+n+(n===1?' entry':' entries')+').':'There were no chat or Hologram Room logs of yours to delete.',true);
     return;
   }
   if(what==='profile'){
     try{ ['atd:todo','atd:counsel','atd:neighbours'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
     try{ if(wishBoardRefresh)wishBoardRefresh(); }catch(e){}
-    pvStatus('Your profile for the organiser / counselor is deleted.',true);
+    say_('Your profile for the organiser / counselor is deleted.',true);
     return;
   }
   const wipe=st=>{ try{ const ks=[]; for(let i=0;i<st.length;i++){ const k=st.key(i); if(k&&(k.indexOf('atd:')===0||k.indexOf('delivery:done:')===0))ks.push(k); }
     ks.forEach(k=>st.removeItem(k)); }catch(e){} };
   wipe(localStorage); wipe(sessionStorage);                  // no key left, so nothing is pushed back before the reload
-  pvStatus('Everything is deleted. The hall starts again in a moment…',true);
+  say_('Everything is deleted. The hall starts again in a moment…',true);
   setTimeout(()=>location.replace(location.pathname),2500);
 }
 pvTwoStep('pvDelProfile',b=>pvForget('profile',b));
