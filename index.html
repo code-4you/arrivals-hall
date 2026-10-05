@@ -2217,7 +2217,7 @@ LABT.contents={
     labCircle(Y,c[0],c[1],0x6fa8ff,'Cerebrum — hear the week','level 4 · walk off the platform there to come back',()=>launchCerebrum(),true,LAB_SIGN_H);
   },
   6:(Y,zn)=>lab6Build(Y,zn),                               // the Earth and the solar system (2026-10-04, asked for) — see LAB6
-  5:(Y,zn)=>{ holoBuildDoor(Y,zn); portalDoorBuild(Y,zn,-18,-5,1); portalDoorBuild(Y,zn,21,5,2); holoBoardsLab(Y,zn); },   // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebrum") — see HOLO; the two portal doors (2026-10-04) — see PDOOR — moved out to 18 m west and 21 m east since 2026-10-05 (their rooms span x −75.5…−55.5 and −26.5…−6.5) to make room for the room's three boards between them (asked for: "put those boards in the lab level 5 too, you can move the 2 rooms to make space"; "the 'worlds others made' can be on the right of the hologram door")
+  5:(Y,zn)=>{ holoBuildDoor(Y,zn); portalDoorBuild(Y,zn,-18,-5,1); portalDoorBuild(Y,zn,21,5,2); holoBoardsLab(Y,zn); },   // the Hologram Room's door (2026-10-01, asked for: "a door on level above the one with cerebrum") — see HOLO; the two portal doors (2026-10-04) — see PDOOR — moved out to 18 m west and 21 m east since 2026-10-05 (their rooms span x −75.5…−55.5 and −26.5…−6.5) to make room for the room's boards between them (asked for: "put those boards in the lab level 5 too, you can move the 2 rooms to make space"; "the 'worlds others made' can be on the right of the hologram door")
 };
 function buildLabLights(){
   for(const [k,c,i,d,,y] of EARLY_SPEC)if(k.indexOf('labT')===0){          // the eight lights, and how far each sits above its floor
@@ -5610,7 +5610,7 @@ function localPlayRows(){
 }
 // progress = every atd:* key plus the games' own done-flags that predate the prefix
 // developer-page settings (atd:dev:*, the face mode) are per-machine tuning, not progress: never pushed, never pulled back
-function localOnlyKey(k){return k==='atd:holo:credits'||k.indexOf('atd:dev:')===0||k.indexOf('atd:faceMode')===0||k.indexOf('atd:elara:outfit')===0||k.indexOf('atd:elara:breast')===0||k.indexOf('atd:elara:flatfeet')===0||k.indexOf('atd:elara:hair')===0||k==='atd:where'||/^atd:(elara|jack|optimus):(follow|autofollow)$/.test(k);}   // who follows you is this device's choice too (2026-09-25: a synced old 'follow' kept bringing Jack and Optimus running after a reload)   // how she looks is a setting of this browser, not saved progress: synced, an old choice would keep overriding a new default
+function localOnlyKey(k){return k==='atd:holo:credits'||k==='atd:holo:quality'||k.indexOf('atd:dev:')===0||k.indexOf('atd:faceMode')===0||k.indexOf('atd:elara:outfit')===0||k.indexOf('atd:elara:breast')===0||k.indexOf('atd:elara:flatfeet')===0||k.indexOf('atd:elara:hair')===0||k==='atd:where'||/^atd:(elara|jack|optimus):(follow|autofollow)$/.test(k);}   // who follows you is this device's choice too (2026-09-25: a synced old 'follow' kept bringing Jack and Optimus running after a reload)   // how she looks is a setting of this browser, not saved progress: synced, an old choice would keep overriding a new default
 function progressKey(k){return !!k&&((k.indexOf('atd:')===0&&k!=='atd:accountKey'&&!localOnlyKey(k))||k.indexOf('delivery:done:')===0);}
 function collectProgress(){
   const o={};
@@ -9778,8 +9778,9 @@ function holoBuildSpace(S){
   S.exitHot=hotspot(A.x+6,cz+1.4,2.8,'Back to the lab',()=>holoLeave(),{x:A.x+6,z:cz,y:1.7,rad:1.7});
   S.arrive={x:A.x,z:cz-4,yaw:0};
   holoBoard(S); holoBoardsBuild(S);
-  if(!HOLO.ticking){ HOLO.ticking=true; animated.push({update(dt){ holoTick(dt); }}); }
+  holoTickStart();
 }
+function holoTickStart(){ if(HOLO.ticking)return; HOLO.ticking=true; animated.push({update(dt){ holoTick(dt); }}); }   // the room's per-frame work: from the first space built, or from lab level 5's boards (2026-10-05 — until then, on a fresh page, the lab's boards never ticked: no shared list, no lit line, no turning about, until a space was built)
 function holoDoorTo(x,z,yaw,S,y){                                    // the door put down here, facing yaw, on the floor at height y: its blocks and its hotspot with it
   S=S||HOLO.sp; const D=S.exit; if(!D)return; y=y||0; D.position.set(x,y,z); D.rotation.y=yaw;
   const c=Math.cos(yaw), sn=Math.sin(yaw), B=S.exitBlocks;
@@ -9811,6 +9812,7 @@ function holoTick(dt){
     if(here){ const t=holoTitle(here); gaNews('the visitor is now in Hologram Room space '+here.n+(t?' (“'+t+'”)':' (bare)')); if(!HOLO.busy)HOLO.sp=here; holoWorldsLoad(); }
     else if(HOLO.was)gaNews('the visitor has left the Hologram Room');
     HOLO.was=here; }
+  if(here)holoSharedLoad();                                           // everyone's shared worlds asked for again every two minutes while in a space (2026-10-05, asked for: one shared from another device was not on the board until a reload)
   let fog=HOLO.fogWas;
   for(const S of HOLO.spaces){ if(!S.built)continue; const inside=S===here, run=holoRuns(S);
     if(S.root.visible!==inside)S.root.visible=inside;                  // only the space the visitor stands in is drawn
@@ -9831,7 +9833,7 @@ function holoTick(dt){
     }
   }
   if(scene.fog&&HOLO.fogWas!==null&&scene.fog.density!==fog)scene.fog.density=fog;
-  if(HOLO.lab5&&ZONE.now==='k5'){ for(const m of HOLO.lab5.signs){ if(m.userData.yaw0===undefined)m.userData.yaw0=m.rotation.y; signFlip(m,m.userData.yaw0); } holoBoardsHover(HOLO.lab5); holoWorldsLoad(); }   // lab level 5's boards (2026-10-05)
+  if(HOLO.lab5&&ZONE.now==='k5'){ for(const m of HOLO.lab5.signs){ if(m.userData.yaw0===undefined)m.userData.yaw0=m.rotation.y; signFlip(m,m.userData.yaw0); } holoBoardsHover(HOLO.lab5); holoWorldsLoad(); holoSharedLoad(); }   // lab level 5's boards (2026-10-05); the shared list again every two minutes here too
 }
 // Everyone and everything in the space moved by one repeat, with the visitor: nobody sees it. And nothing is ever lost in a
 // place that goes on without end (a quest's people and its objective must still be there): what the visitor has left more
@@ -9991,7 +9993,7 @@ function holoWorldsLoad(){                                             // once a
     if(n){ L.sort((a,b)=>b.t-a.t); if(L.length>40)L.length=40; holoWorldsKeep(); holoBoardsDraw(); } });
   holoSharedLoad();
 }
-function holoSharedLoad(force){ if(!force&&HOLO.sharedAt&&Date.now()-HOLO.sharedAt<120000)return; HOLO.sharedAt=Date.now();
+function holoSharedLoad(force){ if(!force&&HOLO.sharedAt&&Date.now()-HOLO.sharedAt<120000)return; HOLO.sharedAt=Date.now();   // (called each frame from holoTick while in a space or on lab level 5: this is what keeps it to one call in two minutes)
   api({a:'worlds_shared'}).then(r=>{ if(r&&r.ok&&Array.isArray(r.rows)){ HOLO.shared=r.rows; holoBoardsDraw(); } }); }
 async function holoWorldBuild(w,mine){                                 // the world again: its models fetched into a free space, the visitor taken there, and the story's opening replayed as it was — from there on it is live
   if(HOLO.busy){ banner('The room is busy — a moment.'); return; }
@@ -10023,41 +10025,54 @@ async function holoWorldEdit(w){                                       // the wo
 }
 function holoWorldDel(w){ const L=holoWorlds(); const i=L.indexOf(w); if(i>=0)L.splice(i,1); holoWorldsKeep(); if(w.id)api({a:'world_del',key:accountKey()||'',id:w.id}); holoBoardsDraw(); }
 function holoWorldsForget(){ HOLO.worlds=[]; holoWorldsKeep(); return api({a:'world_del',key:accountKey()||'',id:0}); }
-// the boards: three planes of the bare space, in a line with the console and the door; a hotspot each (E, or a click, as every hotspot),
+// the quality setting (2026-10-05, the user: "a board for settings that allows people to switch between the small glb download and the big
+// version, called quality high(slower)/low(quicker)"): low — the smallest archive Sketchfab offers for a model, as the room always did;
+// high — the biggest within the cap (HOLO.maxMB, or the chats' GA_MODEL.maxMB). This device's choice, like the credits (localOnlyKey).
+function holoHi(){ if(HOLO.hi===undefined){ let v=null; try{ v=localStorage.getItem('atd:holo:quality'); }catch(e){} HOLO.hi=v==='high'; } return HOLO.hi; }
+function holoHiSet(on){ HOLO.hi=!!on; try{ localStorage.setItem('atd:holo:quality',on?'high':'low'); }catch(e){} holoBoardsDraw(); try{ holoView(); }catch(e){} }
+function holoSize(p){ return holoHi()&&p.sizeHi?p.sizeHi:(p.size||0); }   // the bytes that will come for this pick at the quality set (sizeHi: the biggest archive within the cap, from the search)
+function holoArchives(L,capMB){                                       // the archives offered (glb, gltf) in the order to try — one that will not open is passed over for the next
+  const o=['glb','gltf'].map(k=>L&&L[k]).filter(x=>x&&x.url).sort((a,b)=>(a.size||1e12)-(b.size||1e12));
+  if(!holoHi()||o.length<2)return o; const cap=(capMB||HOLO.maxMB)*1048576, fit=o.filter(x=>x.size&&x.size<=cap).reverse();
+  return fit.concat(o.filter(x=>fit.indexOf(x)<0));                    // high: the biggest that fits first; whatever is over the cap, or of unknown size, behind
+}
+// the boards: four planes of the bare space, in a line with the console and the door; a hotspot each (E, or a click, as every hotspot),
 // and the line under the crosshair found by a ray on the plane (a row per line; a world's line has its Build, Edit and Delete parts)
-const HOLO_BOARDS=[{k:'mine',title:'MY WORLDS',dx:-13,lx:-7,col:'#b6ff9c'},{k:'data',title:'MY DATA',dx:-20,lx:12.5,col:'#ff8a7a'},{k:'others',title:'WORLDS OTHERS MADE',dx:13,lx:5.5,col:'#7fe6ff'}];   // dx: from the console line's middle in a space; lx: from the door on lab level 5 — MY WORLDS west of it, WORLDS OTHERS MADE and MY DATA east (the user: "the 'worlds others made' can be on the right of the hologram door"), the two portal rooms beyond them
+const HOLO_BOARDS=[{k:'mine',title:'MY WORLDS',dx:-13,lx:-7,col:'#b6ff9c'},{k:'data',title:'MY DATA',dx:-27,lx:12.5,col:'#ff8a7a'},{k:'others',title:'WORLDS OTHERS MADE',dx:13,lx:5.5,col:'#7fe6ff'},{k:'set',title:'SETTINGS',dx:-20,lx:-13,lz:4.5,lyaw:0.45,col:'#ffd27f'}];   // dx: from the console line's middle in a space (SETTINGS left of MY WORLDS, MY DATA beyond); lx: from the door on lab level 5 — SETTINGS and MY WORLDS west of it, WORLDS OTHERS MADE and MY DATA east (the user: "the 'worlds others made' can be on the right of the hologram door"), the two portal rooms beyond them. SETTINGS (2026-10-05, asked for; "left of my worlds board. all the boards dont need to be in one line"): on lab level 5 the west room's wall is 3 m behind MY WORLDS, so it stands lz 4.5 m forward of the line, towards the lift, turned lyaw towards the door
 const _hbRay=new THREE.Raycaster(); _hbRay.layers.mask=0xffffffff;
 function holoBoardsBuild(S){ if(S.boards||!S.furn)return; const A=S.at; holoBoardsAt(S,S.root,A.x,0,A.z+HOLO.half-9,2,'dx'); }   // a space's: with its console and door
 function holoBoardsLab(Y,zn){                                          // lab level 5's (2026-10-05, asked for): either side of the Hologram Room's door, in its line, on the lab's floor
   if(HOLO.lab5||!HOLO.door)return; const d=HOLO.door;
   HOLO.lab5={lab:true,at:{x:d.x,z:d.z},Y,boards:null,boardsG:null,boardHots:[],signs:[]};
   holoBoardsAt(HOLO.lab5,worldGroup,d.x,Y,d.z,zn,'lx');
+  holoTickStart();                                                     // (the boards' per-frame work needs the room's tick — see holoTickStart)
 }
-function holoBoardsAt(S,parent,cx,y,cz,zn,key){                        // the three planes along the line z = cz, their canvases, their hotspots
+function holoBoardsAt(S,parent,cx,y,cz,zn,key){                        // the four planes along the line z = cz, their canvases, their hotspots
   S.boards={}; const G=new THREE.Group(); parent.add(G); S.boardsG=G;
-  for(const B of HOLO_BOARDS){ const x=cx+B[key];
+  for(const B of HOLO_BOARDS){ const x=cx+B[key], z=cz+(key==='lx'?(B.lz||0):0), yaw=key==='lx'?(B.lyaw||0):0;   // (lz, lyaw: one stood forward of the line and turned, on lab level 5 — SETTINGS; signFlip keeps its yaw)
     const cnv=document.createElement('canvas'); cnv.width=1024; cnv.height=768; const tex=new THREE.CanvasTexture(cnv); tex.encoding=THREE.sRGBEncoding;
     const m=new THREE.Mesh(new THREE.PlaneGeometry(6,4.5),new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.95,depthWrite:false,side:THREE.DoubleSide}));
-    m.position.set(x,y+2.75,cz); G.add(m); zoneTag(m,zn); S.signs.push(m);
+    m.position.set(x,y+2.75,z); m.rotation.y=yaw; G.add(m); zoneTag(m,zn); S.signs.push(m);
     S.boards[B.k]={B,m,tex,cnv,rows:[],page:0,hover:-1,armed:-1,armedAt:0,status:'',statusAt:0};
-    const hs=hotspot(x,cz+1.2,HOLO_BOARD_REACH,B.title.charAt(0)+B.title.slice(1).toLowerCase()+' — aim at a line',()=>holoBoardUse(S,B.k),{x,z:cz,y:2.75,rad:2.6}); if(y)hs.y=y;
+    const hs=hotspot(x+Math.sin(yaw)*1.2,z+Math.cos(yaw)*1.2,HOLO_BOARD_REACH,B.title.charAt(0)+B.title.slice(1).toLowerCase()+' — aim at a line',()=>holoBoardUse(S,B.k),{x,z,y:2.75,rad:2.6}); if(y)hs.y=y;
     S.boardHots.push(hs); S.boards[B.k].hot=hs;
   }
   holoBoardsDraw(S);
 }
 function holoBoardRows(S,k){
   const b=S.boards[k], per=6;
-  if(k==='mine'){ const L=holoWorlds(), pages=Math.max(1,Math.ceil(L.length/per)); b.page=Math.min(b.page,pages-1);
+  if(k==='mine'){ const L=holoWorlds(), pages=Math.max(1,Math.ceil(L.length/per)); b.page=Math.max(0,Math.min(b.page,pages-1));
     const rows=[];
     for(const w of L.slice(b.page*per,b.page*per+per))rows.push({kind:'world',w,text:w.title,sub:holoDate(w.t)+' · '+w.picks.length+(w.picks.length===1?' model':' models')+(w.shared?' · shown to everyone on WORLDS OTHERS MADE':' · private')+(w.id?'':' · on this device only')});
     if(!L.length)rows.push({kind:'note',text:'Nothing yet.',sub:'A world is kept here each time Make it builds one and its story begins.'});
-    if(pages>1)rows.push({kind:'page',text:'more ▸',sub:'page '+(b.page+1)+' of '+pages});
+    if(pages>1)rows.push({kind:'page',back:b.page>0,more:b.page<pages-1,text:'',pg:'page '+(b.page+1)+' of '+pages});
     return rows; }
-  if(k==='others'){ const L=HOLO.shared||[], pages=Math.max(1,Math.ceil(L.length/per)); b.page=Math.min(b.page,pages-1);
+  if(k==='others'){ const L=HOLO.shared||[], pages=Math.max(1,Math.ceil(L.length/per)); b.page=Math.max(0,Math.min(b.page,pages-1));
     const rows=[]; for(const w of L.slice(b.page*per,b.page*per+per))rows.push({kind:'go',w,text:w.title,sub:(w.n||0)+(w.n===1?' model':' models')+' · built '+(w.plays||0)+(w.plays===1?' time':' times')+' · '+holoDate((+w.t||0)*1000)});
     if(!L.length)rows.push({kind:'note',text:HOLO.shared?'Nobody has shared a world yet.':'…',sub:HOLO.shared?'Mark one of yours Shared at MY WORLDS to share it.':'looking'});
-    if(pages>1)rows.push({kind:'page',text:'more ▸',sub:'page '+(b.page+1)+' of '+pages});
+    if(pages>1)rows.push({kind:'page',back:b.page>0,more:b.page<pages-1,text:'',pg:'page '+(b.page+1)+' of '+pages});
     return rows; }
+  if(k==='set')return [{kind:'set',text:'Quality',sub:'high: the big file, sharper, slower to come · low: the small file, quicker'}];
   return [{kind:'del',what:'profile',text:'Delete my profile for the organiser / counselor',sub:'the things-to-do list, counselling notes and neighbours preference'},
     {kind:'del',what:'logs',text:'Delete my chat and Hologram Room logs',sub:'what I asked the characters and the room, and their answers'},
     {kind:'del',what:'worlds',text:'Delete my worlds',sub:'from this device, from my save and from the shared list'},
@@ -10068,10 +10083,10 @@ function holoBoardDraw(S,k){
   c.clearRect(0,0,W,H); c.fillStyle='rgba(8,18,30,0.72)'; roundRect(c,8,8,W-16,H-16,26); c.fill();
   c.lineWidth=5; c.strokeStyle=B.col; c.globalAlpha=0.9; roundRect(c,8,8,W-16,H-16,26); c.stroke(); c.globalAlpha=1;
   c.textAlign='left'; c.fillStyle=B.col; c.font='bold 54px Segoe UI'; c.fillText(B.title,48,86);
-  c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(k==='mine'?'aim at a line: build it again · Shared or private · Edit · Delete':k==='others'?'aim at a world and press E, or click, to go straight in':'aim at a line and press E, or click — then Yes or No',48,124);
+  c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(k==='mine'?'aim at a line: build it again · Shared or private · Edit · Delete':k==='others'?'aim at a world and press E, or click, to go straight in':k==='set'?'aim at the one you want and press E, or click':'aim at a line and press E, or click — then Yes or No',48,124);
   let y=160; const cut=(t,max)=>{ t=String(t||''); while(t.length>2&&c.measureText(t).width>max)t=t.slice(0,-2)+'…'; return t; };
   b.rows.forEach((r,i)=>{ const h=r.kind==='page'?54:74; r.y0=y; r.y1=y+h;
-    if(i===b.hover&&r.kind!=='note'){ c.fillStyle='rgba(127,230,255,0.16)'; roundRect(c,28,y-6,W-56,h,12); c.fill(); }
+    if(i===b.hover&&r.kind!=='note'){ const x0=r.kind==='page'&&!r.back?W/2:28, x1=r.kind==='page'&&!r.more?W/2:W-28; c.fillStyle='rgba(127,230,255,0.16)'; roundRect(c,x0,y-6,x1-x0,h,12); c.fill(); }   // (a page line: only the half that has a way)
     const armed=b.armed===i;
     c.fillStyle=armed?'#ffd27f':r.kind==='note'?'#8fa3bf':'#eaf4ff'; c.font=(r.kind==='page'?'':'bold ')+'30px Segoe UI';
     c.fillText(cut(armed?(r.kind==='world'?'Delete “'+r.text+'”?':r.text+'?'):r.text,(armed||r.kind==='world')?(armed?620:500):W-100),48,y+30);
@@ -10082,6 +10097,12 @@ function holoBoardDraw(S,k){
     if(r.kind==='world'&&!armed){ c.font='bold 26px Segoe UI'; c.textAlign='center';   // its three parts: Shared / private, Edit, Delete (holoBoardUse reads the hit's x against the same bounds)
       c.fillStyle=r.w.shared?'#b6ff9c':'#8fa3bf'; c.fillText(r.w.shared?'● shared':'○ private',630,y+30); c.fillStyle='#9fd8ff'; c.fillText('Edit',770,y+30); c.fillStyle='#ff8a7a'; c.fillText('Delete',905,y+30); c.textAlign='left';
       c.strokeStyle='rgba(127,230,255,0.35)'; c.lineWidth=2; roundRect(c,560,y-2,140,44,10); c.stroke(); roundRect(c,715,y-2,110,44,10); c.stroke(); roundRect(c,845,y-2,120,44,10); c.stroke(); }
+    if(r.kind==='page'){ c.font='30px Segoe UI'; c.fillStyle='#eaf4ff';   // the page line: a way back on the left, a way on on the right, each only when there is a page that way (2026-10-05, the user: "a next page button but not a back to previous page button"); holoBoardUse splits it at the middle
+      if(r.back)c.fillText('◂ back',48,y+30); c.textAlign='center'; c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(r.pg,W/2,y+30);
+      if(r.more){ c.textAlign='right'; c.fillStyle='#eaf4ff'; c.font='30px Segoe UI'; c.fillText('more ▸',W-48,y+30); } c.textAlign='left'; }
+    if(r.kind==='set'){ const hi=holoHi(); c.font='bold 26px Segoe UI'; c.textAlign='center';   // the two qualities, the one set lit (2026-10-05, the user: "quality high(slower)/low(quicker)"); holoBoardUse reads the hit's x against the same boxes
+      c.fillStyle=hi?'#ffd27f':'#8fa3bf'; c.fillText((hi?'● ':'○ ')+'high (slower)',615,y+30); c.fillStyle=hi?'#8fa3bf':'#b6ff9c'; c.fillText((hi?'○ ':'● ')+'low (quicker)',870,y+30); c.textAlign='left';
+      c.lineWidth=2; c.strokeStyle=hi?'rgba(255,210,127,0.65)':'rgba(127,230,255,0.35)'; roundRect(c,500,y-2,230,44,10); c.stroke(); c.strokeStyle=hi?'rgba(127,230,255,0.35)':'rgba(182,255,156,0.65)'; roundRect(c,750,y-2,240,44,10); c.stroke(); }
     y+=h; });
   if(b.status){ c.fillStyle='#b6ff9c'; c.font='26px Segoe UI'; c.fillText(cut(b.status,W-100),48,H-44); }
   b.tex.needsUpdate=true;
@@ -10111,12 +10132,13 @@ function holoBoardUse(S,k){
     return; }
   if(b.armed>=0){ b.armed=-1; holoBoardDraw(S,k); }                   // a press on another line: the question goes
   const ask=(i)=>{ b.armed=i; b.armedAt=Date.now(); holoBoardDraw(S,k); };
-  if(r.kind==='page'){ b.page++; holoBoardDraw(S,k); return; }
+  if(r.kind==='page'){ const d=h.x<512?(r.back?-1:0):(r.more?1:0); if(d){ b.page+=d; holoBoardDraw(S,k); } return; }   // left half: back; right half: on — nothing where there is no page that way
   if(r.kind==='world'){ if(h.x>=840){ ask(h.i); return; }
     if(h.x>=710){ holoWorldEdit(r.w); return; }
     if(h.x>=555){ holoWorldShare(r.w,!r.w.shared); holoBoardSay(S,k,r.w.shared?'“'+r.w.title+'” is shared: everyone sees it on WORLDS OTHERS MADE.':'“'+r.w.title+'” is private again.'); return; }
     holoWorldBuild(r.w,true); return; }
   if(r.kind==='go'){ holoWorldBuild(r.w,false); return; }
+  if(r.kind==='set'){ const on=h.x>=750?false:h.x>=500?true:!holoHi(); holoHiSet(on); holoBoardSay(S,k,on?'Quality high: the big file of each model from now on — sharper, slower to come.':'Quality low: the small file of each model from now on — quicker.'); return; }   // the box pressed, or the other one when the press is on the name
   if(r.kind==='del'){ ask(h.i); return; }
 }
 // ---- the panel ----
@@ -10162,7 +10184,7 @@ function holoView(){
       const b=document.createElement('button'), t=holoTitle(S); b.className='holoTab'+(S===HOLO.sp?' on':'');
       b.textContent='Space '+S.n+(t?' · '+(t.length>20?t.slice(0,19)+'…':t):used?' · bare':' · new')+(S===here?' · you are here':'');
       b.onclick=()=>{ if(HOLO.busy)return; HOLO.sp=S; holoView(); }; T.appendChild(b); } }
-  const L=document.getElementById('holoList'), tot=HOLO.picks.reduce((a,p)=>a+p.size,0);
+  const L=document.getElementById('holoList'), tot=HOLO.picks.reduce((a,p)=>a+holoSize(p),0);
   L.innerHTML=HOLO.picks.length?'<span style="color:#b6ff9c">Your list:</span> '+HOLO.picks.map(p=>'“'+escHtml(p.name)+'”'+(p.role==='character'?' (someone)':'')+(p.made?' ✓':p.failed?' ✗':'')).join(' · ')+' <span style="color:#9fb4cc">— '+holoMB(tot)+' of '+HOLO.maxTotalMB+' MB</span>':'<span style="color:#9fb4cc">Nothing on the list yet — click a picture to add it.</span>';
   const todo=HOLO.picks.filter(p=>!p.made&&!p.failed).length, mk=document.getElementById('holoMakeBtn');
   mk.textContent=HOLO.busy?'… working':(todo?'✦  Make it ('+todo+')':'✦  Make it'); mk.style.opacity=(todo&&!HOLO.busy)?'1':'.5';
@@ -10173,14 +10195,14 @@ function holoView(){
 }
 function holoCard(r,role){
   const d=document.createElement('div'); d.className='holoCard'+(HOLO.picks.find(p=>p.uid===r.uid)?' on':''); d.title=r.name+' — by '+r.user+' — '+holoLic(r.license)+(r.faces?' — '+Math.round(r.faces/1000)+'k faces':'');
-  d.innerHTML='<img src="'+r.thumb+'" alt="" loading="lazy"><div class="t">'+escHtml(r.name)+'</div><div class="s">by '+escHtml(r.user)+' · '+holoMB(r.size)+' · '+holoLic(r.license)+'</div><div class="k">✓ on the list</div>'
+  d.innerHTML='<img src="'+r.thumb+'" alt="" loading="lazy"><div class="t">'+escHtml(r.name)+'</div><div class="s">by '+escHtml(r.user)+' · '+holoMB(holoSize(r))+' · '+holoLic(r.license)+'</div><div class="k">✓ on the list</div>'
     +(r.mirror?'<div class="r free">no login</div>':/Standard/.test(r.license)?'<div class="r you">your Sketchfab login</div>':'')
     +(r.peekOk?'<div class="m" title="the hall can read its skeleton: it will stand, gesture, walk and follow">moves</div>':'');
   const a=document.createElement('a'); a.href=r.viewerUrl; a.target='_blank'; a.rel='noopener'; a.textContent='↗'; a.title='on Sketchfab'; a.onclick=(e)=>e.stopPropagation(); d.appendChild(a);
   d.onclick=()=>{ const i=HOLO.picks.findIndex(p=>p.uid===r.uid);
     if(i>=0){ if(HOLO.picks[i].made)return; HOLO.picks.splice(i,1); d.classList.remove('on'); }
     else { if(role==='character'&&HOLO.picks.filter(p=>p.role==='character'&&!p.made).length>=6){ holoNote('Six people at a time is the most — make these first, or take one off the list.'); return; }
-      const tot=HOLO.picks.reduce((a,p)=>a+p.size,0); if(tot+r.size>HOLO.maxTotalMB*1048576){ holoNote('That would take the room over '+HOLO.maxTotalMB+' MB — take something off the list first.'); return; }
+      const tot=HOLO.picks.reduce((a,p)=>a+holoSize(p),0); if(tot+holoSize(r)>HOLO.maxTotalMB*1048576){ holoNote('That would take the room over '+HOLO.maxTotalMB+' MB — take something off the list first.'); return; }
       HOLO.picks.push(Object.assign({role},r)); d.classList.add('on'); }
     holoView(); };
   return d;
@@ -10209,7 +10231,7 @@ async function holoSearch(q,role,match,rigged,many,st){                   // Ske
       const ar=m.archives||{}, opts=[ar.glb,ar.gltf].filter(o=>o&&o.size).sort((a,b)=>a.size-b.size); if(!opts.length)continue;   // the smallest archive counts
       if(opts[0].size>HOLO.maxMB*1048576)continue;
       const th=((m.thumbnails&&m.thumbnails.images)||[]).slice().sort((a,b)=>Math.abs(a.width-720)-Math.abs(b.width-720))[0];
-      out.push({uid:m.uid,name:m.name,user:(m.user&&m.user.displayName)||'?',username:(m.user&&m.user.username)||'',license:lic,size:opts[0].size,faces:opts[0].faceCount||m.faceCount||0,thumb:th?th.url:'',viewerUrl:m.viewerUrl||('https://sketchfab.com/3d-models/'+m.uid),role,anim:m.animationCount||0,
+      out.push({uid:m.uid,name:m.name,user:(m.user&&m.user.displayName)||'?',username:(m.user&&m.user.username)||'',license:lic,size:opts[0].size,sizeHi:opts.filter(o=>o.size<=HOLO.maxMB*1048576).pop().size,faces:opts[0].faceCount||m.faceCount||0,thumb:th?th.url:'',viewerUrl:m.viewerUrl||('https://sketchfab.com/3d-models/'+m.uid),role,anim:m.animationCount||0,
         rig:(()=>{ const t=(m.name+' '+((m.tags||[]).map(x=>x&&(x.name||x.slug)||'').join(' '))+' '+(m.description||'')).toLowerCase(); return /mixamo/.test(t)?2:/\brigg?ed\b|\brig\b|humanoid|biped/.test(t)?1:0; })()}); }
     if(page===0&&!st){ await Promise.all(out.map(async r=>{ r.mirror=/Standard/.test(r.license)?null:await holoMirror(r.uid); })); if(out.filter(r=>r.mirror).length>=8)break; }   // eight keyless ones already: no second page
   }
@@ -10225,6 +10247,7 @@ async function holoSearch(q,role,match,rigged,many,st){                   // Ske
 // to be one, no key needed — and not a pack of props (the most liked under "medieval village" was once a tap; under a long
 // string of words, a toilet and a ladder).
 const HOLO_STYLE=/^(the|and|with|low|poly|lowpoly|stylized|stylised|game|ready|gameready|diorama|scene|environment|small|tiny|cute|cartoon|simple|model|3d)$/;
+const HOLO_RIGW=/^(rigged|rig|rigs|rigging|animated|animation|animations|mixamo|character|characters|model|models|3d|npc)$/i;   // words that say "rigged", not who: out of a someone search (2026-10-05) — the search is already kept to rigged models
 function holoPlaceRank(res,q){
   const words=String(q).toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>2&&!HOLO_STYLE.test(w));
   const env=/scene|environment|diorama|landscape|island|village|town|city|forest|woods|terrain|world|map|level|interior|room|house|street|dungeon|cave|garden|park|temple|castle|ruins|station|planet|valley|mountain|desert|beach|harbou?r|market|alley|courtyard|arena|farm|swamp|jungle|canyon|field|lake|river|camp|tavern|library|church|bridge|tower|ship|corridor|lab|office|kitchen|bedroom|cabin|hut|shrine|cemetery|graveyard|mine/;
@@ -10241,7 +10264,8 @@ function holoRow(sr,h){                                               // one row
   const who=sr.role==='character', kind=sr.role==='environment'?'surroundings':who?'someone':'a thing', ws=sr.q.trim().split(/\s+/), small=(r)=>r.size<=GA_MODEL.maxMB*1048576;
   const notPlace=/\b(town|city|forest|world|scene|terrain|island|windmill|house|building|castle|tower|landscape|environment|diorama|pack|props?|kit)\b/i;
   const feeds=[];                                                      // someone: Sketchfab's rigged models under those words — then under the last word alone ("medieval merchant": one; "merchant": many) — then, rigged or not, whatever there is that is not a place
-  if(who){ feeds.push({q:sr.q,rigged:true}); if(ws.length>1)feeds.push({q:ws[ws.length-1],rigged:true}); feeds.push({q:sr.q,loose:true}); }
+  if(who){ const cw=ws.filter(w=>!HOLO_RIGW.test(w)), cq=cw.join(' ')||sr.q;   // the words of rigging out first (2026-10-05, the user — "greek god rigged": the planner adds "rigged", and the one-word search under it alone brought Cyclops Rig, Alien RIG, Rigged Sunbird…); the one-word search from a word that is left
+    feeds.push({q:cq,rigged:true}); if(cw.length>1)feeds.push({q:cw[cw.length-1],rigged:true}); feeds.push({q:cq,loose:true}); }
   else if(sr.role==='environment'){                                    // surroundings: the words as given — then without the words of style ("medieval village diorama low poly game ready": three; "medieval village": plenty)
     const core=ws.filter(w=>!HOLO_STYLE.test(w.toLowerCase())), tries=[sr.q.trim()];
     if(core.length)tries.push(core.slice(0,3).join(' ')); if(core.length>2)tries.push(core.slice(-2).join(' ')); if(core.length>1)tries.push(core[core.length-1]);
@@ -10310,7 +10334,7 @@ async function holoSend(text){
       HOLO.msgs.push({who:'you',text}); holoNote(holoResize(f).replace(/^./,c=>c.toUpperCase())+'.'); return; } }
   HOLO.busy=true; HOLO.msgs.push({who:'you',text}); holoView(); GA.turns=(GA.turns|0)+1;
   (HOLO.sp.prompts=HOLO.sp.prompts||[]).push(text.slice(0,300));         // what was typed for this space: a world's record (holoWorldSave)
-  const list='They are planning space '+HOLO.sp.n+' of '+HOLO.spaces.length+(holoHere()?' (they stand in space '+holoHere().n+')':' (they are at the door on lab level 5)')+'. '+(HOLO.picks.length?'On their list for it now: '+HOLO.picks.map(p=>'"'+p.name+'" ('+p.role+', '+holoMB(p.size)+(p.made?', already standing in the space':'')+')').join('; ')+'.':'Their list for it is empty.');
+  const list='They are planning space '+HOLO.sp.n+' of '+HOLO.spaces.length+(holoHere()?' (they stand in space '+holoHere().n+')':' (they are at the door on lab level 5)')+'. '+(HOLO.picks.length?'On their list for it now: '+HOLO.picks.map(p=>'"'+p.name+'" ('+p.role+', '+holoMB(holoSize(p))+(p.made?', already standing in the space':'')+')').join('; ')+'.':'Their list for it is empty.');
   HOLO.hist.push({role:'user',parts:[{text:list+'\nThe visitor says: '+text}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);
   gaNews('the visitor said to the Hologram Room\'s planner: "'+gaText(text,140)+'"','holo');
   let reply='', searches=[], done=false, actions=[], got=false;
@@ -10585,7 +10609,7 @@ async function holoMake(S,go,quiet){                                 // S: the s
   const todo=S.picks.filter(p=>!p.made&&!p.failed); if(!todo.length){ holoNote('Nothing to make yet — click a picture to put it on the list.'); return; }
   if(HOLO.busy)return; HOLO.busy=true; holoView();
   holoBuildSpace(S);
-  const gone=holoRoomFor(S,todo.reduce((a,p)=>a+(p.size||0),0)); if(gone.length)holoNote('To make room, '+gone.join(' and ')+' ended.');
+  const gone=holoRoomFor(S,todo.reduce((a,p)=>a+holoSize(p),0)); if(gone.length)holoNote('To make room, '+gone.join(' and ')+' ended.');
   // the links first, all of them, through the hall's key; whatever that cannot give, the visitor's login gets — asked for NOW, while
   // the click on Make it is still fresh (a browser opens a window only within a few seconds of a click; after a download it would not)
   const arr0=S.arrive?{x:S.arrive.x,z:S.arrive.z}:null;                    // where one arrived before this (what stood round it goes with it)
@@ -10600,14 +10624,14 @@ async function holoMake(S,go,quiet){                                 // S: the s
   }
   HOLO.msgs[HOLO.msgs.length-1].text=need.length&&need.some(p=>p.links)?'Links in hand (some with your Sketchfab login).':'Links in hand.';
   try{ await holoLib('bvh'); }catch(e){}
-  const fetchOne=async(p)=>{                                           // that pick's model, out of the smallest archive that will open
-    const L=p.links, opts=['glb','gltf'].map(k=>L[k]).filter(o=>o&&o.url).sort((a,b)=>(a.size||1e12)-(b.size||1e12));
+  const fetchOne=async(p)=>{                                           // that pick's model, out of the first archive that will open — the smallest, or at quality high the biggest within the cap (holoArchives)
+    const opts=holoArchives(p.links);
     if(!opts.length)throw new Error('no GLB or glTF offered'); let scene=null, last=null;
-    for(const o of opts){ try{ scene=await holoParse(await holoBytes(o.url,o.size,p)); break; }catch(e){ last=e; } }
+    for(const o of opts){ try{ scene=await holoParse(await holoBytes(o.url,o.size,p)); if(o.size)p.size=o.size; break; }catch(e){ last=e; } }
     if(!scene&&p.via==='mirror'){                                      // the mirror did not have it after all: the hall's key, or a login already in hand
       let L2=await holoLinksHall(p); if(!L2&&HOLO.token&&Date.now()<HOLO.tokenExp){ try{ L2=await holoLinksUser(p,HOLO.token); }catch(e){} }
-      if(L2){ const o2=['glb','gltf'].map(k=>L2[k]).filter(o=>o&&o.url).sort((a,b)=>(a.size||1e12)-(b.size||1e12));
-        for(const o of o2){ try{ scene=await holoParse(await holoBytes(o.url,o.size,p)); break; }catch(e){ last=e; } } } }
+      if(L2){ const o2=holoArchives(L2);
+        for(const o of o2){ try{ scene=await holoParse(await holoBytes(o.url,o.size,p)); if(o.size)p.size=o.size; break; }catch(e){ last=e; } } } }
     if(!scene)throw last||new Error('download failed');
     return scene; };
   const build=async(p,put)=>{                                          // one pick: fetched, then put up
@@ -11978,7 +12002,7 @@ GA_DO.sketchfab=function*(a,ctx){
     let L=(pk.mirror&&!viaKey)?{glb:{url:pk.mirror,size:0}}:await holoLinksHall(pk);
     if(!L&&HOLO.token&&Date.now()<HOLO.tokenExp)L=await holoLinksUser(pk,HOLO.token);
     if(!L)throw new Error(pk.whyNotHall===429?'the hall’s Sketchfab limit for this hour is used up':'it needs a Sketchfab login — the Hologram Room’s door on lab level 5 asks for one');
-    const opts=['glb','gltf'].map(k=>L[k]).filter(o=>o&&o.url).sort((x,y)=>(x.size||1e12)-(y.size||1e12)); let last=null, got=null;
+    const opts=holoArchives(L,GA_MODEL.maxMB); let last=null, got=null;
     for(const o of opts){ try{ got=await holoParse(await holoBytes(o.url,o.size,pk,(t)=>banner(t))); break; }catch(e){ last=e; } }
     if(!got)throw last||new Error('the download failed');           // (a keyless copy that will not come is not fetched through the key: the next keyless one is tried)
     return got; };
