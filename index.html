@@ -8820,6 +8820,9 @@ function devRender(){
     chk('sqDrag',false,false,'Drag side quests into order in the fountain app','(off by default)')+
     btn('💾 Save order — show the list to send','id="devSqSave"',DEV_SQ.show)+
     (DEV_SQ.show?'<textarea id="devSqText" readonly rows="12" style="pointer-events:auto;display:block;width:100%;box-sizing:border-box;margin:4px 0 8px;font:12px/1.5 Consolas,monospace;color:#dfe9f5;background:rgba(0,0,0,.35);border:1px solid rgba(127,230,255,.3);border-radius:6px;padding:6px 8px;resize:vertical">'+escHtml(sqOrderText(sqKeys(true)))+'</textarea>':'')+
+    sec('ORGANISER','The Organiser Room’s login, for this browser session only (2026-10-05). While you are logged in, the WORLDS OTHERS MADE boards — in the Hologram Room’s spaces and on lab level 5 — list hidden worlds too and give Hide / Show and Delete on every world line. Nobody else sees any of this.')+
+    (holoOrg()?btn('Log out of the organiser’s view <span style="color:#8fa3bf;font-weight:400">(logged in as '+escHtml(holoOrg().user)+')</span>','id="devOrgOut"',true)
+      :'<div style="display:flex;gap:6px;margin:5px 0"><input id="devOrgUser" placeholder="user" autocomplete="off" style="flex:1;min-width:0;pointer-events:auto;font:13px Segoe UI;color:#dfe9f5;background:rgba(0,0,0,.35);border:1px solid rgba(127,230,255,.3);border-radius:6px;padding:5px 8px"><input id="devOrgPass" type="password" placeholder="password" autocomplete="off" style="flex:1;min-width:0;pointer-events:auto;font:13px Segoe UI;color:#dfe9f5;background:rgba(0,0,0,.35);border:1px solid rgba(127,230,255,.3);border-radius:6px;padding:5px 8px"></div>'+btn('Log in','id="devOrgIn"',false)+'<div style="color:#8fa3bf;font-size:12px" id="devOrgStatus"></div>')+
     sec('TOOLS')+
     sl('devHeadMax','headMax','Head turn limit',10,70,5,'°')+
     btn('▶ Smile now (next variation)','id="devSmile"',false)+
@@ -8843,6 +8846,10 @@ function devRender(){
     if(k.indexOf('room:')===0){ const R=ROOMS.find(r=>r.id===k.slice(5)); if(R)roomApply(R); if(k==='room:nexus')nexusApply(); }   // HIDDEN ROOMS: open it or wall it over, at once
   });
   { const el=document.getElementById('devSqSave'); if(el)el.onclick=()=>{ const o=sqKeys(true); try{ localStorage.setItem('atd:dev:sqOrder',JSON.stringify(o)); }catch(e){} DEV_SQ.show=!DEV_SQ.show; devRender(); }; }   // SIDE QUESTS: the order as a list to send
+  { const el=document.getElementById('devOrgIn'); if(el)el.onclick=()=>{ const u=(document.getElementById('devOrgUser').value||'').trim(), p=document.getElementById('devOrgPass').value||'', st=document.getElementById('devOrgStatus');   // ORGANISER: checked by the server before it is kept
+      if(!u||!p){ st.textContent='Both, please.'; return; } st.textContent='Checking…';
+      api({a:'worlds_org',user:u,pass:p}).then(r=>{ if(r&&r.ok){ holoOrgSet({user:u,pass:p}); devRender(); } else st.textContent=r&&r.error==='wrong login'?'Wrong login.':'Could not reach the server.'; }); }; }
+  { const el=document.getElementById('devOrgOut'); if(el)el.onclick=()=>{ holoOrgSet(null); devRender(); }; }
   { const el=document.getElementById('devGunsHold'); if(el)el.onclick=()=>{ GUNS.hold=!GUNS.hold; gunsLoad(); devRender(); }; }
   { const el=document.getElementById('devGunsBoss'); if(el)el.onclick=()=>{ gunsSpawnBoss(()=>devRender()); }; }
   { const el=document.getElementById('devGunsBossOff'); if(el)el.onclick=()=>{ gunsRemoveBoss(); devRender(); }; }
@@ -9994,7 +10001,7 @@ function holoWorldsLoad(){                                             // once a
   holoSharedLoad();
 }
 function holoSharedLoad(force){ if(!force&&HOLO.sharedAt&&Date.now()-HOLO.sharedAt<120000)return; HOLO.sharedAt=Date.now();   // (called each frame from holoTick while in a space or on lab level 5: this is what keeps it to one call in two minutes)
-  api({a:'worlds_shared'}).then(r=>{ if(r&&r.ok&&Array.isArray(r.rows)){ HOLO.shared=r.rows; holoBoardsDraw(); } }); }
+  const o=holoOrg(); api(o?{a:'worlds_org',user:o.user,pass:o.pass}:{a:'worlds_shared'}).then(r=>{ if(r&&r.ok&&Array.isArray(r.rows)){ HOLO.shared=r.rows; holoBoardsDraw(); } else if(o&&r&&r.error==='wrong login')holoOrgSet(null); }); }   // (the organiser's list while logged in — hidden ones too; a login the server no longer takes is dropped)
 async function holoWorldBuild(w,mine){                                 // the world again: its models fetched into a free space, the visitor taken there, and the story's opening replayed as it was — from there on it is live
   if(HOLO.busy){ banner('The room is busy — a moment.'); return; }
   let full=w; if(!(w.picks&&w.picks.length&&w.opening)){ const r=await api({a:'world_get',id:w.id,key:accountKey()||''}); if(!(r&&r.ok&&r.world)){ banner('That world could not be fetched.'); return; } full=r.world; }
@@ -10036,6 +10043,13 @@ function holoArchives(L,capMB){                                       // the arc
   if(!holoHi()||o.length<2)return o; const cap=(capMB||HOLO.maxMB)*1048576, fit=o.filter(x=>x.size&&x.size<=cap).reverse();
   return fit.concat(o.filter(x=>fit.indexOf(x)<0));                    // high: the biggest that fits first; whatever is over the cap, or of unknown size, behind
 }
+// the organiser in the hall (2026-10-05, the user: "how can i login to edit the 'worlds others made' where only i see the login, login
+// can be the same as the organizers room" — "put it in the dev tools (the login) and yes with delete"): the Organiser Room's user and
+// password, entered on the developer page, kept for this browser session only (sessionStorage) and checked by the server on every call.
+// While they are set, the WORLDS OTHERS MADE boards ask the server for the organiser's list (hidden worlds too) and give Hide / Show
+// and Delete on every world line. Nothing of this shows to anyone else.
+function holoOrg(){ if(HOLO.org===undefined){ HOLO.org=null; try{ const o=JSON.parse(sessionStorage.getItem('atd:org')||'null'); if(o&&o.user&&o.pass)HOLO.org=o; }catch(e){} } return HOLO.org; }
+function holoOrgSet(o){ HOLO.org=o||null; try{ if(o)sessionStorage.setItem('atd:org',JSON.stringify(o)); else sessionStorage.removeItem('atd:org'); }catch(e){} HOLO.shared=null; holoBoardsDraw(); holoSharedLoad(true); }
 // the boards: four planes of the bare space, in a line with the console and the door; a hotspot each (E, or a click, as every hotspot),
 // and the line under the crosshair found by a ray on the plane (a row per line; a world's line has its Build, Edit and Delete parts)
 const HOLO_BOARDS=[{k:'mine',title:'MY WORLDS',dx:-13,lx:-7,col:'#b6ff9c'},{k:'data',title:'MY DATA',dx:-27,lx:12.5,col:'#ff8a7a'},{k:'others',title:'WORLDS OTHERS MADE',dx:13,lx:5.5,col:'#7fe6ff'},{k:'set',title:'SETTINGS',dx:-20,lx:-13,lz:4.5,lyaw:0.45,col:'#ffd27f'}];   // dx: from the console line's middle in a space (SETTINGS left of MY WORLDS, MY DATA beyond); lx: from the door on lab level 5 — SETTINGS and MY WORLDS west of it, WORLDS OTHERS MADE and MY DATA east (the user: "the 'worlds others made' can be on the right of the hologram door"), the two portal rooms beyond them. SETTINGS (2026-10-05, asked for; "left of my worlds board. all the boards dont need to be in one line"): on lab level 5 the west room's wall is 3 m behind MY WORLDS, so it stands lz 4.5 m forward of the line, towards the lift, turned lyaw towards the door
@@ -10068,7 +10082,7 @@ function holoBoardRows(S,k){
     if(pages>1)rows.push({kind:'page',back:b.page>0,more:b.page<pages-1,text:'',pg:'page '+(b.page+1)+' of '+pages});
     return rows; }
   if(k==='others'){ const L=HOLO.shared||[], pages=Math.max(1,Math.ceil(L.length/per)); b.page=Math.max(0,Math.min(b.page,pages-1));
-    const rows=[]; for(const w of L.slice(b.page*per,b.page*per+per))rows.push({kind:'go',w,text:w.title,sub:(w.n||0)+(w.n===1?' model':' models')+' · built '+(w.plays||0)+(w.plays===1?' time':' times')+' · '+holoDate((+w.t||0)*1000)});
+    const rows=[]; for(const w of L.slice(b.page*per,b.page*per+per))rows.push({kind:'go',w,text:w.title,sub:(w.n||0)+(w.n===1?' model':' models')+' · built '+(w.plays||0)+(w.plays===1?' time':' times')+' · '+holoDate((+w.t||0)*1000)+(w.hidden?' · HIDDEN — off everyone’s board':'')});
     if(!L.length)rows.push({kind:'note',text:HOLO.shared?'Nobody has shared a world yet.':'…',sub:HOLO.shared?'Mark one of yours Shared at MY WORLDS to share it.':'looking'});
     if(pages>1)rows.push({kind:'page',back:b.page>0,more:b.page<pages-1,text:'',pg:'page '+(b.page+1)+' of '+pages});
     return rows; }
@@ -10083,13 +10097,14 @@ function holoBoardDraw(S,k){
   c.clearRect(0,0,W,H); c.fillStyle='rgba(8,18,30,0.72)'; roundRect(c,8,8,W-16,H-16,26); c.fill();
   c.lineWidth=5; c.strokeStyle=B.col; c.globalAlpha=0.9; roundRect(c,8,8,W-16,H-16,26); c.stroke(); c.globalAlpha=1;
   c.textAlign='left'; c.fillStyle=B.col; c.font='bold 54px Segoe UI'; c.fillText(B.title,48,86);
-  c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(k==='mine'?'aim at a line: build it again · Shared or private · Edit · Delete':k==='others'?'aim at a world and press E, or click, to go straight in':k==='set'?'aim at the one you want and press E, or click':'aim at a line and press E, or click — then Yes or No',48,124);
+  c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(k==='mine'?'aim at a line: build it again · Shared or private · Edit · Delete':k==='others'?(holoOrg()?'organiser: aim at a world: build it · Hide or Show · Delete':'aim at a world and press E, or click, to go straight in'):k==='set'?'aim at the one you want and press E, or click':'aim at a line and press E, or click — then Yes or No',48,124);
   let y=160; const cut=(t,max)=>{ t=String(t||''); while(t.length>2&&c.measureText(t).width>max)t=t.slice(0,-2)+'…'; return t; };
   b.rows.forEach((r,i)=>{ const h=r.kind==='page'?54:74; r.y0=y; r.y1=y+h;
     if(i===b.hover&&r.kind!=='note'){ const x0=r.kind==='page'&&!r.back?W/2:28, x1=r.kind==='page'&&!r.more?W/2:W-28; c.fillStyle='rgba(127,230,255,0.16)'; roundRect(c,x0,y-6,x1-x0,h,12); c.fill(); }   // (a page line: only the half that has a way)
     const armed=b.armed===i;
-    c.fillStyle=armed?'#ffd27f':r.kind==='note'?'#8fa3bf':'#eaf4ff'; c.font=(r.kind==='page'?'':'bold ')+'30px Segoe UI';
-    c.fillText(cut(armed?(r.kind==='world'?'Delete “'+r.text+'”?':r.text+'?'):r.text,(armed||r.kind==='world')?(armed?620:500):W-100),48,y+30);
+    const org=r.kind==='go'&&!!holoOrg();                              // the organiser's world line: its parts at the right (Hide / Show, Delete), a hidden one dimmed
+    c.fillStyle=armed?'#ffd27f':(r.kind==='note'||(org&&r.w.hidden))?'#8fa3bf':'#eaf4ff'; c.font=(r.kind==='page'?'':'bold ')+'30px Segoe UI';
+    c.fillText(cut(armed?((r.kind==='world'||org)?'Delete “'+r.text+'”?':r.text+'?'):r.text,armed?620:r.kind==='world'?500:org?640:W-100),48,y+30);
     if(r.sub&&!armed){ c.fillStyle='#cfe0f2'; c.font='24px Segoe UI'; c.fillText(cut(r.sub,W-100),48,y+60); }
     if(armed){ c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(r.kind==='world'?'this cannot be undone':'this cannot be undone — aim at Yes or No',48,y+60);   // the question's two answers (2026-10-05, asked for: "a confirmation that needs a yes no button")
       c.font='bold 26px Segoe UI'; c.textAlign='center'; c.fillStyle='#b6ff9c'; c.fillText('Yes, delete',760,y+30); c.fillStyle='#cfe0f2'; c.fillText('No',900,y+30); c.textAlign='left';
@@ -10097,6 +10112,8 @@ function holoBoardDraw(S,k){
     if(r.kind==='world'&&!armed){ c.font='bold 26px Segoe UI'; c.textAlign='center';   // its three parts: Shared / private, Edit, Delete (holoBoardUse reads the hit's x against the same bounds)
       c.fillStyle=r.w.shared?'#b6ff9c':'#8fa3bf'; c.fillText(r.w.shared?'● shared':'○ private',630,y+30); c.fillStyle='#9fd8ff'; c.fillText('Edit',770,y+30); c.fillStyle='#ff8a7a'; c.fillText('Delete',905,y+30); c.textAlign='left';
       c.strokeStyle='rgba(127,230,255,0.35)'; c.lineWidth=2; roundRect(c,560,y-2,140,44,10); c.stroke(); roundRect(c,715,y-2,110,44,10); c.stroke(); roundRect(c,845,y-2,120,44,10); c.stroke(); }
+    if(org&&!armed){ c.font='bold 26px Segoe UI'; c.textAlign='center'; c.fillStyle=r.w.hidden?'#b6ff9c':'#ffd27f'; c.fillText(r.w.hidden?'Show':'Hide',760,y+30); c.fillStyle='#ff8a7a'; c.fillText('Delete',900,y+30); c.textAlign='left';   // (holoBoardUse reads the hit's x against the same boxes)
+      c.lineWidth=2; c.strokeStyle=r.w.hidden?'rgba(182,255,156,0.5)':'rgba(255,210,127,0.5)'; roundRect(c,700,y-2,120,44,10); c.stroke(); c.strokeStyle='rgba(255,138,122,0.5)'; roundRect(c,840,y-2,120,44,10); c.stroke(); }
     if(r.kind==='page'){ c.font='30px Segoe UI'; c.fillStyle='#eaf4ff';   // the page line: a way back on the left, a way on on the right, each only when there is a page that way (2026-10-05, the user: "a next page button but not a back to previous page button"); holoBoardUse splits it at the middle
       if(r.back)c.fillText('◂ back',48,y+30); c.textAlign='center'; c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(r.pg,W/2,y+30);
       if(r.more){ c.textAlign='right'; c.fillStyle='#eaf4ff'; c.font='30px Segoe UI'; c.fillText('more ▸',W-48,y+30); } c.textAlign='left'; }
@@ -10126,6 +10143,8 @@ function holoBoardUse(S,k){
     if(h.x<700)return;
     b.armed=-1;
     if(r.kind==='world'){ holoWorldDel(r.w); holoBoardSay(S,k,'“'+r.w.title+'” is deleted.'); return; }
+    if(r.kind==='go'&&holoOrg()){ const o=holoOrg(); holoBoardSay(S,k,'Deleting…');   // the organiser's Yes: gone for good, its maker's record included
+      api({a:'world_del_org',user:o.user,pass:o.pass,id:r.w.id}).then(x=>{ holoBoardSay(S,k,x&&x.ok?'“'+r.w.title+'” is deleted — for its maker too.':'Could not delete it'+(x&&x.error?' ('+x.error+')':'')+'.'); holoSharedLoad(true); }); return; }
     if(r.kind==='del'){ const say_=(t)=>holoBoardSay(S,k,t);
       if(r.what==='worlds'){ say_('Deleting…'); holoWorldsForget().then(x=>{ say_(x&&x.ok?'Your worlds are deleted.':'Could not reach the server — the ones on this device are gone, the rest not.'); holoBoardsDraw(); }); }
       else pvForget(r.what,null,say_); }
@@ -10137,7 +10156,12 @@ function holoBoardUse(S,k){
     if(h.x>=710){ holoWorldEdit(r.w); return; }
     if(h.x>=555){ holoWorldShare(r.w,!r.w.shared); holoBoardSay(S,k,r.w.shared?'“'+r.w.title+'” is shared: everyone sees it on WORLDS OTHERS MADE.':'“'+r.w.title+'” is private again.'); return; }
     holoWorldBuild(r.w,true); return; }
-  if(r.kind==='go'){ holoWorldBuild(r.w,false); return; }
+  if(r.kind==='go'){ const o=holoOrg();
+    if(o){ if(h.x>=840){ ask(h.i); return; }                            // the organiser's parts: Delete asks; Hide / Show at once (it can be undone)
+      if(h.x>=700){ const on=!r.w.hidden; holoBoardSay(S,k,on?'Hiding…':'Showing…');
+        api({a:'world_hide',user:o.user,pass:o.pass,id:r.w.id,hidden:on}).then(x=>{ holoBoardSay(S,k,x&&x.ok?(on?'“'+r.w.title+'” is off everyone’s board; its maker keeps it.':'“'+r.w.title+'” is back on everyone’s board.'):'Could not change it'+(x&&x.error?' ('+x.error+')':'')+'.'); holoSharedLoad(true); }); return; }
+      if(r.w.hidden){ holoBoardSay(S,k,'Hidden — Show it first to build it.'); return; } }
+    holoWorldBuild(r.w,false); return; }
   if(r.kind==='set'){ const on=h.x>=750?false:h.x>=500?true:!holoHi(); holoHiSet(on); holoBoardSay(S,k,on?'Quality high: the big file of each model from now on — sharper, slower to come.':'Quality low: the small file of each model from now on — quicker.'); return; }   // the box pressed, or the other one when the press is on the name
   if(r.kind==='del'){ ask(h.i); return; }
 }
