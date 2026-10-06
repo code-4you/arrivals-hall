@@ -2765,6 +2765,7 @@ function gunsBossHunt(B,dt){
   }
   B.face=undefined;                                                             // in reach: it turns on you and swings
   if((B.strikeT-=dt)<=0){ B.strikeT=GUN_STATS.bossSwing+Math.random()*0.9;
+    if(Math.hypot(B.grp.position.x-player.pos.x,B.grp.position.z-player.pos.z)<3.6&&Math.abs(B.grp.position.y-player.y)<2.5)setTimeout(()=>{ if(GUNS.boss===B&&!B.dying)playerHit(2,{name:'the nightmare'}); },450);   // its blow lands (COMBAT)
     const pick=Math.random()<0.85?BOSS_HITS[(B.swap=!B.swap)?0:1]:BOSS_TAUNTS[(Math.random()*BOSS_TAUNTS.length)|0];
     gunsBossAnim(B,pick,true); return; }
   hold('Idle');
@@ -2848,6 +2849,7 @@ function gunsUpdate(dt){
     G.calm=want?0:G.calm+dt;
     let armed=want||G.calm<GUN_STATS.holster;
     if(p&&tour.active)armed=false;                                                   // never in the middle of her tour
+    if((p&&p.down)||(g&&g.down))armed=false;                                         // knocked down: the gun stays down (COMBAT)
     // Jack: the stance and his idle cross-fade on his own body mixer; Elara's clip is chosen in updatePeople
     if(g&&armed!==G.wasArmed){ const from=armed?g.bodyAction:G.action, to=armed?G.action:g.bodyAction;
       to.reset(); to.enabled=true; to.setEffectiveWeight(1); to.play(); from.crossFadeTo(to,0.25,false); }
@@ -3310,7 +3312,7 @@ function vmUse(){                                              // a click with n
   if(VM.lower>0.15){ VM.pending=act; return; }                  // down out of sight: it comes up first, and the shot or punch goes as it arrives (vmUpdate)
   if(act==='shoot')vmShoot(); else vmPunch();
 }
-function vmShoot(){                                            // no limit on how fast: every click is a shot (2026-09-29, asked for)
+function vmShoot(){ if(PH.down>0)return;                                            // no limit on how fast: every click is a shot (2026-09-29, asked for)
   VM.recoil=1; VM.flashT=0.05; VM.flash.visible=true;
   vmSound('shot');
   const o=camera.getWorldPosition(new THREE.Vector3()), d=new THREE.Vector3(0,0,-1).applyQuaternion(camera.getWorldQuaternion(_vqa)).normalize();
@@ -3322,7 +3324,7 @@ function vmShoot(){                                            // no limit on ho
   else if(hit.what==='wall')vmSpark(end,0.1,0xffe6b0);
 }
 function vmPunch(){
-  if(VM.cd>0)return; VM.cd=VM_STATS.punchEvery;
+  if(PH.down>0||VM.cd>0)return; VM.cd=VM_STATS.punchEvery;
   VM.side=VM.side==='R'?'L':'R'; VM.punch={s:VM.side,t:0,hit:false}; vmSound('whoosh');
 }
 function vmPunchHit(){                                         // the fist at full stretch: what is in front of you, within reach
@@ -9171,7 +9173,7 @@ function followSpeed(dt){
 }
 function followStep(p,dt){
   const F=p.fl, B=p.block;
-  if(!F.on)return false;                                                    // told to wait
+  if(!F.on||p.down)return false;                                            // told to wait — or knocked down (COMBAT)                                                    // told to wait
   // another floor (the follow is flat — its height only ever changes in a lift): it cannot get there itself, so once
   // you have ARRIVED — feet on a floor, out of the stair well, no lift moving — it catches up behind you. Not while
   // you are still on the stair: a spot behind you there is a flight it cannot stand on.
@@ -10050,15 +10052,43 @@ function holoOrgEditEl(){
     +'<div style="'+lab+'">Title (on the boards)</div><input id="oeTitle" maxlength="80" style="'+inp+'">'
     +'<div style="'+lab+'">The prompt — what was asked for; when the world is built again the planner reads it as the visitor’s own words</div><textarea id="oePrompt" rows="2" maxlength="2000" style="'+inp+'"></textarea>'
     +'<div style="'+lab+'">The opening — what the room says when the world is built again</div><textarea id="oeReply" rows="4" maxlength="2000" style="'+inp+'"></textarea>'
+    +'<div style="'+lab+'">The models — what the world is built from (2026-10-07: Remove one, or find more below; at least one must stay)</div><div id="oePicks" style="margin:2px 0 6px"></div>'
+    +'<div style="display:flex;gap:6px;margin:2px 0 6px"><input id="oeFindQ" placeholder="words to look for on Sketchfab" style="'+inp.replace('margin:2px 0 10px','margin:0')+'"><select id="oeFindRole" style="'+inp.replace('width:100%;','').replace('margin:2px 0 10px','margin:0')+'"><option value="environment">surroundings</option><option value="character">someone</option><option value="prop">a thing</option></select><button class="menuBtn" id="oeFind" style="width:auto;min-width:0;margin:0;padding:5px 14px;white-space:nowrap">Find</button></div>'
+    +'<div id="oeFound" style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px"></div><div id="oeFindNote" style="color:#8fa3bf;font-size:12px;min-height:16px;margin:0 0 8px"></div>'
     +'<div id="oeOrgOnly"><div style="'+lab+'">A note to the planner — given to it after the opening each time this world is built again; visitors never see it (leave empty for none)</div><textarea id="oeNote" rows="3" maxlength="2000" placeholder="e.g. the merchant is secretly the thief; keep it gentle; the quest should lead to the temple" style="'+inp+'"></textarea>'
     +'<div style="'+lab+'">The opening’s actions — JSON, a list of the planner’s action objects (advanced; leave as it is if unsure)</div><textarea id="oeActs" rows="6" style="'+inp+mono+'"></textarea></div>'
-    +'<button class="menuBtn" id="oeModels" style="width:100%;min-width:0;margin:0 0 10px;display:none">Change the models — its list back on the console</button>'
+    +'<button class="menuBtn" id="oeModels" style="width:100%;min-width:0;margin:0 0 10px;display:none">Or change the models at the console (its list back there, to pick from the pictures)</button>'
     +'<div id="oeStatus" style="min-height:18px;font-size:12px;color:#ff8a7a;margin:2px 0 8px"></div>'
     +'<div style="display:flex;gap:10px"><button class="menuBtn" id="oeSave" style="flex:1;min-width:0;border-left-color:var(--green)">Save</button><button class="menuBtn" id="oeCancel" style="flex:1;min-width:0">Cancel</button></div></div>';
   document.body.appendChild(m);
   m.addEventListener('mousedown',e=>{ if(e.target===m)holoOrgEditClose(); });
   m.querySelector('#oeCancel').onclick=holoOrgEditClose;
+  m.querySelector('#oeFind').onclick=()=>oeFind(m); m.querySelector('#oeFindQ').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); oeFind(m); } });
   return m;
+}
+function oeRenderPicks(m){                                             // the form's models: a line each, with Remove
+  const box=m.querySelector('#oePicks'), L=m._picks||[]; box.innerHTML='';
+  if(!L.length){ box.innerHTML='<div style="color:#ff8a7a;font-size:12px">No models — find one below; a world needs at least one.</div>'; return; }
+  for(const p of L){ const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(127,230,255,.12);font-size:13px';
+    row.innerHTML='<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><b>'+escHtml(p.name||'?')+'</b> <span style="color:#8fa3bf">· '+(p.role==='environment'?'surroundings':p.role==='character'?'someone':'a thing')+' · by '+escHtml(p.user||'?')+(p.size?' · '+holoMB(p.size):'')+'</span></span>';
+    const b=document.createElement('button'); b.className='menuBtn'; b.textContent='Remove'; b.style.cssText='width:auto;min-width:0;margin:0;padding:3px 10px;font-size:12px;white-space:nowrap;border-left-color:#ff8a7a';
+    b.onclick=()=>{ m._picks=m._picks.filter(q=>q!==p); oeRenderPicks(m); }; row.appendChild(b); box.appendChild(row); }
+}
+async function oeFind(m){                                              // the room's own search, for the form: up to eight to Add (someone: only ones the hall can animate, as at the console)
+  const q=m.querySelector('#oeFindQ').value.trim(), role=m.querySelector('#oeFindRole').value, note=m.querySelector('#oeFindNote'), box=m.querySelector('#oeFound');
+  if(!q){ note.textContent='Say what to look for.'; return; } if(m._finding)return; m._finding=true; note.textContent='Looking…'; box.innerHTML='';
+  try{ const who=role==='character'; let res=await holoSearch(who?q.split(/\s+/).filter(w=>!HOLO_RIGW.test(w)).join(' ')||q:q,role,who,who,!who);
+    if(who){ const top=res.filter(r=>r.mirror).slice(0,8); const pk=await Promise.all(top.map(r=>holoPeek(r.mirror).catch(()=>null))); res=top.filter((r,i)=>pk[i]&&pk[i].readable); res.forEach(r=>{ r.peekOk=true; }); }
+    res=res.filter(r=>!(m._picks||[]).some(p=>p.uid===r.uid)).slice(0,8);
+    if(!res.length){ note.textContent=who?'None under those words that the hall can animate — other words?':'Nothing under those words — other words?'; return; }
+    for(const r of res){ const c=document.createElement('div'); c.style.cssText='flex:1 1 180px;max-width:240px;background:rgba(0,0,0,.3);border:1px solid rgba(127,230,255,.25);border-radius:8px;padding:6px 8px;font-size:12px;display:flex;flex-direction:column;gap:4px';
+      c.innerHTML=(r.thumb?'<img src="'+r.thumb+'" alt="" loading="lazy" style="width:100%;height:84px;object-fit:cover;border-radius:5px">':'')+'<b style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHtml(r.name)+'</b><span style="color:#8fa3bf">by '+escHtml(r.user)+' · '+holoMB(r.size)+' · '+holoLic(r.license)+(r.mirror?' · <span style="color:#b6ff9c">no login</span>':'')+(r.peekOk?' · moves':'')+'</span>';
+      const b=document.createElement('button'); b.className='menuBtn'; b.textContent='Add'; b.style.cssText='width:auto;min-width:0;margin:0;padding:3px 10px;font-size:12px;border-left-color:var(--green)';
+      b.onclick=()=>{ if((m._picks||[]).some(p=>p.uid===r.uid))return; (m._picks=m._picks||[]).push({uid:r.uid,name:String(r.name||'').slice(0,120),user:String(r.user||'?').slice(0,80),username:String(r.username||'').slice(0,80),license:String(r.license||'').slice(0,40),viewerUrl:String(r.viewerUrl||'').slice(0,200),role,size:r.size|0,q:q.slice(0,80)}); oeRenderPicks(m); c.remove(); note.textContent='“'+r.name+'” added — Save keeps it.'; };
+      c.appendChild(b); box.appendChild(c); }
+    note.textContent=res.length+' found — Add what the world should use.';
+  }catch(e){ note.textContent='The search did not answer.'; }
+  finally{ m._finding=false; }
 }
 function holoOrgEditClose(){ const m=document.getElementById('orgEditModal'); if(m)m.style.display='none'; document.body.classList.remove('qOpen'); if(state.phase==='play'&&!paused)lockPointer(); }
 async function holoWorldEditOrg(w,S,k){
@@ -10070,11 +10100,13 @@ async function holoWorldEditOrg(w,S,k){
   m.querySelector('#oeWhich').textContent='World #'+W.id+' · '+(W.picks||[]).length+' models (the models stay as they are)';
   m.querySelector('#oeTitle').value=W.title||''; m.querySelector('#oePrompt').value=W.prompt||''; m.querySelector('#oeReply').value=op.reply||''; m.querySelector('#oeNote').value=op.note||'';
   m.querySelector('#oeActs').value=JSON.stringify(Array.isArray(op.actions)?op.actions:[],null,1); m.querySelector('#oeStatus').textContent='';
+  m._picks=(W.picks||[]).map(p=>Object.assign({},p)); oeRenderPicks(m); m.querySelector('#oeFound').innerHTML=''; m.querySelector('#oeFindNote').textContent=''; m.querySelector('#oeFindQ').value='';
   m.querySelector('#oeSave').onclick=async()=>{ const st=m.querySelector('#oeStatus'); let acts;
     try{ acts=JSON.parse(m.querySelector('#oeActs').value||'[]'); if(!Array.isArray(acts))throw 0; }catch(e){ st.textContent='The actions are not a JSON list — fix them, or put back [].'; return; }
     const title=m.querySelector('#oeTitle').value.trim(); if(!title){ st.textContent='The title cannot be empty.'; return; }
+    if(!(m._picks||[]).length){ st.style.color='#ff8a7a'; st.textContent='A world needs at least one model — find one.'; return; }
     st.style.color='#8fa3bf'; st.textContent='Saving…';
-    const x=await api({a:'world_edit_org',user:o.user,pass:o.pass,id:W.id,title,prompt:m.querySelector('#oePrompt').value,reply:m.querySelector('#oeReply').value,note:m.querySelector('#oeNote').value,actions:acts});
+    const x=await api({a:'world_edit_org',user:o.user,pass:o.pass,id:W.id,title,prompt:m.querySelector('#oePrompt').value,reply:m.querySelector('#oeReply').value,note:m.querySelector('#oeNote').value,actions:acts,picks:m._picks});
     if(x&&x.ok){ holoOrgEditClose(); holoBoardSay(S,k,'“'+(x.title||title)+'” is saved.'); holoSharedLoad(true); for(const q of holoWorlds())if(q.id===W.id){ q.title=x.title||title; } holoBoardsDraw(); }
     else { st.style.color='#ff8a7a'; st.textContent='Could not save'+(x&&x.error?': '+x.error:' — the server did not answer')+'.'; } };
   document.exitPointerLock&&document.exitPointerLock(); m.style.display='flex'; document.body.classList.add('qOpen'); setTimeout(()=>m.querySelector('#oeTitle').focus(),50);
@@ -10084,13 +10116,15 @@ async function holoWorldEditWords(w,S,k){                              // MY WOR
   m.querySelector('#oeHead').textContent='EDIT A WORLD'; m.querySelector('#oeOrgOnly').style.display='none'; m.querySelector('#oeModels').style.display='';
   m.querySelector('#oeWhich').textContent='“'+w.title+'” · '+(w.picks||[]).length+' models · '+(w.id?'saved on the server':'on this device only');
   m.querySelector('#oeTitle').value=w.title||''; m.querySelector('#oePrompt').value=w.prompt||''; m.querySelector('#oeReply').value=op.reply||''; m.querySelector('#oeStatus').textContent='';
+  m._picks=(w.picks||[]).map(p=>Object.assign({},p)); oeRenderPicks(m); m.querySelector('#oeFound').innerHTML=''; m.querySelector('#oeFindNote').textContent=''; m.querySelector('#oeFindQ').value='';
   m.querySelector('#oeModels').onclick=()=>{ holoOrgEditClose(); holoWorldEdit(w); };
   m.querySelector('#oeSave').onclick=async()=>{ const st=m.querySelector('#oeStatus'), title=m.querySelector('#oeTitle').value.trim(); if(!title){ st.style.color='#ff8a7a'; st.textContent='The title cannot be empty.'; return; }
     const prompt=m.querySelector('#oePrompt').value.slice(0,2000), reply=m.querySelector('#oeReply').value.slice(0,2000);
+    if(!(m._picks||[]).length){ st.style.color='#ff8a7a'; st.textContent='A world needs at least one model — find one.'; return; }
     st.style.color='#8fa3bf'; st.textContent='Saving…';
-    let x={ok:true}; if(w.id&&accountKey())x=await api({a:'world_edit',key:accountKey(),id:w.id,title,prompt,reply});
+    let x={ok:true}; if(w.id&&accountKey())x=await api({a:'world_edit',key:accountKey(),id:w.id,title,prompt,reply,picks:m._picks});
     if(!(x&&x.ok)){ st.style.color='#ff8a7a'; st.textContent='Could not save on the server'+(x&&x.error?': '+x.error:'')+' — nothing changed.'; return; }
-    w.title=title.slice(0,80); w.prompt=prompt; w.opening=Object.assign({},op,{reply}); holoWorldsKeep(); holoOrgEditClose(); holoBoardsDraw(); holoBoardSay(S,k,'“'+w.title+'” is saved.'); if(w.shared)holoSharedLoad(true); };
+    w.title=title.slice(0,80); w.prompt=prompt; w.opening=Object.assign({},op,{reply}); w.picks=m._picks.map(p=>Object.assign({},p)); holoWorldsKeep(); holoOrgEditClose(); holoBoardsDraw(); holoBoardSay(S,k,'“'+w.title+'” is saved.'); if(w.shared)holoSharedLoad(true); };
   document.exitPointerLock&&document.exitPointerLock(); m.style.display='flex'; document.body.classList.add('qOpen'); setTimeout(()=>m.querySelector('#oeTitle').focus(),50);
 }
 async function holoWorldEdit(w){                                       // the world's list back on the console, to change before Make it
@@ -10424,7 +10458,7 @@ function holoRow(sr,h){                                               // one row
   return R;
 }
 const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals Hall', a 3D hall of playable worlds. A visitor is at the console and wants something of their own made for this visit from models on Sketchfab: a place, the people in it, a story. You talk with them in plain sentences (no markdown, no lists) and you decide what to ask. For everything you want to show them, give a Sketchfab search as {\"q\":\"<search words>\",\"role\":\"environment\"|\"character\"|\"prop\"}: the game runs it and shows them a row of pictures of what came back, and they click what they want; you do not see the pictures, but each turn you are told what is on their list. \"environment\" is the surroundings (the ground, the room, the landscape); \"character\" is someone — a person, a creature, a robot — with a search of their own for each person or kind of person; \"prop\" is a thing. Up to five searches a turn. When they ask for a story, or for people, look for both in the same answer — one row of surroundings and two or three rows of people, a search for each person the story needs — so that they pick the place and its people together; do not leave the people for later. Good search words matter, and few of them: two or three plain words to a search, since every word more finds less. Sketchfab is full of very large scenes, so for surroundings think small — 'space station', 'forest diorama', 'low poly village', 'room', 'island'; for someone, plain words — 'old wizard', 'knight', 'girl', 'robot' (the game looks among the rigged models and shows only the ones it can animate, marked 'moves'); for things, the plain name of the thing. With any search you may add \"also\": one or two wider searches in other, more general words (\"zeus\" — also \"greek god\"), which the game runs only when the visitor presses More under that row and the first words have run dry. "
-  +"What can be used: only models Sketchfab lets anyone download under CC BY, CC BY-SA, CC0 or Sketchfab's free Standard licence (all of which allow a model to be altered), each at most "+HOLO.maxMB+" MB (someone: "+GA_MODEL.maxMB+" MB; the game drops the rest before they see them; many whole environments are far bigger), the room at most "+HOLO.maxTotalMB+" MB in all; a model that came with an animation of its own plays it. Someone picked as a \"character\" becomes a person of the place once it is made: they can be talked with (a mind of their own, which you give them), and when their skeleton can be read they play the hall's animations, walk and follow. Sizes are guessed by the game (models come in every unit), so they are often wrong: the visitor can say bigger or smaller, and you have the resize action. Most of the Creative Commons models are fetched with no login at all; those under the free Standard licence need the visitor's own Sketchfab login (the pictures say which) — a Sketchfab account is free, and so is everything fetched with it. "
+  +"What can be used: only models Sketchfab lets anyone download under CC BY, CC BY-SA, CC0 or Sketchfab's free Standard licence (all of which allow a model to be altered), each at most "+HOLO.maxMB+" MB (someone: "+GA_MODEL.maxMB+" MB; the game drops the rest before they see them; many whole environments are far bigger), the room at most "+HOLO.maxTotalMB+" MB in all; a model that came with an animation of its own plays it. Someone picked as a \"character\" becomes a person of the place once it is made: they can be talked with (a mind of their own, which you give them), and when their skeleton can be read they play the hall's animations, walk and follow; one of them can be turned into an enemy with \"change\" (\"hostile\":true), or an enemy fetched outright (\"sketchfab\" with \"hostile\":true) — the visitor and the companions with them shoot it down, and it fights back (\"weapon\": \"gun\", the default, or \"melee\"); the visitor and the companions can be knocked down and get up again. Sizes are guessed by the game (models come in every unit), so they are often wrong: the visitor can say bigger or smaller, and you have the resize action. Most of the Creative Commons models are fetched with no login at all; those under the free Standard licence need the visitor's own Sketchfab login (the pictures say which) — a Sketchfab account is free, and so is everything fetched with it. "
   +"The room is a simulation of a place: once made, the surroundings repeat in every direction so the visitor can walk on without end, what is imported is solid, saying 'exit' calls the door to them, and 'end program' clears the space. There are "+HOLO.spaces.length+" spaces, so several places can stand at once: the visitor picks which space the list is for (a row of tabs over it; you are told which each turn), and what already stands in the others is listed below. Several surroundings can stand in one space, side by side: the game sets them in a row as they are made (the room does not repeat then), tells you each one's size and place, and you move them with the \"place\" action as the story wants. Besides the models, you have the hall's own actions (below) — someone with a mind of their own, things, effects, signs, objectives — used as you see fit, or not; what you do, you do in the space being planned, and the visitor is taken into it to see. In \"actions\", a \"say\" with no \"who\" is spoken by the room's own voice: yours. "
   +"When they seem to have what they want, say so and set \"done\": true — the game then offers Make it, which fetches their list (the hall's own Sketchfab key where the licence allows, else their own Sketchfab login), builds the place, stands the people they picked in it and takes the visitor there. Then the game asks you — the visitor having said nothing — to begin: that is when you give each of the people who they are and set the story going, so have the story in mind while you look for its place and its people. Respond with STRICT JSON only, no fences: {\"reply\":\"...\",\"searches\":[...],\"actions\":[],\"done\":false}.";
 function holoRole(v){ v=String(v==null?'':v).trim().toLowerCase(); return /^(environment|surroundings|place|scene|setting|world|landscape)$/.test(v)?'environment':/^(character|person|people|someone|npc|creature|animal|being|human|robot)$/.test(v)?'character':'prop'; }
@@ -11270,6 +11304,7 @@ function gaLibrary(){                                                // every an
   const L={}, M=PEOPLE.models;
   if(M.scientist)for(const n in M.scientist.clips)L[n]={src:'kit',clip:M.scientist.clips[n]};
   if(M.elara)for(const n in M.elara.clips)if(!/^Face_/.test(n))L[n]={src:'cc3',clip:M.elara.clips[n]};
+  if(GA.extraLib)for(const n in GA.extraLib)L[n]=GA.extraLib[n];        // clips loaded from files (Knocked Down — COMBAT)
   return L;
 }
 function gaRigKey(c){                                                // what kind of rig this body is
@@ -11602,7 +11637,7 @@ function gaCarryLine(){ let el=document.getElementById('carryLine');   // the li
   const o=GA.carry; el.style.display=o?'block':'none'; if(o)el.innerHTML='Carrying <b>'+escHtml(o.name)+'</b> — E: put down · E on someone: give'; }
 function gaCarryChar(){ if(!curHot)return null; const o=GA.made.find(m=>!m.gone&&m.char&&m.hot===curHot); if(o)return o.char;   // whoever stands under the crosshair: someone put into the hall, or one of the three
   for(const n of ['elara','jack','optimus']){ const c=gaChar(n,null,true); if(c&&c.p&&c.p.spot===curHot)return c; } return null; }
-function hotUse(){ if(GA.carry){ const c=gaCarryChar(); if(c)gaGive(GA.carry,c); else gaPutDown(); return; } if(curHot)curHot.fn(); }   // E, or a click: with full hands it gives or puts down; else whatever is under the crosshair
+function hotUse(){ if(PH.down>0)return; if(GA.carry){ const c=gaCarryChar(); if(c)gaGive(GA.carry,c); else gaPutDown(); return; } if(curHot)curHot.fn(); }   // E, or a click: with full hands it gives or puts down; else whatever is under the crosshair
 function gaObjCheckBring(o,c){ for(const q of GA.objs){ if(q.gone||GA.flags[q.task]||q.bring!==o)continue;   // a "bring" objective: done when its thing reaches its person (given) or its place (put down there)
     if(q.target&&c&&(q.target.char===c||q.target.id===c.id)){ gaObjDone(q); gaNews('the objective "'+q.name+'" is done'); gaContinue(q,'brought "'+o.name+'" to '+c.name); }
     else if(!q.target&&!c&&Math.abs(o.at.y-q.at.y)<2&&Math.hypot(o.at.x-q.at.x,o.at.z-q.at.z)<q.r+1){ gaObjDone(q); gaNews('the objective "'+q.name+'" is done'); gaContinue(q,'brought "'+o.name+'" there'); } } }
@@ -11649,7 +11684,129 @@ function gaBox(o,a,at){                                              // a box to
   o.remove=()=>gaDrop(g);
   return true;
 }
-function gaFoe(o,hp){ o.foe=true; o.hp=hp; o.H=o.what==='robot'?OPTIMUS_H:1.9; o.rad=0.5; o.down=false; o.fall=0; o.swing=2+Math.random()*2; }
+/* ---- COMBAT (2026-10-07, asked for): enemies that fight back, health for the visitor and the three companions, a knock-down for each ----
+   An enemy has a weapon: "gun" (the default) — a pistol on the hand when the body can hold Jack's (the five spawned kinds), else it
+   fires from the hand ("point and shoot") — or "melee" (it closes in and swings). Its shots are not good and not quick, on purpose
+   (the user: "not perfect and a little bit delayed so user can win"): the first comes after a moment on the target, the next every
+   1.7 s or so, and the chance of a hit falls with distance and when the visitor is moving. The visitor has 30 health points: a hit
+   shows a bar under the crosshair and a red flush; after 3 s without a hit they heal one point every 1.1 s; at none they are knocked
+   down — the view drops to the floor, they cannot move or shoot, the enemies leave them for dead and go, and after a few seconds they
+   get up with half their health. Elara, Jack and Optimus have 20 each: at none they play Knocked Down (assets/anim/knocked_down.fbx,
+   Mixamo, carried onto their bones by gaBake; Death from the hall's kit when the file is not there) and lie where they fell until no
+   enemy is left standing — their guns stay down meanwhile — then get up whole. */
+const COMBAT={allyMax:20,playerMax:30,regenAfter:3,regenEvery:1.1,downSecs:6.5,leaveAt:2.6,foeEvery:1.7,foeFirst:1.3,foeAcc:0.5,foeRange:40,meleeReach:2.4,meleeDelay:0.5};
+const PH={hp:30,max:30,last:-99,regenT:0,down:0,left:false,eye:0,vigT:0,hideT:0,bar:null,fill:null,vig:null};
+function combatHud(){ if(PH.bar)return;
+  const w=document.createElement('div'); w.id='hpWrap'; w.style.cssText='position:fixed;left:50%;bottom:122px;transform:translateX(-50%);width:220px;height:9px;background:rgba(8,18,30,.65);border:1px solid rgba(255,138,122,.55);border-radius:6px;overflow:hidden;pointer-events:none;z-index:30;display:none';
+  const f=document.createElement('div'); f.style.cssText='height:100%;width:100%;background:linear-gradient(90deg,#ff8a7a,#ffd27f)'; w.appendChild(f); document.body.appendChild(w);
+  const v=document.createElement('div'); v.id='hpVig'; v.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:29;background:radial-gradient(ellipse at center,rgba(120,0,0,0) 45%,rgba(140,0,0,.85) 100%);opacity:0;transition:opacity .12s'; document.body.appendChild(v);
+  PH.bar=w; PH.fill=f; PH.vig=v; }
+function playerHit(dmg,from){                                         // a hit on the visitor: the bar shows, the view flushes red; at nothing left, down
+  if(PH.down>0||state.phase!=='play')return; combatHud();
+  PH.hp=Math.max(0,PH.hp-(dmg||1)); PH.last=state.time; PH.regenT=0; PH.vigT=0.5; PH.hideT=0; PH.bar.style.display='block'; PH.fill.style.width=(PH.hp/PH.max*100)+'%';
+  if(GA.shake!==undefined)GA.shake=Math.max(GA.shake||0,0.03);
+  if(PH.hp<=0){ PH.down=0.001; PH.left=false; banner('YOU ARE DOWN'); gaNews('the visitor was knocked down'+(from&&from.name?' by '+from.name:'')); if(GA.carry)gaPutDown(); } }
+function combatTick(dt){
+  if(PH.vigT>0||PH.down>0||PH.vig){ combatHud(); PH.vigT=Math.max(0,PH.vigT-dt); PH.vig.style.opacity=String(Math.min(1,PH.vigT/0.5*0.6+(PH.down>0?0.55:0))); }
+  if(PH.down>0){                                                       // down: the view on the floor, no moving, no shooting; the enemies leave; up again with half the health
+    PH.down+=dt; keys.KeyW=keys.KeyA=keys.KeyS=keys.KeyD=false; if(keys.Space!==undefined)keys.Space=false;
+    PH.eye+=(1.2-PH.eye)*Math.min(1,dt*3);
+    if(!PH.left&&PH.down>=COMBAT.leaveAt){ PH.left=true; combatFoesLeave(); }
+    if(PH.down>=COMBAT.downSecs){ PH.down=0; PH.hp=Math.round(PH.max/2); PH.last=state.time; PH.fill.style.width='50%'; banner('You get up'); gaNews('the visitor got up again, half their health back'); } }
+  else { PH.eye+=(0-PH.eye)*Math.min(1,dt*2.5);
+    if(PH.hp<PH.max&&state.time-PH.last>COMBAT.regenAfter){ PH.regenT+=dt; while(PH.regenT>=COMBAT.regenEvery&&PH.hp<PH.max){ PH.regenT-=COMBAT.regenEvery; PH.hp++; } if(PH.fill)PH.fill.style.width=(PH.hp/PH.max*100)+'%'; }
+    if(PH.hp>=PH.max&&PH.bar&&PH.bar.style.display!=='none'){ PH.hideT+=dt; if(PH.hideT>1.5)PH.bar.style.display='none'; } }
+  for(const c of gaAllies()){ const H=gaAllyBody(c); if(H.hp===undefined)H.hp=COMBAT.allyMax;
+    if(H.down&&!combatFoesUp())gaAllyUp(c); }                         // knocked down: up again once no enemy is left standing
+}
+function combatFoesUp(){ return GA.made.some(o=>o.foe&&!o.gone&&!o.down)||!!(GUNS.boss&&!GUNS.boss.dying); }
+function combatFoesLeave(){                                           // the visitor down: the enemies leave them for dead (the nightmare too)
+  let n=0; for(const o of GA.made.slice()){ if(o.foe&&!o.gone){ gaGone(o); n++; } } if(GUNS.boss&&!GUNS.boss.dying){ try{ gunsRemoveBoss(); }catch(e){} n++; }
+  if(n){ banner('They leave you for dead…'); gaNews('the enemies left the visitor for dead and went'); } }
+function gaAllies(){ return ['elara','jack','optimus'].map(n=>gaChar(n,null,true)).filter(Boolean); }
+function gaAllyBody(c){ return c.kind==='person'?c.p:c.g; }           // where a companion's health and down-state live: the person, or Jack's guest record
+function gaAllyHit(c,dmg,at){ const H=gaAllyBody(c); if(!H||H.down)return; if(H.hp===undefined)H.hp=COMBAT.allyMax; H.hp=Math.max(0,H.hp-(dmg||1));
+  if(at)vmSpark(at.clone?at.clone():new THREE.Vector3(at.x,at.y,at.z),0.2,0xffb070);
+  if(H.hp<=0)gaAllyDown(c); }
+function gaAllyDown(c){ const H=gaAllyBody(c), F=c.p||(c.g&&c.g.follower); H.down=true; if(F)F.down=true; H.hp=0;
+  banner(c.name+' is down'); gaNews(c.name+' was knocked down');
+  const rk=gaRigKey(c), clip=rk?(gaClip(rk,'Knocked Down')||gaClip(rk,'Death')||gaClip(rk,'Lie_Down')):null;   // the file's clip carried onto their bones, else the kit's
+  try{ if(c.kind==='person'){ const p=c.p; p.talk=0; p.gunOut=false; if(clip){ gaPlay(p,'Knocked Down',clip,true); p.previewUntil=Infinity; } else { p.inner.rotation.x=-Math.PI/2; } }
+    else { const g=c.g; g.gunOut=false; const a=clip?gaGuestClip(g,'Knocked Down')||gaGuestClip(g,'Death'):null; if(a){ a.setLoop(THREE.LoopOnce,0); a.clampWhenFinished=true; guestBody(g,a,1); } else if(g.root)g.root.rotation.x=-Math.PI/2; } }catch(e){} }
+function gaAllyUp(c){ const H=gaAllyBody(c), F=c.p||(c.g&&c.g.follower); H.down=false; if(F)F.down=false; H.hp=COMBAT.allyMax;
+  try{ if(c.kind==='person'){ const p=c.p; p.previewUntil=0; p.inner.rotation.x=0; p.actName=''; personAnim(p,p.idle,0.9); } else { const g=c.g; if(g.root)g.root.rotation.x=0; if(g.gaIdle)guestBody(g,g.gaIdle,1); } }catch(e){}
+  banner(c.name+' is up again'); gaNews(c.name+' got up again'); }
+GA.extraLib={};
+function gaKnockedLoad(){                                              // Knocked Down.fbx (Mixamo, no skin): its clip into the hall's library, its own skeleton as the clip's source rig ('kd')
+  if(GA.kdState||typeof THREE.FBXLoader==='undefined'){ if(!GA.kdState)GA.kdState='failed'; return; } GA.kdState='loading';
+  new THREE.FBXLoader().load('assets/anim/knocked_down.fbx',(fbx)=>{ try{
+    fbx.traverse(o=>{ if(o.name)o.name=o.name.replace(/:/g,''); });    // "mixamorig:Hips" → "mixamorigHips": the names the hall's bone roles know (the colon trap)
+    const clip=(fbx.animations||[])[0]; if(!clip)throw new Error('no clip');
+    for(const t of clip.tracks)t.name=t.name.replace(/:/g,''); clip.name='Knocked Down';
+    (GA.modelScene=GA.modelScene||{}).kd=fbx; GA.extraLib['Knocked Down']={src:'kd',clip}; GA.kdState='ready';
+  }catch(e){ GA.kdState='failed'; } },undefined,()=>{ GA.kdState='failed'; });
+}
+function gaWeaponOf(a,def){ const w=String(a&&(a.weapon||a.arms||a.armed||'')).trim().toLowerCase();
+  return /melee|fist|claw|sword|axe|club|knife|hand|bite|teeth|spear|staff|none|unarmed/.test(w)?'melee':/gun|pistol|rifle|shoot|blaster|laser|bow|ranged/.test(w)?'gun':def; }
+function gaFoe(o,hp){ o.foe=true; o.hp=hp; o.H=o.what==='robot'?OPTIMUS_H:1.9; o.rad=0.5; o.down=false; o.fall=0; o.swing=2+Math.random()*2; o.weapon=o.weapon||'gun'; o.aimT=0; o.fireCd=COMBAT.foeFirst; o.hitAt=0; gaKnockedLoad(); }
+function gaFoeArm(o){                                                 // the pistol for an enemy that can hold Jack's: a CC3 body (soldier, man, woman) on the ring finger, a Mixamo-named one (robot, scientist) in the hand; anyone else fires from the hand
+  if(o.model||!(o.p||(o.g&&o.g.root))){ o.G={noMount:true,draw:1,flash:gunsSphere(0.09,0xff9a7a),flashT:0}; return; }
+  gunsLoad(()=>{ if(o.gone||!o.foe||o.G)return; let G=null;
+    try{ if(o.p){ G=o.what==='woman'?gunsArm(o.id,o.p.inner,1.87):gunsArmRobot(o.id,o.p,o.what==='robot'?OPTIMUS_H:1.92); if(G)o.p.clips.Gun=G.clip; }
+      else if(o.g&&o.g.root){ G=gunsArm(o.id,o.g.root,o.g.h||GUEST.height||1.9); if(G&&o.g.bodyMixer)G.action=o.g.bodyMixer.clipAction(G.clip); } }catch(e){ G=null; }
+    if(G){ G.draw=0; G.flash.material.color.setHex(0xff9a7a); o.G=G; } else o.G={noMount:true,draw:1,flash:gunsSphere(0.09,0xff9a7a),flashT:0}; });
+}
+function gaFoeAim(o){                                                 // whom it shoots at: the visitor, or one of the three standing near — the nearest on its floor within range (the three count a little farther)
+  const q=o.body.position, fy=o.at?o.at.y:q.y; let best=null;
+  if(PH.down<=0&&Math.abs(player.y-fy)<4){ const d=Math.hypot(player.pos.x-q.x,player.pos.z-q.z); if(d<=COMBAT.foeRange)best={x:player.pos.x,y:player.y+1.2,z:player.pos.z,d,c:null}; }
+  for(const c of gaAllies()){ const H=gaAllyBody(c); if(!H||H.down)continue; const a=gaAt(c); if(Math.abs(a.y-fy)>4)continue; const d=Math.hypot(a.x-q.x,a.z-q.z)*1.3; if(d<=COMBAT.foeRange&&(!best||d<best.d))best={x:a.x,y:a.y+1.1,z:a.z,d,c}; }
+  return best;
+}
+function gaStreak(from,to,col){ const len=from.distanceTo(to); if(len<0.1)return;
+  const m=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.03,len),new THREE.MeshBasicMaterial({color:col||0xffd27a,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}));
+  m.position.copy(from).lerp(to,0.5); m.lookAt(to); m.frustumCulled=false; scene.add(m); zoneTag(m,0); GUNS.fx.push({m,t:0.14}); }
+function gaFoeGunTick(o,dt){                                          // an armed enemy, each frame: turns to its target, holds the stance, leans the gun, and shoots — not well, and not at once
+  if(!o.G){ if(!o.arming){ o.arming=true; gaFoeArm(o); } return; }
+  const G=o.G, body=o.p?o.p.mesh:o.body, T=gaFoeAim(o), rest=o.g?(o.g.restYaw||0):0;
+  if(!G.noMount){ G.draw+=((T?1:0)-G.draw)*Math.min(1,dt*4); const show=G.draw>0.4; if(G.mount.visible!==show)G.mount.visible=show; }
+  if(G.flashT>0){ G.flashT-=dt; if(G.flashT<=0)G.flash.visible=false; }
+  if(!T){ o.aimT=0; if(o.p&&o.p.clips[o.p.idle])personAnim(o.p,o.p.idle,0.9); return; }
+  const q=body.position, wantYaw=Math.atan2(T.x-q.x,T.z-q.z), dy=Math.atan2(Math.sin(wantYaw-(body.rotation.y+rest)),Math.cos(wantYaw-(body.rotation.y+rest)));
+  body.rotation.y+=dy*Math.min(1,dt*5);
+  if(o.p&&o.p.clips.Gun&&!G.noMount)personAnim(o.p,'Gun'); else if(o.g&&G.action&&!G.wasArmed){ G.wasArmed=true; const to=G.action, from=o.g.bodyAction; to.reset(); to.enabled=true; to.setEffectiveWeight(1); to.play(); if(from)from.crossFadeTo(to,0.25,false); o.g.gunOut=true; }
+  let from=null;
+  if(!G.noMount&&G.mount&&G.spine){ body.updateMatrixWorld(true); G.mount.localToWorld(_gm.copy(G.muzzle)); from=_gm.clone();
+    _gb.copy(G.barrel).applyQuaternion(G.mount.getWorldQuaternion(_gq)).normalize(); _gs.set(T.x-_gm.x,T.y-_gm.y,T.z-_gm.z).normalize();
+    const ang=_gb.angleTo(_gs), max=GUN_STATS.maxLean*Math.PI/180; if(ang>max){ const full=_gs.clone(); _gs.copy(_gb).lerp(full,max/ang).normalize(); }
+    gunsTurnBone(G.spine,_gb,_gs,Math.min(1,G.draw)); }
+  o.aimT+=dt; o.fireCd-=dt;
+  if(o.aimT<COMBAT.foeFirst||o.fireCd>0||Math.abs(dy)>0.35||T.d>COMBAT.foeRange||(!G.noMount&&G.draw<0.9))return;
+  o.fireCd=COMBAT.foeEvery*(0.8+Math.random()*0.5);
+  const moving=!T.c&&(keys.KeyW||keys.KeyA||keys.KeyS||keys.KeyD), chance=Math.max(0.15,COMBAT.foeAcc-T.d/90-(moving?0.15:0)), hit=Math.random()<chance;   // the user: "not perfect and a little bit delayed so user can win"
+  if(!from)from=new THREE.Vector3(q.x+Math.sin(body.rotation.y+rest)*0.35,(o.at?o.at.y:q.y)+(o.H||1.8)*0.72,q.z+Math.cos(body.rotation.y+rest)*0.35);
+  const end=new THREE.Vector3(T.x,T.y,T.z); if(!hit){ end.x+=(Math.random()-0.5)*2.4; end.y+=(Math.random()-0.3)*1.3; end.z+=(Math.random()-0.5)*2.4; }
+  gaStreak(from,end,0xff9a7a); G.flash.position.copy(from); G.flash.visible=true; G.flashT=0.06; try{ gaSound('shot'); }catch(e){}
+  if(hit){ if(T.c)gaAllyHit(T.c,1,end); else playerHit(1,o); } else if(!T.c&&T.d<8)vmSpark(end,0.08,0xffe6b0);
+}
+function gaFoeSwingHit(o){                                            // a swing's blow lands half a second after it starts, on whoever is still within reach: the visitor, or one of the three
+  const q=o.body.position, fy=o.at?o.at.y:q.y;
+  if(PH.down<=0&&Math.abs(player.y-fy)<2.5&&Math.hypot(player.pos.x-q.x,player.pos.z-q.z)<=COMBAT.meleeReach){ playerHit(1,o); return; }
+  for(const c of gaAllies()){ const H=gaAllyBody(c); if(!H||H.down)continue; const a=gaAt(c); if(Math.abs(a.y-fy)<2.5&&Math.hypot(a.x-q.x,a.z-q.z)<=COMBAT.meleeReach){ gaAllyHit(c,1,{x:a.x,y:a.y+1.1,z:a.z}); return; } }
+}
+function gaFoeModel(o,hp){                                            // a fetched character as an enemy (2026-10-07, asked for): the same flags, its own height and girth; its E spot off, nobody follows it
+  gaFoe(o,hp); o.H=Math.max(1,o.h||1.9); o.rad=Math.max(0.4,(o.block&&o.block.hw)||0.5); o.size0=o.body.scale.x; o.follow=false; o.color=0xff7a6a;
+  if(o.hot)o.hot.r=-1; if(o.walk)gaModelStop(o); if(o.char&&o.char.g)o.char.g.faceAt=null; }
+function gaFoeModelOff(o){ o.foe=false; o.down=false; o.fall=0; o.color=0xb6ff9c; if(o.hot)o.hot.r=2.4; if(o.inner)o.inner.rotation.x=0; if(o.size0)o.body.scale.setScalar(o.size0); }   // a friend again
+function gaFoeModelTick(o,dt){                                        // a fetched enemy: turns to the visitor; comes at them on its legs when the hall can read them, else holds its ground; swings within reach
+  const g=o.body, dx=player.pos.x-g.position.x, dz=player.pos.z-g.position.z, d=Math.hypot(dx,dz), same=Math.abs(g.position.y-player.y)<2.5;
+  if(!o.walk){ const want=Math.atan2(dx,dz); g.rotation.y+=Math.atan2(Math.sin(want-g.rotation.y),Math.cos(want-g.rotation.y))*Math.min(1,dt*4); }
+  o.swing-=dt;
+  if(same&&d>3&&d<60&&o.rig){ if(!o.walk||o.swing<=0){ const k=(d-2.4)/d; gaModelGo(o,{x:g.position.x+dx*k,z:g.position.z+dz*k,y:g.position.y}); o.swing=0.6; } }   // (the spot refreshed as the visitor moves)
+  else { if(o.walk)gaModelStop(o);
+    if(same&&d<=3.2&&o.swing<=0){ o.swing=2.5+Math.random()*2.5; o.hitAt=state.time+COMBAT.meleeDelay;
+      const own=(o.clips||[]).find(k=>/attack|punch|kick|hit|swing|slash|strike|fight|bite/i.test(k.name));
+      if(own&&o.mixer)gaModelPlay(o,own,true); else if(o.rig&&o.char){ const nm=Object.keys(gaLibrary()).find(n=>/punch|attack|kick|fight|slash|strike/i.test(n))||'Point'; try{ gaAnim(o.char,nm,2); }catch(e){} } } }
+}
 function gaFoeTarget(){                                              // what Elara's, Jack's and Optimus's guns turn to when there is no nightmare: the nearest enemy standing on your floor
   let best=null, bd=45;
   for(const o of GA.made){ if(!o.foe||o.gone||o.down||!o.body)continue; const q=o.body.position; if(Math.abs((o.at?o.at.y:q.y)-player.y)>4)continue;
@@ -11666,16 +11823,18 @@ function gaFoes(dt){
     if(!o.foe||o.gone||!o.body)continue;
     const p=o.p, q=o.body.position;
     if(p)p.mixer.update(dt);
-    if(o.down){ o.fall+=dt; const k=Math.min(1,o.fall/0.6), t=(p?p.inner:o.g.root); t.rotation.x=-k*Math.PI/2;
+    if(o.down){ o.fall+=dt; const k=Math.min(1,o.fall/0.6), t=(p?p.inner:o.g?o.g.root:o.inner); t.rotation.x=-k*Math.PI/2;
       if(o.fall>5){ const s=Math.max(0.001,1-(o.fall-5)/0.8); o.body.scale.multiplyScalar(0).addScalar(o.size0*s); if(o.fall>5.8)gaGone(o); }
       continue; }
-    if(!p)continue;                                                    // a soldier holds his ground (his own turn-to-you keeps him facing the visitor)
+    if(o.hitAt&&state.time>=o.hitAt){ o.hitAt=0; gaFoeSwingHit(o); }    // a swing begun half a second ago lands now (COMBAT)
+    if(o.weapon==='gun'){ gaFoeGunTick(o,dt); if(p)groundPerson(p); continue; }   // armed: it stands, turns and shoots (COMBAT, 2026-10-07)
+    if(!p){ if(o.model)gaFoeModelTick(o,dt); else if(o.g){ const dx=player.pos.x-q.x, dz=player.pos.z-q.z, d=Math.hypot(dx,dz); o.swing-=dt; if(Math.abs(q.y-player.y)<2&&d<=3.2&&o.swing<=0){ o.swing=2.5+Math.random()*2.5; o.hitAt=state.time+COMBAT.meleeDelay; } } continue; }   // a soldier holds his ground (his own turn-to-you keeps him facing the visitor) and swings when the visitor is close; a fetched model: gaFoeModelTick
     const dx=player.pos.x-q.x, dz=player.pos.z-q.z, d=Math.hypot(dx,dz), same=Math.abs(q.y-player.y)<2;
     p.mesh.rotation.y+=Math.atan2(Math.sin(Math.atan2(dx,dz)-p.mesh.rotation.y),Math.cos(Math.atan2(dx,dz)-p.mesh.rotation.y))*Math.min(1,dt*4);
     if(same&&d>2.6&&d<60){ const sp=d>9?3.4:1.9, st=Math.min(sp*dt,d-2.5); _gav.set(q.x+dx/d*st,0,q.z+dz/d*st); resolveCollision(_gav,0.45,q.y);
       if(Math.abs(groundAt(_gav.x,_gav.z,q.y+0.4)-q.y)<0.5){ q.x=_gav.x; q.z=_gav.z; }
       const run=sp>3; personAnim(p,run?'Run':'Walk'); if(p.act)p.act.timeScale=sp/(run?(p.runNat||4):(p.walkNat||1.5)); }
-    else { o.swing-=dt; if(same&&d<=3.2&&o.swing<=0){ o.swing=2.5+Math.random()*2.5; p.actName=''; personAnim(p,'Point',1.3,true); o.hold=state.time+2; }
+    else { o.swing-=dt; if(same&&d<=3.2&&o.swing<=0){ o.swing=2.5+Math.random()*2.5; p.actName=''; personAnim(p,'Point',1.3,true); o.hold=state.time+2; o.hitAt=state.time+COMBAT.meleeDelay; }
       else if(!(o.hold&&state.time<o.hold))personAnim(p,p.idle,0.9); }
     groundPerson(p);
   }
@@ -11894,7 +12053,7 @@ const GA_DO={
       if(!hostile&&alive.filter(o=>o.char&&!o.foe&&!o.resident).length>=GA_LIMIT.people){ ctx.log.push('spawn: no more people for now — '+GA_LIMIT.people+' is the most at once; remove one first'); return; }
       const name=gaText(a.name,28)||({robot:'Robot',woman:'Woman',man:'Man',soldier:'Soldier',scientist:'Scientist'})[what];
       const o=gaMade({id:gaId(a.id||name),name,kind:'person',what,at,asked:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,hostile?0xff7a6a:0xc8d8ff)}); GA.seq++;
-      if(hostile)gaFoe(o,Math.round(gaNum(a.hp,what==='robot'?18:12,1,60)));                 // the three companions hit with every shot: fewer than this and it is over before the visitor has turned round
+      if(hostile){ o.weapon=gaWeaponOf(a,'gun'); gaFoe(o,Math.round(gaNum(a.hp,what==='robot'?18:12,1,60))); }   // "weapon": gun (the default) or melee (COMBAT)                 // the three companions hit with every shot: fewer than this and it is over before the visitor has turned round
       let ok=false;
       if(what==='scientist'&&!PEOPLE.models.scientist2){ gaSciLoad(); banner(name+' is on the way…'); const t0=GA.clock; yield ()=>GA.sciState==='ready'||GA.sciState==='failed'||GA.clock-t0>60; }
       if(what==='robot'||what==='woman'||what==='scientist'){ ok=gaPerson(o,a,at); if(!ok){ o.gone=true; ctx.log.push('spawn: the '+what+' is not loaded yet — try again in a moment'); return; } }
@@ -12110,7 +12269,7 @@ function gaModelRank(res,q,isChar){                                    // what w
 function gaModelPick(res,q,isChar){ return gaModelRank(res,q,isChar)[0]||null; }
 GA_DO.sketchfab=function*(a,ctx){
   let q=gaText(a.find||a.q||a.query||a.search||a.what,80); if(!q){ ctx.log.push('sketchfab: say what to look for, in "find"'); return; }
-  const as=String(a.as||a.kind||a.role||'thing').trim().toLowerCase(), place=/^(place|environment|surroundings|scene|world|room|setting)$/.test(as), isChar=/^(character|person|someone|creature|being|npc|animal)$/.test(as);
+  const as=String(a.as||a.kind||a.role||'thing').trim().toLowerCase(), place=/^(place|environment|surroundings|scene|world|room|setting)$/.test(as), hostile=a.hostile===true||/^(true|yes|1)$/i.test(String(a.hostile))||/^(enemy|foe|hostile|monster|villain|attacker)$/.test(as), isChar=hostile||/^(character|person|someone|creature|being|npc|animal)$/.test(as);   // hostile (2026-10-07): fetched as an enemy
   // someone is looked for among the models Sketchfab lists as RIGGED (the user, 2026-10-01: a character came with no rigging "so it
   // was just standing there … human shaped characters it brings in should be rigged"); a thing or a place is not asked that
   const human=isChar&&!(a.humanoid===false||/^(false|no|0)$/i.test(String(a.humanoid)));
@@ -12185,7 +12344,7 @@ GA_DO.sketchfab=function*(a,ctx){
   banner('Fetching “'+pick.name+'”…'); t0=GA.clock; yield ()=>fin||GA.clock-t0>200;
   if(!body){ ctx.log.push('sketchfab: “'+pick.name+'” could not be fetched'+(err?' ('+err+')':'')); return; }
   const name=gaText(a.name,28)||gaText(pick.name,28)||q;
-  const o=gaMade({id:gaId(a.id||name),name,kind:isChar?'person':'thing',what:(isChar?'a character':'a thing')+' from Sketchfab ("'+pick.name+'")',at,asked:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,isChar?0xb6ff9c:0x7fe6ff),model:pick}); GA.seq++;
+  const o=gaMade({id:gaId(a.id||name),name,kind:isChar?'person':'thing',what:(isChar?'a character':'a thing')+' from Sketchfab ("'+pick.name+'")',at,asked:{x:pl.x,z:pl.z,y:pl.y},by:ctx.who,color:gaColor(a.color,hostile?0xff7a6a:isChar?0xb6ff9c:0x7fe6ff),model:pick}); GA.seq++;
   try{ gaModelBuild(o,body,a,at,isChar); }catch(e){ o.gone=true; ctx.log.push('sketchfab: “'+pick.name+'” would not stand up ('+gaText(e&&e.message,60)+')'); return; }
   (HOLO.hall=HOLO.hall||[]).push(pick); holoKeep(pick,'hall'); holoCreditsRefresh();
   const credit='“'+pick.name+'” by '+pick.user+' · '+holoLic(pick.license)+' · Sketchfab';
@@ -12196,6 +12355,10 @@ GA_DO.sketchfab=function*(a,ctx){
     +(o.clips.length?'; the animations it came with (also for "anim"): '+o.clips.slice(0,12).map(k=>k.name).join(', '):'; it came with no animations of its own');
   if(isChar){
     o.char={id:o.id,kind:'guest',name:o.name,p:null,made:o,g:{grp:o.body,cx:at.x,cz:at.z,gy:at.y,gaFoot:0,gaBlock:o.block,faceAt:null}};
+    if(hostile){                                                       // an enemy (2026-10-07, asked for): no mind, no E spot; the guns find it
+      if(GA.made.filter(x=>!x.gone&&x.foe&&x!==o).length>=GA_LIMIT.foes){ gaGone(o); ctx.log.push('sketchfab: no more enemies for now — '+GA_LIMIT.foes+' is the most at once'); return; }
+      o.weapon=gaWeaponOf(a,(o.rig&&a.humanoid!==false)?'gun':'melee'); gaFoeModel(o,Math.round(gaNum(a.hp,12,1,60))); GA.moved=true;
+      ctx.log.push('sketchfab: '+o.name+' (id "'+o.id+'", '+credit+', '+o.h.toFixed(1)+' m tall) is an ENEMY '+gaWhere(pl,at)+', '+o.hp+' hits to bring down'+(o.rig?'; it comes at the visitor on its legs':'; it holds its ground, turned to the visitor')+own); yield 0.2; return; }
     gaVoice(o,a); gaMind(o,a);
     gaHot(o,at,Math.min(2.6,o.h),'Talk to '+escHtml(o.name),()=>gaTalkTo(o)); o.char.g.hot=o.hot;
     ctx.log.push('sketchfab: '+o.name+' (id "'+o.id+'", '+credit+', '+o.h.toFixed(1)+' m tall'+(o.persona?', with a mind of their own':'')+') is '+gaWhere(pl,at)+own);
@@ -12240,11 +12403,16 @@ GA_DO.change=function*(a,ctx){                                          // someo
   if(o.resident){ ctx.log.push('change: '+o.name+' lives here and stays as they are'); return; }
   if(a.hostile!==undefined&&yes(a.hostile)!==!!o.foe){                  // sides: the same body put back the other way round, its name, its mind and what was said to it kept
     const live=GA.made.filter(x=>!x.gone&&x!==o);
-    if(o.model)ctx.log.push('change: '+o.name+' was fetched from Sketchfab and cannot be an enemy (a robot, woman, man, soldier or scientist can)');
+    if(o.model){                                                        // fetched from Sketchfab: turned in place (2026-10-07, asked for) — the same body, its name and its mind kept
+      if(yes(a.hostile)){ if(live.filter(x=>x.foe).length>=GA_LIMIT.foes)ctx.log.push('change: no more enemies for now — '+GA_LIMIT.foes+' is the most at once');
+        else { o.weapon=gaWeaponOf(a,(o.rig&&a.humanoid!==false)?'gun':'melee'); gaFoeModel(o,Math.round(gaNum(a.hp,12,1,60))); if(a.name)o.name=gaText(a.name,28)||o.name; GA.moved=true; gaNews(o.name+' has turned on the visitor',ctx.who);
+          ctx.log.push('change: '+o.name+' (id "'+o.id+'") is now an enemy, '+o.hp+' hits to bring down'+(o.rig?'; it comes at the visitor on its legs':'; it holds its ground, turned to the visitor')); } }
+      else { gaFoeModelOff(o); gaNews(o.name+' is no longer an enemy',ctx.who); ctx.log.push('change: '+o.name+' (id "'+o.id+'") is a friend again and can be talked with'); }
+      yield 0.1; return; }
     else if(yes(a.hostile)&&live.filter(x=>x.foe).length>=GA_LIMIT.foes)ctx.log.push('change: no more enemies for now — '+GA_LIMIT.foes+' is the most at once');
     else if(!yes(a.hostile)&&live.filter(x=>x.char&&!x.foe&&!x.resident).length>=GA_LIMIT.people)ctx.log.push('change: no more people for now — '+GA_LIMIT.people+' is the most at once');
     else { const q=o.char?gaAt(o.char):o.at, keep=EC_WHO[o.id], sp=SPEAKERS[o.id], mind=gaText(a.persona,GA_LIMIT.persona)||o.persona||o.persona0||'', wasId=o.id, wasName=o.name;
-      const spec={what:o.what,name:gaText(a.name,28)||o.name,id:o.id,at:{x:q.x,z:q.z,yExact:q.y},hostile:yes(a.hostile),persona:mind,lines:o.lines||[],hp:a.hp,color:a.color,voice:a.voice!==undefined?a.voice:(sp&&sp.gender),pitch:a.pitch!==undefined?a.pitch:(sp&&sp.pitch)};
+      const spec={what:o.what,name:gaText(a.name,28)||o.name,id:o.id,at:{x:q.x,z:q.z,yExact:q.y},hostile:yes(a.hostile),persona:mind,lines:o.lines||[],hp:a.hp,weapon:a.weapon!==undefined?a.weapon:o.weapon,color:a.color,voice:a.voice!==undefined?a.voice:(sp&&sp.gender),pitch:a.pitch!==undefined?a.pitch:(sp&&sp.pitch)};
       o.swap=true; gaGone(o); const n0=ctx.log.length; yield* GA_DO.spawn(spec,ctx);   // (swap: an objective about them waits for the one who comes back)
       const nw=GA.made.find(x=>!x.gone&&x.id===wasId&&x!==o);
       if(!nw){ o.swap=false; ctx.log.push('change: '+wasName+' could not be put back'); return; }
@@ -12371,7 +12539,7 @@ animated.push({update(dt){                                            // its clo
     if(F.t>=F.up+F.hold+F.down){ F.el.style.opacity='0'; F.el.style.background='#000'; GA.fade=null; } }
   if(GA.bolt){ const b=GA.bolt; b.t+=dt; key.intensity=b.t<0.08?b.base+2.6:b.t<0.16?b.base:b.t<0.24?b.base+1.8:b.base; if(b.t>=0.24){ key.intensity=b.base; GA.bolt=null; } }
   if(GA.shakeT>0){ GA.shakeT-=dt; if(GA.shakeT<=0)GA.shake=0; }
-  gaFoes(dt); gaCarryTick();
+  combatTick(dt); gaFoes(dt); gaCarryTick();
   for(const o of GA.made){ if(o.gone||!o.body)continue;
     if(o.greet&&o.char&&!o.foe&&!GA.active&&!ecSpeaking){ const q=gaAt(o.char);
       if(Math.abs(q.y-player.y)<2.5&&Math.hypot(q.x-player.pos.x,q.z-player.pos.z)<6){ const g0=o.greet; o.greet=''; gaGreet(o,g0); } }
@@ -12520,8 +12688,9 @@ function gaBrief(who,noFormat){                                      // every ch
   +'- {"do":"story","title":"...","note":"..."}: write a line into THE STORY SO FAR (in RIGHT NOW, below): what has happened, what the visitor chose, what you mean to happen next, what the others should know or keep to themselves. Every character\'s chat is given it, so whoever the visitor speaks to next can carry the story on. "end":true wipes it.\n'
   +'- {"do":"start","what":"tour"}: start something the hall has: tour (the walk with Elara, from the garden), fountain 1, fountain 2, fountain 3 (the conversations with the fountain), story <name> (the story circles on level '+ORG_LVL+'), drill (the combat drill on lab 2), nightmare, episode 1. And the games behind the hall, which take the visitor out of the hall until they have played: fountain keeper, cerebrum, delivery.\n'
   +'- {"do":"spawn","what":"robot","name":"...","id":"...","at":"..."}: put someone or something into the hall. People: robot, woman, man, soldier, scientist. With a "persona" (who they are, a few sentences) they have a mind and a voice of their own and the visitor can talk with them; with "lines":["..."] they say those when spoken to; with "greet":"..." they say that, once, when the visitor first comes up to them. "voice":"male" or "female", or one by name (VOICES, below); "pitch" 0.9 to 1.1 — a shade lower or higher, no more: further from 1 a voice stops sounding like a person. With "hostile":true they are an enemy: robots come at the visitor, soldiers hold their ground; "nightmare" is the lab\'s monster, one at a time. Nothing can hurt the visitor; the visitor, Elara, Jack and Optimus shoot enemies down. Things: crate, orb, pillar, cube, ring, with "color", "size" and a "note" the visitor reads on it.\n'
-  +'- {"do":"change","who":"<id>","persona":"...","name":"...","hostile":true}: someone put into the hall becomes someone else as the story turns: a new "persona", or "adds" (something they now know, feel or want, added to who they are), a new "name", "lines", "voice" or "pitch"; "hostile":true turns a friend into an enemy, "hostile":false an enemy into a friend who can be talked with (a robot, woman, man, soldier or scientist; not someone fetched from Sketchfab).\n'
+  +'- {"do":"change","who":"<id>","persona":"...","name":"...","hostile":true}: someone put into the hall becomes someone else as the story turns: a new "persona", or "adds" (something they now know, feel or want, added to who they are), a new "name", "lines", "voice" or "pitch"; "hostile":true turns a friend into an enemy, "hostile":false an enemy into a friend who can be talked with (anyone put into the hall — someone fetched from Sketchfab too, the people picked at the Hologram Room\'s console included).\n'
   +'- {"do":"sketchfab","find":"grey alien","as":"character","name":"...","persona":"...","say":"...","voice":"male","size":2,"motion":"hover"}: fetch a model from Sketchfab\'s free library — almost anything exists there: creatures, people of every kind, vehicles, furniture, monuments, food — and put it where the visitor is (or "at" a place). It takes some seconds to arrive. "as":"thing": it stands there ("size" in metres, a "note" the visitor reads on it) — and, 1.6 m or less, the visitor can PICK IT UP (E), carry it, put it down where they stand and give it to someone (RIGHT NOW says who carries or has what), so a thing can be found, carried and delivered. "as":"character": it is someone — with a "persona" it has a mind and a voice of its own, it says "say" as it arrives — its own first words on what the visitor wanted of it, a question for them in it if that suits — and from then on the visitor is talking with IT, not with you: its chat opens for them. Put somewhere the visitor is not ("at" another place or space), it waits there instead and says "say" when the visitor first comes up to it. Someone is always looked for among Sketchfab\'s RIGGED models. For a human-shaped one the game makes sure of more: it tries up to three until it has one whose skeleton the hall can read, and that one plays every animation in the list below like anyone ("anim"), stands in the hall\'s idle and gestures as it talks. For an animal or any creature that is not human-shaped, say "humanoid":false: it plays the animations it came with, and "motion" (hover, bob, spin, sway or none) is all else it has. You are told how it turned out, and the names of its own animations, when it arrives. It does not walk about. "as":"place": surroundings — a forest, a street, a room (in "find", words like scene, diorama, environment, island or interior get whole surroundings and not a single thing) — made in a space of the Hologram Room (the first with nothing running; "space":3 says which; "space":"here" replaces the one the visitor stands in), and the visitor and whoever follows are taken there at once; what you do next happens there. With "go":false the visitor stays where they are and the place waits — one got ready for later in a story; {"do":"teleport","to":"holo 3"} takes them to it. A place can stand in each of the '+HOLO.spaces.length+' spaces at once, and the visitor can be moved between them: the spaces, what each holds and where things are in it are listed under the map. When the visitor asks for something or someone, do it in this same answer — do not offer it, describe it or ask whether they would like it first — and a thing standing there is the least of it: make something of it if you can — a talk, a small story, a question for them, a part for you or the others to play in it.\n'
+  +'- {"do":"sketchfab","find":"stone golem","as":"enemy","hp":15}: the same fetch, but the model comes as an ENEMY — it turns on the visitor and comes at them when the hall can read its skeleton (else it holds its ground); the three companions\' guns and the visitor\'s own shots find it, and it goes down after "hp" hits (12 if unsaid, up to 60). Any creature or person Sketchfab has can be the story\'s monster this way, and "change" with "hostile":true turns someone already standing there into one. Enemies fight back: "weapon":"gun" (the default — a pistol in the hand when the body can hold one, else it fires from the hand; its shots are slow and poor on purpose, so the visitor can win) or "weapon":"melee" (it closes in and swings). Each hit costs the visitor one of 30 health points, which heal slowly on their own; at none they are knocked down for a few seconds, the enemies leave them for dead and go, and they get up with half their health. Elara, Jack and Optimus have 20 each: knocked down, they lie where they fell until no enemy is left standing, then get up.\n'
   +'- {"do":"resize","id":"...","size":3}: what was fetched comes at a guessed size, and the guess is often wrong: "size" (metres high) or "factor" puts a model right; "id":"place" with a "factor" does it for the surroundings of the space the visitor stands in ("space":2 for another).\n'
   +'- {"do":"place","what":"<the surroundings\' name>","at":<a place>,"turn":90}: several surroundings can stand in one space of the Hologram Room, side by side — the hall sets them in a row as they are made (the room does not repeat then), and the spaces list below gives each one\'s size and centre; this moves one to stand centred at that place, turned by degrees. Lay the places out before you put people in them.\n'
   +'- {"do":"end","space":2}: ends what runs in a space of the Hologram Room ("space" left out: the one the visitor stands in): the place and everyone and everything put into it go, and the space is bare again.\n'
@@ -14015,7 +14184,7 @@ function update(dt){
   vmUpdate(dt);                                            // your arms: pistol or fists (YOUR ARMS)
 }
 function updateCamera(dt){
-  camera.position.set(player.pos.x,EYE+player.y,player.pos.z);
+  camera.position.set(player.pos.x,EYE+player.y-(PH.eye||0),player.pos.z);   // (PH.eye: the view down on the floor while the visitor is knocked down — COMBAT)
   camera.rotation.order='YXZ';
   camera.rotation.y=look.yaw;camera.rotation.x=look.pitch;camera.rotation.z=0;
   headLight.position.copy(camera.position);
