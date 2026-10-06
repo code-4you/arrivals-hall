@@ -10028,11 +10028,70 @@ async function holoWorldBuild(w,mine){                                 // the wo
   const made=S.picks.filter(p=>p.made); if(!made.length){ holoNote('None of its models could be fetched.'); return; }
   const o=full.opening||{}, acts=Array.isArray(o.actions)?o.actions:[], reply=String(o.reply||'');
   HOLO.hist.push({role:'user',parts:[{text:'(This is the game speaking, not the visitor.) The world “'+full.title+'” is built again from its record, in space '+S.n+'. What was asked for it: '+(full.prompt||'')+'. Its story begins as it did:'}]},
-    {role:'model',parts:[{text:JSON.stringify({reply,searches:[],done:true,actions:acts})}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);   // the planner's memory: from here the story is live
+    {role:'model',parts:[{text:JSON.stringify({reply,searches:[],done:true,actions:acts})}]});
+  if(o.note)HOLO.hist.push({role:'user',parts:[{text:'(The organiser\'s note for this world — the game speaking, not the visitor; not to be read out, to be followed as the story goes on: '+String(o.note).slice(0,2000)+')'}]});   // (2026-10-07: set on the organiser's edit form)
+  if(HOLO.hist.length>30)HOLO.hist.splice(0,2);   // the planner's memory: from here the story is live
   if(reply){ HOLO.msgs.push({who:'lab',text:reply}); gaNews('the Hologram Room began again: "'+gaText(reply,160)+'"','holo'); }
   let went=false; const then=()=>{ if(went)return; went=true; if(acts.length&&state.phase==='play')gaRun('holo',acts,()=>{},()=>{}); };
   if(reply){ const sm=/^([\s\S]*?[.!?…])\s+([\s\S]+)$/.exec(reply); if(sm)saySequence('holo',[sm[1],sm[2]],then); else say('holo',reply,then); setTimeout(then,Math.max(4000,spLen(reply)*90)+8000); } else then();
   holoLog('[built again — “'+full.title+'”'+(mine?'':' (shared)')+' — space '+S.n+']','Built: '+made.map(p=>p.name).join(' · '));
+}
+// the organiser's edit of a world (2026-10-07, the user: "after i have logged in can i also edit the 'worlds others made' i would like to be able to
+// edit the prompt or what gemini gets too"): a form over the game — the title, the prompt (what the visitor typed: the planner reads it as theirs
+// when the world is built again), the opening the room speaks, a note to the planner (given to it after the opening every time the world is built
+// again; visitors never see it) and the opening's actions as JSON. Save → api world_edit_org (the organiser's login); the models stay as they are.
+function holoOrgEditEl(){
+  let m=document.getElementById('orgEditModal'); if(m)return m;
+  m=document.createElement('div'); m.id='orgEditModal'; m.className='modal';
+  m.style.cssText='position:fixed;inset:0;display:none;z-index:66;justify-content:center;align-items:center;background:rgba(3,5,10,.5);user-select:text;cursor:auto;font:14px Segoe UI,sans-serif;color:#dfe9f5';
+  const inp='width:100%;box-sizing:border-box;pointer-events:auto;font:13px Segoe UI,sans-serif;color:#dfe9f5;background:rgba(0,0,0,.35);border:1px solid rgba(127,230,255,.3);border-radius:6px;padding:6px 8px;margin:2px 0 10px', lab='color:#8fa3bf;font-size:12px;margin-top:4px', mono='font:12px/1.45 Consolas,monospace;resize:vertical';
+  m.innerHTML='<div style="width:min(640px,94vw);max-height:92vh;overflow:auto;background:rgba(8,18,30,.96);border:1px solid rgba(127,230,255,.35);border-radius:14px;padding:18px 20px;pointer-events:auto">'
+    +'<div id="oeHead" style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-bottom:2px">ORGANISER · EDIT A WORLD</div><div id="oeWhich" style="color:#8fa3bf;font-size:12px;margin-bottom:10px"></div>'
+    +'<div style="'+lab+'">Title (on the boards)</div><input id="oeTitle" maxlength="80" style="'+inp+'">'
+    +'<div style="'+lab+'">The prompt — what was asked for; when the world is built again the planner reads it as the visitor’s own words</div><textarea id="oePrompt" rows="2" maxlength="2000" style="'+inp+'"></textarea>'
+    +'<div style="'+lab+'">The opening — what the room says when the world is built again</div><textarea id="oeReply" rows="4" maxlength="2000" style="'+inp+'"></textarea>'
+    +'<div id="oeOrgOnly"><div style="'+lab+'">A note to the planner — given to it after the opening each time this world is built again; visitors never see it (leave empty for none)</div><textarea id="oeNote" rows="3" maxlength="2000" placeholder="e.g. the merchant is secretly the thief; keep it gentle; the quest should lead to the temple" style="'+inp+'"></textarea>'
+    +'<div style="'+lab+'">The opening’s actions — JSON, a list of the planner’s action objects (advanced; leave as it is if unsure)</div><textarea id="oeActs" rows="6" style="'+inp+mono+'"></textarea></div>'
+    +'<button class="menuBtn" id="oeModels" style="width:100%;min-width:0;margin:0 0 10px;display:none">Change the models — its list back on the console</button>'
+    +'<div id="oeStatus" style="min-height:18px;font-size:12px;color:#ff8a7a;margin:2px 0 8px"></div>'
+    +'<div style="display:flex;gap:10px"><button class="menuBtn" id="oeSave" style="flex:1;min-width:0;border-left-color:var(--green)">Save</button><button class="menuBtn" id="oeCancel" style="flex:1;min-width:0">Cancel</button></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('mousedown',e=>{ if(e.target===m)holoOrgEditClose(); });
+  m.querySelector('#oeCancel').onclick=holoOrgEditClose;
+  return m;
+}
+function holoOrgEditClose(){ const m=document.getElementById('orgEditModal'); if(m)m.style.display='none'; document.body.classList.remove('qOpen'); if(state.phase==='play'&&!paused)lockPointer(); }
+async function holoWorldEditOrg(w,S,k){
+  const o=holoOrg(); if(!o)return;
+  holoBoardSay(S,k,'Fetching “'+w.title+'”…');
+  const r=await api({a:'world_get',id:w.id,user:o.user,pass:o.pass}); if(!(r&&r.ok&&r.world)){ holoBoardSay(S,k,'Could not fetch it'+(r&&r.error?' ('+r.error+')':'')+'.'); return; }
+  const W=r.world, op=W.opening||{}, m=holoOrgEditEl();
+  m.querySelector('#oeHead').textContent='ORGANISER · EDIT A WORLD'; m.querySelector('#oeOrgOnly').style.display=''; m.querySelector('#oeModels').style.display='none';
+  m.querySelector('#oeWhich').textContent='World #'+W.id+' · '+(W.picks||[]).length+' models (the models stay as they are)';
+  m.querySelector('#oeTitle').value=W.title||''; m.querySelector('#oePrompt').value=W.prompt||''; m.querySelector('#oeReply').value=op.reply||''; m.querySelector('#oeNote').value=op.note||'';
+  m.querySelector('#oeActs').value=JSON.stringify(Array.isArray(op.actions)?op.actions:[],null,1); m.querySelector('#oeStatus').textContent='';
+  m.querySelector('#oeSave').onclick=async()=>{ const st=m.querySelector('#oeStatus'); let acts;
+    try{ acts=JSON.parse(m.querySelector('#oeActs').value||'[]'); if(!Array.isArray(acts))throw 0; }catch(e){ st.textContent='The actions are not a JSON list — fix them, or put back [].'; return; }
+    const title=m.querySelector('#oeTitle').value.trim(); if(!title){ st.textContent='The title cannot be empty.'; return; }
+    st.style.color='#8fa3bf'; st.textContent='Saving…';
+    const x=await api({a:'world_edit_org',user:o.user,pass:o.pass,id:W.id,title,prompt:m.querySelector('#oePrompt').value,reply:m.querySelector('#oeReply').value,note:m.querySelector('#oeNote').value,actions:acts});
+    if(x&&x.ok){ holoOrgEditClose(); holoBoardSay(S,k,'“'+(x.title||title)+'” is saved.'); holoSharedLoad(true); for(const q of holoWorlds())if(q.id===W.id){ q.title=x.title||title; } holoBoardsDraw(); }
+    else { st.style.color='#ff8a7a'; st.textContent='Could not save'+(x&&x.error?': '+x.error:' — the server did not answer')+'.'; } };
+  document.exitPointerLock&&document.exitPointerLock(); m.style.display='flex'; document.body.classList.add('qOpen'); setTimeout(()=>m.querySelector('#oeTitle').focus(),50);
+}
+async function holoWorldEditWords(w,S,k){                              // MY WORLDS → Edit (2026-10-07, the user: "user can also edit their prompts would be nice"): the title, the prompt and the opening — on this device, and on the server when the world is there; the models by the button, at the console
+  const m=holoOrgEditEl(), op=w.opening||{};
+  m.querySelector('#oeHead').textContent='EDIT A WORLD'; m.querySelector('#oeOrgOnly').style.display='none'; m.querySelector('#oeModels').style.display='';
+  m.querySelector('#oeWhich').textContent='“'+w.title+'” · '+(w.picks||[]).length+' models · '+(w.id?'saved on the server':'on this device only');
+  m.querySelector('#oeTitle').value=w.title||''; m.querySelector('#oePrompt').value=w.prompt||''; m.querySelector('#oeReply').value=op.reply||''; m.querySelector('#oeStatus').textContent='';
+  m.querySelector('#oeModels').onclick=()=>{ holoOrgEditClose(); holoWorldEdit(w); };
+  m.querySelector('#oeSave').onclick=async()=>{ const st=m.querySelector('#oeStatus'), title=m.querySelector('#oeTitle').value.trim(); if(!title){ st.style.color='#ff8a7a'; st.textContent='The title cannot be empty.'; return; }
+    const prompt=m.querySelector('#oePrompt').value.slice(0,2000), reply=m.querySelector('#oeReply').value.slice(0,2000);
+    st.style.color='#8fa3bf'; st.textContent='Saving…';
+    let x={ok:true}; if(w.id&&accountKey())x=await api({a:'world_edit',key:accountKey(),id:w.id,title,prompt,reply});
+    if(!(x&&x.ok)){ st.style.color='#ff8a7a'; st.textContent='Could not save on the server'+(x&&x.error?': '+x.error:'')+' — nothing changed.'; return; }
+    w.title=title.slice(0,80); w.prompt=prompt; w.opening=Object.assign({},op,{reply}); holoWorldsKeep(); holoOrgEditClose(); holoBoardsDraw(); holoBoardSay(S,k,'“'+w.title+'” is saved.'); if(w.shared)holoSharedLoad(true); };
+  document.exitPointerLock&&document.exitPointerLock(); m.style.display='flex'; document.body.classList.add('qOpen'); setTimeout(()=>m.querySelector('#oeTitle').focus(),50);
 }
 async function holoWorldEdit(w){                                       // the world's list back on the console, to change before Make it
   if(HOLO.busy){ banner('The room is busy — a moment.'); return; }
@@ -10111,14 +10170,14 @@ function holoBoardDraw(S,k){
   c.clearRect(0,0,W,H); c.fillStyle='rgba(8,18,30,0.72)'; roundRect(c,8,8,W-16,H-16,26); c.fill();
   c.lineWidth=5; c.strokeStyle=B.col; c.globalAlpha=0.9; roundRect(c,8,8,W-16,H-16,26); c.stroke(); c.globalAlpha=1;
   c.textAlign='left'; c.fillStyle=B.col; c.font='bold 54px Segoe UI'; c.fillText(B.title,48,86);
-  c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(k==='mine'?'aim at a line: build it again · Shared or private · Edit · Delete':k==='others'?(holoOrg()?'organiser: aim at a world: build it · Hide or Show · Delete':'aim at a world and press E, or click, to go straight in'):k==='set'?'aim at the one you want and press E, or click':'aim at a line and press E, or click — then Yes or No',48,124);
+  c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(k==='mine'?'aim at a line: build it again · Shared or private · Edit (its words, or its models) · Delete':k==='others'?(holoOrg()?'organiser: aim at a world: build it · Edit · Hide or Show · Delete':'aim at a world and press E, or click, to go straight in'):k==='set'?'aim at the one you want and press E, or click':'aim at a line and press E, or click — then Yes or No',48,124);
   let y=160; const cut=(t,max)=>{ t=String(t||''); while(t.length>2&&c.measureText(t).width>max)t=t.slice(0,-2)+'…'; return t; };
   b.rows.forEach((r,i)=>{ const h=r.kind==='page'?54:74; r.y0=y; r.y1=y+h;
     if(i===b.hover&&r.kind!=='note'){ const x0=r.kind==='page'&&!r.back?W/2:28, x1=r.kind==='page'&&!r.more?W/2:W-28; c.fillStyle='rgba(127,230,255,0.16)'; roundRect(c,x0,y-6,x1-x0,h,12); c.fill(); }   // (a page line: only the half that has a way)
     const armed=b.armed===i;
     const org=r.kind==='go'&&!!holoOrg();                              // the organiser's world line: its parts at the right (Hide / Show, Delete), a hidden one dimmed
     c.fillStyle=armed?'#ffd27f':(r.kind==='note'||(org&&r.w.hidden))?'#8fa3bf':'#eaf4ff'; c.font=(r.kind==='page'?'':'bold ')+'30px Segoe UI';
-    c.fillText(cut(armed?((r.kind==='world'||org)?'Delete “'+r.text+'”?':r.text+'?'):r.text,armed?620:r.kind==='world'?500:org?640:W-100),48,y+30);
+    c.fillText(cut(armed?((r.kind==='world'||org)?'Delete “'+r.text+'”?':r.text+'?'):r.text,armed?620:(r.kind==='world'||org)?500:W-100),48,y+30);
     if(r.sub&&!armed){ c.fillStyle='#cfe0f2'; c.font='24px Segoe UI'; c.fillText(cut(r.sub,W-100),48,y+60); }
     if(armed){ c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(r.kind==='world'?'this cannot be undone':'this cannot be undone — aim at Yes or No',48,y+60);   // the question's two answers (2026-10-05, asked for: "a confirmation that needs a yes no button")
       c.font='bold 26px Segoe UI'; c.textAlign='center'; c.fillStyle='#b6ff9c'; c.fillText('Yes, delete',760,y+30); c.fillStyle='#cfe0f2'; c.fillText('No',900,y+30); c.textAlign='left';
@@ -10126,8 +10185,8 @@ function holoBoardDraw(S,k){
     if(r.kind==='world'&&!armed){ c.font='bold 26px Segoe UI'; c.textAlign='center';   // its three parts: Shared / private, Edit, Delete (holoBoardUse reads the hit's x against the same bounds)
       c.fillStyle=r.w.shared?'#b6ff9c':'#8fa3bf'; c.fillText(r.w.shared?'● shared':'○ private',630,y+30); c.fillStyle='#9fd8ff'; c.fillText('Edit',770,y+30); c.fillStyle='#ff8a7a'; c.fillText('Delete',905,y+30); c.textAlign='left';
       c.strokeStyle='rgba(127,230,255,0.35)'; c.lineWidth=2; roundRect(c,560,y-2,140,44,10); c.stroke(); roundRect(c,715,y-2,110,44,10); c.stroke(); roundRect(c,845,y-2,120,44,10); c.stroke(); }
-    if(org&&!armed){ c.font='bold 26px Segoe UI'; c.textAlign='center'; c.fillStyle=r.w.hidden?'#b6ff9c':'#ffd27f'; c.fillText(r.w.hidden?'Show':'Hide',760,y+30); c.fillStyle='#ff8a7a'; c.fillText('Delete',900,y+30); c.textAlign='left';   // (holoBoardUse reads the hit's x against the same boxes)
-      c.lineWidth=2; c.strokeStyle=r.w.hidden?'rgba(182,255,156,0.5)':'rgba(255,210,127,0.5)'; roundRect(c,700,y-2,120,44,10); c.stroke(); c.strokeStyle='rgba(255,138,122,0.5)'; roundRect(c,840,y-2,120,44,10); c.stroke(); }
+    if(org&&!armed){ c.font='bold 26px Segoe UI'; c.textAlign='center'; c.fillStyle='#9fd8ff'; c.fillText('Edit',625,y+30); c.fillStyle=r.w.hidden?'#b6ff9c':'#ffd27f'; c.fillText(r.w.hidden?'Show':'Hide',760,y+30); c.fillStyle='#ff8a7a'; c.fillText('Delete',900,y+30); c.textAlign='left';   // (holoBoardUse reads the hit's x against the same boxes) — Edit since 2026-10-07 (asked for)
+      c.lineWidth=2; c.strokeStyle='rgba(127,230,255,0.35)'; roundRect(c,560,y-2,130,44,10); c.stroke(); c.strokeStyle=r.w.hidden?'rgba(182,255,156,0.5)':'rgba(255,210,127,0.5)'; roundRect(c,700,y-2,120,44,10); c.stroke(); c.strokeStyle='rgba(255,138,122,0.5)'; roundRect(c,840,y-2,120,44,10); c.stroke(); }
     if(r.kind==='page'){ c.font='30px Segoe UI'; c.fillStyle='#eaf4ff';   // the page line: a way back on the left, a way on on the right, each only when there is a page that way (2026-10-05, the user: "a next page button but not a back to previous page button"); holoBoardUse splits it at the middle
       if(r.back)c.fillText('◂ back',48,y+30); c.textAlign='center'; c.fillStyle='#8fa3bf'; c.font='24px Segoe UI'; c.fillText(r.pg,W/2,y+30);
       if(r.more){ c.textAlign='right'; c.fillStyle='#eaf4ff'; c.font='30px Segoe UI'; c.fillText('more ▸',W-48,y+30); } c.textAlign='left'; }
@@ -10167,13 +10226,14 @@ function holoBoardUse(S,k){
   const ask=(i)=>{ b.armed=i; b.armedAt=Date.now(); holoBoardDraw(S,k); };
   if(r.kind==='page'){ const d=h.x<512?(r.back?-1:0):(r.more?1:0); if(d){ b.page+=d; holoBoardDraw(S,k); } return; }   // left half: back; right half: on — nothing where there is no page that way
   if(r.kind==='world'){ if(h.x>=840){ ask(h.i); return; }
-    if(h.x>=710){ holoWorldEdit(r.w); return; }
+    if(h.x>=710){ holoWorldEditWords(r.w,S,k); return; }              // the words (title, prompt, opening); the models by its button (2026-10-07)
     if(h.x>=555){ holoWorldShare(r.w,!r.w.shared); holoBoardSay(S,k,r.w.shared?'“'+r.w.title+'” is shared: everyone sees it on WORLDS OTHERS MADE.':'“'+r.w.title+'” is private again.'); return; }
     holoWorldBuild(r.w,true); return; }
   if(r.kind==='go'){ const o=holoOrg();
     if(o){ if(h.x>=840){ ask(h.i); return; }                            // the organiser's parts: Delete asks; Hide / Show at once (it can be undone)
       if(h.x>=700){ const on=!r.w.hidden; holoBoardSay(S,k,on?'Hiding…':'Showing…');
         api({a:'world_hide',user:o.user,pass:o.pass,id:r.w.id,hidden:on}).then(x=>{ holoBoardSay(S,k,x&&x.ok?(on?'“'+r.w.title+'” is off everyone’s board; its maker keeps it.':'“'+r.w.title+'” is back on everyone’s board.'):'Could not change it'+(x&&x.error?' ('+x.error+')':'')+'.'); holoSharedLoad(true); }); return; }
+      if(h.x>=555){ holoWorldEditOrg(r.w,S,k); return; }              // Edit: the form over the game (2026-10-07)
       if(r.w.hidden){ holoBoardSay(S,k,'Hidden — Show it first to build it.'); return; } }
     holoWorldBuild(r.w,false); return; }
   if(r.kind==='set'){ const on=h.x>=750?false:h.x>=500?true:!holoHi(); holoHiSet(on); holoBoardSay(S,k,on?'Quality high: the big file of each model from now on — sharper, slower to come.':'Quality low: the small file of each model from now on — quicker.'); return; }   // the box pressed, or the other one when the press is on the name
@@ -13557,7 +13617,7 @@ addEventListener('keydown',e=>{
   }
 });
 function anyModalOpen(){
-  return ['menuModal','missionModal','rallyModal','deliveryModal','velocityModal','blindspotsModal','fountainModal','whatModal','todoModal','ideasModal','communityModal','elaraModal','holoModal','submitModal','devModal']
+  return ['menuModal','missionModal','rallyModal','deliveryModal','velocityModal','blindspotsModal','fountainModal','whatModal','todoModal','ideasModal','communityModal','elaraModal','holoModal','submitModal','devModal','orgEditModal']
     .some(id=>{const m=document.getElementById(id);return m&&m.style.display&&m.style.display!=='none';});
 }
 addEventListener('keyup',e=>keys[e.code]=false);
