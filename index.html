@@ -9713,7 +9713,7 @@ function holoCell(x,z){ for(const S of HOLO.spaces)if(S.built&&Math.abs(x-S.at.x
 function holoHere(){ return holoIn(player.pos.x,player.pos.z); }      // the space the visitor stands in, or null
 function holoSpaceOf(v){ if(v&&typeof v==='object')return v.at?v:null; const m=/(\d)/.exec(String(v==null?'':v)), n=m?+m[1]:0; return (n>=1&&n<=HOLO.spaces.length)?HOLO.spaces[n-1]:null; }   // 2 · "holo 2" · "space 2" → that space
 function holoRuns(S){ return S.made.some(m=>m.wrap); }                // a place or a thing stands in it (people alone leave it bare: its grid shows, its fog does not close in)
-function holoTitle(S){ const e=S.made.find(m=>m.role==='environment'&&m.wrap)||S.made.find(m=>m.wrap); return e?e.name:''; }                              // what runs in it
+function holoTitle(S){ const E=S.made.filter(m=>m.role==='environment'&&m.wrap); if(E.length)return E.map(m=>m.name).join(' + '); const e=S.made.find(m=>m.wrap); return e?e.name:''; }                              // what runs in it
 function holoPickSpace(){                                             // where a new place goes: the first space with nothing running; all six running, the one left longest ago that the visitor is not standing in
   const here=holoHere(); return HOLO.spaces.find(S=>!holoRuns(S))||HOLO.spaces.filter(S=>S!==here).sort((a,b)=>a.used-b.used)[0]; }
 function holoRoomFor(S,need){                                         // all the spaces together hold at most HOLO.maxAllMB: the ones left longest ago are ended until this fits → their names
@@ -9861,16 +9861,29 @@ function holoShift(S,sx,sz){
   for(const o of GA.made){ if(o.gone||o.char)continue;
     if(o.kind==='objective'){ if(o.target||!mine(o.at.x,o.at.z))continue; const [mx,mz]=by(o.at.x,o.at.z);   // a quest's marker keeps its place in the place
       o.at.x+=mx; o.at.z+=mz; if(o.fx&&o.fx.m){ o.fx.m.position.x+=mx; o.fx.m.position.z+=mz; } const L=LOCATIONS[o.place]; if(L){ L.x+=mx; L.z+=mz; } continue; }
-    if(!o.body)continue; const b=o.body.position; if(!mine(b.x,b.z))continue; const [mx,mz]=by(b.x,b.z);
+    if(!o.body||o.carried||o.heldBy)continue; const b=o.body.position; if(!mine(b.x,b.z))continue; const [mx,mz]=by(b.x,b.z);
     b.x+=mx; b.z+=mz; if(o.at){ o.at.x+=mx; o.at.z+=mz; } if(o.block){ o.block.x+=mx; o.block.z+=mz; }
     if(o.hot){ o.hot.x+=mx; o.hot.z+=mz; if(o.hot.ax!==undefined){ o.hot.ax+=mx; o.hot.az+=mz; } } }
   const D=S.exit; if(mine(D.position.x,D.position.z)){ const [mx,mz]=by(D.position.x,D.position.z); holoDoorTo(D.position.x+mx,D.position.z+mz,D.rotation.y,S,D.position.y); }
+}
+function holoFootprint(env){                                          // the ground's own width and depth (2026-10-07, the user: "measure the period from the ground meshes only"): the flat, large meshes — terrain, floors, water — not what stands on them. null: no telling (one merged mesh, or the flat parts far smaller than the place) → the whole box, as before
+  if(!env.wrap)return null; env.wrap.updateMatrixWorld(true);
+  const whole=new THREE.Box3().setFromObject(env.wrap), ws=whole.getSize(new THREE.Vector3()); if(!(ws.x>0&&ws.z>0))return null;
+  const L=[], b=new THREE.Box3(), sz=new THREE.Vector3();
+  env.wrap.traverse(o=>{ if(!o.isMesh||!o.geometry)return; b.setFromObject(o); b.getSize(sz); if(!(sz.x>0&&sz.z>0))return;
+    if(sz.y<=0.3*Math.max(sz.x,sz.z))L.push({a:sz.x*sz.z,b:b.clone()}); });   // flat: lower than three tenths of its own width — a tree, a tower, a wall is not
+  if(!L.length)return null; L.sort((p,q)=>q.a-p.a); const top=L[0].a, u=new THREE.Box3();
+  for(const m of L){ if(m.a<0.2*top)break; u.union(m.b); }             // the biggest flat pieces together (terrain in tiles, a floor and its water)
+  const us=u.getSize(new THREE.Vector3());
+  if(us.x<0.6*ws.x||us.z<0.6*ws.z)return null;                        // flat pieces far smaller than the place (a puddle under a mountain): not the ground
+  return {x:us.x,z:us.z};
 }
 function holoRetile(S){                                              // the surroundings repeated round the centre: copies that share the model
   S=S||HOLO.sp;
   for(const t of S.tiles)S.root.remove(t); S.tiles=[]; S.period=null; S.rings=0;
   const env=S.made.find(m=>m.role==='environment'&&m.wrap); if(!env)return;
-  const P={x:Math.max(8,env.sizeM[0]),z:Math.max(8,env.sizeM[2])};
+  if(holoEnvs(S).length>1){ S.note=holoEnvs(S).length+' places stand side by side in this space: the room ends where they end'; return; }   // (two different grounds cannot be tiled — 2026-10-07)
+  const F=holoFootprint(env), P={x:Math.max(8,F?F.x:env.sizeM[0]),z:Math.max(8,F?F.z:env.sizeM[2])};   // the period: the ground's own size when it can be told, else the whole model's (2026-10-07)
   let faces=0; S.group.traverse(o=>{ if(o.isMesh&&o.geometry){ const g=o.geometry; faces+=g.index?g.index.count/3:(g.attributes.position?g.attributes.position.count/3:0); } });
   const N=Math.max(P.x,P.z)<45&&faces<=80000?2:faces<=260000?1:0;    // two rings of copies round a small, light one; one ring up to a quarter-million faces; a heavier one is not repeated
   if(!N){ S.note=env.name+' is too heavy to repeat: the room ends where it ends'; return; }
@@ -9902,12 +9915,12 @@ function holoArch(){                                                 // the door
 }
 function holoResize(f,S){                                            // the program by a factor, about the space's centre (sizes are guessed: this is how they are put right)
   S=S||holoHere()||HOLO.sp;
-  const env=S.made.find(m=>m.role==='environment'&&m.wrap), any=S.made.filter(m=>m.wrap); if(!any.length)return 'there is nothing in the space to resize';
-  f=Math.max(0.1,Math.min(10,+f||1)); const big=env?Math.max(env.sizeM[0],env.sizeM[2]):0;
+  const envs=holoEnvs(S), env=envs[0], any=S.made.filter(m=>m.wrap); if(!any.length)return 'there is nothing in the space to resize';
+  f=Math.max(0.1,Math.min(10,+f||1)); const big=env?Math.max(holoEnvsWidth(S),...envs.map(m=>m.sizeM[2])):0;   // (several sets: the row as a whole must fit — 2026-10-07)
   if(big&&big*f>HOLO.half*1.7)f=HOLO.half*1.7/big; if(big&&big*f<6)f=6/big;
-  for(const m of any){ m.wrap.scale.multiplyScalar(f); m.wrap.position.multiplyScalar(f); m.scale*=f; m.sizeM=m.sizeM.map(v=>+(v*f).toFixed(1)); }
+  for(const m of any){ m.wrap.scale.multiplyScalar(f); m.wrap.position.multiplyScalar(f); m.scale*=f; m.sizeM=m.sizeM.map(v=>+(v*f).toFixed(1)); if(m.px!==undefined){ m.px*=f; m.pz*=f; } }
   S.group.updateWorldMatrix(true,true); holoRetile(S);
-  const lead=env||any[0], sp=env?holoSpot(S.at.x,S.at.z,Math.min(env.sizeM[0],env.sizeM[2])*0.35,S):null;
+  const lead=env||any[0], sp=env?holoSpot(S.at.x+env.px,S.at.z+env.pz,Math.min(env.sizeM[0],env.sizeM[2])*0.35,S):null;
   holoRefloor(S,f);
   if(sp){ S.arrive={x:sp.x,z:sp.z,y:sp.y,yaw:look.yaw};
     if(holoHere()===S){ gaPut({kind:'player'},{x:sp.x,y:sp.y,z:sp.z}); for(const fo of FOLLOWERS)if(fo.fl&&fo.fl.on&&!fo.fl.lead){ try{ followCatchUp(fo); }catch(e){} } } }
@@ -9922,7 +9935,7 @@ function holoRefloor(S,f,dx,dz){                                     // whoever 
   for(const o of GA.made){ if(o.gone)continue;
     if(o.kind==='objective'){ if(o.target||o.space||!mine(o.at))continue; const at=spot(o.at); o.at=at; if(o.fx&&o.fx.m)o.fx.m.position.set(at.x,at.y,at.z); const L=LOCATIONS[o.place]; if(L){ L.x=at.x; L.z=at.z; } continue; }
     const q=o.char?gaAt(o.char):o.at; if(!mine(q))continue;
-    try{ if(o.char)gaPut(o.char,spot(q)); else if(o.body&&o.at)gaMoveThing(o,spot(q)); }catch(e){} }
+    try{ if(o.char)gaPut(o.char,spot(q)); else if(o.body&&o.at&&!o.carried&&!o.heldBy)gaMoveThing(o,spot(q)); }catch(e){} }
   for(const n of ['elara','jack','optimus']){ const c=gaChar(n,null,true); if(!c||(c.p&&c.p.fl&&c.p.fl.on))continue;   // (those who follow come along with the visitor)
     const q=gaAt(c); if(mine(q)){ try{ gaPut(c,spot(q)); }catch(e){} } }
 }
@@ -10247,16 +10260,17 @@ function holoMirror(uid){                                            // where th
     return null; });
 }
 async function holoSearch(q,role,match,rigged,many,st){                   // Sketchfab's public search, kept to what may be used here; the eight shown are the KEYLESS ones first (match: the best matches, not the most liked; rigged: only models Sketchfab lists as rigged; st: a row's place in the pages, {url} — given, ONE page a call from there, st.url the page after it or null, nothing cut off the end: see holoRow)
-  const out=[], seen=new Set(); let url=(st&&st.url!==undefined)?st.url:'https://api.sketchfab.com/v3/search?type=models&downloadable=true&count=24'+(match?'':'&sort_by=-likeCount')+(rigged?'&rigged=true':'')+'&max_face_count='+HOLO.maxFaces+'&q='+encodeURIComponent(q);
+  const out=[], seen=new Set(); let url=(st&&st.url!==undefined)?st.url:'https://api.sketchfab.com/v3/search?type=models&downloadable=true&count=24'+((st&&st.newest)?'&sort_by=-publishedAt':match?'':'&sort_by=-likeCount')+(rigged?'&rigged=true':'')+'&max_face_count='+HOLO.maxFaces+'&q='+encodeURIComponent(q);
   for(let page=0;page<(st?1:2)&&url;page++){                           // two pages, the most liked first: up to 48 to choose the eight from
     const r=await fetch(url); if(!r.ok)break; const j=await r.json(); url=j.next||null;   // (refused: the page is kept to try again, st.url as it was)
     for(const m of (j.results||[])){
       if(!m.isDownloadable||seen.has(m.uid)||m.isAgeRestricted)continue; seen.add(m.uid);
       const lic=(m.license&&m.license.label)||''; if(!HOLO.licOk.test(lic))continue;
+      if(st&&st.newest&&(m.likeCount||0)<5)continue;                    // the newest search keeps the liked ones only (2026-10-07, the user: "newest liked")
       const ar=m.archives||{}, opts=[ar.glb,ar.gltf].filter(o=>o&&o.size).sort((a,b)=>a.size-b.size); if(!opts.length)continue;   // the smallest archive counts
       if(opts[0].size>HOLO.maxMB*1048576)continue;
       const th=((m.thumbnails&&m.thumbnails.images)||[]).slice().sort((a,b)=>Math.abs(a.width-720)-Math.abs(b.width-720))[0];
-      out.push({uid:m.uid,name:m.name,user:(m.user&&m.user.displayName)||'?',username:(m.user&&m.user.username)||'',license:lic,size:opts[0].size,sizeHi:opts.filter(o=>o.size<=HOLO.maxMB*1048576).pop().size,faces:opts[0].faceCount||m.faceCount||0,thumb:th?th.url:'',viewerUrl:m.viewerUrl||('https://sketchfab.com/3d-models/'+m.uid),role,anim:m.animationCount||0,
+      out.push({uid:m.uid,name:m.name,user:(m.user&&m.user.displayName)||'?',username:(m.user&&m.user.username)||'',license:lic,size:opts[0].size,sizeHi:opts.filter(o=>o.size<=HOLO.maxMB*1048576).pop().size,faces:opts[0].faceCount||m.faceCount||0,thumb:th?th.url:'',viewerUrl:m.viewerUrl||('https://sketchfab.com/3d-models/'+m.uid),role,anim:m.animationCount||0,likes:m.likeCount||0,fresh:!!(st&&st.newest),
         rig:(()=>{ const t=(m.name+' '+((m.tags||[]).map(x=>x&&(x.name||x.slug)||'').join(' '))+' '+(m.description||'')).toLowerCase(); return /mixamo/.test(t)?2:/\brigg?ed\b|\brig\b|humanoid|biped/.test(t)?1:0; })()}); }
     if(page===0&&!st){ await Promise.all(out.map(async r=>{ r.mirror=/Standard/.test(r.license)?null:await holoMirror(r.uid); })); if(out.filter(r=>r.mirror).length>=8)break; }   // eight keyless ones already: no second page
   }
@@ -10273,10 +10287,11 @@ async function holoSearch(q,role,match,rigged,many,st){                   // Ske
 // string of words, a toilet and a ladder).
 const HOLO_STYLE=/^(the|and|with|low|poly|lowpoly|stylized|stylised|game|ready|gameready|diorama|scene|environment|small|tiny|cute|cartoon|simple|model|3d)$/;
 const HOLO_RIGW=/^(rigged|rig|rigs|rigging|animated|animation|animations|mixamo|character|characters|model|models|3d|npc)$/i;   // words that say "rigged", not who: out of a someone search (2026-10-05) — the search is already kept to rigged models
-function holoPlaceRank(res,q){
+function holoKeyRoom(){ const R=HOLO.rate; return !!(R&&R.key&&R.hall>0&&R.left>0); }   // the hall's key can still fetch this hour (holo.php status: the key is set, its hour and this visitor's share not used up) — 2026-10-07
+function holoPlaceRank(res,q,keyRoom){                               // keyRoom: the key's models rank with the mirror's, and the newest search's finds get a bonus (2026-10-07, the user: key first until the hour's 300, then the mirror)
   const words=String(q).toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>2&&!HOLO_STYLE.test(w));
   const env=/scene|environment|diorama|landscape|island|village|town|city|forest|woods|terrain|world|map|level|interior|room|house|street|dungeon|cave|garden|park|temple|castle|ruins|station|planet|valley|mountain|desert|beach|harbou?r|market|alley|courtyard|arena|farm|swamp|jungle|canyon|field|lake|river|camp|tavern|library|church|bridge|tower|ship|corridor|lab|office|kitchen|bedroom|cabin|hut|shrine|cemetery|graveyard|mine/;
-  return res.map((r,i)=>{ const nm=r.name.toLowerCase(); let sc=-i*0.25+(r.mirror?1.5:0)+(env.test(nm)?2:0)+(r.faces>15000?1:0)-(/\b(props?|pack|kit|assets?|collection|set|pieces|modular|tiles?)\b/.test(nm)?2:0);
+  return res.map((r,i)=>{ const nm=r.name.toLowerCase(); let sc=-i*0.25+(keyRoom?((r.mirror||!/Standard/.test(r.license||''))?1.5:0)+(r.fresh?1.5:0):(r.mirror?1.5:0))+(env.test(nm)?2:0)+(r.faces>15000?1:0)-(/\b(props?|pack|kit|assets?|collection|set|pieces|modular|tiles?)\b/.test(nm)?2:0);
     for(const w of words)if(nm.indexOf(w)>=0)sc+=2; return [sc,r]; }).sort((x,y)=>y[0]-x[0]).map(x=>x[1]);
 }
 async function holoShowSearches(list){                               // a row of pictures for each search: eight each — someone only the ones the hall can animate — and "More ▸" at the end of each row for the next eight (or four), as long as Sketchfab has more (2026-10-04, asked for: "get to the end of the list more should load")
@@ -10288,42 +10303,50 @@ async function holoShowSearches(list){                               // a row of
 function holoRow(sr,h){                                               // one row: its searches in the order they are drawn on, what it has shown, and more() for the next batch
   const who=sr.role==='character', kind=sr.role==='environment'?'surroundings':who?'someone':'a thing', ws=sr.q.trim().split(/\s+/), small=(r)=>r.size<=GA_MODEL.maxMB*1048576;
   const notPlace=/\b(town|city|forest|world|scene|terrain|island|windmill|house|building|castle|tower|landscape|environment|diorama|pack|props?|kit)\b/i;
-  const feeds=[];                                                      // someone: Sketchfab's rigged models under those words — then under the last word alone ("medieval merchant": one; "merchant": many) — then, rigged or not, whatever there is that is not a place
-  if(who){ const cw=ws.filter(w=>!HOLO_RIGW.test(w)), cq=cw.join(' ')||sr.q;   // the words of rigging out first (2026-10-05, the user — "greek god rigged": the planner adds "rigged", and the one-word search under it alone brought Cyclops Rig, Alien RIG, Rigged Sunbird…); the one-word search from a word that is left
-    feeds.push({q:cq,rigged:true}); if(cw.length>1)feeds.push({q:cw[cw.length-1],rigged:true}); feeds.push({q:cq,loose:true}); }
+  const cw=who?ws.filter(w=>!HOLO_RIGW.test(w)):ws, cq=cw.join(' ')||sr.q;   // the words of rigging out of a someone search (2026-10-05, the user — "greek god rigged": the planner adds "rigged", and the one-word search under it alone brought Cyclops Rig, Alien RIG…)
+  const feeds=[];                                                      // someone: Sketchfab's rigged models under the exact words — the first batch, "1 to start" (2026-10-07); waiting for More, in order: the last word alone ("medieval merchant": one; "merchant": many) — then, rigged or not, whatever there is that is not a place
+  if(who)feeds.push({q:cq,rigged:true});                              // the exact words alone to start; the rest wait (alts, below)
   else if(sr.role==='environment'){                                    // surroundings: the words as given — then without the words of style ("medieval village diorama low poly game ready": three; "medieval village": plenty)
     const core=ws.filter(w=>!HOLO_STYLE.test(w.toLowerCase())), tries=[sr.q.trim()];
+    if(holoKeyRoom())feeds.push({q:(core.length?core.slice(0,3).join(' '):sr.q.trim()),newest:true});   // the key has room this hour: the newest liked models under the words first (2026-10-07, asked for) — the key fetches what the mirror (2022) has not
     if(core.length)tries.push(core.slice(0,3).join(' ')); if(core.length>2)tries.push(core.slice(-2).join(' ')); if(core.length>1)tries.push(core[core.length-1]);
     for(const tq of tries.filter((t,i)=>t&&tries.findIndex(u=>u.toLowerCase()===t.toLowerCase())===i))feeds.push({q:tq}); }
   else feeds.push({q:sr.q});
-  for(const f of feeds)f.st={};                                        // where each search has got to in Sketchfab's pages (url null: none left)
+  for(const f of feeds)f.st=f.newest?{newest:true}:{};                 // where each search has got to in Sketchfab's pages (url null: none left); newest: that search's order
   const alts=[];                                                       // the planner's wider searches ("also"), for the More button only (2026-10-05, the user: "maybe just for the more button"): they join the row's searches the first time More is pressed, behind the exact words' pages
   for(const a0 of (sr.also||[])){ const aq=who?(a0.trim().split(/\s+/).filter(w=>!HOLO_RIGW.test(w)).join(' ')||a0):a0.trim(); if(!aq||aq.toLowerCase()===sr.q.trim().toLowerCase()||alts.some(f=>f.q===aq))continue;
     if(who)alts.push({q:aq,rigged:true,st:{}},{q:aq,loose:true,st:{}}); else alts.push({q:aq,st:{}}); }
-  const rank=(pool)=>who?gaModelRank(pool,sr.q,true):sr.role==='environment'?holoPlaceRank(pool,sr.q):pool;
+  if(who){ const wait=[]; if(cw.length>1)wait.push({q:cw[cw.length-1],rigged:true,st:{}}); wait.push({q:cq,loose:true,st:{}}); alts.unshift(...wait); }   // someone: before the planner's wider words, the single word ("medieval merchant" → "merchant") and the looser search (rigged or not, whatever is not a place) wait for More too — 2026-10-07, the user: "maybe 1 to start"
+  const rank=(pool)=>who?gaModelRank(pool,sr.q,true):sr.role==='environment'?holoPlaceRank(pool,sr.q,holoKeyRoom()):pool;
   const R={sr,h,kind,shown:new Set(),pool:[],feeds,alts,busy:false,done:false,tile:null,last:h,n:0,batch:8};   // (someone eight too since 2026-10-04, the user: "for the someone is only loading 4 at a time, can that be 8" — it was four while their skeletons were read eight at a time)
   R.more=async(first)=>{
     if(R.busy||R.done)return; R.busy=true;
-    if(!first&&R.alts.length){ R.feeds.push(...R.alts); R.alts=[]; }    // More pressed: the wider searches join, behind the exact words
+    if(!first&&!who&&R.alts.length){ R.feeds.push(...R.alts); R.alts=[]; }   // More pressed on a surroundings or things row: the wider searches join, behind the exact words (a someone row takes its waiting searches one at a time — widen, below)
     if(first)h.textContent=kind+' · "'+sr.q+'" …'; if(R.tile)R.tile.textContent='…';
-    const want=who?8:R.batch; let fetched=0, peeked=0;                 // someone: looked at eight at a time, their skeletons read, and only the ones that will move shown (2026-10-04, the user: "when choosing someone i would like selection to be all moving ones")
-    const free=(r)=>!!r.mirror;                                        // "no login": a copy on the mirror (nothing of the hall's key, nothing of the visitor's login)
-    const fill=async()=>{ while(R.pool.filter(free).length<want&&fetched<(first?3:5)){   // the pool short of "no login" ones: the next page of the first search with pages left (three pages for the first batch, so that it shows soon; five a click on More) — 2026-10-04, the user: "I would like it to come up with more 'no login' when pressing 'more'"
-        const f=R.feeds.find(f=>f.st.url!==null); if(!f)break;
+    const want=who?8:R.batch; let fetched=0, peeked=0, widened=0;                 // someone: looked at eight at a time, their skeletons read, and only the ones that will move shown (2026-10-04, the user: "when choosing someone i would like selection to be all moving ones")
+    const keyRoom=sr.role==='environment'&&holoKeyRoom();            // surroundings while the key has room: what the key can fetch counts as free too (2026-10-07)
+    const free=(r)=>keyRoom?(!!r.mirror||!/Standard/.test(r.license||'')):!!r.mirror;   // "no login": a copy on the mirror (nothing of the hall's key, nothing of the visitor's login) — or, with key room, the hall's key
+    const fill=async()=>{ while(R.pool.filter(free).length<want&&fetched<(first?3:(who?6:5))){   // the pool short of "no login" ones: the next page of the first search with pages left (three pages for the first batch, so that it shows soon; five a click on More) — 2026-10-04, the user: "I would like it to come up with more 'no login' when pressing 'more'"
+        const f=R.feeds.find(f=>f.st.url!==null); if(!f){ if(!first&&who&&widen())continue; break; }   // the row's searches all read: on a More press of a someone row the next waiting search joins (widen) before giving up
         fetched++; let got=await holoSearch(f.q,who?'character':sr.role,who,!!f.rigged,!who,f.st);
         got=got.filter(r=>!R.shown.has(r.uid)&&!R.pool.some(p=>p.uid===r.uid)); got.forEach(r=>{ r.found=f.q; });   // (found: the words that found it — the log's, when a wider search did)
-        if(who){ got=got.filter(small); if(f.loose)got=got.filter(r=>!notPlace.test(r.name)); }
+        if(who){ got=got.filter(r=>small(r)&&r.mirror); if(f.loose)got=got.filter(r=>!notPlace.test(r.name)); }   // (off the mirror: its skeleton cannot be read before it is fetched, so it can never be shown — dropped here, not carried to the check; carried, it kept a More tile alive that then gave nothing — 2026-10-07)
         if(got.length)R.pool=rank(R.pool.concat(got)); } };
     const take=(n)=>{ const a=[]; for(const r of R.pool)if(free(r)&&a.length<n)a.push(r); for(const r of R.pool)if(!free(r)&&a.length<n)a.push(r); R.pool=R.pool.filter(r=>a.indexOf(r)<0); return a; };   // the "no login" ones first, in their order; the others only to fill up
+    const widen=()=>{                                                  // a More press short of movers: the next waiting search joins — the single word, the looser search, then the planner's wider words; three a press, the rest wait for the next — 2026-10-07, the user: "tries to search 3 times until 8 glbs are found"
+      const key=(f)=>f.q.toLowerCase()+(f.rigged?'/r':f.loose?'/l':''), used=new Set(R.feeds.map(key));   // the same words in the same kind of search: nothing new (the looser search of the same words IS new)
+      while(R.alts.length&&used.has(key(R.alts[0]))){ const k=key(R.alts[0]); R.alts=R.alts.filter(f=>key(f)!==k); }
+      if(!R.alts.length||widened>=3)return false; widened++;
+      const q=R.alts[0].q; R.feeds.push(...R.alts.filter(f=>f.q===q)); R.alts=R.alts.filter(f=>f.q!==q); return true; };
     try{
       let out=[];
       if(who){                                                           // eight candidates at a time, their skeletons looked at (mirror models only: the others cannot be read before they are fetched), and ONLY the ones the hall can animate shown — 2026-10-04, the user: "can it hide ones that dont move or just display 8 that do move". Dropped for good: a look that said no, and the ones that cannot be looked at (not on the mirror, or the look failed).
-        while(out.length<R.batch&&peeked<32){
+        while(out.length<R.batch&&peeked<(first?32:48)){
           await fill(); const cand=take(8); if(!cand.length)break;
           const pk=await Promise.all(cand.map(r=>r.peekOk!==undefined?undefined:r.mirror?holoPeek(r.mirror).catch(()=>null):null));
           cand.forEach((r,i)=>{ if(r.peekOk===undefined)r.peekOk=!!(pk[i]&&pk[i].readable); });
           peeked+=cand.length;
-          for(const r of cand){ if(r.peekOk)out.push(r); else R.shown.add(r.uid); } }
+          for(const r of cand){ R.shown.add(r.uid); if(r.peekOk)out.push(r); } }   // (every candidate looked at is marked taken at once: one accepted here and back from a later search in the same round was shown twice — 2026-10-07)
         R.pool.unshift(...out.slice(R.batch)); out=out.slice(0,R.batch); }   // (the spare back to the front, for the next click)
       else { await fill(); out=take(want); }
       if(!h.isConnected)return;                                        // (another answer's rows have taken the pane since)
@@ -10334,14 +10357,15 @@ function holoRow(sr,h){                                               // one row
     h.textContent=kind+' · "'+sr.q+'"'+(R.n?'':who?' — none yet that the hall can animate':' — nothing small enough under a usable licence');
     if(R.pool.length||R.feeds.some(f=>f.st.url!==null)||R.alts.length){   // more to come: the tile at the row's end (wider searches waiting count)
       if(!R.tile){ R.tile=document.createElement('div'); R.tile.className='holoCard more'; R.tile.onclick=()=>R.more(); R.last.insertAdjacentElement('afterend',R.tile); }
-      R.tile.textContent='More ▸'; R.tile.title='the next '+R.batch+' of these'+(R.alts.length?' — then wider: '+R.alts.map(f=>'"'+f.q+'"').filter((t,i,a)=>a.indexOf(t)===i).join(', '):''); }
+      const wider=R.alts.map(f=>f.q).filter((q,i,a)=>a.indexOf(q)===i&&q.toLowerCase()!==cq.toLowerCase());
+      R.tile.textContent='More ▸'; R.tile.title='the next '+R.batch+' of these'+(wider.length?' — then wider: '+wider.map(q=>'"'+q+'"').join(', '):R.alts.length?' — then the looser search':''); }
     else { R.done=true; if(R.tile){ R.tile.remove(); R.tile=null; } }
   };
   return R;
 }
 const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals Hall', a 3D hall of playable worlds. A visitor is at the console and wants something of their own made for this visit from models on Sketchfab: a place, the people in it, a story. You talk with them in plain sentences (no markdown, no lists) and you decide what to ask. For everything you want to show them, give a Sketchfab search as {\"q\":\"<search words>\",\"role\":\"environment\"|\"character\"|\"prop\"}: the game runs it and shows them a row of pictures of what came back, and they click what they want; you do not see the pictures, but each turn you are told what is on their list. \"environment\" is the surroundings (the ground, the room, the landscape); \"character\" is someone — a person, a creature, a robot — with a search of their own for each person or kind of person; \"prop\" is a thing. Up to five searches a turn. When they ask for a story, or for people, look for both in the same answer — one row of surroundings and two or three rows of people, a search for each person the story needs — so that they pick the place and its people together; do not leave the people for later. Good search words matter, and few of them: two or three plain words to a search, since every word more finds less. Sketchfab is full of very large scenes, so for surroundings think small — 'space station', 'forest diorama', 'low poly village', 'room', 'island'; for someone, plain words — 'old wizard', 'knight', 'girl', 'robot' (the game looks among the rigged models and shows only the ones it can animate, marked 'moves'); for things, the plain name of the thing. With any search you may add \"also\": one or two wider searches in other, more general words (\"zeus\" — also \"greek god\"), which the game runs only when the visitor presses More under that row and the first words have run dry. "
   +"What can be used: only models Sketchfab lets anyone download under CC BY, CC BY-SA, CC0 or Sketchfab's free Standard licence (all of which allow a model to be altered), each at most "+HOLO.maxMB+" MB (someone: "+GA_MODEL.maxMB+" MB; the game drops the rest before they see them; many whole environments are far bigger), the room at most "+HOLO.maxTotalMB+" MB in all; a model that came with an animation of its own plays it. Someone picked as a \"character\" becomes a person of the place once it is made: they can be talked with (a mind of their own, which you give them), and when their skeleton can be read they play the hall's animations, walk and follow. Sizes are guessed by the game (models come in every unit), so they are often wrong: the visitor can say bigger or smaller, and you have the resize action. Most of the Creative Commons models are fetched with no login at all; those under the free Standard licence need the visitor's own Sketchfab login (the pictures say which) — a Sketchfab account is free, and so is everything fetched with it. "
-  +"The room is a simulation of a place: once made, the surroundings repeat in every direction so the visitor can walk on without end, what is imported is solid, saying 'exit' calls the door to them, and 'end program' clears the space. There are "+HOLO.spaces.length+" spaces, so several places can stand at once: the visitor picks which space the list is for (a row of tabs over it; you are told which each turn), and what already stands in the others is listed below. New surroundings picked for a space that has some take their place. Besides the models, you have the hall's own actions (below) — someone with a mind of their own, things, effects, signs, objectives — used as you see fit, or not; what you do, you do in the space being planned, and the visitor is taken into it to see. In \"actions\", a \"say\" with no \"who\" is spoken by the room's own voice: yours. "
+  +"The room is a simulation of a place: once made, the surroundings repeat in every direction so the visitor can walk on without end, what is imported is solid, saying 'exit' calls the door to them, and 'end program' clears the space. There are "+HOLO.spaces.length+" spaces, so several places can stand at once: the visitor picks which space the list is for (a row of tabs over it; you are told which each turn), and what already stands in the others is listed below. Several surroundings can stand in one space, side by side: the game sets them in a row as they are made (the room does not repeat then), tells you each one's size and place, and you move them with the \"place\" action as the story wants. Besides the models, you have the hall's own actions (below) — someone with a mind of their own, things, effects, signs, objectives — used as you see fit, or not; what you do, you do in the space being planned, and the visitor is taken into it to see. In \"actions\", a \"say\" with no \"who\" is spoken by the room's own voice: yours. "
   +"When they seem to have what they want, say so and set \"done\": true — the game then offers Make it, which fetches their list (the hall's own Sketchfab key where the licence allows, else their own Sketchfab login), builds the place, stands the people they picked in it and takes the visitor there. Then the game asks you — the visitor having said nothing — to begin: that is when you give each of the people who they are and set the story going, so have the story in mind while you look for its place and its people. Respond with STRICT JSON only, no fences: {\"reply\":\"...\",\"searches\":[...],\"actions\":[],\"done\":false}.";
 function holoRole(v){ v=String(v==null?'':v).trim().toLowerCase(); return /^(environment|surroundings|place|scene|setting|world|landscape)$/.test(v)?'environment':/^(character|person|people|someone|npc|creature|animal|being|human|robot)$/.test(v)?'character':'prop'; }
 // ---- the room's log (2026-10-02, the user: "add logging per user … I dont want it to delay the response time of chats or story
@@ -10475,14 +10499,33 @@ function holoPlace(scene,p,S){
     at={x:tries[0][0],z:tries[0][1]};
     if(S.ground.length){ let found=false; for(const [x,z] of tries){ const f=holoFloorAt(A.x+x,A.z+z,S); if(f!==null){ at={x,z}; gy=f; found=true; break; } }
       if(!found)gy=holoTop(A.x+at.x,A.z+at.z,S); } }
-  const wrap=new THREE.Group(); wrap.add(scene); wrap.scale.setScalar(k); wrap.position.set(at.x-c.x*k,gy-box.min.y*k,at.z-c.z*k);
+  let E=[]; if(env){ E=S.made.filter(m=>m.role==='environment'&&m.wrap&&m!==p);   // surroundings already standing: this set goes beside them, to the east (2026-10-07, the user: "side by side"; the row is re-centred by holoEnvsLayout)
+    if(E.length){ const right=Math.max(...E.map(m=>m.px+m.sizeM[0]/2)); at={x:right+HOLO_ENV_GAP+size.x*k/2,z:0}; } }
+  const inner=new THREE.Group(); inner.add(scene); inner.scale.setScalar(k); inner.position.set(-c.x*k,-box.min.y*k,-c.z*k);   // the model about its own centre, its lowest point on the ground
+  const wrap=new THREE.Group(); wrap.add(inner); wrap.position.set(at.x,gy,at.z);   // the pivot: where it stands in the space (p.px, p.pz), turned about its centre by "place"
   S.group.add(wrap); zoneTag(wrap,2); S.group.updateWorldMatrix(true,true);   // (parents too: the space's group is new, and has not been drawn yet)
   const lib=HOLO.lib.bvh;
   wrap.traverse(o=>{ if(!o.isMesh||!o.geometry||!o.geometry.attributes.position)return; S.ground.push(o);
     if(lib&&!o.geometry.boundsTree){ try{ o.geometry.boundsTree=new lib.MeshBVH(o.geometry); }catch(e){} } });
-  p.wrap=wrap; p.scale=k; p.sizeM=[size.x*k,size.y*k,size.z*k].map(v=>+v.toFixed(1));
+  p.wrap=wrap; p.scale=k; p.sizeM=[size.x*k,size.y*k,size.z*k].map(v=>+v.toFixed(1)); p.px=at.x; p.pz=at.z;
   const clips=scene.userData.clips||[]; if(clips.length){ p.mixer=new THREE.AnimationMixer(scene); p.mixer.clipAction(clips.find(c2=>/idle|loop|stand/i.test(c2.name))||clips[0]).play(); }   // its own animation, if it came with one
-  if(env){ const sp=holoSpot(S.at.x+at.x,S.at.z+at.z,Math.min(size.x,size.z)*k*0.35,S); S.arrive={x:sp.x,z:sp.z,y:sp.y,yaw:0}; }
+  if(env&&!E.length){ const sp=holoSpot(S.at.x+at.x,S.at.z+at.z,Math.min(size.x,size.z)*k*0.35,S); S.arrive={x:sp.x,z:sp.z,y:sp.y,yaw:0}; }   // (the first set: one arrives in it; more sets: holoEnvsLayout keeps the arrival in the first)
+}
+// several surroundings in one space (2026-10-07, asked for): the row they stand in, re-centred on the space each time one is added,
+// scaled down together when it would not fit the space; what the chats and the planner are told of them; "place" moves one.
+const HOLO_ENV_GAP=4;
+function holoEnvs(S){ return S.made.filter(m=>m.role==='environment'&&m.wrap); }
+function holoEnvsBox(S){ const E=holoEnvs(S); if(!E.length)return {x0:0,x1:0,z0:0,z1:0};   // the row's extent, from the space's centre
+  return {x0:Math.min(...E.map(m=>m.px-m.sizeM[0]/2)),x1:Math.max(...E.map(m=>m.px+m.sizeM[0]/2)),z0:Math.min(...E.map(m=>m.pz-m.sizeM[2]/2)),z1:Math.max(...E.map(m=>m.pz+m.sizeM[2]/2))}; }
+function holoEnvsWidth(S){ const b=holoEnvsBox(S); return b.x1-b.x0; }
+function holoEnvsLayout(S){                                           // the row east to west in the order they came, HOLO_ENV_GAP apart, centred on the space; too wide for it: all scaled down alike
+  const E=holoEnvs(S); if(!E.length)return;
+  if(E.length>1){ const sum=E.reduce((a,m)=>a+m.sizeM[0],0), gaps=HOLO_ENV_GAP*(E.length-1), fit=2*HOLO.half-8;
+    if(sum+gaps>fit){ const f=Math.max(0.05,(fit-gaps)/sum); for(const m of E){ m.wrap.scale.multiplyScalar(f); m.scale*=f; m.sizeM=m.sizeM.map(v=>+(v*f).toFixed(1)); } }   // (the gaps do not shrink: the places do)
+    let x=-(E.reduce((a,m)=>a+m.sizeM[0],0)+HOLO_ENV_GAP*(E.length-1))/2;
+    for(const m of E){ m.px=x+m.sizeM[0]/2; m.wrap.position.x=m.px; x+=m.sizeM[0]+HOLO_ENV_GAP; } }
+  S.group.updateWorldMatrix(true,true);
+  const a=E[0], sp=holoSpot(S.at.x+a.px,S.at.z+a.pz,Math.min(a.sizeM[0],a.sizeM[2])*0.35,S); S.arrive={x:sp.x,z:sp.z,y:sp.y,yaw:0};   // one arrives in the first set
 }
 // a place to stand in what was imported, as near the middle as there is one: a surface facing UP, not water, with two metres
 // clear over it and no water over it — and the LOWEST such at that point, so the floor of a house and not its roof, the shore
@@ -10531,10 +10574,11 @@ function holoTop(x,z,S){ S=S||holoCell(x,z); if(!S)return 0; _hro.set(x,120,z); 
 // it stands, and a handful of spots of open ground spread over the place. A chat cannot see the model; with these it can
 // say "meet me at the cabin" and put someone there.
 function holoSurvey(S){
-  S.parts=[]; S.spots=[]; const env=S.made.find(m=>m.role==='environment'&&m.wrap); if(!env)return;
+  S.parts=[]; S.spots=[]; const envs=holoEnvs(S), env=envs[0]; if(!env)return;
   const dull=/^(object|mesh|node|group|root|scene|sketchfab|gltf|default|material|polysurface|polymsh|cube|plane|sphere|icosphere|cylinder|circle|cone|torus|box|null|empty|armature|collada|fbx|obj|model|unnamed|untitled|geo|geometry|pcube|pplane|psphere|pcylinder|transform|instance|lod|part|shape|layer|import|cleaner|materialmerger|bezier|curve|nurbs|text|line|loft|extrude|boolean|merged|combined|static|prim|grp|ctrl|locator|dummy|helper|aux|tmp|temp)\w*$/;
   const dullW=/^(object|obj|mesh|node|group|grp|root|rootnode|scene|sketchfab|gltf|default|material|mat|mtl|lambert|phong|blinn|standard|surface|shader|texture|tex|polysurface|polymsh|cube|plane|sphere|icosphere|cylinder|circle|cone|torus|box|null|empty|armature|collada|fbx|model|unnamed|untitled|geo|geom|geometry|pcube|pplane|psphere|pcylinder|transform|instance|lod|part|shape|layer|import|cleaner|materialmerger|bezier|curve|nurbs|text|line|loft|extrude|boolean|merged|combined|static|prim|ctrl|locator|dummy|helper|aux|tmp|temp|low|high|poly|lowpoly|final|new|copy|main|base|baked|export|max|maya|blender|unity|unreal|sm|mdl|lp|hp|the|and|of)$/;
-  const seen={}, b=new THREE.Box3(), sz=new THREE.Vector3(), ct=new THREE.Vector3(), whole=Math.max(env.sizeM[0],env.sizeM[2]); let n=0;
+  const seen={}, b=new THREE.Box3(), sz=new THREE.Vector3(), ct=new THREE.Vector3(); let n=0;
+  for(const env of envs){ const whole=Math.max(env.sizeM[0],env.sizeM[2]);   // every set standing here (2026-10-07)
   env.wrap.traverse(o=>{ if(o===env.wrap||!o.name||++n>6000)return;
     const raw=String(o.name).replace(/\.(fbx|obj|glb|gltf|blend|dae|max|ma|mb|3ds|stl|c4d|skp)\b/gi,'').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[^a-zA-Z\u00C0-\u024F]+/g,' ').trim().toLowerCase();
     const nm=raw.split(' ').filter((w,i,a)=>w.length>1&&!dullW.test(w)&&a.indexOf(w)===i).join(' ');   // the words that say something, each once
@@ -10544,12 +10588,12 @@ function holoSurvey(S){
     const e=seen[nm], here=[ct.x,ct.z];
     if(!e)seen[nm]={name:nm,x:ct.x,z:ct.z,w:+sz.x.toFixed(1),d:+sz.z.toFixed(1),a:sz.x*sz.z,n:1,at:[here]};
     else if(!e.at.some(q=>Math.hypot(q[0]-ct.x,q[1]-ct.z)<Math.max(1,w*0.3))){ e.n++; e.at.push(here);   // another one of them, somewhere else (the same spot again is a node and its own mesh)
-      if(sz.x*sz.z>e.a){ e.x=ct.x; e.z=ct.z; e.w=+sz.x.toFixed(1); e.d=+sz.z.toFixed(1); e.a=sz.x*sz.z; } } });
+      if(sz.x*sz.z>e.a){ e.x=ct.x; e.z=ct.z; e.w=+sz.x.toFixed(1); e.d=+sz.z.toFixed(1); e.a=sz.x*sz.z; } } }); }
   const all=Object.values(seen).sort((p,q)=>p.name.length-q.name.length), kept=[];
   for(const q of all)if(!kept.some(k=>q.name.indexOf(k.name)===0&&Math.hypot(k.x-q.x,k.z-q.z)<1&&Math.abs(k.a-q.a)<0.1*Math.max(k.a,q.a)))kept.push(q);   // "pot" and "pot pot", the same thing: once
   S.parts=kept.sort((p,q)=>q.a-p.a).slice(0,14);
-  const ex=Math.min(HOLO.half-2,env.sizeM[0]/2)*0.92, ez=Math.min(HOLO.half-2,env.sizeM[2]/2)*0.92, c=[];
-  for(let i=0;i<7;i++)for(let j=0;j<7;j++){ const x=S.at.x+(i-3)/3*ex, z=S.at.z+(j-3)/3*ez, y=holoFloorAt(x,z,S); if(y!==null)c.push({x,z,y}); }
+  const bb=holoEnvsBox(S), c=[], cl=(v)=>Math.max(-(HOLO.half-2),Math.min(HOLO.half-2,v));   // over the whole row (2026-10-07), within the space
+  for(let i=0;i<7;i++)for(let j=0;j<7;j++){ const x=S.at.x+cl(bb.x0+(i+0.5)/7*(bb.x1-bb.x0))*0.96, z=S.at.z+cl(bb.z0+(j+0.5)/7*(bb.z1-bb.z0))*0.96, y=holoFloorAt(x,z,S); if(y!==null)c.push({x,z,y}); }
   const a=S.arrive||S.at, pick=[];                                      // spread out: each next one the farthest from those taken, starting from where one arrives
   while(c.length&&pick.length<8){ let bi=0, bd=-1; c.forEach((q,i)=>{ let d=Math.hypot(q.x-a.x,q.z-a.z); for(const t of pick)d=Math.min(d,Math.hypot(q.x-t.x,q.z-t.z)); if(d>bd){ bd=d; bi=i; } });
     if(bd<3)break; pick.push(c.splice(bi,1)[0]); }
@@ -10595,12 +10639,12 @@ function holoPerson(body,p,S){
 // story is stays the planner's own.
 async function holoStory(S,made){
   if(HOLO.busy||!HOLO.hist.length)return;                              // (busy is holoTell's to set, since 2026-10-04 — set here as well, holoTell found the room busy and did nothing, and Make it stayed on "… working")
-  const env=S.made.find(m=>m.role==='environment'&&m.wrap), fresh=new Set(made);
+  const envs=holoEnvs(S), env=envs[0], fresh=new Set(made);
   const folk=GA.made.filter(o=>!o.gone&&o.char&&o.model&&o.by==='holo'&&o.at&&holoCell(o.at.x,o.at.z)===S);
   const one=(o)=>'"'+o.id+'" (the model “'+o.model.name+'”'+(o.model.q?', found under "'+o.model.q+'"':'')+', '+o.h.toFixed(1)+' m tall, '+gaSide(o.at)+', '
     +(o.rig?'plays the hall\'s animations, walks and follows':'its skeleton cannot be read: it stands, turns to whoever it talks with, and does not play the hall\'s animations'+((o.clips||[]).length?' (its own: '+o.clips.slice(0,6).map(k=>k.name).join(', ')+')':''))+(fresh.has(o.model)?'':'; here from before')+')';
   const things=S.made.filter(m=>m.role==='prop'&&m.wrap).map(m=>'“'+m.name+'”');
-  const text='(This is the game speaking, not the visitor.) The visitor pressed Make it, and it is made. They now stand in space '+S.n+(env?', in “'+env.name+'” ('+env.sizeM[0]+' × '+env.sizeM[2]+' m)':', on its bare grid floor (they picked no surroundings)')+'.'
+  const text='(This is the game speaking, not the visitor.) The visitor pressed Make it, and it is made. They now stand in space '+S.n+(env?(envs.length>1?', among '+envs.length+' places standing side by side, each with its size and where it is from the visitor: '+envs.map(m=>'“'+m.name+'” ('+m.sizeM[0]+' × '+m.sizeM[2]+' m, centred '+gaSide({x:S.at.x+m.px,z:S.at.z+m.pz,y:player.y})+')').join('; ')+' — the hall set them in a row as they came; you decide where each should stand: "place" moves one (by its size, so they do not overlap), before you put people in them':', in “'+env.name+'” ('+env.sizeM[0]+' × '+env.sizeM[2]+' m)'):', on its bare grid floor (they picked no surroundings)')+'.'
     +(folk.length?' The people they picked stand before them, with no names yet and nobody behind their faces: '+folk.map(one).join('; ')+'.':' They picked no people.')
     +(things.length?' Things put up: '+things.join(', ')+'.':'')
     +' Begin now, in this same answer, what they asked you for. If it was a story, or if there are people: "reply" is the story\'s opening, spoken to the visitor by the room\'s own voice; and "actions" set it going — first give each of the people who they are, {"do":"change","who":"<id>","name":"...","persona":"...","voice":"..."} (the persona is their mind: from then on they answer for themselves), then whatever the story wants of all you can do: lines for them to speak ("say"), where they stand ("arrange", "teleport", "walk"), an objective for the visitor, the record ("story"), more people or things if it needs them. If they only wanted a place to stand in, a line of welcome is enough. No "searches" in this answer.';
@@ -10672,8 +10716,8 @@ async function holoMake(S,go,quiet){                                 // S: the s
     p.links=null; holoView(); };
   // the surroundings first, then the things — then, on the ground that is there by then, the people
   const rest=todo.filter(p=>p.role!=='character').sort((a,b)=>(a.role==='environment'?0:1)-(b.role==='environment'?0:1)), people=todo.filter(p=>p.role==='character');
-  for(const p of rest)await build(p,(scene,q)=>{ if(q.role==='environment')holoDropEnv(S); holoPlace(scene,q,S); });
-  holoRetile(S); try{ holoSurvey(S); }catch(e){} if(S.note){ holoNote(S.note); S.note=null; }
+  for(const p of rest)await build(p,(scene,q)=>holoPlace(scene,q,S));   // new surroundings stand BESIDE the ones there (2026-10-07, the user: "side by side"; they used to take their place — holoDropEnv)
+  holoEnvsLayout(S); holoRetile(S); try{ holoSurvey(S); }catch(e){} if(S.note){ holoNote(S.note); S.note=null; }
   if(rest.some(q=>q.made&&q.role==='environment')){ const ref=holoHere()===S?player.pos:arr0;   // new ground: whoever stood in the space stands on it, as far from where one arrives as they were from the visitor (or from the old arrival)
     try{ holoRefloor(S,0,ref?S.arrive.x-ref.x:0,ref?S.arrive.z-ref.z:0); }catch(e){} }
   for(const p of people)await build(p,(scene,q)=>holoPerson(scene,q,S));
@@ -11476,6 +11520,32 @@ function gaGuest(o,a,at,ready){                                      // a body l
   }};
   animated.push(hook);
 }
+// ---- carrying (2026-10-07, asked for: "add ability to pickup objects" — "yes build the pick up"): a thing put into the hall — spawned, or fetched
+// from Sketchfab, up to 1.6 m — can be picked up (E), rides before the visitor, is put down where they stand (E again) or given to someone
+// (E on them): a given thing stays with that person. An objective can ask for it: "bring" (gaObjCheckBring). The Hologram Room's own
+// scenery props (made at the console) are not things of this kind and stay where they are.
+GA.carry=null;
+function gaCanCarry(o){ return !!(o&&!o.gone&&!o.carried&&!o.heldBy&&o.body&&o.kind==='thing'&&!o.foe&&!o.resident&&(o.h===undefined||o.h<=1.6)); }
+function gaPickUp(o){ if(!gaCanCarry(o)||GA.carry)return false; GA.carry=o; o.carried=true; if(o.block)o.block.off=true; if(o.hot)o.hot.r=-1; o.spin=0; o.bob=0; gaSound('whoosh'); gaCarryLine(); gaNews('the visitor picked up "'+o.name+'"'); return true; }
+function gaCarryTick(){ const o=GA.carry; if(!o)return; if(o.gone){ GA.carry=null; gaCarryLine(); return; }
+  const h=o.h||1, d=0.9+Math.min(0.6,h*0.3), b=o.body;                 // held before the chest, a little lower the taller it is, following the look up and down
+  b.position.set(player.pos.x-Math.sin(look.yaw)*d,player.y+EYE-0.75-h*0.5+Math.sin(look.pitch)*0.4,player.pos.z-Math.cos(look.yaw)*d); b.rotation.y=look.yaw;
+  o.at.x=b.position.x; o.at.z=b.position.z; o.at.y=b.position.y; }
+function gaPutDown(){ const o=GA.carry; if(!o)return; const f=1.4, x=player.pos.x-Math.sin(look.yaw)*f, z=player.pos.z-Math.cos(look.yaw)*f;
+  let at=null; try{ at=gaStandOk(x,z,player.y); }catch(e){} if(!at||Math.abs(at.y-player.y)>1.5)at={x,z,y:player.y};
+  GA.carry=null; o.carried=false; o.body.rotation.y=look.yaw; gaMoveThing(o,at); if(o.block)o.block.off=false; if(o.hot)o.hot.r=2.4; gaCarryLine();
+  gaNews('the visitor put down "'+o.name+'" at ('+Math.round(at.x)+', '+Math.round(at.z)+') on '+gaFloorName(at.x,at.z,at.y)); gaObjCheckBring(o,null); }
+function gaGive(o,c){ if(!o||!c)return; GA.carry=null; o.carried=false; o.heldBy=c.id; o.body.visible=false; if(o.block)o.block.off=true; if(o.hot)o.hot.r=-1; gaCarryLine();
+  caption('You gave '+escHtml(o.name)+' to '+escHtml(c.name)+'.',5); gaSound('chime'); gaNews('the visitor gave "'+o.name+'" to '+c.name); gaObjCheckBring(o,c); }
+function gaCarryLine(){ let el=document.getElementById('carryLine');   // the line under the crosshair while something is carried
+  if(!el){ el=document.createElement('div'); el.id='carryLine'; el.style.cssText='position:fixed;left:50%;bottom:92px;transform:translateX(-50%);font:13px Segoe UI,sans-serif;color:#eaf4ff;background:rgba(8,18,30,.6);border:1px solid rgba(127,230,255,.35);border-radius:8px;padding:5px 12px;pointer-events:none;z-index:30;display:none'; document.body.appendChild(el); }
+  const o=GA.carry; el.style.display=o?'block':'none'; if(o)el.innerHTML='Carrying <b>'+escHtml(o.name)+'</b> — E: put down · E on someone: give'; }
+function gaCarryChar(){ if(!curHot)return null; const o=GA.made.find(m=>!m.gone&&m.char&&m.hot===curHot); if(o)return o.char;   // whoever stands under the crosshair: someone put into the hall, or one of the three
+  for(const n of ['elara','jack','optimus']){ const c=gaChar(n,null,true); if(c&&c.p&&c.p.spot===curHot)return c; } return null; }
+function hotUse(){ if(GA.carry){ const c=gaCarryChar(); if(c)gaGive(GA.carry,c); else gaPutDown(); return; } if(curHot)curHot.fn(); }   // E, or a click: with full hands it gives or puts down; else whatever is under the crosshair
+function gaObjCheckBring(o,c){ for(const q of GA.objs){ if(q.gone||GA.flags[q.task]||q.bring!==o)continue;   // a "bring" objective: done when its thing reaches its person (given) or its place (put down there)
+    if(q.target&&c&&(q.target.char===c||q.target.id===c.id)){ gaObjDone(q); gaNews('the objective "'+q.name+'" is done'); gaContinue(q,'brought "'+o.name+'" to '+c.name); }
+    else if(!q.target&&!c&&Math.abs(o.at.y-q.at.y)<2&&Math.hypot(o.at.x-q.at.x,o.at.z-q.at.z)<q.r+1){ gaObjDone(q); gaNews('the objective "'+q.name+'" is done'); gaContinue(q,'brought "'+o.name+'" there'); } } }
 function gaHot(o,at,h,label,fn){                                     // E on it
   if(o.hot){ o.hot.label=label; o.hot.fn=fn; o.hot.r=2.4; return; }
   o.hot=hotspot(at.x,at.z,2.4,label,fn,{rad:0.45,cap:h}); o.hot.y=at.y;
@@ -11494,7 +11564,8 @@ function gaThing(o,a,at){                                            // a thing 
   if(h>0.3){ o.block={x:at.x,z:at.z,hw:Math.max(0.2,hw),hd:Math.max(0.2,hw),y0:at.y-0.4,h:at.y+h,off:false}; BUILDINGS.push(o.block); }
   o.remove=()=>gaDrop(g);
   const note=gaText(a.note||a.text||a.reads,240);
-  if(note){ o.hot=hotspot(at.x,at.z,2,'Look at '+escHtml(o.name),()=>caption(escHtml(o.name)+' — '+escHtml(note),7),{y:Math.min(1.4,Math.max(0.4,h*0.5)),rad:Math.max(0.6,hw+0.2)}); o.hot.y=at.y; }
+  const carry=w!=='ring'&&h<=1.6;                                    // small enough to carry (2026-10-07)
+  if(note||carry){ o.hot=hotspot(at.x,at.z,2,(carry?'Pick up ':'Look at ')+escHtml(o.name),()=>{ if(note)caption(escHtml(o.name)+' — '+escHtml(note),7); if(carry)gaPickUp(o); },{y:Math.min(1.4,Math.max(0.4,h*0.5)),rad:Math.max(0.6,hw+0.2)}); o.hot.y=at.y; }
   return true;
 }
 function gaBox(o,a,at){                                              // a box to find: E opens it — what is inside is read, and its credits are yours
@@ -11615,7 +11686,7 @@ function gaObjFind(v){                                               // the obje
   const w=n.split('-').filter(q=>q.length>2&&!/^(the|and|for|with|objective|quest)$/.test(q)), fit=w.length?live.filter(x=>{ const t=gaKey(x.name); return w.every(q=>t.indexOf(q)>=0); }):[];   // its title's words, when one and only one objective has them all
   return fit.length===1?fit[0]:null;
 }
-function gaObjWhen(o){ const T=o.target; if(o.space&&!T&&!o.told)return 'they are in that space'; return o.told?'you say so ({"do":"objective","id":"'+o.id+'","done":true})':T?(T.foe?T.name+' is brought down':T.kind==='box'?'the box is opened':'the visitor talks with '+T.name):'they get there'; }
+function gaObjWhen(o){ const T=o.target; if(o.bring)return 'the visitor brings "'+o.bring.name+'" to '+(T?T.name:'that place')+(T?' (gives it to them)':' (puts it down there)'); if(o.space&&!T&&!o.told)return 'they are in that space'; return o.told?'you say so ({"do":"objective","id":"'+o.id+'","done":true})':T?(T.foe?T.name+' is brought down':T.kind==='box'?'the box is opened':'the visitor talks with '+T.name):'they get there'; }
 function gaObjDone(o){ GA.flags[o.task]=true; if(o.fx)o.fx.kill=true; o.gone=true;
   try{ collectAllPay(); refreshMiniObjs(); }catch(e){} banner('OBJECTIVE DONE · '+o.name.toUpperCase()+(o.pay?' · +'+o.pay+' ◈':'')); gaSound('chime'); gaRings(o.at,0xffd27f); }
 function* gaObjChange(o,a,ctx){
@@ -11691,7 +11762,9 @@ const GA_DO={
     const oid=String(a.id==null?'':a.id).trim().toLowerCase(), old=gaObjFind(oid);
     if(old){ yield* gaObjChange(old,a,ctx); return; }                 // one already given: reshaped, completed or dropped
     const title=gaText(a.title||a.text||a.name,90), tid=String(a.target==null?'':a.target).trim().toLowerCase();
-    const told=/^(told|say|said|you|judge|me|gemini|storyteller)/i.test(String(a.when||''));   // done only when the storyteller says so
+    const bid=String(a.bring==null?(a.item==null?(a.carry==null?'':a.carry):a.item):a.bring).trim().toLowerCase(), bring=bid?GA.made.find(x=>!x.gone&&x.kind==='thing'&&gaSame(x,bid))||null:null;   // a fetch quest (2026-10-07): done when the visitor carries that thing to its person or its place
+    if(bid&&!bring){ ctx.log.push('objective: nothing called "'+gaText(bid,40)+'" to bring — "bring" is the id of a thing put into the hall (spawn it, or fetch it from Sketchfab "as":"thing", first)'); return; }
+    const told=!bring&&/^(told|say|said|you|judge|me|gemini|storyteller)/i.test(String(a.when||''));   // done only when the storyteller says so
     let tgt=tid?GA.made.find(x=>!x.gone&&(x.foe||x.kind==='box'||x.char)&&gaSame(x,tid)):null;   // an enemy, a box — or someone to meet
     const spec=a.to!==undefined?a.to:(a.at!==undefined?a.at:(a.place!==undefined?a.place:(tgt?tgt.id:(told?'visitor':undefined))));
     let pl=tgt?null:gaPlace(spec,ctx);
@@ -11707,7 +11780,7 @@ const GA_DO={
     const n=(++GA.seq), stamp=Date.now().toString(36), tk='ga:'+stamp+n, pk='ga:p'+stamp+n, fl=gaFloorName(at.x,at.z,at.y);
     LOCATIONS[pk]={x:at.x,z:at.z,label:gaText(pl.label,60)+' — '+fl};
     TASKS[tk]={place:pk,title,pay,avail:()=>false,done:()=>!!GA.flags[tk]};
-    const o=gaMade({id:gaId(a.id||title),name:title,kind:'objective',what:'objective',task:tk,place:pk,at,by:ctx.who,r:gaNum(a.radius,2.6,1.5,8),pay:Math.max(pay,SMALL_PAY),target:tgt||null,told,t0:GA.clock});
+    const o=gaMade({id:gaId(a.id||title),name:title,kind:'objective',what:'objective',task:tk,place:pk,at,by:ctx.who,r:gaNum(a.radius,2.6,1.5,8),pay:Math.max(pay,SMALL_PAY),target:tgt||null,told,bring,t0:GA.clock});
     if(tgt&&tgt.char&&!tgt.foe)tgt.met=false;                         // (from now: a talk they had before it was asked does not count)
     if(!tgt&&pl.space){ o.space=pl.space; o.arr0=pl.space.arrive; }   // "go to that space": done on being in it, wherever in it (and its marker moves with the arrival spot when a place is made there after)
     o.armed=!!tgt||Math.abs(player.y-at.y)>=2||Math.hypot(player.pos.x-at.x,player.pos.z-at.z)>o.r+1.5;   // given where they stand: it waits until they have been away
@@ -12076,7 +12149,8 @@ GA_DO.sketchfab=function*(a,ctx){
         if(line){ const m=document.getElementById('ecMsgs'); if(m&&m.childElementCount<=1){ m.innerHTML=''; ecBubble(o.id,line); } } }; }
   } else {
     const note=gaText(a.note||a.text,200);
-    gaHot(o,at,Math.min(2.6,Math.max(1,o.h)),'Look at '+escHtml(o.name),()=>{ banner(credit); if(note)caption(note,6); });
+    const carry=gaCanCarry(o);                                       // up to 1.6 m: it can be picked up, carried, put down, given (2026-10-07)
+    gaHot(o,at,Math.min(2.6,Math.max(1,o.h)),(carry?'Pick up ':'Look at ')+escHtml(o.name),()=>{ banner(credit); if(note)caption(note,6); if(carry)gaPickUp(o); });
     ctx.log.push('sketchfab: '+o.name+' (id "'+o.id+'", '+credit+', '+o.h.toFixed(1)+' m high) is '+gaWhere(pl,at)+own);
   }
   yield 0.2;
@@ -12179,6 +12253,23 @@ GA_DO.resize=function*(a,ctx){                                          // what 
   ctx.log.push('resize: '+o.name+' is now '+o.h.toFixed(1)+' m high'); yield 0.1;
 };
 GA_DO.scale=GA_DO.resize;
+GA_DO.place=function*(a,ctx){                                           // one set of surroundings of the Hologram Room moved (several share a space side by side since 2026-10-07, asked for): centred at a place, turned by degrees
+  const S=a.space!==undefined?holoSpaceOf(a.space):(holoHere()||HOLO.sp); if(!S){ ctx.log.push('place: there is no such space'); return; }
+  const envs=holoEnvs(S); if(!envs.length){ ctx.log.push('place: no surroundings stand in space '+S.n); return; }
+  const want=String(a.what||a.id||a.name||a.who||'').trim().toLowerCase();
+  const m=envs.find(e=>String(e.name||'').toLowerCase()===want)||(want?envs.find(e=>String(e.name||'').toLowerCase().indexOf(want)>=0||String(e.q||'').toLowerCase()===want):null)||(/^(place|surroundings|environment|set) ?(\d)$/.test(want)?envs[+want.replace(/\D/g,'')-1]:null)||(envs.length===1?envs[0]:null);
+  if(!m){ ctx.log.push('place: which surroundings? in space '+S.n+' stand '+envs.map(e=>'“'+e.name+'”').join(', ')); return; }
+  const spec=a.at!==undefined?a.at:(a.to!==undefined?a.to:a.place), pl=spec!==undefined?gaPlace(spec,ctx):null;
+  if(spec!==undefined&&!pl){ ctx.log.push('place: there is no place called "'+gaText(typeof spec==='string'?spec:JSON.stringify(spec),60)+'"'); return; }
+  const turn=parseFloat(a.turn!==undefined?a.turn:(a.rotate!==undefined?a.rotate:a.degrees));
+  if(pl){ const hx=Math.max(0,HOLO.half-2-m.sizeM[0]/2), hz=Math.max(0,HOLO.half-2-m.sizeM[2]/2);   // centred there, kept inside the space
+    m.px=Math.max(-hx,Math.min(hx,pl.x-S.at.x)); m.pz=Math.max(-hz,Math.min(hz,pl.z-S.at.z)); m.wrap.position.x=m.px; m.wrap.position.z=m.pz; }
+  if(isFinite(turn))m.wrap.rotation.y=turn*Math.PI/180;
+  S.group.updateWorldMatrix(true,true); holoRetile(S); try{ holoSurvey(S); }catch(e){} try{ holoRefloor(S,0); }catch(e){}   // the ground has moved: everyone and everything in the space set on it again
+  if(holoHere()===S){ const y=holoFloorNear(player.pos.x,player.pos.z,player.y,S); if(y!==null){ player.y=y; player.vy=0; } }
+  ctx.log.push('place: “'+m.name+'” ('+m.sizeM[0]+' × '+m.sizeM[2]+' m) now stands centred at ('+Math.round(S.at.x+m.px)+', '+Math.round(S.at.z+m.pz)+')'+(isFinite(turn)?', turned '+Math.round(turn)+'°':'')+'; whoever stood in the space was set on the ground again'); yield 0.2;
+};
+GA_DO.layout=GA_DO.place;
 function gaRead(out){                                                // Gemini's answer → {reply, ask, idea, actions}; plain words, if that is what came, are the reply
   out=String(out==null?'':out).replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
   const d=ocParse(out)||{}, plain=(t)=>String(t==null?'':t).replace(/\*+/g,'').trim();
@@ -12220,7 +12311,7 @@ animated.push({update(dt){                                            // its clo
     if(F.t>=F.up+F.hold+F.down){ F.el.style.opacity='0'; F.el.style.background='#000'; GA.fade=null; } }
   if(GA.bolt){ const b=GA.bolt; b.t+=dt; key.intensity=b.t<0.08?b.base+2.6:b.t<0.16?b.base:b.t<0.24?b.base+1.8:b.base; if(b.t>=0.24){ key.intensity=b.base; GA.bolt=null; } }
   if(GA.shakeT>0){ GA.shakeT-=dt; if(GA.shakeT<=0)GA.shake=0; }
-  gaFoes(dt);
+  gaFoes(dt); gaCarryTick();
   for(const o of GA.made){ if(o.gone||!o.body)continue;
     if(o.greet&&o.char&&!o.foe&&!GA.active&&!ecSpeaking){ const q=gaAt(o.char);
       if(Math.abs(q.y-player.y)<2.5&&Math.hypot(q.x-player.pos.x,q.z-player.pos.z)<6){ const g0=o.greet; o.greet=''; gaGreet(o,g0); } }
@@ -12244,6 +12335,7 @@ animated.push({update(dt){                                            // its clo
     if(T&&T.gone&&!T.foe&&!T.swap){ gaGone(o); gaNews('the objective "'+o.name+'" was dropped: what it was about is gone'); continue; }   // its box or its person was taken away
     if(T&&T.at){ o.at.x=T.at.x; o.at.z=T.at.z; o.at.y=T.at.y; if(o.fx&&o.fx.m)o.fx.m.position.set(T.at.x,T.at.y,T.at.z); const L=LOCATIONS[o.place]; if(L){ L.x=T.at.x; L.z=T.at.z; } }   // its marker goes where that goes
     if(o.told)continue;
+    if(o.bring){ if(o.bring.gone){ gaGone(o); gaNews('the objective "'+o.name+'" was dropped: the thing it asked for is gone'); } continue; }   // a bring-it objective is done by the giving or the putting down (gaObjCheckBring), not by getting there
     if(!T&&!o.armed){ if(!near&&(o.space||Math.hypot(player.pos.x-o.at.x,player.pos.z-o.at.z)>o.r+1.5))o.armed=true; continue; }
     if(T?(T.foe?(T.down||T.gone):T.kind==='box'?!!T.open:!!T.met):near){ gaObjDone(o); gaNews('the objective "'+o.name+'" is done'); gaContinue(o,T?(T.foe?'brought down '+T.name:T.kind==='box'?'opened the box':'talked with '+T.name):'got there'); } }
   if(!GA.active){ if(GA.queue.length&&!gaScene()&&!(FTALK.active&&FTALK.id==='counsel')){ const q=GA.queue.shift(); gaRun(q[0],q[1],q[2],q[3]); }
@@ -12308,8 +12400,8 @@ function gaClear(ux,uz,max){                                         // how far 
 function gaHoloLines(){                                              // the spaces of the Hologram Room, for the brief: what runs in each, its named parts, its open ground
   const here=holoHere(), L=[], pt=(q)=>'('+Math.round(q.x)+', '+Math.round(q.z)+')';
   for(const S of HOLO.spaces){ if(!S.built&&!S.made.length)continue;
-    const t=holoTitle(S), env=S.made.find(m=>m.role==='environment');
-    let l='- holo '+S.n+': '+(t?'“'+t+'”'+(env&&env.sizeM?' by '+env.user+', '+env.sizeM[0]+' × '+env.sizeM[2]+' m'+(S.period?', repeating in every direction (walked on without end)':', ending at its own edge'):'')+(S.by?', made at '+gaWho(S.by)+"'s asking":', made by the visitor at the console'):'bare — a grid floor, nothing running');
+    const t=holoTitle(S), envs=holoEnvs(S);
+    let l='- holo '+S.n+': '+(t?(envs.length?envs.map(m=>'“'+m.name+'” by '+m.user+', '+m.sizeM[0]+' × '+m.sizeM[2]+' m'+(envs.length>1?', centred at '+pt({x:S.at.x+m.px,z:S.at.z+m.pz}):'')).join(' + ')+(S.period?', repeating in every direction (walked on without end)':envs.length>1?' — side by side, the room ending at their edges; "place" moves one':', ending at its own edge'):'“'+t+'”')+(S.by?', made at '+gaWho(S.by)+"'s asking":', made by the visitor at the console'):'bare — a grid floor, nothing running');
     if(S.arrive)l+='; one arrives at '+pt(S.arrive);
     if(S.parts.length)l+='; in it, by the names its maker gave the parts: '+S.parts.map(q=>q.name+(q.n>1?' (×'+q.n+', the biggest ':' (')+q.w+' × '+q.d+' m) at '+pt(q)).join(', ');
     if(S.spots.length)l+='; open ground at '+S.spots.map(pt).join(' ');
@@ -12334,7 +12426,7 @@ function gaNow(who){
     const q=gaAt(c);
     s+=' '+c.name+(n===who?' (you)':'')+' is at '+f(q)+side(q)+faces(c)+', '+((c.p&&c.p.fl&&c.p.fl.on)?'following them':'staying put')+'.'; }
   const made=GA.made.filter(o=>!o.gone&&o.kind!=='objective');
-  if(made.length)s+=' Put into the hall so far: '+made.map(o=>'"'+o.id+'" ('+(o.foe?'hostile ':'')+o.what+(o.name&&o.name.toLowerCase()!==o.id?' called '+o.name:'')+(o.resident?', lives here':'')+(o.at?', '+f(o.at)+side(o.at):'')+(o.char?faces(o.char):'')+((o.follow||(o.p&&o.p.fl&&o.p.fl.on))?', following the visitor':'')+(o.id===who?', you':'')+')').join('; ')+'.';
+  if(made.length)s+=' Put into the hall so far: '+made.map(o=>'"'+o.id+'" ('+(o.foe?'hostile ':'')+o.what+(o.name&&o.name.toLowerCase()!==o.id?' called '+o.name:'')+(o.resident?', lives here':'')+(o.carried?', CARRIED BY THE VISITOR':o.heldBy?', given by the visitor to '+gaWho(o.heldBy)+' (they have it)':'')+(o.at&&!o.heldBy?', '+f(o.at)+side(o.at):'')+(o.char?faces(o.char):'')+((o.follow||(o.p&&o.p.fl&&o.p.fl.on))?', following the visitor':'')+(o.id===who?', you':'')+')').join('; ')+'.';
   if(GUNS.boss&&!GUNS.boss.dying)s+=' The nightmare is loose at '+f(GUNS.boss.grp.position)+'.';
   let objs=[]; try{ objs=activeObjs().map(o=>o.title); }catch(e){}
   if(objs.length)s+=' On the visitor\'s map: '+objs.map(t=>'"'+t+'"').join(', ')+'.';
@@ -12364,13 +12456,14 @@ function gaBrief(who,noFormat){                                      // every ch
   +'- {"do":"walk","who":"elara","to":"fountain"}: walk there. Short ways on the same floor only, about '+GA_LIMIT.walk+' metres: the hall has not been made for walking anywhere yet. Farther than that, or to another floor, teleport. Someone fetched from Sketchfab walks too, straight to the spot.\n'
   +'- {"do":"teleport","who":"visitor","to":"lab 2"}: move the visitor, a character, or "everyone" (the visitor and the three of you) at once, to any place on any floor or in any space of the Hologram Room. It is the way to take the visitor somewhere. Tell them they have been teleported and where they are: a "say" after it does that. With the id of a thing as "who", that thing is moved; "who" can also be a list.\n'
   +'- {"do":"arrange","who":["elara","jack","guard"],"around":"visitor","shape":"circle","radius":3}: places several people at once round a centre (any place, as below): "circle", "arc" (a half ring in front of it), "line" (a row in front of it), "behind" (a row behind it), "column". "who":"everyone" is all of them. Each walks there if it is near and is put there if not, and they turn to the centre ("facing":"out" turns them away from it; a name or a place turns them to that).\n'
-  +'- {"do":"objective","title":"...","to":"...","pay":20}: give the visitor an objective — a quest: a marker on their map and a beam of light at the place; it is done when they get there — and the moment any objective of yours is done, you are told so in a turn of the game\'s own and asked to carry the story on, so an objective is also your way of being called back when they get there. With "target":"<id>" it is about something or someone put into the hall instead: an enemy (done when it is brought down), a box (done when it is opened), a person (done when the visitor talks with them). With "when":"told" it is done only when you say so — a quest only you can judge: a riddle answered, a choice made, a promise kept. pay: up to '+GA_LIMIT.pay+' credits. One already given is reshaped by its id (RIGHT NOW lists them): {"do":"objective","id":"<id>","title":"...","to":"..."} changes what it says, where it is, what it is about or when it is done; "done":true completes and pays it; "drop":true takes it off their map.\n'
+  +'- {"do":"objective","title":"...","to":"...","pay":20}: give the visitor an objective — a quest: a marker on their map and a beam of light at the place; it is done when they get there — and the moment any objective of yours is done, you are told so in a turn of the game\'s own and asked to carry the story on, so an objective is also your way of being called back when they get there. With "target":"<id>" it is about something or someone put into the hall instead: an enemy (done when it is brought down), a box (done when it is opened), a person (done when the visitor talks with them). With "when":"told" it is done only when you say so — a quest only you can judge: a riddle answered, a choice made, a promise kept. With "bring":"<id of a thing>" it is a fetch quest: done when the visitor carries that thing to its "target" person (gives it to them) or to its place (puts it down there) — the thing must exist first: spawn it, or fetch it from Sketchfab "as":"thing". When a real thing would help an objective — a lamp to find, a key to carry, a gift to give — fetch one and make the objective about it, rather than only a place to reach. pay: up to '+GA_LIMIT.pay+' credits. One already given is reshaped by its id (RIGHT NOW lists them): {"do":"objective","id":"<id>","title":"...","to":"..."} changes what it says, where it is, what it is about or when it is done; "done":true completes and pays it; "drop":true takes it off their map.\n'
   +'- {"do":"story","title":"...","note":"..."}: write a line into THE STORY SO FAR (in RIGHT NOW, below): what has happened, what the visitor chose, what you mean to happen next, what the others should know or keep to themselves. Every character\'s chat is given it, so whoever the visitor speaks to next can carry the story on. "end":true wipes it.\n'
   +'- {"do":"start","what":"tour"}: start something the hall has: tour (the walk with Elara, from the garden), fountain 1, fountain 2, fountain 3 (the conversations with the fountain), story <name> (the story circles on level '+ORG_LVL+'), drill (the combat drill on lab 2), nightmare, episode 1. And the games behind the hall, which take the visitor out of the hall until they have played: fountain keeper, cerebrum, delivery.\n'
   +'- {"do":"spawn","what":"robot","name":"...","id":"...","at":"..."}: put someone or something into the hall. People: robot, woman, man, soldier, scientist. With a "persona" (who they are, a few sentences) they have a mind and a voice of their own and the visitor can talk with them; with "lines":["..."] they say those when spoken to; with "greet":"..." they say that, once, when the visitor first comes up to them. "voice":"male" or "female", or one by name (VOICES, below); "pitch" 0.9 to 1.1 — a shade lower or higher, no more: further from 1 a voice stops sounding like a person. With "hostile":true they are an enemy: robots come at the visitor, soldiers hold their ground; "nightmare" is the lab\'s monster, one at a time. Nothing can hurt the visitor; the visitor, Elara, Jack and Optimus shoot enemies down. Things: crate, orb, pillar, cube, ring, with "color", "size" and a "note" the visitor reads on it.\n'
   +'- {"do":"change","who":"<id>","persona":"...","name":"...","hostile":true}: someone put into the hall becomes someone else as the story turns: a new "persona", or "adds" (something they now know, feel or want, added to who they are), a new "name", "lines", "voice" or "pitch"; "hostile":true turns a friend into an enemy, "hostile":false an enemy into a friend who can be talked with (a robot, woman, man, soldier or scientist; not someone fetched from Sketchfab).\n'
-  +'- {"do":"sketchfab","find":"grey alien","as":"character","name":"...","persona":"...","say":"...","voice":"male","size":2,"motion":"hover"}: fetch a model from Sketchfab\'s free library — almost anything exists there: creatures, people of every kind, vehicles, furniture, monuments, food — and put it where the visitor is (or "at" a place). It takes some seconds to arrive. "as":"thing": it stands there ("size" in metres, a "note" the visitor reads on it). "as":"character": it is someone — with a "persona" it has a mind and a voice of its own, it says "say" as it arrives — its own first words on what the visitor wanted of it, a question for them in it if that suits — and from then on the visitor is talking with IT, not with you: its chat opens for them. Put somewhere the visitor is not ("at" another place or space), it waits there instead and says "say" when the visitor first comes up to it. Someone is always looked for among Sketchfab\'s RIGGED models. For a human-shaped one the game makes sure of more: it tries up to three until it has one whose skeleton the hall can read, and that one plays every animation in the list below like anyone ("anim"), stands in the hall\'s idle and gestures as it talks. For an animal or any creature that is not human-shaped, say "humanoid":false: it plays the animations it came with, and "motion" (hover, bob, spin, sway or none) is all else it has. You are told how it turned out, and the names of its own animations, when it arrives. It does not walk about. "as":"place": surroundings — a forest, a street, a room (in "find", words like scene, diorama, environment, island or interior get whole surroundings and not a single thing) — made in a space of the Hologram Room (the first with nothing running; "space":3 says which; "space":"here" replaces the one the visitor stands in), and the visitor and whoever follows are taken there at once; what you do next happens there. With "go":false the visitor stays where they are and the place waits — one got ready for later in a story; {"do":"teleport","to":"holo 3"} takes them to it. A place can stand in each of the '+HOLO.spaces.length+' spaces at once, and the visitor can be moved between them: the spaces, what each holds and where things are in it are listed under the map. When the visitor asks for something or someone, do it in this same answer — do not offer it, describe it or ask whether they would like it first — and a thing standing there is the least of it: make something of it if you can — a talk, a small story, a question for them, a part for you or the others to play in it.\n'
+  +'- {"do":"sketchfab","find":"grey alien","as":"character","name":"...","persona":"...","say":"...","voice":"male","size":2,"motion":"hover"}: fetch a model from Sketchfab\'s free library — almost anything exists there: creatures, people of every kind, vehicles, furniture, monuments, food — and put it where the visitor is (or "at" a place). It takes some seconds to arrive. "as":"thing": it stands there ("size" in metres, a "note" the visitor reads on it) — and, 1.6 m or less, the visitor can PICK IT UP (E), carry it, put it down where they stand and give it to someone (RIGHT NOW says who carries or has what), so a thing can be found, carried and delivered. "as":"character": it is someone — with a "persona" it has a mind and a voice of its own, it says "say" as it arrives — its own first words on what the visitor wanted of it, a question for them in it if that suits — and from then on the visitor is talking with IT, not with you: its chat opens for them. Put somewhere the visitor is not ("at" another place or space), it waits there instead and says "say" when the visitor first comes up to it. Someone is always looked for among Sketchfab\'s RIGGED models. For a human-shaped one the game makes sure of more: it tries up to three until it has one whose skeleton the hall can read, and that one plays every animation in the list below like anyone ("anim"), stands in the hall\'s idle and gestures as it talks. For an animal or any creature that is not human-shaped, say "humanoid":false: it plays the animations it came with, and "motion" (hover, bob, spin, sway or none) is all else it has. You are told how it turned out, and the names of its own animations, when it arrives. It does not walk about. "as":"place": surroundings — a forest, a street, a room (in "find", words like scene, diorama, environment, island or interior get whole surroundings and not a single thing) — made in a space of the Hologram Room (the first with nothing running; "space":3 says which; "space":"here" replaces the one the visitor stands in), and the visitor and whoever follows are taken there at once; what you do next happens there. With "go":false the visitor stays where they are and the place waits — one got ready for later in a story; {"do":"teleport","to":"holo 3"} takes them to it. A place can stand in each of the '+HOLO.spaces.length+' spaces at once, and the visitor can be moved between them: the spaces, what each holds and where things are in it are listed under the map. When the visitor asks for something or someone, do it in this same answer — do not offer it, describe it or ask whether they would like it first — and a thing standing there is the least of it: make something of it if you can — a talk, a small story, a question for them, a part for you or the others to play in it.\n'
   +'- {"do":"resize","id":"...","size":3}: what was fetched comes at a guessed size, and the guess is often wrong: "size" (metres high) or "factor" puts a model right; "id":"place" with a "factor" does it for the surroundings of the space the visitor stands in ("space":2 for another).\n'
+  +'- {"do":"place","what":"<the surroundings\' name>","at":<a place>,"turn":90}: several surroundings can stand in one space of the Hologram Room, side by side — the hall sets them in a row as they are made (the room does not repeat then), and the spaces list below gives each one\'s size and centre; this moves one to stand centred at that place, turned by degrees. Lay the places out before you put people in them.\n'
   +'- {"do":"end","space":2}: ends what runs in a space of the Hologram Room ("space" left out: the one the visitor stands in): the place and everyone and everything put into it go, and the space is bare again.\n'
   +'- {"do":"box","at":"...","inside":"...","credits":10}: a box for the visitor to find and open: a message inside, credits if you like (up to '+GA_LIMIT.box+').\n'
   +'- {"do":"effect","what":"beam","at":"...","color":"#7fe6ff","seconds":20}: beam, sparks, rings, glow, confetti, snow, petals, embers, flash, dark, shake, lightning.\n'
@@ -13433,7 +13526,7 @@ addEventListener('keydown',e=>{
   if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')&&e.code!=='Escape')return;   // typing in a form field — not game input
   keys[e.code]=true;
   if(e.code==='Space')e.preventDefault();
-  if(e.code==='KeyE'&&state.phase==='play'&&curHot&&!paused&&!anyModalOpen())curHot.fn();
+  if(e.code==='KeyE'&&state.phase==='play'&&(curHot||GA.carry)&&!paused&&!anyModalOpen())hotUse();
   if(e.code==='KeyT'&&tour.active)skipTour();
   if((e.code==='Digit1'||e.code==='Numpad1')&&state.phase==='play'&&!paused&&!anyModalOpen())vmPick(1);   // fists
   if((e.code==='Digit2'||e.code==='Numpad2')&&state.phase==='play'&&!paused&&!anyModalOpen())vmPick(2);   // the pistol
@@ -13511,7 +13604,7 @@ addEventListener('mousedown',e=>{
   if(!look.locked){if(!goFullscreen())lockPointer();return;}
   // every hotspot fires on a plain left click as well as E (the hand crosshair shows when one is in reach);
   // with nothing to use under the crosshair the click shoots or punches (2026-09-29, asked for — see YOUR ARMS)
-  if(state.phase==='play'&&curHot&&!paused&&!anyModalOpen())curHot.fn();
+  if(state.phase==='play'&&(curHot||GA.carry)&&!paused&&!anyModalOpen())hotUse();
   else if(state.phase==='play'&&!paused&&!anyModalOpen())vmUse();
 });
 // suppress the browser menu over the 3D world only — menus, modals and inputs keep
@@ -13607,7 +13700,7 @@ const TOUCH={on:false,eBtn:null,hidden:false,sync:null};
 
   // ---------- E button — always on screen (touch has no hover to reveal it) ----------
   let lastTap=0;
-  const pressE=()=>{if(state.phase==='play'&&curHot&&!paused)curHot.fn();};
+  const pressE=()=>{if(state.phase==='play'&&(curHot||GA.carry)&&!paused)hotUse();};
   eb.addEventListener('touchstart',e=>{
     e.preventDefault();e.stopPropagation();
     lastTap=Date.now();eb.classList.add('hit');pressE();
@@ -13834,13 +13927,13 @@ function update(dt){
     if(along<best&&!hotBlocked(ex,ey,ez,ax,az)){best=along;curHot=h;}     // and only if you can see it: no wall on the way
   }
   if(LIFTX.aim)curHot=LIFTX.hot;                                      // an elevator button under the crosshair beats every hotspot
-  const promptNow=curHot?String(curHot.label):null;                 // the page is only touched when the prompt changes (3 ms a frame otherwise)
+  const promptNow=GA.carry?(gaCarryChar()?'Give '+escHtml(GA.carry.name)+' to '+escHtml(gaCarryChar().name):'Put down '+escHtml(GA.carry.name)):curHot?String(curHot.label):null;   // the page is only touched when the prompt changes (3 ms a frame otherwise); full hands: give or put down
   if(promptNow!==promptLast){ promptLast=promptNow;
     if(promptNow){promptText.innerHTML=promptNow;promptEl.style.display='block';}   // just the action (2026-09-19: the "Click or press E —" in front of it is gone, asked for)
     else promptEl.style.display='none'; }
   const live=look.locked&&state.phase==='play'&&!paused&&!anyModalOpen();
   crossEl.classList.toggle('on',live); crossEl.classList.toggle('aim',live&&!!LIFTX.aim);
-  crossEl.classList.toggle('hand',!!curHot&&!LIFTX.aim&&live);
+  crossEl.classList.toggle('hand',(!!curHot||!!GA.carry)&&!LIFTX.aim&&live);
   if(TOUCH.eBtn)TOUCH.eBtn.classList.toggle('live',!!curHot);   // the touch E lights up in range
 
   // Dr. Vance briefs you the first time you reach the Nexus chamber
