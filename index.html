@@ -1874,6 +1874,7 @@ const GUESTS=[
   {id:'jack',    file:'jack_hall.glb',          name:'JACK',         cx:  8,cz:-32, col:0xffd27f, yaw:Math.PI, sole:true, after:'start', quiet:true, plain:true, gun:true, share:true,   // share: one parse and one set of textures for both Jacks (guestSource)
    hide:/Beard_Transparency|pistolLow/, bodyFrom:{url:'assets/people/elara.glb?v=2', clip:'Idle_Male'}, lookAt:14, gaze:true, aimKey:'jackAim',   // Idle_Male: the ActorCore male idle (library no. 10), merged into elara.glb; aimKey: his aim offset sliders on the dev page
    follow:{walk:'Walk',run:'Run_M'},   // he can be told to come along (2026-09-25): his walk and run from the same file as his idle — see guestFollower
+   followDefault:false,                // …but he does not by himself any more (2026-10-07, asked for: "put jack in the hall near the ideas room just standing there for now (for new users), maybe use him later"): on a device where he has never been told to follow, he stands here at his post. 'Follow me' on his card, and Episode 1 once you have set off with him, still bring him along — and that is remembered, as before
    speaks:["Hello. I'm Jack. Elara asked me to keep an eye on this end of the hall.",
            "Nothing to see here yet. She's still building it.",
            "Go on, have a look around. I'll be here."]},   // press E on him: one line per press, round and round
@@ -9270,7 +9271,7 @@ function guestFollower(g,bg,root,grp,mx){
     const c=splitClip(remapClip(src,bg.scene,root,'Body_'+k),'Body_'+k,false); if(c.tracks.length)acts[k]=mx.clipAction(c); }
   if(!acts.walk){ console.warn(g.name+': no walk would map — he cannot follow'); return; }
   const p={key:g.id,g,mesh:grp,yawOff:g.restYaw,talk:0,following:false,side:-1,
-    fl:{on:followPref(g.id,true),stuck:0,away:0,gave:null},                  // following is the default (2026-09-25: all three follow unless told to stay)
+    fl:{on:followPref(g.id,g.followDefault!==false),stuck:0,away:0,gave:null},   // following was the default for all three (2026-09-25); since 2026-10-07 Jack's is to stand at his post (his entry's followDefault) — what was chosen on this device still counts
     block:{x:grp.position.x,z:grp.position.z,rad:0.02,off:false},          // as Elara's: small on purpose, you can stand right up to him
     tier(t,spd){ const run=t===2&&acts.run; guestBody(g,run||acts.walk,spd/(run?4.58:1.79)); }};   // at the pace he is moved: 1.79 / 4.58 m/s is what the walk / run covers on his body at timeScale 1 (measured 2026-09-25)
   if(p.fl.on&&!EP1_DUE){ const [bx,bz]=besideYou(p.side); grp.position.x=bx; grp.position.z=bz; grp.position.y=player.y;   // already with you: behind you, on your floor — not at his post by the Ideas room (Episode 1 places him itself)
@@ -13325,6 +13326,8 @@ function l5Said(){try{return localStorage.getItem('atd:l5jack')==='1';}catch(e){
 animated.push({update(){
   if(!L5_LINE.due||paused||state.phase!=='play')return;
   const g=ep1Jack(), near=!!(g&&g.grp&&Math.abs(g.grp.position.y-player.y)<2&&Math.hypot(g.grp.position.x-player.pos.x,g.grp.position.z-player.pos.z)<12);
+  const coming=!!(g&&g.follower&&g.follower.fl.on);   // he follows you: the six seconds are his to catch up in
+  if(!near&&!coming){ if(ZONE.now!=='l5')L5_LINE.due=false; return; }   // standing at his post in the hall (his default since 2026-10-07) he is not on his way: the line waits for a time he is with you, instead of coming from nowhere
   if(near||state.time-L5_LINE.t0>6){ L5_LINE.due=false; try{localStorage.setItem('atd:l5jack','1');}catch(e){} say('jack',L5_LINE.text); }
 }});
 // Elara's few words on the Hologram Room when you come up to lab level 5 (2026-10-01, asked for: "when going to level 5 lab I
