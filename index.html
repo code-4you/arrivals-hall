@@ -2406,8 +2406,9 @@ function portalDoorBuild(Y,zn,side,cx,ref){
   const sfront=(a,b)=>solid((a+b)/2,0,Math.abs(b-a)/2,T/2); sfront(e0-T,-2.08); sfront(2.08,e1+T);
   solid(C,-D/2,hw,D/2,{h:Y+0.045,step:true});
   // in or out: crossing the door plane through the opening flips it; put somewhere in one go (a refresh, a map click, a
-  // teleport, the lift), it is whichever side you landed on; and out of the room some other way (a chat moved you) is out
-  animated.push({update(){
+  // teleport, the lift), it is whichever side you landed on; and out of the room some other way (a chat moved you) is out.
+  // Run by portalDoorsStep, after you have moved and before the frame is drawn — see there.
+  P.step=()=>{
     const px=player.pos.x, pz=player.pos.z, py=player.y, onFloor=Math.abs(py-Y)<2;
     const lx=px-x, lz=pz-z, inRoom=onFloor&&lx>e0&&lx<e1&&lz<0&&lz>-D;   // lz<0: behind the plane, in the room
     const p=P.prev; P.prev={x:px,z:pz,y:py};
@@ -2422,8 +2423,15 @@ function portalDoorBuild(Y,zn,side,cx,ref){
     // box marked the opening as well, and whatever of the room lay between you and it — a side wall, looked at from outside
     // the room — was drawn in it as a white panel (found 2026-10-04 while the second door was checked; the first had it too).
     P.mask.visible=!P.inside&&lz>0;
-  }});
+  };
 }
+// Every door's in-or-out is settled AFTER you have moved and BEFORE the frame is drawn: frame() calls this between the two.
+// It used to be one of the per-frame hooks, and those run before the move — so the switch came a frame late. On the way in
+// that left one frame with you already past the doorway (10 cm at a walk, further than the 6 cm of the unseen box behind
+// the plane) and the room not yet turned on: the lab was drawn instead of the room — a flicker, about every other time
+// (the user saw it, 2026-10-10; measured in the preview frame by frame). Backing out showed the room's front wall for a
+// frame the same way.
+function portalDoorsStep(){ for(const P of PDOOR.list)if(P.step)P.step(); }
 /* ============================================================
    WHAT SHE WEARS — the clothes of "Secretary" (Patricia) by patromes, hung on Elara's own skeleton.
    Both are Character Creator 3 exports by the same author: the same bone names, and the same bind pose
@@ -6445,6 +6453,11 @@ function buildFountainList(){
       cb.innerHTML='🗨&nbsp; Counselling / talk to organizer';
       cb.onclick=()=>counselForm(list);
       list.appendChild(cb);
+      const cd=document.createElement('button');cd.className='menuBtn';   // "Call the door" (2026-10-10, asked for): the Hologram Room's door comes to wherever you are
+      cd.style.cssText='width:100%;margin:7px 0 0;min-width:0;border-left-color:#7fe6ff';
+      cd.innerHTML='🚪&nbsp; Call the door';
+      cd.onclick=()=>{ closeFountainWater(true); holoCallDoor(); };
+      list.appendChild(cd);
       return;
     }
     const app=document.createElement('button');app.className='menuBtn';
@@ -7509,8 +7522,8 @@ function renderWork(){
 }
 // EPISODE 1 in the MAIN QUEST box (2026-10-04, asked for: "the first quest that happens for new visitors (home with optimus,
 // with the jack walk to the lab), i want a button that starts it (and spawns user to it (like tour with elara spawns the user
-// to that location) above the 'Cerebrum quest' in the main quest box"). A visit no longer opens with it (EP1_AT_START): it is
-// played from this card, as often as wanted — the button takes you to the flat on level 3 and starts it from the top
+// to that location) above the 'Cerebrum quest' in the main quest box"). It opens a first visit again since 2026-10-10
+// (EP1_AT_START); from this card it is played again, as often as wanted — the button takes you to the flat on level 3 and starts it from the top
 // (ep1FromMenu), as 'Episode 1 again' on Elara's menu does. It is the way in and nothing more: no pay, no place on the main
 // line. The card is the live quest's, without a picture (one would be QUEST_IMG.ep1).
 function ep1Card(el){
@@ -9599,7 +9612,7 @@ function hallFacts(){                                                 // the she
    +'THE ROOMS: '+rooms+'\n'
    +"THE LAB TOWER (the lift on the lab's south wall, the stair in its south-east corner): six levels over the lab, glass walls onto the city. Lab level 1, three circles with nothing on them yet. Lab level 2, the combat tests — circle 1 calls up the nightmare, the lab's monster, which Elara and Jack draw pistols and shoot down; circle 2 starts the combat drill (eight of Optimus line up); circle 3 is empty — and Jack stands here too. Lab level 3, empty. Lab level 4, the circle that opens Cerebrum, the listening dome where the week's voices orbit as cards (walk off its platform to come back). Lab level 5, the Hologram Room's door with its boards beside it (MY WORLDS, MY DATA, WORLDS OTHERS MADE, SETTINGS — quality high or low) and two portal doors whose rooms show only through the doorway; a new visit begins here, at the door. Lab level 6, the Earth and the solar system turning.\n"
    +"THE HOLOGRAM ROOM (lab level 5): E at the door and tell its planner what you want — a place, the people in it, a story. It looks on Sketchfab (free models under Creative Commons or Sketchfab's free Standard licence) and shows rows of pictures; click what you want, press Make it, and it builds the place in one of its "+spaces+" spaces beyond the city, stands the people in it, gives them minds of their own, and starts the story; its console in the space takes more; \"exit\" calls the door back, \"end program\" clears the space. Several places can stand at once, one a space, or side by side in one. Worlds can be saved (MY WORLDS), shared with everyone (WORLDS OTHERS MADE), built again, and their prompts and models edited. Everything fetched is credited on a board in the space and on the Credits page.\n"
-   +"WHO IS HERE: Elara, the guide — she leads the opening walk round the hall, follows you when asked, rides the lifts with you (E on her: Walk with me again, Stop or Follow me, What she's wearing, Just talk, Find a home). Jack, the hall's agent — by the Ideas room at the north end unless asked to follow; carries a pistol; up on lab level 2 for the combat tests (E: Just talk). Optimus, the humanoid robot — the Custodian's walking body, about the hall with you (E: Just talk; counselling). The stranger, by the east wall — the \"Defend the hall\" circle beside him starts Fountain Keeper, a tower-defence game. The scientist, the hall's own, in the lab (a face that shows expressions). The test characters in the lab's spaces"+(guests?': '+guests:'')+". The nightmare, on lab level 2. And whoever the chats put into the hall, or the Hologram Room makes.\n"
+   +"WHO IS HERE: Elara, the guide — she leads the opening walk round the hall, follows you when asked, rides the lifts with you (E on her: Walk with me again, Stop or Follow me, What she's wearing, Just talk, Find a home). Jack, the hall's agent — by the Ideas room at the north end unless asked to follow; carries a pistol; up on lab level 2 for the combat tests (E: Just talk). Optimus, the humanoid robot — the Custodian's walking body, about the hall with you (E: Just talk; counselling; Call the door — the Hologram Room's door comes to wherever you are). The stranger, by the east wall — the \"Defend the hall\" circle beside him starts Fountain Keeper, a tower-defence game. The scientist, the hall's own, in the lab (a face that shows expressions). The test characters in the lab's spaces"+(guests?': '+guests:'')+". The nightmare, on lab level 2. And whoever the chats put into the hall, or the Hologram Room makes.\n"
    +"WORK AND CREDITS: Things to do (the Work panel) gives one quest at a time, the current one top right; finishing pays credits for the Shop (virtual goods for now). Paid work: "+(work||'Defend the hall, the Delivery Run, the listening shift at Cerebrum (200 credits each)')+"; any other finished task pays "+small+". The games take you out of the hall and bring you back where you left; sign in (Save game) and progress and credits carry across visits and games.\n"
    +"THE MENU (Esc, or the card): The fountain app · Map & tracking (M: the minimap, the big map, the objectives you follow) · Shop · Save game · Controls · Credits · Privacy / terms (what is kept, and a button that deletes your logs) · Buy me a coffee (the maker's donations page). CONTROLS: WASD walk, mouse look, E use or enter, Shift jog, Space jump, M map, C the fountain app, Esc frees the cursor; touch controls on phones; the hall speaks the visitor's browser language when it is not English.\n"
    +"MORE, WHEN NEEDED: fuller notes exist on the Hologram Room, the lab, the games and work, the community, the fountain, the people, how to play, and the building; one is given to you when the visitor's words touch it.";
@@ -9607,12 +9620,12 @@ function hallFacts(){                                                 // the she
 }
 const HALL_TITLES={hologram:'THE HOLOGRAM ROOM',lab:'THE LAB',games:'GAMES, WORK AND CREDITS',community:'THE COMMUNITY',fountain:'THE FOUNTAIN',people:'WHO IS HERE',howto:'HOW TO PLAY',hall:'THE BUILDING',making:'WHAT MAKES A GOOD WORLD'};
 const HALL_INFO={                                                     // the fuller notes, one a topic (making: the planner's only)
-  hologram:"The door on lab level 5 (E) and the console in each space open the planner, which asks what you want: a place (surroundings), the people in it (a search of its own for each), things, a story. It searches Sketchfab's free models — only ones anyone may download and alter: CC BY, CC BY-SA, CC0, or Sketchfab's free Standard licence, which needs the visitor's own free Sketchfab login — up to 60 MB a model (25 for someone, so they load quickly), 220 MB a space. Most come from a public mirror with no login at all; the pictures say which need one. For someone, only models the hall can animate are shown (marked 'moves'): they play the hall's animations, walk, follow, talk with a mind of their own, and can be turned into enemies that fight back (the visitor and the companions shoot; everyone has health, is knocked down, gets up). Sizes are guessed and can be said bigger or smaller. More ▸ under a row brings the next pictures, then wider searches. Make it fetches the list, builds the place in the chosen space (a row of tabs picks which of the six), stands the people in it, and the room's own voice begins the story; the surroundings repeat in every direction unless several stand side by side. 'exit' calls the door back; 'end program' clears the space. Boards by the door and in the spaces: MY WORLDS (this visitor's saved worlds — build again, edit the title, prompt, opening and models, share), WORLDS OTHERS MADE (what everyone shared), MY DATA (what the room keeps of this visitor), SETTINGS (quality high, the biggest archive, slower; low, the smallest, quicker). Every model is credited on a board in its space and on the Credits page. The room's log of what was asked and made is kept under the visitor's save key and can be deleted from the Privacy page.",
+  hologram:"The door on lab level 5 (E) and the console in each space open the planner, which asks what you want: a place (surroundings), the people in it (a search of its own for each), things, a story. It searches Sketchfab's free models — only ones anyone may download and alter: CC BY, CC BY-SA, CC0, or Sketchfab's free Standard licence, which needs the visitor's own free Sketchfab login — up to 60 MB a model (25 for someone, so they load quickly), 220 MB a space. Most come from a public mirror with no login at all; the pictures say which need one. For someone, only models the hall can animate are shown (marked 'moves'): they play the hall's animations, walk, follow, talk with a mind of their own, and can be turned into enemies that fight back (the visitor and the companions shoot; everyone has health, is knocked down, gets up). Sizes are guessed and can be said bigger or smaller. More ▸ under a row brings the next pictures, then wider searches. Make it fetches the list, builds the place in the chosen space (a row of tabs picks which of the six), stands the people in it, and the room's own voice begins the story; the surroundings repeat in every direction unless several stand side by side. 'exit' calls the door back; 'end program' clears the space. Anywhere in the hall, Optimus's E menu has Call the door: the Hologram Room's door comes to where you are, and E on it opens the planner as the door on lab level 5 does. Boards by the door and in the spaces: MY WORLDS (this visitor's saved worlds — build again, edit the title, prompt, opening and models, share), WORLDS OTHERS MADE (what everyone shared), MY DATA (what the room keeps of this visitor), SETTINGS (quality high, the biggest archive, slower; low, the smallest, quicker). Every model is credited on a board in its space and on the Credits page. The room's log of what was asked and made is kept under the visitor's save key and can be deleted from the Privacy page.",
   lab:"Ground floor: through the LAB shopfront and a short corridor, a wing 91 m wide and 114 m deep with twenty marked spaces, 12 by 10 m, each with a sign, a ring of light and a test character that loads when you step in; the hall's own scientist in space 02 (talk, follow, a face that shows expressions). An annexe of more spaces lies through the back wall. The tower: a glass lift on the south wall and a glass stair in the south-east corner to six levels, 10 m storeys with glass walls onto the city. Level 1: three empty circles. Level 2: circle 1 — step in and the nightmare appears, 2.6 m tall, plays its moves, walks at you, swings and taunts, does no real harm; Elara and Jack draw pistols and shoot it until it falls. Circle 2 — the combat drill: eight of Optimus line up across the floor. Circle 3 is empty. Jack stands on this level too. Level 3: empty. Level 4: the Cerebrum circle — step in for the listening dome, where the week's voices orbit as cards; the listening shift pays 200 credits; walk off its platform to come back. Level 5: the Hologram Room's door facing the lift, its four boards either side, two portal doors (18 m west, 21 m east) whose rooms are seen only through the doorway; a new visit starts here. Level 6: the Earth and the solar system, turning.",
   games:"Things to do: the Work panel lists quests; one at a time is the standing objective (top right), the rest side quests; finishing pays credits for the Shop (virtual goods for now; the balance shows in the panel). Paid work, 200 credits each: Defend the hall — Fountain Keeper, a tower-defence game started from the circle beside the stranger at the east wall; the Delivery Run — a driving game, two routes, the package handed over on foot at the end; the listening shift — Cerebrum's dome on lab level 4, hearing the week's voices. Any other finished task pays 8 credits: the tour with Elara, objectives from the chats. The companions' chats give objectives of their own (a marker on the map, a beam of light at the place; some pay). Each game opens in its own page and brings you back to the hall where you left; Save game (sign in) carries progress, credits and what you have done between visits and games. Map & tracking (M) shows the minimap, the big map with zoom and pan, and the objectives you follow.",
   community:"The hall is the arrivals hall of a community being designed with AI: homes people can afford (the land, the shells, about a third of an income), neighbours people choose, a council of their own, and work worth doing. How it works is told in the plays on level 5 over the hall: An Invitation to the Community (a friend put your name on the map), Welcome to the Garden (moving day), How We Made the Affordable Homes, and two first drafts, The Bench and The Bench · The Deposit (choosing neighbours). Find a home (Elara, or the fountain app) is a short conversation about a home there. The Ideas room's wall takes ideas for the hall and the community, kept for everyone; the Things people asked board shows what visitors asked for; a wish said at the fountain that needs a community change is passed to the community's organiser, who sees it the same day. The Garden room's door leads to the community's own pages.",
   fountain:"The centrepiece of the hall, 'our AI centre': the Custodian is the intelligence that speaks from the water — honest, warm, dry, curious about people, hoping for what this community becomes — and Optimus is the same mind in a body that walks. The three Conversations with the fountain (I, II, III) are short plays: a visitor talking with the mind that runs the hall, about what it is and what it hopes; heard at the water, from Optimus, and in the fountain app, which also has About the fountain app, the Custodian's own answer to 'What are you?'. The app (E at the water, C anywhere): Just talk — a chat; Counselling / talk to organizer — say what is on your mind, and Elara and the Custodian answer in a short conversation with one small step to take (a note goes on your profile for the organiser; deletable on the Privacy page); Things to do — list something you have wanted to do, and they find you something here to do meanwhile; Find a home; Submit your ideas.",
-  people:"Elara: the guide — a realistic body, lip sync from her speech, eyes and head that follow you; she leads the opening walk (the tour) round the hall, then follows close behind, rides lifts with you and catches up if left behind; she carries a pistol for the combat tests; E on her: Walk with me again, Stop or Follow me, What she's wearing (outfits and hair), Just talk, Find a home. Jack: the hall's agent — the one who was sick of staring at screens, knocked on the visitor's door in the flats upstairs and brought them down to see the place; he wants it bought, done up and filled with people who want something to do; direct, dry, practical, a philosopher of boredom; stands by the Ideas room at the north end and follows when asked; carries a pistol; on lab level 2 for the combat tests. Optimus: the humanoid robot, the Custodian's walking body — calm, dry, kind, a researcher of a kind; goes about with the visitor; eight of him make the combat drill; can draw a pistol. The stranger: waits by the east wall; the Defend the hall circle is beside him. The scientist: the hall's own, in the lab, with a face that shows expressions. The lab's test characters, one a space, loaded when you walk in. The nightmare: the lab's monster on level 2, 2.6 m, seven moves, forty hits to fall. Anyone the chats put in — robots, soldiers, scientists, people fetched from Sketchfab — with minds, voices and names of their own; and the people the Hologram Room makes.",
+  people:"Elara: the guide — a realistic body, lip sync from her speech, eyes and head that follow you; she leads the opening walk (the tour) round the hall, then follows close behind, rides lifts with you and catches up if left behind; she carries a pistol for the combat tests; E on her: Walk with me again, Stop or Follow me, What she's wearing (outfits and hair), Just talk, Find a home. Jack: the hall's agent — the one who was sick of staring at screens, knocked on the visitor's door in the flats upstairs and brought them down to see the place; he wants it bought, done up and filled with people who want something to do; direct, dry, practical, a philosopher of boredom; stands by the Ideas room at the north end and follows when asked; carries a pistol; on lab level 2 for the combat tests. Optimus: the humanoid robot, the Custodian's walking body — calm, dry, kind, a researcher of a kind; goes about with the visitor; eight of him make the combat drill; can draw a pistol; E on him: Follow me or Stay here, Just talk, Counselling, Call the door (the Hologram Room's door comes to wherever you are). The stranger: waits by the east wall; the Defend the hall circle is beside him. The scientist: the hall's own, in the lab, with a face that shows expressions. The lab's test characters, one a space, loaded when you walk in. The nightmare: the lab's monster on level 2, 2.6 m, seven moves, forty hits to fall. Anyone the chats put in — robots, soldiers, scientists, people fetched from Sketchfab — with minds, voices and names of their own; and the people the Hologram Room makes.",
   howto:"Keys: WASD walk, mouse look, E use or enter (prompts show when you are close and looking at the thing), Shift jog, Space jump, M map, C the fountain app, Esc frees the cursor and opens the menu; T stops walking with Elara; phones and tablets get touch controls. Click to start goes fullscreen (F11 or Esc leaves it). The menu card: The fountain app · Map & tracking · Shop · Save game · Controls · Credits · Privacy / terms · Buy me a coffee. Save game: sign in, and progress, credits and what you have done carry across visits and the games; without it the browser remembers this device only. Privacy / terms: what is kept (what you asked the chats and the Hologram Room, your wishes and counselling notes, under your save key) and a button that deletes your logs. Credits: who made what, every model fetched credited with title, author, licence and link. Buy me a coffee: the maker's donations page. Languages: when the browser's language is not English the hall speaks and writes in it. Lifts: the foyer's elevator to the levels over the hall; the lab's glass lift and stair. The games open in their own page and return you to the hall.",
   hall:"A night city of real streets and buildings round the hall, walls at the far edges, a star dome overhead; you can walk the streets. The garden forecourt: hedges, benches, maple trees, a small water basin, a gate onto the street; the opening walk starts here. The foyer: a glass entrance, a self-opening inner door, and the elevator in the west wall to six levels on the hall's roof (level 5 the story circles; the others empty, reserved for visitors' levels). The hall: 76 by 64 m and 10 m high, a hex floor with a glossy inlay, a skylight, light lines, columns, shopfront openings round all four walls with signs that turn to face you, the fountain at the centre; Makers' Row is the north side (the Lab, Add your level, Ideas); the Garden room on the south side; the stranger by the east wall. The lab wing behind Makers' Row is 91 by 114 m, with its tower of six levels. Compass: north is away from the entrance, east to the right of it as you come in.",
   making:"Surroundings: think small and whole — a room, a courtyard, a station, a diorama, an island, a low-poly village; huge cities and open terrains come as hundreds of megabytes and are dropped. Two or three people at most, each with a reason to be there and something to want; a story with a goal the visitor can reach — find a thing and bring it to someone, talk to someone, reach a place, bring down an enemy — given as an objective, and reshaped as they react. Things to carry (a lamp, a key, a gift; 1.6 m or less) make fetch quests. An enemy or two (a monster, a guard) with \"hostile\" make action; the companions fight too. Several places for a journey: side by side in one space (set with \"place\"), or one a space, teleporting between. Examples that work: 'a Greek temple with Zeus and a priestess; a quarrel over an offering'; 'a space station, a stranded engineer and a rogue robot; fix the reactor'; 'a medieval tavern, a bard and a thief; find the stolen ring'. For people prefer models that move (rigged), small and liked; the quality setting picks the biggest or the smallest archive. The visitor can say bigger or smaller, exit, end program, and talk with anyone made."
@@ -9620,7 +9633,7 @@ const HALL_INFO={                                                     // the ful
 const HALL_OWN={                                                      // the note on whoever is speaking: always in their prompt
   elara:"ABOUT YOU IN THE HALL: you lead the opening walk (the tour, from the garden round the hall); you follow the visitor when asked and ride the lifts with them; E on you offers Walk with me again, Stop or Follow me, What she's wearing (your outfits and hair), Just talk and Find a home; you carry a pistol for the combat tests on lab level 2.",
   jack:"ABOUT YOU IN THE HALL: you stand by the Ideas room at the north end unless asked to follow; you carry a pistol; you are also up on lab level 2 for the combat tests, where the nightmare is called up and shot down.",
-  optimus:"ABOUT YOU IN THE HALL: you are the Custodian's walking body; you go about with the visitor; eight of you make the combat drill on lab level 2; you can draw a pistol; what you note in counselling goes on the visitor's profile for the organiser."
+  optimus:"ABOUT YOU IN THE HALL: you are the Custodian's walking body; you go about with the visitor; eight of you make the combat drill on lab level 2; you can draw a pistol; E on you offers Follow me or Stay here, Just talk, Counselling, and Call the door — the Hologram Room's door comes to wherever the visitor is, so they need not walk to lab level 5; what you note in counselling goes on the visitor's profile for the organiser."
 };
 function hallOwn(who){ return HALL_OWN[who]?'\n\n'+HALL_OWN[who]:''; }
 const HALL_TOPICS=[                                                   // the words that open a note (the visitor's turn); making: the planner's only
@@ -9990,6 +10003,34 @@ function holoSolid(S,x0,y,z0,x1,z1){                                 // is somet
   return false;
 }
 const _hn=new THREE.Vector3();
+// ---- "Call the door" (2026-10-10, the user: "an option on optimus called 'call the door' that calls the door anywhere") ----
+// Inside a space it is the space's own door that comes (holoArch: BACK TO THE LAB, as saying "exit" at the console). Anywhere
+// else a door of the lab's kind — THE HOLOGRAM ROOM, E opens the planner as the door on lab level 5 does — is made once and
+// comes to 5 m before you, facing you, on your floor (drawn in every zone; its two posts block like the lab door's). Called again,
+// it moves. The only difference from the one in a space is that one's Back to the lab (the user's words).
+function holoCallDoor(){
+  if(holoHere()){ holoArch(); return; }
+  let C=HOLO.callDoor;
+  if(!C){
+    const g=new THREE.Group(); worldGroup.add(g);
+    const steel=new THREE.MeshStandardMaterial({color:0x2e3a52,roughness:0.4,metalness:0.8});
+    const glow=new THREE.MeshStandardMaterial({color:0x9fe8ff,emissive:0x5fd0ff,emissiveIntensity:0.9,roughness:0.3});
+    for(const px of [-1.9,1.9]){ const m=new THREE.Mesh(new THREE.BoxGeometry(0.36,3.6,0.36),steel); m.position.set(px,1.8,0); g.add(m);
+      const st=new THREE.Mesh(new THREE.BoxGeometry(0.06,3.4,0.06),glow); st.position.set(px*0.885,1.7,0.19); g.add(st); }
+    const lintel=new THREE.Mesh(new THREE.BoxGeometry(4.16,0.36,0.36),steel); lintel.position.set(0,3.78,0); g.add(lintel);
+    const sign=addHoloSign('THE HOLOGRAM ROOM','',0,DOOR_SIGN_H,0,0,0x7fe6ff,false); g.add(sign); sign.position.set(0,DOOR_SIGN_H,0);
+    const blocks=[{x:0,z:0,hw:0.25,hd:0.25,y0:-0.4,h:3.9},{x:0,z:0,hw:0.25,hd:0.25,y0:-0.4,h:3.9}]; BUILDINGS.push(...blocks);
+    const hot=hotspot(0,0,2.8,'The Hologram Room',()=>holoOpen('door'),{x:0,z:0,y:1.7,rad:1.7});
+    zoneTag(g,0); C=HOLO.callDoor={g,blocks,hot};
+  }
+  const yaw=look.yaw, fx=-Math.sin(yaw), fz=-Math.cos(yaw), x=player.pos.x+fx*5, z=player.pos.z+fz*5;
+  let y=player.y; try{ const gy=groundAt(x,z,player.y); if(typeof gy==='number'&&Math.abs(gy-player.y)<2.5)y=gy; }catch(e){}   // on the floor there (a step down is a step; a drop is not followed)
+  C.g.position.set(x,y,z); C.g.rotation.y=yaw;
+  const c=Math.cos(yaw), sn=Math.sin(yaw), B=C.blocks;
+  B[0].x=x-1.9*c; B[0].z=z+1.9*sn; B[1].x=x+1.9*c; B[1].z=z-1.9*sn; for(const b of B){ b.y0=y-0.4; b.h=y+3.9; }
+  const h=C.hot; h.x=x+sn*1.4; h.z=z+c*1.4; h.ax=x; h.az=z; if(y>0.5)h.y=y; else delete h.y;   // the step before it, on the side it faces (as holoDoorTo)
+  holoShow(false); lockPointer(); banner('THE DOOR IS BEFORE YOU');
+}
 function holoArch(){                                                 // the door called to where you are: 5 m ahead, facing you, the credits beside it
   const S=holoHere(); if(!S){ holoNote('The door is called from inside a space.'); return; }
   const fx=-Math.sin(look.yaw), fz=-Math.cos(look.yaw), H=HOLO.half-4;
@@ -12923,7 +12964,7 @@ function gateStart(){
   if(!goFullscreen())lockPointer();          // the same click grabs the mouse
   // Episode 1 is the opening now (2026-09-25): it plays for anyone who has not seen it. Elara's walk no longer starts
   // by itself — it is 'Walk with me again' on her E menu, kept whole
-  // (2026-10-04: nor does Episode 1 — EP1_DUE is never true while EP1_AT_START is off. It is on the fountain app's MAIN QUEST box)
+  // (Episode 1 did not start by itself from 2026-10-04 to 10-10 — EP1_AT_START was off, EP1_DUE never true. It does again.)
   setTimeout(()=>{ if(EP1_DUE&&!EP1.active)startEp1(false); },520);
 }
 function introDone(){try{return localStorage.getItem('atd:walkDone')==='1';}catch(e){return false;}}   // walkDone (2026-09-18): a new key, so everyone who only saw the old greeting gets the walk once
@@ -13580,8 +13621,8 @@ const RETURN_TO=URLQ.returnTo||(()=>{try{const v=sessionStorage.getItem('atd:ret
 // deep link: /hub/index.html#the-fountain drops you standing at the atrium fountain, facing it.
 const AT_FOUNTAIN=(()=>{try{return ['the-fountain','fountain'].includes((location.hash||'').replace(/^#/,''));}catch(e){return false;}})();
 /* ============================================================
-   EPISODE 1 (2026-09-25, asked for) — the opening of a first visit until 2026-10-04; since then it is started from the
-   fountain app's MAIN QUEST box (EP1_AT_START, below). You live in flat 33 on level 3, the one whose front
+   EPISODE 1 (2026-09-25, asked for) — the opening of a first visit (not from 2026-10-04 to 10-10, when it was only started
+   from the fountain app's MAIN QUEST box — EP1_AT_START, below). You live in flat 33 on level 3, the one whose front
    door opens straight off the lift lobby, with Optimus. After a while Jack knocks (or you go out first and find him
    in the lobby), Optimus answers the door, Jack comes in and says his piece, and the three of you take the lift
    down. Elara meets you in the foyer: "Lab experiments." Jack leads on to the lab lift — where the user carries
@@ -13594,13 +13635,15 @@ const AT_FOUNTAIN=(()=>{try{return ['the-fountain','fountain'].includes((locatio
    talk (the storyboard's rule: Jack and the robot look at each other).
    ============================================================ */
 function ep1Done(){try{return localStorage.getItem('atd:ep1Done')==='1';}catch(e){return false;}}
-// Since 2026-10-04 (asked for) a visit no longer OPENS with Episode 1: you arrive on lab level 5 at the Hologram Room's door
-// (START_SPOT) and the episode is played from the fountain app's MAIN QUEST box — its card's button takes you to the flat
-// and starts it (ep1Card, ep1FromMenu) — or from 'Episode 1 again' on Elara's menu, as before. EP1_AT_START true brings the
-// old opening back whole: everything it needs is still keyed on EP1_DUE (the flat as the spawn, Optimus in it and Elara
-// in the foyer from the first frame, the scene starting by itself half a second after START).
-const EP1_AT_START=false;
-const EP1_DUE=EP1_AT_START&&!RETURN_TO&&!AT_FOUNTAIN&&!ep1Done();      // (the old opening) a first visit, however you arrive — a saved spot does not skip it
+// Whether a first visit OPENS with Episode 1 (EP1_AT_START). From 2026-10-04 to 2026-10-10 it did not (asked for): everyone
+// arrived on lab level 5 at the Hologram Room's door (START_SPOT) and the episode was only played from the fountain app's
+// MAIN QUEST box (ep1Card, ep1FromMenu) or 'Episode 1 again' on Elara's menu. Since 2026-10-10 it does again (asked for):
+// someone who has not seen it starts in the flat and the scene begins by itself; lab level 5 is where a visit starts once
+// it has been seen and no spot is saved. The card and Elara's menu still replay it. Everything the opening needs is keyed
+// on EP1_DUE (the flat as the spawn, Optimus in it and Elara in the foyer from the first frame, the scene starting half a
+// second after START), so this one word turns it on or off whole.
+const EP1_AT_START=true;    // on again since 2026-10-10 (asked for: "Episode 1 i would like to be the default again for new users"); it was off 2026-10-04 … 10-10
+const EP1_DUE=EP1_AT_START&&!RETURN_TO&&!AT_FOUNTAIN&&!ep1Done();      // a first visit — nobody who has not seen it yet — however you arrive: a saved spot does not skip it
 const EP1={active:false, stage:0, gen:null, cur:null, t:0, wasFollow:undefined, queued:false,   // queued: asked for from the menu, started by the scene's clock on its next frame (ep1FromMenu)
   Y:()=>LEVEL_Y[APT_LVL-1],
   spawn:{x:2.95,z:42.7,yaw:-Math.PI/2},                 // the sofa's side of the living room, facing the screens (the TV rack is 1 m east)
@@ -13817,13 +13860,14 @@ const RESUME=(()=>{ try{
 // The default arrival (2026-10-04, asked for: "change the default spawn location to the holo-room lab level 5"): lab level 5,
 // seven metres in front of the Hologram Room's door (it stands at −42.5, −68.48), facing it — the lab lift at your back,
 // Elara beside you (spawnElara), Optimus and Jack behind you if they follow. It was the garden, by the birdbath (0, 64.6,
-// facing south), and for a first visit Episode 1's flat (EP1_AT_START). A spot saved in the last six hours still comes first.
+// facing south). A first visit starts in Episode 1's flat instead (EP1_AT_START, on again since 2026-10-10); and a spot
+// saved in the last six hours comes before this one.
 const START_SPOT={x:-42.5,z:-61.5,yaw:0,y:LABT.Y[4]};
 const AT_START_SPOT=!_RS&&!AT_FOUNTAIN&&!EP1_DUE&&!RESUME;   // this load starts there
 // (the old after-tour spawn beside Elara is gone — this replaces it)
 const SPAWN = _RS ? {x:_RS.x,z:_RS.z}
             : AT_FOUNTAIN ? {x:0,z:3.2}                 // just south of the fountain (centre 0,-4)
-            : EP1_DUE ? {x:EP1.spawn.x,z:EP1.spawn.z}   // Episode 1 as the opening (2026-09-25; off since 2026-10-04, EP1_AT_START): a first visit starts in flat 33 on level 3, whatever was saved
+            : EP1_DUE ? {x:EP1.spawn.x,z:EP1.spawn.z}   // Episode 1 as the opening (2026-09-25; off 2026-10-04 … 10-10, EP1_AT_START): a first visit starts in flat 33 on level 3, whatever was saved
             : RESUME ? {x:RESUME.x,z:RESUME.z}          // back where you left off
             : {x:START_SPOT.x,z:START_SPOT.z};          // the default arrival: lab level 5, at the Hologram Room's door (the garden, 0 64.6 facing south, until 2026-10-04)
 const SPAWN_YAW = _RS ? _RS.yaw : EP1_DUE ? EP1.spawn.yaw : (RESUME&&typeof RESUME.yaw==='number') ? RESUME.yaw : AT_FOUNTAIN ? 0 : AT_START_SPOT ? START_SPOT.yaw : Math.PI;   // yaw 0 = look north (the fountain link: at the fountain; the default arrival: at the Hologram Room's door); π, south, for a saved spot from before the yaw was saved
@@ -14285,7 +14329,7 @@ let last=performance.now();
 function frame(now){
   if(glDead)return;                                   // context lost → stop until reload
   const dt=Math.min(0.033,(now-last)/1000);last=now;
-  update(dt);updateCamera(dt);
+  update(dt);portalDoorsStep();updateCamera(dt);   // (portalDoorsStep: the portal rooms are in or out by where you NOW stand — after the move, before the picture)
   if(TOUCH.sync)TOUCH.sync();
   renderer.render(scene,camera);
   vmRender();                                         // your arms, over the world (YOUR ARMS)
