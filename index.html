@@ -12724,7 +12724,7 @@ function gaContFire(){
   const c=GA.cont.shift(); let who=c.who;
   if(who!=='elara'&&who!=='jack'&&who!=='optimus'&&who!=='holo'){ const m=GA.made.find(x=>x.id===who&&!x.gone&&x.char); if(!m||!EC_WHO[who])who=holoCell(c.o.at.x,c.o.at.z)?'holo':'elara'; }   // its giver gone (or the counselling): the room, for one of its spaces; else Elara
   if((GA.turns|0)!==c.turn)return;                                    // they have talked with someone since: that chat was told, and has had its say
-  const text='(This is the game speaking, not the visitor — they typed nothing.) They have just '+c.how+': the objective "'+c.o.name+'" is done'+(c.o.pay?', and paid them '+c.o.pay+' credits':'')+'. They are on '+gaFloorName(player.pos.x,player.pos.z,player.y)+'. Carry the story on from here, out loud, as yourself, in a sentence or two — what they find, what happens now — and give what comes next if the story goes on: the next objective, a change, people or things it needs; or, if this was its end, close it in a line. They are walking, not at your chat: ask them nothing that needs typing.';
+  const text='(This is the game speaking, not the visitor — they typed nothing.) They have just '+c.how+': the objective "'+c.o.name+'" is done'+(c.o.pay?', and paid them '+c.o.pay+' credits':'')+'. They are on '+gaFloorName(player.pos.x,player.pos.z,player.y)+'. Carry the story on from here, out loud, as yourself, in one or two sentences, forty words at most — what they find, what happens now — and ONE clear next step if the story goes on: the next objective (the thing or person it needs made first, in the same answer), a change, a place; or, if this was its end, close it in a line. Not a monologue: no run of farewells, asides or reminders. They are walking, not at your chat: ask them nothing that needs typing.'   // (forty words, one step — 2026-10-11, the user: Finn's three-hundred-word answer after the crate promised an errand with no thing);
   const note='— they reached the objective “'+c.o.name+'”', log='the objective "'+c.o.name+'" was reached — the story goes on';
   GA.contBusy=true; const done=()=>{ GA.contBusy=false; GA.contAt=GA.clock; };
   setTimeout(()=>{ if(GA.contBusy)done(); },90000);                   // (safety net)
@@ -12839,6 +12839,7 @@ function gaBriefParts(who,noFormat){                  // {fixed, now} (2026-10-1
   const now=gaVoicesLine()
   +gaHoloLines()
   +'\n\nRIGHT NOW. '+gaNow(who)
+  +'\n\nLENGTH. What you say is spoken aloud: a few plain sentences, under about eighty words, unless the visitor asked for detail or a story. A turn of the game\'s own (an objective reached, a card pressed) gets one or two sentences and ONE clear next step — the next objective, a thing, a person, a place — never a monologue, never a run of farewells.'   // (2026-10-11, asked for: one clear next step instead of a monologue)
   +(noFormat?'':'\n\nRespond with STRICT JSON only, no markdown fences: {"reply":"what you say, spoken aloud","actions":[]}.');
   return {fixed:s,now};
 }
