@@ -10427,11 +10427,17 @@ function holoOpen(from){
   holoView(); holoShow(true); holoRateView(); holoRate();
   setTimeout(()=>{ try{ document.getElementById('holoIn').focus(); }catch(e){} },50);
 }
+function holoThinkTick(){                                             // the "thinking…" line while the planner works: dots that move, the seconds from five on, and a word about the searches from ten (the Claude path searches Sketchfab itself: a turn can take a while)
+  const i=document.querySelector('#holoThink i'); if(!i||!HOLO.busy||!HOLO.thinkT0)return;
+  const sec=Math.floor((Date.now()-HOLO.thinkT0)/1000), n=Math.floor(Date.now()/500)%4;
+  i.textContent='thinking'+'.'.repeat(n)+(sec>=5?' · '+sec+' s':'')+(sec>=10?' — it is looking on Sketchfab for you':'');
+}
 function holoView(){
   const m=document.getElementById('holoMsgs'); m.innerHTML='';
   for(const x of HOLO.msgs){ const d=document.createElement('div'); d.style.margin='2px 0';
     d.innerHTML=x.who==='you'?'<span style="color:#ffd27f">You:</span> '+escHtml(x.text):x.who==='lab'?'<span style="color:#7fe6ff">'+HOLO.say+':</span> '+escHtml(x.text):'<i style="color:#8fa3bf">'+escHtml(x.text)+'</i>';
     m.appendChild(d); }
+  if(HOLO.busy&&HOLO.thinkT0){ const d=document.createElement('div'); d.id='holoThink'; d.style.margin='2px 0'; d.innerHTML='<span style="color:#7fe6ff">'+HOLO.say+':</span> <i style="color:#9fb4cc">thinking…</i>'; m.appendChild(d); holoThinkTick(); }   // while the planner works (2026-10-11, asked for): a line that counts the seconds, so that it never looks like nothing is happening
   m.scrollTop=1e9;
   const here=holoHere(), T=document.getElementById('holoSpaces');
   if(T){ T.innerHTML=''; let fresh=false;                                  // the spaces: the ones in use, and one new one
@@ -10603,7 +10609,7 @@ async function holoSend(text){
   { const m=/^(make it |make everything )?(much |a lot |a bit |a little |slightly )?(bigger|larger|smaller|twice as big|double( the size)?|half( the size| as big)?)[.!]?$/.exec(t);
     if(m){ const w=m[3], amt=/much|a lot/.test(m[2]||'')?2.5:/bit|little|slightly/.test(m[2]||'')?1.2:1.5, f=/twice|double/.test(w)?2:/half/.test(w)?0.5:/smaller/.test(w)?1/amt:amt;
       HOLO.msgs.push({who:'you',text}); holoNote(holoResize(f).replace(/^./,c=>c.toUpperCase())+'.'); return; } }
-  HOLO.busy=true; HOLO.msgs.push({who:'you',text}); holoView(); GA.turns=(GA.turns|0)+1;
+  HOLO.busy=true; HOLO.thinkT0=Date.now(); if(HOLO.thinkT)clearInterval(HOLO.thinkT); HOLO.thinkT=setInterval(holoThinkTick,500); HOLO.msgs.push({who:'you',text}); holoView(); GA.turns=(GA.turns|0)+1;   // (thinkT0 / thinkT: the "thinking…" line, holoView and holoThinkTick)
   (HOLO.sp.prompts=HOLO.sp.prompts||[]).push(text.slice(0,300));         // what was typed for this space: a world's record (holoWorldSave)
   const list='They are planning space '+HOLO.sp.n+' of '+HOLO.spaces.length+(holoHere()?' (they stand in space '+holoHere().n+')':' (they are at the door on lab level 5)')+'. '+(HOLO.picks.length?'On their list for it now: '+HOLO.picks.map(p=>'"'+p.name+'" ('+p.role+', '+holoMB(holoSize(p))+(p.made?', already standing in the space':'')+')').join('; ')+'.':'Their list for it is empty.');
   HOLO.hist.push({role:'user',parts:[{text:list+'\nThe visitor says: '+text}]}); if(HOLO.hist.length>30)HOLO.hist.splice(0,2);
@@ -10622,7 +10628,7 @@ async function holoSend(text){
     gaNews('the Hologram Room\'s planner answered them: "'+gaText(reply,160)+'"','holo');
   }catch(e){ reply='(I lost the thread — is the network alright?)'; }
   HOLO.msgs.push({who:'lab',text:reply}); if(done&&HOLO.picks.some(p=>!p.made))HOLO.msgs.push({who:'sys',text:'When the list is right, press Make it.'});
-  HOLO.busy=false; holoView();
+  HOLO.busy=false; HOLO.thinkT0=0; if(HOLO.thinkT){ clearInterval(HOLO.thinkT); HOLO.thinkT=null; } holoView();
   if(got)holoLog(text,reply+(searches.length?' [looked for: '+searches.map(x=>(x.role==='environment'?'surroundings':x.role==='character'?'someone':'a thing')+' "'+x.q+'"').join('; ')+']':'')+holoDid(actions)
     +(HOLO.picks.length?' [on their list: '+HOLO.picks.map(p=>'“'+p.name+'”'+(p.made?' ✓':'')).join(', ')+']':''));   // the room's log (the answer is on the screen by now; not waited for)
   if(searches.length)await holoShowSearches(searches);
