@@ -14328,7 +14328,17 @@ function updateCamera(dt){
 let last=performance.now();
 function frame(now){
   if(glDead)return;                                   // context lost → stop until reload
-  const dt=Math.min(0.033,(now-last)/1000);last=now;
+  // The step is never negative. The time a frame is handed can be OLDER than the clock `last` was started from: the page's
+  // script runs for a second or more in one go, and a frame already waiting behind it carries the time it was issued at —
+  // before `last` was read. (now-last) is then minus a tenth of a second or more on the very first frame, and a negative
+  // step puts the visitor UNDER the floor (y moves by −17·dt²) with an upward speed the landing test does not catch. On the
+  // ground floor that heals itself; on a raised one — Episode 1's flat on level 3, the lab's floors — the floor is out of
+  // reach from below, and the visitor fell to the level under it. Seen now and then on a first load, most in a private
+  // window where nothing is cached and the script starts slowest (the user, 2026-10-10: "i fell through the floor to level 2
+  // straight away, this has been happening for some time occasionally"). Measured: 100 ms back is enough; 60 ms only dips.
+  const raw=(now-last)/1000; last=now;
+  if(raw<0&&!frame.wentBack){ frame.wentBack=raw; console.warn('frame: handed a time '+Math.round(-raw*1000)+' ms older than the clock - that step is taken as 0'); }
+  const dt=Math.max(0,Math.min(0.033,raw));
   update(dt);portalDoorsStep();updateCamera(dt);   // (portalDoorsStep: the portal rooms are in or out by where you NOW stand — after the move, before the picture)
   if(TOUCH.sync)TOUCH.sync();
   renderer.render(scene,camera);
