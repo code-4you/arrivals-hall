@@ -54,6 +54,9 @@ contribution.
   that licence with attribution to patromes; this notice does not restrict them.
 - The scientist — "Doctor Lab" by 00amza (Sketchfab), CC BY 4.0, rigged with Mixamo, resized
   and animated here.
+- Huginn's body — a humanoid robot by Mechamaner.V (Sketchfab,
+  https://sketchfab.com/models/2fab5d31927f43729a99a6e8eaf1c7f5), CC BY 4.0; given bones, plain
+  materials and animations here, and made 15% taller.
 - Gesture and idle animations — Mixamo (Adobe): included only as baked into this game; not
   to be extracted or redistributed on their own. "Universal Animation Library" idles —
   Quaternius, CC0.
