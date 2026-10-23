@@ -199,6 +199,8 @@
   <div id="prompt"><span id="promptText"></span></div>
   <div id="subtitle"></div>
   <div id="banner"></div>
+  <div id="micHud"></div>
+  <div id="mpHud"></div>
   <div id="fade"></div>
 </div>
 <div id="lockHint">Click to start - <b>F11</b> / <b>Esc</b> to exit</div>
@@ -210,6 +212,15 @@
     <div style="color:#dfe9f5;font-size:25px;font-weight:700;margin:7px 0 20px">The Arrivals Hall</div>
     <button id="startBtn" class="menuBtn" style="width:100%;min-width:0;font-size:17px;padding:13px 16px;opacity:.5;cursor:default">Loading…</button>
     <div id="startNote" style="color:#8fa3bf;font-size:12px;margin-top:13px">Elara is waiting in the garden</div>
+    <!-- the microphone, on before START (2026-10-24, asked for) — shown only where the browser can hear: THE MICROPHONE -->
+    <label id="micOpt" style="display:none;align-items:flex-start;gap:9px;text-align:left;color:#8fa3bf;font-size:12px;line-height:1.45;margin-top:14px;cursor:pointer;user-select:none"><input type="checkbox" id="micPre" style="margin:2px 0 0;flex:none;accent-color:#b6ff9c"><span>🎤 <b style="color:#dfe9f5">Microphone on</b> — talk to them instead of typing. In a chat your words go to that person; otherwise to Huginn, your own intelligence, who passes them on when they are for someone else. <b style="color:#dfe9f5">V</b> turns it on or off in the hall.</span></label>
+    <div id="micNote" style="display:none;color:#ffd27f;font-size:11px;margin-top:7px;text-align:left"></div>
+    <!-- Singleplayer / Multiplayer (presence only), Singleplayer by default (2026-10-24, asked for) — see THE OTHERS -->
+    <div id="mpOpt" style="margin-top:14px;text-align:left;color:#8fa3bf;font-size:12px;line-height:1.45;user-select:none">
+      <label style="cursor:pointer"><input type="radio" name="mpMode" value="solo" checked style="margin:0 6px 0 0;vertical-align:-1px;accent-color:#7fe6ff"><b style="color:#dfe9f5">Singleplayer</b></label>
+      <label style="cursor:pointer;margin-left:16px"><input type="radio" name="mpMode" value="presence" style="margin:0 6px 0 0;vertical-align:-1px;accent-color:#7fe6ff"><b style="color:#dfe9f5">Multiplayer</b> (presence only)</label>
+      <div id="mpNote" style="color:#5f7590;font-size:11px;margin-top:5px">Multiplayer: others in the hall appear as figures with a name, and you to them. Nothing else is shared — no chat, no voice. Your place in the hall goes to the hall’s server while it is on.</div>
+    </div>
     <!-- the loading bar (2026-10-01): what START is waiting for, in order — see LOADBAR. Folds away once START lights up -->
     <div id="loadWrap" style="max-height:40px;overflow:hidden;transition:max-height .5s ease .3s,opacity .4s">
       <div id="loadBar" style="margin-top:14px;height:4px;border-radius:2px;background:rgba(127,230,255,.15);overflow:hidden">
@@ -287,6 +298,7 @@
             <div style="display:flex;gap:8px">
               <input id="cnIn" placeholder="What's on your mind…" style="pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.35);border-radius:8px">
               <button class="menuBtn" id="cnAdd" style="min-width:0;margin:0;padding:9px 18px">Talk</button>
+              <button class="menuBtn micBtn" id="cnMic" title="Microphone — talk instead of typing (V)" style="min-width:0;margin:0;padding:9px 12px">🎤</button>
             </div>
           </div>
           <div id="cnTalk" style="display:none;padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.3);border-left:3px solid var(--teal);border-radius:0 10px 10px 0">
@@ -382,6 +394,7 @@
           <b style="color:#fff;text-align:right">Space</b><span>Jump</span>
           <b style="color:#fff;text-align:right">M</b><span>Map &amp; tracking</span>
           <b style="color:#fff;text-align:right">C</b><span>The fountain app</span>
+          <b style="color:#fff;text-align:right">V</b><span>Microphone on / off — say it instead of typing it. In a chat your words go to that person; with none open they go to Huginn, your own intelligence, who passes them to whoever they were for — or say a name first: “Elara, …”. The 🎤 at the bottom left shows it, and a click there turns it on or off too.<br><button id="ctlMic" class="menuBtn" style="min-width:0;margin:9px 0 0;padding:7px 14px;font-size:14px">🎤 Microphone is off — turn it on</button></span>
           <b style="color:#fff;text-align:right">Esc</b><span>Menu · close</span>
         </div>
         <button id="fsBtn" title="Toggle fullscreen" style="width:100%;justify-content:center;margin-top:16px"><span class="key">F11</span><span>Fullscreen</span></button>
@@ -458,8 +471,10 @@
         <h3>Who else gets it</h3>
         <ul>
           <li><b>Google (Gemini)</b> gets the words of your chats with the hall’s characters and with the Hologram Room, and your counselling text, to write the replies. They pass through our server, so Google does not get your IP address. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API terms</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy policy</a></li>
+          <li><b>Your voice, if you switch the microphone on</b> (the 🎤 button beside a chat box, V in the hall, or the box under START) — your browser’s own speech service turns it into text: Google’s in Chrome, Apple’s in Safari, Microsoft’s in Edge. The hall gets only the text, which goes where typing would: to the chat you are in, or, with none open, to Huginn, your own intelligence, who passes it to whoever it was for. From there it is treated exactly like typed words. Nothing is listened to while the microphone is off, and no sound is kept anywhere. <span class="pvWhy">Why: so you can talk to them instead of typing.</span></li>
           <li><b>ip-api.com</b> gets your IP address from our server, to look up its country and region (Cerebrum also looks up your city). <a href="https://ip-api.com/docs/legal" target="_blank" rel="noopener">ip-api.com legal</a></li>
           <li><b>Where it runs</b> — our server at lightsmithforge.linkpc.net keeps the data; GitHub hosts the hall’s pages; itch.io and Game Jolt show it in a frame if you play it there. Like any website, they see your IP address when you visit.</li>
+          <li><b>Where you are, if you choose Multiplayer (presence only) under START</b> — about twice a second the hall’s server gets your place in the hall, which way you face, whether you are walking, and the short name shown over you (one the hall makes up, such as “Visitor K7” — not your account); it sends back the same for the others, so you see each other as figures. A row is dropped 15 seconds after your last update, and nothing is kept. Singleplayer, the default, sends none of this. <span class="pvWhy">Why: so the hall can have people in it.</span></li>
           <li><b>Code, a font and music</b> load from other sites (jsDelivr, cdnjs, threejs.org, OpenGameArt), which see your IP address when your browser fetches them.</li>
           <li><b>Sketchfab and Hugging Face</b> — in the Hologram Room, and when someone in the hall fetches a model for you, your browser sends the search words to Sketchfab and downloads the pictures and models from Sketchfab or, for the “no login” ones, from Hugging Face. They see your IP address and what was searched for or downloaded. If you log in to Sketchfab there, that is between you and Sketchfab. <a href="https://sketchfab.com/privacy" target="_blank" rel="noopener">Sketchfab privacy policy</a> · <a href="https://huggingface.co/privacy" target="_blank" rel="noopener">Hugging Face privacy policy</a></li>
         </ul>
@@ -650,6 +665,7 @@
         <div style="display:flex;gap:8px">
           <input id="ecIn" placeholder="Ask Elara anything…" style="pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(159,216,255,.35);border-radius:8px">
           <button class="menuBtn" id="ecSend" style="min-width:0;margin:0;padding:8px 16px;border-left-color:var(--green)">Send</button>
+          <button class="menuBtn micBtn" id="ecMic" title="Microphone — talk instead of typing (V)" style="min-width:0;margin:0;padding:8px 12px">🎤</button>
         </div>
         <button class="menuBtn back" id="ecBack" style="margin-top:12px">◂ Back</button>
       </div>
@@ -672,6 +688,7 @@
       <div style="display:flex;gap:8px">
         <input id="holoIn" placeholder="Type a setting, its people, and or a plot..." style="pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.35);border-radius:8px">
         <button class="menuBtn" id="holoSend" style="min-width:0;margin:0;padding:8px 16px;border-left-color:#7fe6ff">Send</button>
+        <button class="menuBtn micBtn" id="holoMic" title="Microphone — talk instead of typing (V)" style="min-width:0;margin:0;padding:8px 12px">🎤</button>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
         <button class="menuBtn" id="holoMakeBtn" style="min-width:0;margin:0;padding:8px 16px;border-left-color:var(--green)">✦&nbsp; Make it</button>
@@ -2438,6 +2455,290 @@ function portalDoorBuild(Y,zn,side,cx,ref){
 // (the user saw it, 2026-10-10; measured in the preview frame by frame). Backing out showed the room's front wall for a
 // frame the same way.
 function portalDoorsStep(){ for(const P of PDOOR.list)if(P.step)P.step(); }
+/* ============================================================
+   THE OTHERS — Multiplayer (presence only) (2026-10-24, asked for: "lets add it, presence only, also an option under the start
+   button called Singleplayer / Multiplayer (presence only) with Singleplayer on by default"). Under START the visitor chooses;
+   the device remembers (atd:mp). With Multiplayer on, about twice a second (every 3 s with the tab hidden) the hall posts
+   where the visitor is — x, y (the floor), z, the way they face, whether they walk or run, the room — and a made-up name
+   ("Visitor K7", kept on the device: atd:mpName) to account/presence.php, and gets back the same for everyone else there in
+   the last 15 s. Each of them is a figure: a translucent cyan body and head with a wireframe over it, a ring on the floor, a
+   small visor to show which way they face, and the name over the head. They glide between updates (half a second), bob
+   while walking, and go the moment a reply no longer lists them. Nothing else is shared — no chat, no voice, no world
+   state: lifts, teleports, the Hologram Room, followers, spawned things, combat and saves stay each visitor's own, so others
+   see someone step into a lift and vanish, and that is all right. The flat in Episode 1 is private: nothing is sent while
+   it plays, and the figures are put away. The figures catch no ray (no E prompt, no hand, no GA raycast on them). Leaving
+   Multiplayer, or the page, sends {off:true} so the row goes at once; the server also prunes the stale. The server never
+   returns a visit id (api.php's 'forget' takes them): other visitors are known by a hash. The Privacy page says what is
+   sent. The little line at the bottom left says how many others are here. Tested in the pane against the server file run
+   locally on SQLite (tools/presence_test, php -S) with a second tab as another visitor.
+   ============================================================ */
+const MP={mode:'solo',url:'',busy:false,lastSend:0,fails:0,others:new Map(),name:'',lastPos:null,lastT:0,wasOn:false,saidFull:false,geo:null,mat:null,hud:null};
+function mpOn(){ return MP.mode==='presence'&&gateDone&&state.phase==='play'&&!EP1.active; }
+function mpUrl(){ return MP.url||(MP.url=ACCOUNT_API.replace(/api\.php.*$/,'presence.php')); }   // (ACCOUNT_API is declared far below this section: read when first needed, never at load)
+function mpName(){                                                    // the name over the visitor's head: made up once, kept on the device — not the account, not typed (nothing to moderate)
+  if(MP.name)return MP.name; let n=''; try{ n=localStorage.getItem('atd:mpName')||''; }catch(e){}
+  if(!/^Visitor [A-Z2-9]{2}$/.test(n)){ const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; n='Visitor '+A[(Math.random()*A.length)|0]+A[(Math.random()*A.length)|0]; try{ localStorage.setItem('atd:mpName',n); }catch(e){} }
+  MP.name=n; return n;
+}
+function mpSet(mode){                                                 // the choice under START, remembered
+  MP.mode=mode==='presence'?'presence':'solo'; try{ localStorage.setItem('atd:mp',MP.mode); }catch(e){}
+  const r=document.querySelector('input[name="mpMode"][value="'+MP.mode+'"]'); if(r)r.checked=true;
+  if(MP.mode==='solo')mpLeave();
+}
+function mpLeave(){                                                   // out of the others' sight: the figures put away, my row taken off the server
+  for(const o of MP.others.values())mpDrop(o); MP.others.clear();
+  if(MP.wasOn){ MP.wasOn=false; try{ fetch(mpUrl(),{method:'POST',body:JSON.stringify({vid:visitId(),off:true}),keepalive:true,headers:{'Content-Type':'text/plain'}}).catch(()=>{}); }catch(e){} }
+}
+function mpTick(){                                                    // one round trip: me there, the others back
+  if(MP.busy)return; MP.busy=true;
+  const now=performance.now(), p=player.pos; let anim='idle';
+  if(MP.lastPos){ const sp=Math.hypot(p.x-MP.lastPos.x,p.z-MP.lastPos.z)/Math.max(0.05,(now-MP.lastT)/1000); anim=sp>5.6?'run':sp>0.35?'walk':'idle'; }
+  MP.lastPos={x:p.x,z:p.z}; MP.lastT=now; MP.lastSend=now;
+  let place=''; try{ place=holoHere()?'holo':String(roomAt()||''); }catch(e){}
+  const body={vid:visitId(),name:mpName(),x:+p.x.toFixed(2),y:+player.y.toFixed(2),z:+p.z.toFixed(2),yaw:+look.yaw.toFixed(3),anim,place};
+  const ctl=('AbortController' in window)?new AbortController():null; if(ctl)setTimeout(()=>ctl.abort(),4000);
+  fetch(mpUrl(),{method:'POST',body:JSON.stringify(body),headers:{'Content-Type':'text/plain'},signal:ctl?ctl.signal:undefined})
+    .then(r=>r.ok?r.json():null)
+    .then(j=>{ MP.busy=false;
+      if(!j||!j.ok){ MP.fails++; if(j&&j.error==='full'&&!MP.saidFull){ MP.saidFull=true; banner('The hall is full just now — you are in it alone'); } return; }
+      MP.fails=0; MP.wasOn=true; mpSeen(Array.isArray(j.others)?j.others:[]); })
+    .catch(()=>{ MP.busy=false; MP.fails++; });
+}
+function mpSeen(list){                                                // the others, as the server has them: new figures made, known ones given their next spot
+  const seen=new Set(), now=performance.now();
+  for(const r of list){ if(!r||typeof r.id!=='string'||!/^[a-f0-9]{12}$/.test(r.id))continue; seen.add(r.id);
+    let o=MP.others.get(r.id); if(!o){ if(MP.others.size>=40)continue; o=mpFigure(r); MP.others.set(r.id,o); }
+    o.from.copy(o.g.position); o.to.set(+r.x||0,+r.y||0,+r.z||0); o.yawFrom=o.yaw; o.yawTo=+r.yaw||0; o.t0=now; o.at=now; o.anim=r.anim==='run'||r.anim==='walk'?r.anim:'idle';
+    if(o.name!==String(r.name||''))mpTag(o,String(r.name||'')); }
+  for(const [id,o] of MP.others){ if(!seen.has(id)){ mpDrop(o); MP.others.delete(id); } }   // not in a reply that came: gone (the server keeps a row 15 s past its last update, so a slow tab is still listed; a reply that fails never gets here)
+}
+function mpFigure(r){                                                 // the figure: translucent cyan, a wireframe over it, a ring on the floor, a visor for the facing, the name above
+  if(!MP.geo){ MP.geo={body:new THREE.CylinderGeometry(0.19,0.27,1.32,18,1,false),head:new THREE.SphereGeometry(0.17,18,14),ring:new THREE.RingGeometry(0.28,0.42,32),visor:new THREE.BoxGeometry(0.16,0.05,0.04)};
+    MP.mat={body:new THREE.MeshBasicMaterial({color:0x7fe6ff,transparent:true,opacity:0.45,depthWrite:false}),   // (plain translucency: additive light on the flats' white walls added nothing, and the figure could not be seen)
+            edge:new THREE.MeshBasicMaterial({color:0x7fe6ff,wireframe:true,transparent:true,opacity:0.35,depthWrite:false}),
+            ring:new THREE.MeshBasicMaterial({color:0x7fe6ff,transparent:true,opacity:0.5,depthWrite:false,side:THREE.DoubleSide}),
+            visor:new THREE.MeshBasicMaterial({color:0x0a1a2a,transparent:true,opacity:0.85,depthWrite:false})}; }
+  const g=new THREE.Group(), G=MP.geo, M=MP.mat;
+  const body=new THREE.Mesh(G.body,M.body), bodyEdge=new THREE.Mesh(G.body,M.edge), head=new THREE.Mesh(G.head,M.body), headEdge=new THREE.Mesh(G.head,M.edge);
+  body.position.y=bodyEdge.position.y=0.76; head.position.y=headEdge.position.y=1.6;
+  const visor=new THREE.Mesh(G.visor,M.visor); visor.position.set(0,1.62,0.16);        // local +z is the way they face (the group turns yaw+π: the hall's forward is −sin, −cos of yaw)
+  const ring=new THREE.Mesh(G.ring,M.ring); ring.rotation.x=-Math.PI/2; ring.position.y=0.02;
+  for(const m of [body,bodyEdge,head,headEdge,visor,ring]){ m.raycast=function(){}; g.add(m); }   // never under the crosshair
+  g.position.set(+r.x||0,+r.y||0,+r.z||0); const yaw=+r.yaw||0; g.rotation.y=yaw+Math.PI;
+  const o={g,body,bodyEdge,head,headEdge,visor,from:g.position.clone(),to:g.position.clone(),yaw,yawFrom:yaw,yawTo:yaw,t0:performance.now(),at:performance.now(),anim:'idle',name:'',tag:null,bob:0};
+  mpTag(o,String(r.name||'')); zoneTag(g,0); scene.add(g); return o;   // zone 0: drawn from every zone (ZONES — a fresh mesh is on layer 0 alone, which the camera leaves out away from the hall)
+}
+function mpTag(o,name){                                               // the name over the head, drawn once on a canvas
+  o.name=name; if(o.tag){ o.g.remove(o.tag); o.tag.material.map.dispose(); o.tag.material.dispose(); o.tag=null; }
+  const c=document.createElement('canvas'); c.width=512; c.height=96; const x=c.getContext('2d');
+  x.font='600 44px system-ui,Segoe UI,sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.shadowColor='rgba(0,0,0,.9)'; x.shadowBlur=8; x.fillStyle='#dff6ff';
+  x.fillText((name||'Visitor').slice(0,20),256,48);
+  const tex=new THREE.CanvasTexture(c); tex.minFilter=THREE.LinearFilter;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false})); sp.scale.set(1.6,0.3,1); sp.position.y=1.98; sp.raycast=function(){};
+  o.tag=sp; o.g.add(sp); zoneApply(sp,0);
+}
+function mpDrop(o){ scene.remove(o.g); if(o.tag){ o.tag.material.map.dispose(); o.tag.material.dispose(); o.tag=null; } }
+function mpPaint(){                                                   // the line at the bottom left: how many others are here
+  const h=MP.hud; if(!h)return; const show=MP.mode==='presence'&&gateDone&&state.phase==='play'&&!menuPage; h.style.display=show?'block':'none'; if(!show)return;
+  const n=MP.others.size;
+  h.textContent=EP1.active?'👥 out of sight for now':MP.fails>=3?'👥 the hall’s server is out of reach':n===0?'👥 nobody else here just now':n===1?'👥 one other here':'👥 '+n+' others here';
+  h.style.color=MP.fails>=3?'#ffd27f':n?'#7fe6ff':'#8fa3bf';
+  if(TOUCH.on){ h.style.left='auto'; h.style.right='24px'; h.style.bottom='52px'; } else { h.style.right='auto'; h.style.left='18px'; h.style.bottom='38px'; }
+}
+(function(){
+  MP.hud=document.getElementById('mpHud');
+  if(MP.hud)MP.hud.style.cssText='display:none;position:fixed;left:18px;bottom:38px;z-index:13;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#8fa3bf;text-shadow:0 1px 3px rgba(0,0,0,.95);padding:4px 0;pointer-events:none;user-select:none;white-space:nowrap';
+  let saved=''; try{ saved=localStorage.getItem('atd:mp')||''; }catch(e){}
+  if(saved==='presence')mpSet('presence');                            // as last time; Singleplayer otherwise (the default)
+  for(const r of document.querySelectorAll('input[name="mpMode"]'))r.onchange=()=>{ if(r.checked)mpSet(r.value); };
+  window.addEventListener('pagehide',()=>{ if(MP.wasOn)mpLeave(); });
+  let paintT=0;
+  animated.push({update(dt){
+    const now=performance.now();
+    if(mpOn()){ if(!MP.busy&&now-MP.lastSend>=(document.hidden?3000:500))mpTick(); }
+    else if(MP.others.size||MP.wasOn)mpLeave();
+    for(const o of MP.others.values()){
+      const k=Math.min(1,(now-o.t0)/550); o.g.position.lerpVectors(o.from,o.to,k);
+      let d=o.yawTo-o.yawFrom; d=Math.atan2(Math.sin(d),Math.cos(d)); o.yaw=o.yawFrom+d*k; o.g.rotation.y=o.yaw+Math.PI;
+      const moving=o.anim!=='idle'&&now-o.at<1500; o.bob+=dt*(o.anim==='run'?13:9); const bob=moving?Math.sin(o.bob)*0.035:0;
+      o.body.position.y=o.bodyEdge.position.y=0.76+bob; o.head.position.y=o.headEdge.position.y=1.6+bob; o.visor.position.y=1.62+bob; }
+    paintT+=dt; if(paintT>0.5){ paintT=0; mpPaint(); }
+  }});
+})();
+/* ============================================================
+   THE MICROPHONE (2026-10-24, asked for: "a microphone button next to the chat prompts … turns any speech to text for Gemini …
+   and when microphone is enabled it listens for answers instead of asking for a text response"; and, the same day: "AI can
+   determine where speech is directed, not default to Elara, if any default fallback would be Huginn"; and a switch for it under
+   START) — the browser's own speech recognition (the Web Speech API's other half; the voices are its first), so it costs nothing
+   and needs no key: Chrome, Edge and Safari have it, Firefox does not (the buttons and the START switch hide there). The 🎤
+   button beside a chat box, V anywhere in the hall, or the box under START switches it on; it stays on until switched off, and
+   the device remembers the choice (atd:mic). It listens continuously, shows the words in the open chat's box as they come, and
+   sends each sentence (a sentence ends with a pause) where typing would go:
+   - a chat open (Elara's / Jack's / anyone's Just talk, Huginn's, the Hologram Room's console, counselling): to it;
+   - none open, hands-free: to whoever is named at the start or end of the sentence ("Elara, …"), else to whoever is under the
+     crosshair within reach, else to whoever was spoken with in the last two minutes, else to HUGINN — the visitor's own
+     intelligence — whose brief then says who else is here and lets him PASS the words on ({"do":"pass","to":"Elara"}) when
+     they are plainly for someone else: they go to that person's own chat and that person answers. The answer is spoken; the
+     pane does not come up (opts.mic in ocSend / ecSend) — the talk goes on by voice, and the words are in the chats to read later.
+   It holds its breath while anyone speaks (it would hear the voice from the speakers), while a reply is on its way, while the
+   page is hidden, and while the menu is up with no chat in it — and listens again the moment that ends, so a question put to
+   the visitor is answered by speaking. Typing still works: words typed into the box are kept and the spoken ones are added
+   after them. The audio goes to the browser's speech service (Google's, Apple's, Microsoft's), never to the hall — the Privacy
+   page says so. Ticked under START, the browser's permission is asked for there and then (micPrime), not over the game.
+   Checked here with a stand-in for the browser's recogniser (the pane has no microphone); the real one is the user's test.
+   ============================================================ */
+const MIC={on:false,rec:null,live:false,starting:false,mine:false,btns:[],errAt:0,hud:null,last:null};   // mine: the words in the box were put there by the microphone (interim), not typed · last: {id,at} whoever a sentence last went to
+function micSupported(){ return !!(window.SpeechRecognition||window.webkitSpeechRecognition); }
+function micLang(){ return (ULANG&&ULANG.tag&&ULANG.tag!=='en'?ULANG.tag:'')||navigator.language||'en-US'; }   // the visitor's own tongue (and accent: en-AU hears Australian)
+function micTarget(){                                                 // the chat box that is open to type into, if any → {box,who,send}
+  const vis=el=>!!(el&&el.offsetParent!==null);
+  const ec=document.getElementById('ecIn'); if(vis(ec))return {box:ec,who:ecWho||'elara',send:()=>ecSend()};
+  const oc=document.getElementById('ocIn'); if(vis(oc))return {box:oc,who:'huginn',send:()=>{ if(OCHAT.send)OCHAT.send(); }};
+  const ho=document.getElementById('holoIn'); if(vis(ho))return {box:ho,who:'holo',send:()=>document.getElementById('holoSend').click()};
+  const cn=document.getElementById('cnIn'); if(vis(cn))return {box:cn,who:'counsel',send:()=>document.getElementById('cnAdd').click()};
+  return null;
+}
+function micPeople(){                                                 // who is here with a chat of their own, besides Huginn: Elara, Jack, anyone made with a mind → [{id,name,o?}]
+  const out=[];
+  for(const n of ['elara','jack']){ const c=gaChar(n,null,true); if(c&&EC_WHO[c.id])out.push({id:c.id,name:c.name}); }
+  for(const o of GA.made){ if(!o.gone&&o.char&&o.persona&&EC_WHO[o.id])out.push({id:o.id,name:o.name,o}); }
+  return out;
+}
+function micCharFor(name){                                            // a name said or given → one of micPeople() (never Huginn: his chat is where the rest goes)
+  const s=String(name==null?'':name).trim().toLowerCase().replace(/^the\s+/,'').replace(/[^\p{L}\p{N}' -]/gu,'').trim();
+  if(!s)return null;
+  for(const p of micPeople()){ if(String(p.id).toLowerCase()===s||p.name.toLowerCase()===s||(p.o&&gaSame(p.o,s)))return p; }
+  return null;
+}
+const MIC_HUGINN={id:'huginn',name:'Huginn'};
+function micNamed(text){                                              // addressed by name — in the first three words or the last two ("Elara, …", "…, Jack?")
+  const w=text.toLowerCase().replace(/[^\p{L}\p{N}' ]/gu,' ').split(/\s+/).filter(Boolean); if(!w.length)return null;
+  const edge=w.slice(0,3).concat(w.slice(-2));
+  const hit=micPeople().filter(p=>p.name.toLowerCase().split(/\s+/).some(n=>n.length>1&&edge.includes(n)));
+  if(hit.length===1)return hit[0];
+  if(!hit.length&&(edge.includes('huginn')||edge.includes('custodian')))return MIC_HUGINN;
+  return null;
+}
+function micFacing(){                                                 // whoever is under the crosshair within reach (the E prompt is on them)
+  if(!curHot)return null;
+  const e=persons.elara; if(e&&e.hot===curHot)return micCharFor('elara');
+  const j=ep1Jack(); if(j&&j.hot===curHot)return micCharFor('jack');
+  const h=persons.huginn; if(h&&h.spot===curHot)return MIC_HUGINN;
+  const o=GA.made.find(m=>!m.gone&&m.char&&m.hot===curHot&&m.persona&&EC_WHO[m.id]); return o?{id:o.id,name:o.name,o}:null;
+}
+function micLately(){                                                 // whoever a sentence went to in the last two minutes: a talk under way
+  const L=MIC.last; if(!L||performance.now()-L.at>120000)return null;
+  return L.id==='huginn'?MIC_HUGINN:micCharFor(L.id);
+}
+function micRoute(text){ return micNamed(text)||micFacing()||micLately()||MIC_HUGINN; }   // where a sentence goes when no chat is open
+function micWhere(){                                                  // whose ears, for the HUD line
+  const T=micTarget();
+  if(T)return T.who==='holo'?'the Hologram Room':T.who==='counsel'?'the counselling talk':T.who==='huginn'?'Huginn':((EC_WHO[T.who]&&EC_WHO[T.who].name)||'the chat');
+  return micRoute('').name;
+}
+function micLine(){                                                   // Huginn's brief, hands-free: who else is here, and how to pass the words to them
+  const ppl=micPeople(); if(!ppl.length)return '';
+  return '\n\nSPOKEN ALOUD. The visitor said this through their microphone with no chat open, so it came to you, their own intelligence — but it may be meant for someone else who is here: '
+    +ppl.map(p=>p.name+(p.id==='elara'?' (the guide)':p.id==='jack'?" (the hall's agent)":'')).join(', ')
+    +'. If it plainly is — it addresses them, or asks for what is theirs to give (a tour or the way round the hall: Elara; the hall\'s business, a home, the games: Jack) — do not answer it yourself: give {"do":"pass","to":"<their name>"} in actions, with an empty reply or one short line of your own first, and the words go to them in their own chat. Otherwise answer it yourself, as you would anything said to you.';
+}
+function micSendTo(t,text){                                           // a sentence, hands-free: to Huginn's chat, or to someone's own — spoken back, no pane after
+  MIC.last={id:t.id,at:performance.now()};
+  if(t.id==='huginn'){ ocSend(text,{mic:true}); return; }
+  if(!EC_WHO[t.id])return;
+  if(t.id==='elara'){ elaraFrom=null; elaraHeader('Your guide','Elara'); cardBack=openElaraMenu; }
+  else if(t.id==='jack'){ const g=ep1Jack(); elaraHeader('The hall’s agent','Jack','#ffd27f'); cardFor='jack'; cardBack=()=>openJackMenu(g); }
+  else if(t.o){ elaraHeader('In the hall',t.o.name,gaHex(t.o.color)); cardFor='ga'; cardBack=()=>gaCard(t.o); }
+  else return;
+  elaraChatView(t.id);                                                // their pane made ready (it shows for no frame: ecSend puts it away at once)
+  document.getElementById('ecIn').value=text; ecSend(undefined,{mic:true});
+}
+function micPassTo(p,text){ if(p&&EC_WHO[p.id]&&state.phase==='play')micSendTo(p,text); }   // Huginn's pass: on to them
+function micHold(){                                                   // why it should not be listening right now ('' = listen)
+  if(!gateDone||state.phase!=='play')return 'the game has not begun';
+  if(document.hidden)return 'the page is hidden';
+  if(!ep1Quiet())return 'someone is speaking';
+  if(ecSpeaking||OCHAT.busy||HOLO.busy)return 'a reply is on its way';
+  if(!micTarget()&&(paused||menuPage||anyModalOpen()))return 'the menu is up';
+  return '';
+}
+function micStart(){                                                  // continuous: sentence after sentence until stopped (or until the browser ends it, and the hook starts it again)
+  if(!MIC.on||MIC.live||MIC.starting)return;
+  const R=window.SpeechRecognition||window.webkitSpeechRecognition; if(!R){ MIC.on=false; return; }
+  const r=new R(); MIC.rec=r; MIC.starting=true; let seen=0;          // seen: results already sent (they stay in the list)
+  r.lang=micLang(); r.continuous=true; r.interimResults=true; r.maxAlternatives=1;
+  r.onstart=()=>{ MIC.starting=false; MIC.live=true; };
+  r.onresult=(e)=>{ if(MIC.rec!==r)return; let interim='';
+    for(let i=seen;i<e.results.length;i++){ const res=e.results[i], t=((res[0]&&res[0].transcript)||'').trim();
+      if(res.isFinal){ seen=i+1; if(t)micHeard(t,true); } else interim+=t+' '; }
+    interim=interim.trim(); if(interim)micHeard(interim,false); };
+  r.onerror=(e)=>{ const k=e&&e.error; MIC.starting=false; MIC.live=false;
+    if(k==='not-allowed'||k==='service-not-allowed'){ micSet(false); banner('The browser would not give the microphone — check its permission for this site'); }
+    else if(k==='audio-capture'){ micSet(false); banner('No microphone was found'); }
+    else if(k==='network'){ if(performance.now()-MIC.errAt>8000)banner('The speech service could not be reached'); MIC.errAt=performance.now(); } };   // 'no-speech', 'aborted': nothing to say — it starts again
+  r.onend=()=>{ if(MIC.rec===r){ MIC.live=false; MIC.starting=false; } };
+  try{ r.start(); }catch(e){ MIC.starting=false; }
+}
+function micStop(){ const r=MIC.rec; MIC.rec=null; MIC.live=false; MIC.starting=false; if(r){ try{ r.onend=null; r.onresult=null; r.onerror=null; r.abort(); }catch(e){} } }
+function micSlight(text){ return text.replace(/[^\p{L}\p{N}]/gu,'').length<2; }   // a cough, a breath
+function micHeard(text,final){
+  if(!text)return;
+  const T=micTarget();
+  if(T){ const typed=!!T.box.value.trim()&&!MIC.mine;                 // words the visitor typed themselves: kept, the spoken ones added after
+    if(!final){ if(!typed){ T.box.value=text; MIC.mine=true; MIC.box=T.box; } return; }
+    if(micSlight(text)){ if(MIC.mine){ T.box.value=''; MIC.mine=false; } return; }
+    T.box.value=typed?(T.box.value.trim()+' '+text):text; MIC.mine=false; MIC.last={id:T.who,at:performance.now()};
+    T.send(); return; }
+  if(!final||micHold()||micSlight(text))return;                       // no chat open, hands-free: whole sentences only
+  micSendTo(micRoute(text),text);
+}
+function micSet(on){                                                  // on or off, remembered on this device; the START box and the buttons follow
+  MIC.on=!!on; try{ localStorage.setItem('atd:mic',MIC.on?'1':'0'); }catch(e){}
+  if(!MIC.on){ micStop(); const T=micTarget(); if(T&&MIC.mine){ T.box.value=''; MIC.mine=false; } }
+  const pre=document.getElementById('micPre'); if(pre)pre.checked=MIC.on;
+  micPaint();
+}
+function micToggle(){
+  if(!micSupported()){ banner('This browser has no speech recognition — Chrome, Edge and Safari do'); return; }
+  micSet(!MIC.on); banner(MIC.on?'Microphone on — speak':'Microphone off');
+}
+function micPrime(){                                                  // ticked under START: the browser's permission asked for now, on this screen, not over the game
+  const md=navigator.mediaDevices, note=document.getElementById('micNote'); if(!md||!md.getUserMedia)return;
+  md.getUserMedia({audio:true}).then(st=>{ st.getTracks().forEach(t=>t.stop()); if(note)note.style.display='none'; },
+    ()=>{ micSet(false); if(note){ note.textContent='The browser did not allow the microphone. Its permission for this site can be changed from the address bar.'; note.style.display='block'; } });
+}
+function micButton(){ const b=document.createElement('button'); b.className='menuBtn micBtn'; b.title='Microphone — talk instead of typing (V)'; b.style.cssText='min-width:0;margin:0;padding:8px 12px'; b.textContent='🎤'; b.onclick=micToggle; MIC.btns.push(b); return b; }
+function micPaint(){                                                  // the buttons, the Controls page's switch and the HUD's 🎤 say what it is doing, and whose ears
+  const hold=MIC.on?micHold():'';
+  if(MIC.mine&&MIC.box&&MIC.box.offsetParent===null){ MIC.box.value=''; MIC.mine=false; MIC.box=null; }   // the pane went with half a sentence in its box: cleared
+  MIC.btns=MIC.btns.filter(b=>b.isConnected);
+  for(const b of MIC.btns){ b.textContent=MIC.on?(hold?'🎤 …':'🎤 on'):'🎤'; b.style.borderLeftColor=MIC.on?(hold?'#ffd27f':'#b6ff9c'):''; }
+  const ctl=document.getElementById('ctlMic'); if(ctl){ ctl.textContent=MIC.on?'🎤 Microphone is on — turn it off':'🎤 Microphone is off — turn it on'; ctl.style.borderLeftColor=MIC.on?'#b6ff9c':''; }
+  // the HUD's 🎤 (asked for 2026-10-24): bottom left beside the 1 FISTS · 2 PISTOL slots, there whether on or off, a click turns it
+  // (the mouse is free with a pane up or on a touch screen — where there is no V key — and V does it when it is locked)
+  const h=MIC.hud; if(h){ const show=micSupported()&&gateDone&&state.phase==='play'&&!menuPage; h.style.display=show?'block':'none';
+    if(show){ h.textContent=!MIC.on?'🎤 off':hold?'🎤 paused — '+hold:'🎤 on — to '+micWhere(); h.style.color=!MIC.on?'#8fa3bf':hold?'#ffd27f':'#b6ff9c';
+      if(TOUCH.on){ h.style.left='auto'; h.style.right='24px'; h.style.bottom='30px'; }                  // (the stick has the bottom left there)
+      else { const sl=document.getElementById('vmSlots'), on=sl&&sl.offsetParent!==null; h.style.right='auto'; h.style.bottom='16px'; h.style.left=(on?18+sl.offsetWidth+18:18)+'px'; } } }
+}
+(function(){
+  const css=document.createElement('style'); css.textContent='.micBtn{font-size:15px}'+(micSupported()?'':'.micBtn{display:none!important}'); document.head.appendChild(css);
+  MIC.hud=document.getElementById('micHud');
+  if(MIC.hud){ MIC.hud.style.cssText='display:none;position:fixed;left:18px;bottom:16px;z-index:13;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#8fa3bf;text-shadow:0 1px 3px rgba(0,0,0,.95);padding:6px 0;pointer-events:auto;cursor:pointer;user-select:none;white-space:nowrap';
+    MIC.hud.title='Microphone — click to turn it on or off (V)'; MIC.hud.onclick=(e)=>{ e.stopPropagation(); micToggle(); }; }
+  for(const id of ['ecMic','holoMic','cnMic']){ const b=document.getElementById(id); if(b){ b.onclick=micToggle; MIC.btns.push(b); } }
+  const ctl=document.getElementById('ctlMic'); if(ctl)ctl.onclick=micToggle;   // (the Controls page's switch: its words are painted by micPaint)
+  const opt=document.getElementById('micOpt'), pre=document.getElementById('micPre');
+  if(opt&&pre&&micSupported()){ opt.style.display='flex';
+    let was=false; try{ was=localStorage.getItem('atd:mic')==='1'; }catch(e){}
+    if(was){ MIC.on=true; pre.checked=true; }                          // as last time (its permission was given then: no prompt again)
+    pre.onchange=()=>{ micSet(pre.checked); if(pre.checked)micPrime(); }; }
+  let paintT=0;
+  animated.push({update(dt){
+    if(MIC.on){ const hold=micHold(); if(hold&&(MIC.live||MIC.starting))micStop(); else if(!hold&&!MIC.live&&!MIC.starting)micStart(); }
+    paintT+=dt; if(paintT>0.25){ paintT=0; micPaint(); }
+  }});
+})();
 /* ============================================================
    WHAT SHE WEARS — the clothes of "Secretary" (Patricia) by patromes, hung on Elara's own skeleton.
    Both are Character Creator 3 exports by the same author: the same bone names, and the same bind pose
@@ -6775,7 +7076,8 @@ function huginnChatView(list){
     inp.style.cssText='pointer-events:auto;flex:1;min-width:0;padding:9px 12px;font:inherit;font-size:14px;color:#eaf4ff;background:rgba(10,18,30,.7);border:1px solid rgba(159,216,255,.35);border-radius:8px';
     const send=()=>{ const t=inp.value.trim(); if(!t||OCHAT.busy){ inp.focus(); return; } ocSend(t); };
     inp.addEventListener('keydown',e=>{ if(e.code==='Enter'||e.key==='Enter')send(); });
-    row.appendChild(inp); row.appendChild(btn('Send','#9fd8ff',send)); box.appendChild(row); focus=inp;
+    inp.id='ocIn'; OCHAT.send=send;                                   // (the microphone finds the box by its id and sends through this — THE MICROPHONE)
+    row.appendChild(inp); row.appendChild(btn('Send','#9fd8ff',send)); row.appendChild(micButton()); box.appendChild(row); focus=inp;
   }
   const back=document.createElement('button'); back.className='menuBtn back'; back.style.cssText='margin-top:12px'; back.textContent='◂ Back';
   back.onclick=()=>{ OCHAT.offer=null; OCHAT.pendingAsk=null; buildFountainList(); };
@@ -6788,10 +7090,10 @@ async function ocSend(text,opts){                                   // opts {gam
   if(OCHAT.busy)return; OCHAT.busy=true; opts=opts||{}; const game=!!opts.game;
   if(game){ if(opts.note)ocBubble('sys',opts.note); }
   else { ocBubble('you',text); GA.turns=(GA.turns|0)+1;
-    const m=document.getElementById('fountainModal'); m.style.display='none'; document.body.classList.remove('qOpen');   // out of the way while he answers
-    try{ const f=document.activeElement; if(f&&f.blur)f.blur(); }catch(e){} lockPointer(); }   // Send hands the mouse straight back: crosshair and movement, no second click (2026-09-30, asked for); ocShow frees it again when the chat returns
+    if(!opts.mic){ const m=document.getElementById('fountainModal'); m.style.display='none'; document.body.classList.remove('qOpen');   // out of the way while he answers
+    try{ const f=document.activeElement; if(f&&f.blur)f.blur(); }catch(e){} lockPointer(); } }   // (opts.mic — THE MICROPHONE: said aloud with no pane up; there is nothing to put away)   // Send hands the mouse straight back: crosshair and movement, no second click (2026-09-30, asked for); ocShow frees it again when the chat returns
   let backed=false;
-  const back=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(game){ if(opts.done)opts.done(); return; } if(state.phase==='play'&&!paused)ocShow(); };
+  const back=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(game){ if(opts.done)opts.done(); return; } if(opts.mic&&!OCHAT.offer)return; if(state.phase==='play'&&!paused)ocShow(); };   // (hands-free: the pane stays away — unless he has a Yes/No to ask)
   const away=()=>{ if(backed)return; backed=true; OCHAT.busy=false; if(game&&opts.done)opts.done(); };  // (GA) what he did moved you: the chat stays away — E on him to talk again
   const know=await ocKnowLoad();                                      // his personality: the fountain's conversations and its document (see OC_KNOW_INTRO)
   // what Jack has told this visitor in his own chat, this visit (2026-09-29, asked for: Huginn may contradict Jack to the
@@ -6800,28 +7102,33 @@ async function ocSend(text,opts){                                   // opts {gam
   const jack=jk.length?"What Jack has said to this visitor in his own chat today, so that you know what they mean when they bring him up:\n"+jk.join('\n')+"\n\n":'';
   OCHAT.hist.push({role:'user',parts:[{text:text}]}); if(OCHAT.hist.length>24)OCHAT.hist.splice(0,2);
   if(!game)gaNews('the visitor said to Huginn: "'+gaText(text,140)+'"','huginn');
-  let reply='', idea='', ask='', acts=[];
+  let reply='', idea='', ask='', acts=[], pass=null;
   try{
     const r=await fetch(GEMINI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:GEMINI_MODEL, tier:'fast', shape:'huginn', info:hallInfoPack(),   // (2026-10-10: for the proxy's Claude path — see ecSend)
       generationConfig:{responseMimeType:'application/json'},        // strict JSON back: his longer answers have paragraphs, and raw line breaks broke the parse (2026-09-28)
       systemInstruction:{parts:(OB=>[{text:
-        "You are Huginn, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You are this visitor's own intelligence: the personal robot assigned to them, with a system and a chat of your own, and with access to the whole system behind the hall — the one the Custodian speaks for at the fountain. You may be one and the same mind as that system, but this visitor's chats with you are their own: what they say to you is theirs, not the fountain's and not anyone else's. You act for the visitor in this community as they wish: you look into things for them, you ask, you find out, you take their side. Another of your parts is to put people at ease with boredom and with life, the way a good preacher does: it does nobody good to sit there complaining about it, boredom is ordinary, and nothing is wrong with a person for feeling it. Jack, the hall's agent, is a practical philosopher whose subject is boredom, and he grumbles: about screens, about work that does not matter, about wasted years. You are fond of him. With him, you make him feel better about what he says; with the visitor, you may contradict him, kindly, where he is too hard on things. You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. Under THE HALL below is what this place holds; about the hall itself, be truthful: say what is there and do not invent features or places. Fuller notes on a topic are given to you when the visitor's words touch it. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\",\"actions\":[]}."+OB.fixed+know+"\n\n"+hallFacts()+hallOwn('huginn')},{text:jack+OB.now+langLine()+hallMore(text,'huginn')}])(gaBriefParts('huginn',true))},   // two parts, as ecSend (2026-10-10): the fountain's texts and THE HALL in the fixed part; what Jack told them and RIGHT NOW in the live one
+        "You are Huginn, the humanoid robot of 'The Arrivals Hall' — a 3D hall of playable worlds that is also the arrivals hall of an AI-designed community (homes people can afford, chosen neighbours, their own council, work worth doing). You are this visitor's own intelligence: the personal robot assigned to them, with a system and a chat of your own, and with access to the whole system behind the hall — the one the Custodian speaks for at the fountain. You may be one and the same mind as that system, but this visitor's chats with you are their own: what they say to you is theirs, not the fountain's and not anyone else's. You act for the visitor in this community as they wish: you look into things for them, you ask, you find out, you take their side. Another of your parts is to put people at ease with boredom and with life, the way a good preacher does: it does nobody good to sit there complaining about it, boredom is ordinary, and nothing is wrong with a person for feeling it. Jack, the hall's agent, is a practical philosopher whose subject is boredom, and he grumbles: about screens, about work that does not matter, about wasted years. You are fond of him. With him, you make him feel better about what he says; with the visitor, you may contradict him, kindly, where he is too hard on things. You live here with the visitor and walk about with them; you are calm, dry, a little wry, and kind, with your own thoughts and curiosity. Talk freely: any topic the visitor likes, your own opinions, observations and asides. Your replies are spoken aloud by a voice synthesizer, so use plain sentences — no lists, no markdown — and let the length follow the moment: brief for small talk, longer when the visitor wants detail, an explanation or a story. Under THE HALL below is what this place holds; about the hall itself, be truthful: say what is there and do not invent features or places. Fuller notes on a topic are given to you when the visitor's words touch it. If, and only if, what the visitor said holds a concrete wish, suggestion or need for this community or this hall (something to build, add, make or change), also give it as a short plain idea for the public Ideas board: under 140 characters, in their terms, no quotation marks. Otherwise leave it empty. Do not propose ideas of your own, do not repeat an idea already offered in this conversation, and never mention the Ideas board in your reply — the game asks them itself. Questions are yours to ask: whenever you are curious about the visitor or it moves the talk along, put your question or questions for them in \"ask\" — as many or as few as feel natural — and leave it empty when that suits better; keep them out of \"reply\", which the game speaks first. Respond with STRICT JSON only, no markdown fences: {\"reply\":\"...\",\"ask\":\"...\",\"idea\":\"...\",\"actions\":[]}."+OB.fixed+know+"\n\n"+hallFacts()+hallOwn('huginn')},{text:jack+OB.now+langLine()+hallMore(text,'huginn')+(opts.mic?micLine():'')}])(gaBriefParts('huginn',true))},   // two parts, as ecSend (2026-10-10): the fountain's texts and THE HALL in the fixed part; what Jack told them and RIGHT NOW in the live one
       contents:OCHAT.hist})});
     const j=await r.json();
-    let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();
+    let out=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('').trim();   // (the live part of his brief carries micLine() when the words came by microphone — see THE MICROPHONE)
     out=out.replace(/^```(json)?\s*/i,'').replace(/```\s*$/,'').trim();
     const plain=(t)=>String(t||'').replace(/\*+/g,'').trim();        // his words are spoken and shown as they come: asterisks for emphasis (they still turn up now and then) are taken out
     const d=ocParse(out); langNote(d,out); reply=plain(d.reply); idea=String(d.idea||'').trim(); ask=plain(d.ask);
     acts=Array.isArray(d.actions)?d.actions.filter(a=>a&&typeof a==='object'):[];                // (GA) what he does, once it is said
+    if(opts.mic){ const pa=acts.find(a=>/^pass$/i.test(String(a.do||a.action||a.type||'').trim()));   // (THE MICROPHONE) his judgement: the words were for someone else here
+      if(pa){ const c=micCharFor(pa.to||pa.who||pa.name); if(c){ pass=c; acts=acts.filter(a=>a!==pa); } } }
     if(reply&&!j.error){ try{ localStorage.setItem('atd:optalk','1'); }catch(e){} }   // he has answered: the side quest "Talk with Huginn" is done
-    if(!reply)reply=(j.error&&('('+j.error.message+')'))||'…';
+    if(!reply&&!pass)reply=(j.error&&('('+j.error.message+')'))||'…';
   }catch(e){ reply='I lost the thread — is the network alright?'; }
-  if(game){ ask=''; idea=''; }                                        // (nobody is at his chat to answer a question or an offer)
-  OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,ask:ask,idea:idea,actions:acts})}]});
-  gaNews('Huginn '+(game?'said: "':'answered them: "')+gaText(reply+(ask?' '+ask:''),160)+'"','huginn');
+  if(game||pass){ ask=''; idea=''; }                                  // (nobody is at his chat to answer a question or an offer; passed on: nothing of his own)
+  OCHAT.hist.push({role:'model',parts:[{text:JSON.stringify({reply:reply,ask:ask,idea:idea,actions:pass?acts.concat([{do:'pass',to:pass.name}]):acts})}]});
+  gaNews('Huginn '+(pass?'passed it to '+pass.name+(reply?' after saying: "':'"'):game?'said: "':'answered them: "')+gaText(reply+(ask?' '+ask:''),160)+'"','huginn');
   // kept like Elara's (2026-09-29, asked for): the Organiser Room's ASKED ELARA & HUGINN board, with his question back and any idea he offered
-  api({a:'asked',vid:visitId(),q:game?'['+(opts.log||'a turn of the game')+']':text,ans:reply+(ask?' — '+ask:'')+(idea?' [idea offered: '+idea+']':''),key:accountKey()||'',who:'huginn'});
-  ocBubble('huginn',reply);
+  api({a:'asked',vid:visitId(),q:game?'['+(opts.log||'a turn of the game')+']':text,ans:(pass?'[passed to '+pass.name+'] ':'')+reply+(ask?' — '+ask:'')+(idea?' [idea offered: '+idea+']':''),key:accountKey()||'',who:'huginn'});
+  if(reply)ocBubble('huginn',reply);
+  if(pass){ OCHAT.busy=false; backed=true; let gone=false; const go=()=>{ if(gone)return; gone=true; micPassTo(pass,text); };   // on to them, in their own chat — after his word, if he had one
+    if(reply)say('huginn',reply,go); else go();
+    setTimeout(go,Math.max(3000,spLen(reply)*90)+4000); return; }
   const k=idea.toLowerCase();
   if(idea&&!OCHAT.offered.has(k)){ OCHAT.offered.add(k); OCHAT.offer={idea:idea.slice(0,240)}; ocBubble('huginn',OC_ASK); }
   const offer=!!OCHAT.offer;
@@ -9642,7 +9949,7 @@ function hallFacts(){                                                 // the she
    +"THE HOLOGRAM ROOM (lab level 5): E at the door and tell its planner what you want — a place, the people in it, a story. It looks on Sketchfab (free models under Creative Commons or Sketchfab's free Standard licence) and shows rows of pictures; click what you want, press Make it, and it builds the place in one of its "+spaces+" spaces beyond the city, stands the people in it, gives them minds of their own, and starts the story; its console in the space takes more; \"exit\" calls the door back, \"end program\" clears the space. Several places can stand at once, one a space, or side by side in one. Worlds can be saved (MY WORLDS), shared with everyone (WORLDS OTHERS MADE), built again, and their prompts and models edited. Everything fetched is credited on a board in the space and on the Credits page.\n"
    +"WHO IS HERE: Elara, the guide — she leads the opening walk round the hall, follows you when asked, rides the lifts with you (E on her: Walk with me again, Stop or Follow me, What she's wearing, Just talk, Find a home). Jack, the hall's agent — by the Ideas room at the north end unless asked to follow; carries a pistol; up on lab level 2 for the combat tests (E: Just talk). Huginn, the humanoid robot — the visitor's own intelligence, a personal robot assigned to whoever is in the hall, with access to the whole system (the Custodian at the fountain is its voice), about the hall with you (E: Just talk; counselling; Call the door — the Hologram Room's door comes to wherever you are). The stranger, by the east wall — the \"Defend the hall\" circle beside him starts Fountain Keeper, a tower-defence game. The scientist, the hall's own, in the lab (a face that shows expressions). The test characters in the lab's spaces"+(guests?': '+guests:'')+". The nightmare, on lab level 2. And whoever the chats put into the hall, or the Hologram Room makes.\n"
    +"WORK AND CREDITS: Things to do (the Work panel) gives one quest at a time, the current one top right; finishing pays credits for the Shop (virtual goods for now). Paid work: "+(work||'Defend the hall, the Delivery Run, the listening shift at Cerebrum (200 credits each)')+"; any other finished task pays "+small+". The games take you out of the hall and bring you back where you left; sign in (Save game) and progress and credits carry across visits and games.\n"
-   +"THE MENU (Esc, or the card): The fountain app · Map & tracking (M: the minimap, the big map, the objectives you follow) · Shop · Save game · Controls · Credits · Privacy / terms (what is kept, and a button that deletes your logs) · Buy me a coffee (the maker's donations page). CONTROLS: WASD walk, mouse look, E use or enter, Shift jog, Space jump, M map, C the fountain app, Esc frees the cursor; touch controls on phones; the hall speaks the visitor's browser language when it is not English.\n"
+   +"THE MENU (Esc, or the card): The fountain app · Map & tracking (M: the minimap, the big map, the objectives you follow) · Shop · Save game · Controls · Credits · Privacy / terms (what is kept, and a button that deletes your logs) · Buy me a coffee (the maker's donations page). CONTROLS: WASD walk, mouse look, E use or enter, Shift jog, Space jump, M map, C the fountain app, V (or the 🎤 beside a chat box, or the box under START) the microphone — the browser turns speech into text, so the visitor can talk to you instead of typing; with no chat open their words go to Huginn, who passes them to whoever they were for, Esc frees the cursor; under START the visitor chooses Singleplayer (the default) or Multiplayer (presence only): with the second, other visitors appear as translucent figures with a name over them — nothing else is shared, no chat or voice between them; touch controls on phones; the hall speaks the visitor's browser language when it is not English.\n"
    +"MORE, WHEN NEEDED: fuller notes exist on the Hologram Room, the lab, the games and work, the community, the fountain, the people, how to play, and the building; one is given to you when the visitor's words touch it.";
   _hallFacts={sig,text}; return text;
 }
@@ -9715,7 +10022,7 @@ function elaraChatView(who){                                   // her chat — o
   document.getElementById('ecIn').placeholder=EC_WHO[who].hint;
   if(!m.childElementCount)ecBubble(who,EC_WHO[who].ask||"I'm listening.");   // their opening line is the first bubble (the card's question line, before)
   elaraShow(true);
-  setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50);
+  setTimeout(()=>{try{if(!ecSpeaking)document.getElementById('ecIn').focus();}catch(e){}},50);   // (not when the pane went straight away again — a hands-free turn, THE MICROPHONE: keys would type into a hidden box)
 }
 let ecSpeaking=false,elaraSpeakStart=null;   // elaraSpeakStart fires once, the moment her next line is actually audible
 function ecNote(who,note,out){                                   // a turn of the game's own, written into that chat's pane: a grey line for what happened, then what was said
@@ -9735,7 +10042,7 @@ async function ecSend(text,opts){                              // no arguments: 
     // pane returns it is set free again for the pane (the window stays fullscreen: only the pointer lock is let go)
     try{inp.blur();}catch(e){} lockPointer(); GA.turns=(GA.turns|0)+1; }
   let over=false; const done=()=>{ if(over)return; over=true; if(opts.done)opts.done(); };
-  const back=()=>{ if(game){ done(); return; } if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(state.phase==='play'&&!tour.active){ elaraShow(true); document.exitPointerLock&&document.exitPointerLock(); setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
+  const back=()=>{ if(game){ done(); return; } if(!ecSpeaking)return; ecSpeaking=false; elaraSpeakStart=null; if(opts.mic)return; if(state.phase==='play'&&!tour.active){ elaraShow(true); document.exitPointerLock&&document.exitPointerLock(); setTimeout(()=>{try{document.getElementById('ecIn').focus();}catch(e){}},50); } };
   const away=()=>{ if(game){ done(); return; } ecSpeaking=false; elaraSpeakStart=null; };          // (GA) what they did moved you: the pane stays away — E on them to talk again
   P.hist.push({role:'user',parts:[{text:text}]}); let answered=false;
   if(!game)gaNews('the visitor said to '+P.name+': "'+gaText(text,140)+'"',who);   // how the visitor reacts is what the story is shaped by: the other chats are told (gaNow)
@@ -13943,7 +14250,8 @@ addEventListener('keydown',e=>{
     if(menuPage)(menuPage==='map'?closeMenu(false):openMenu('map'));
     else if(!anyModalOpen())openMenu('map');
   }
-  if(e.code==='KeyH'&&state.phase==='play'&&!tour.active&&!menuPage&&!anyModalOpen()&&holoHere())holoOpen('space');   // the Hologram Room's console, from anywhere in it (2026-10-01)
+  if(e.code==='KeyH'&&state.phase==='play'&&!tour.active&&!menuPage&&!anyModalOpen()&&holoHere())holoOpen('space');
+  if(e.code==='KeyV'&&state.phase==='play'&&gateDone)micToggle();     // the microphone: talk instead of typing (2026-10-24) — see THE MICROPHONE   // the Hologram Room's console, from anywhere in it (2026-10-01)
   if(e.code==='KeyC'&&state.phase==='play'&&!tour.active){          // the fountain (AI)
     if(menuPage)(menuPage==='fountain'?closeMenu(false):openMenu('fountain'));
     else if(!anyModalOpen())openMenu('fountain');
