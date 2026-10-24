@@ -221,6 +221,8 @@
       <label style="cursor:pointer;margin-left:16px"><input type="radio" name="mpMode" value="presence" style="margin:0 6px 0 0;vertical-align:-1px;accent-color:#7fe6ff"><b style="color:#dfe9f5">Multiplayer</b> (presence only)</label>
       <div id="mpNote" style="color:#5f7590;font-size:11px;margin-top:5px">Multiplayer: others in the hall appear as figures with a name, and you to them. Nothing else is shared — no chat, no voice. Your place in the hall goes to the hall’s server while it is on.</div>
     </div>
+    <!-- a small way into the menu before START (2026-10-24, asked for): controls, privacy, credits, your save — closing it comes back here -->
+    <div style="margin-top:14px"><a id="gateMenu" href="#" style="color:#7fe6ff;opacity:.7;font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none">☰&nbsp; Menu</a></div>
     <!-- the loading bar (2026-10-01): what START is waiting for, in order — see LOADBAR. Folds away once START lights up -->
     <div id="loadWrap" style="max-height:40px;overflow:hidden;transition:max-height .5s ease .3s,opacity .4s">
       <div id="loadBar" style="margin-top:14px;height:4px;border-radius:2px;background:rgba(127,230,255,.15);overflow:hidden">
@@ -258,13 +260,14 @@
 <div class="modal" id="menuModal" style="display:none">
   <div style="max-width:1200px;width:90%;height:min(86vh,780px);display:flex;flex-direction:column;padding:18px 22px;border:1px solid rgba(127,230,255,.4);border-radius:14px;background:rgba(8,14,24,.96);box-shadow:0 0 50px rgba(60,120,200,.25)">
     <div class="mnav">
-      <button id="tab-fountain">The fountain app</button>
+      <button id="tab-quests">Quests</button>
       <button id="tab-map">Map &amp; tracking</button>
       <button id="tab-shop">Shop</button>
       <button id="tab-save">Save game</button>
       <button id="tab-controls">Controls</button>
       <button id="tab-credits">Credits</button>
       <button id="tab-privacy">Privacy / terms</button>
+      <button id="tab-fountain" title="Profile for your organiser / counselor — the fountain app">Profile</button>
       <button id="tab-coffee" title="Opens buymeacoffee.com in a new tab">Buy me a coffee</button>
       <button class="mClose" id="menuClose">✕&nbsp;Close (Esc)</button>
     </div>
@@ -281,6 +284,28 @@
     </div>
 
     <!-- PAGE · THE FOUNTAIN (AI) (C, or E at the water) — same menu the fountain gives in the atrium -->
+    <!-- PAGE · QUESTS (Esc) — the main quest line on the left, the side quests on the right (2026-10-24, asked for: the quest
+         view that was the fountain app's home is a page of its own; the fountain app is "Your profile" on the right of the bar) -->
+    <div class="mpage" id="page-quests" style="display:none">
+      <div style="display:flex;flex-wrap:wrap;gap:20px;max-width:1060px;margin:0 auto;align-items:flex-start">
+        <div id="workPanel" style="flex:1 1 440px;min-width:0;text-align:left">
+          <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber);opacity:.9;margin:4px 0 10px;text-align:center">Main quests</div>
+          <div style="padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(255,210,127,.3);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;margin-bottom:10px">
+            <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:8px">Main quest</div>
+            <div style="font-size:13px;color:#8fa3bf;margin-bottom:10px">One quest at a time — finish it and the next takes its place. Pay lands as credits for the Shop. Balance: <span id="wkBal" style="color:var(--amber)">◈ 0</span></div>
+            <div id="wkList" style="font-size:13px;line-height:1.6;color:#c3d0e2"></div>
+          </div>
+        </div>
+        <div style="flex:1 1 380px;min-width:0;text-align:left">
+          <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);opacity:.9;margin:4px 0 10px;text-align:center">Side quests</div>
+          <div style="padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.25);border-left:3px solid var(--cyan);border-radius:0 10px 10px 0;margin-bottom:10px">
+            <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px">Side quests</div>
+            <div id="sqList" style="font-size:13px;line-height:1.6;color:#c3d0e2;max-height:max(260px,calc(86vh - 250px));overflow-y:auto"></div><!-- (600, was 500, since 2026-10-04: Episode 1's card in the box above takes about 100 px) -->
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="mpage" id="page-fountain" style="display:none">
       <!-- two columns: the app menu on the LEFT, the organiser / counselor profile on the RIGHT
            (they wrap to one column on narrow screens) -->
@@ -319,19 +344,6 @@
           </div>
           <button class="menuBtn back" id="nbClose" style="margin-top:12px">◂ Back to the fountain</button>
         </div>
-        <!-- QUESTS — the main quest line (Fountain Keeper → Delivery Run → Listening shift)
-             plus every other task as a side quest; finishing pays credits for the Shop -->
-        <div id="workPanel" style="display:none">
-          <div style="padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(255,210,127,.3);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;margin-bottom:10px">
-            <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:8px">Main quest</div>
-            <div style="font-size:13px;color:#8fa3bf;margin-bottom:10px">One quest at a time — finish it and the next takes its place. Pay lands as credits for the Shop. Balance: <span id="wkBal" style="color:var(--amber)">◈ 0</span></div>
-            <div id="wkList" style="font-size:13px;line-height:1.6;color:#c3d0e2"></div>
-          </div>
-          <div style="padding:14px 16px;text-align:left;background:rgba(10,18,30,.7);border:1px solid rgba(127,230,255,.25);border-left:3px solid var(--cyan);border-radius:0 10px 10px 0;margin-bottom:10px">
-            <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px">Side quests</div>
-            <div id="sqList" style="font-size:13px;line-height:1.6;color:#c3d0e2;max-height:max(140px,calc(100vh - 600px));overflow-y:auto"></div><!-- (600, was 500, since 2026-10-04: Episode 1's card in the box above takes about 100 px) -->
-          </div>
-        </div>
         <div id="fountainMenuSlot">
           <div id="fountainContent">
             <div id="fountainList"></div>
@@ -348,7 +360,7 @@
            (#fountainProfileCol is wiped and refilled by renderOrganiserProfile, so the
             title lives on the wrapper where repaints can't take it) -->
       <div style="flex:1 1 380px;min-width:0;text-align:left">
-        <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--teal);opacity:.9;margin:4px 0 10px;text-align:center">The fountain app</div>
+        <div style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--teal);opacity:.9;margin:4px 0 10px;text-align:center">Profile for your organiser / counselor</div>
         <div id="fountainProfileCol"></div>
       </div>
       </div>
@@ -393,7 +405,7 @@
           <b style="color:#fff;text-align:right">Shift</b><span>Jog</span>
           <b style="color:#fff;text-align:right">Space</b><span>Jump</span>
           <b style="color:#fff;text-align:right">M</b><span>Map &amp; tracking</span>
-          <b style="color:#fff;text-align:right">C</b><span>The fountain app</span>
+          <b style="color:#fff;text-align:right">C</b><span>The fountain app — your profile for the organiser / counselor</span>
           <b style="color:#fff;text-align:right">V</b><span>Microphone on / off — say it instead of typing it. In a chat your words go to that person; with none open they go to Huginn, your own intelligence, who passes them to whoever they were for — or say a name first: “Elara, …”. The 🎤 at the bottom left shows it, and a click there turns it on or off too.<br><button id="ctlMic" class="menuBtn" style="min-width:0;margin:9px 0 0;padding:7px 14px;font-size:14px">🎤 Microphone is off — turn it on</button></span>
           <b style="color:#fff;text-align:right">Esc</b><span>Menu · close</span>
         </div>
@@ -6875,7 +6887,6 @@ function renderOrganiserProfile(){
   host.appendChild(prof);
   // while the quest view is up, the app's buttons live under the profile — re-append
   // them on every repaint of this column so edits (↑ ✎ ✕) never lose them
-  try{if(document.getElementById('workPanel').style.display==='block')appendQuestButtons(host);}catch(e){}
 }
 // ---- the fountain's voices. The conversation series used to play HERE, in a panel at the water that held you until it
 // ended; since 2026-09-27 it plays while you walk (FTALK, below), with the same mp3s the listening room uses
@@ -7211,7 +7222,8 @@ const LOCATIONS={
   crypt:{x:31,z:20,label:'The stranger — Defend the hall'},   // Fountain Keeper starts from the circle beside the stranger (2026-09-25; it was Jack's E menu from 2026-09-17)
   vault:{x:30,z:28,label:'Under construction'},
   cerebrum:{x:-42.5,z:-62.5,label:'Cerebrum — the circle on lab level 4'},   // 2026-09-25: the room on Makers' Row is walled over; the circle on lab level 4 opens it
-  delivery:{x:30,z:35,label:'Delivery door — in the room under construction'}
+  delivery:{x:30,z:35,label:'Delivery door — in the room under construction'},
+  hologram:(()=>{ try{ const [x,z]=LABLIFT.toWorld(LABLIFT.front(5)+16,0); return {x,z,label:'The Hologram Room — the door on lab level 5'}; }catch(e){ return {x:-42.5,z:-68.5,label:'The Hologram Room — the door on lab level 5'}; } })()   // where holoBuildDoor puts the door (2026-10-24)
 };   // (Episode 1 adds its two — ep1lift, ep1lab — where it is defined)
 // the three story circles on level 5 over the hall (buildStoryCircles), as places: the community stories' quests point at
 // their own circle (2026-09-28, asked for — they pointed at the Garden room, 'garden')
@@ -7239,6 +7251,7 @@ const TASKS={
             done:()=>deliveryDone('uUJTPz6M')||deliveryDone('RF87t6b6')},
   blindspots:{place:'blindspots',title:'Meet the Maker',done:()=>blindspotsDone()},
   cerebrum: {place:'cerebrum',title:'Voices this week — Cerebrum',done:()=>cerebrumDone()},
+  hologram: {place:'hologram',title:'Create your first world in the Hologram Room',done:()=>{ try{ return holoWorlds().length>0; }catch(e){ return false; } }},   // (2026-10-24, asked for) done once a world of theirs exists — holoWorldSave keeps it on the device and under the save key
   // (Episode 1's two, ep1lift and ep1lab, are added where it is defined: their done() reads EP1, which comes later in the file)
   // fountain-app quests — talking to the app itself pays well (see taskPay)
   tour:    {place:'elara',  title:'Take the tour with Elara',done:()=>tourDone()},
@@ -7411,7 +7424,7 @@ setInterval(()=>{
   if(on){refreshMiniObjs();drawMall(document.getElementById('miniMap'),false);}   // completions show up live
 },220);
 // ---- the menu (M / C / Esc): one card, four pages — map, fountain, controls, credits
-const MENU_PAGES=['fountain','map','shop','save','controls','credits','privacy'];
+const MENU_PAGES=['quests','fountain','map','shop','save','controls','credits','privacy'];   // (quests: 2026-10-24 — the main quest line and the side quests, a page of their own; fountain: the fountain app, "Your profile")
 let menuPage=null;                                 // which page is up, or null when the menu is closed
 function openMenu(page){
   document.exitPointerLock&&document.exitPointerLock();
@@ -7431,9 +7444,9 @@ function openMenu(page){
   if(page==='save'){refreshVaultUI();vkSetStatus('',true);}
   if(page==='fountain'){
     document.getElementById('fountainMenuSlot').appendChild(document.getElementById('fountainContent'));
-    buildFountainList();
-    openWork();                      // the card's fountain page opens on the quest view
+    buildFountainList();             // the app's list on the left (resetFountainPanels has shown it), the profile on the right (buildFountainList paints it)
   }
+  if(page==='quests')renderWork();   // the main quest line and the side quests (2026-10-24: a page of their own — it was the fountain page's home)
   document.getElementById('menuModal').style.display='flex';
   document.getElementById('lockHint').style.display='none';
 }
@@ -7445,11 +7458,15 @@ function closeMenu(relock){
   paused=false;menuPage=null;
   document.body.classList.remove('qOpen');
   document.getElementById('menuModal').style.display='none';
+  if(MENU_FROM_GATE){ MENU_FROM_GATE=false; document.getElementById('menuModal').style.zIndex=''; document.getElementById('lockHint').style.display='none'; return; }   // opened from the START card: back to the card, nothing locked
   if(confettiPending){confettiPending=false;setTimeout(spawnArrivalConfetti,250);}
   if(relock!==false)lockPointer();                 // a button click IS a gesture → can re-lock
   else document.getElementById('lockHint').style.display=look.locked?'none':'block';
 }
 function toggleMenu(){ if(menuPage)closeMenu(false); else openMenu('controls'); }
+// the START card's "Menu" (2026-10-24, asked for): the card is z-index 70, the menu card 20 — raised over it for the while; closeMenu puts it back (MENU_FROM_GATE)
+let MENU_FROM_GATE=false;
+{ const a=document.getElementById('gateMenu'); if(a)a.onclick=(e)=>{ e.preventDefault(); e.stopPropagation(); if(gateDone)return; MENU_FROM_GATE=true; openMenu('controls'); document.getElementById('menuModal').style.zIndex='80'; }; }
 // a tab click always (re)opens its page — so "The fountain app" returns to the app's
 // main list even when a sub-panel (missions / wish list / counselling…) is open
 MENU_PAGES.forEach(p=>document.getElementById('tab-'+p).onclick=()=>openMenu(p));
@@ -7550,7 +7567,7 @@ function closeTodo(){
   if(todoInMenu){                      // back to the fountain page — the quest view
     restoreTodoFromMenu();
     buildFountainList();               // repaint — a new wish shows in the organiser profile
-    if(menuPage==='fountain')openWork();
+    if(menuPage==='quests')renderWork();
     return;
   }
   ++_dlgTok;
@@ -7673,7 +7690,7 @@ function saveCounsel(l){try{localStorage.setItem('atd:counsel',JSON.stringify(l.
 function loadNeighbours(){try{return localStorage.getItem('atd:neighbours')||'';}catch(e){return'';}}
 function saveNeighbours(v){try{localStorage.setItem('atd:neighbours',v);}catch(e){} syncProfile();}
 function resetFountainPanels(){
-  ['counselPanel','neighboursPanel','workPanel'].forEach(id=>{const p=document.getElementById(id);if(p)p.style.display='none';});
+  ['counselPanel','neighboursPanel'].forEach(id=>{const p=document.getElementById(id);if(p)p.style.display='none';});   // (workPanel is the Quests page's own since 2026-10-24)
   const fc=document.getElementById('fountainContent');if(fc)fc.style.display='';
 }
 function openCounsel(){
@@ -7695,8 +7712,8 @@ function closeFountainPanel(){
   ++_dlgTok;
   try{stopSpeech();}catch(e){try{speechSynthesis.cancel();}catch(_){}}
   resetFountainPanels();
-  buildFountainList();               // repaint — new notes show on the profile
-  if(menuPage==='fountain'&&!fountainAtWater)openWork();   // the card returns to the quest view
+  buildFountainList();               // repaint — new notes show on the profile (the fountain page's home since 2026-10-24)
+  if(menuPage==='quests'&&!fountainAtWater)renderWork();
 }
 // The counselling request — shared by the app's panel (cnSubmit, below) and Huginn's walk-and-talk (counselWalk,
 // 2026-09-27): Gemini writes a short spoken ELARA / CUSTODIAN exchange, grounded in this page and your things to do.
@@ -7757,6 +7774,7 @@ document.getElementById('nbClose').onclick=()=>closeFountainPanel();
 // thing to do pays a little. Pay is collected automatically (once per task) whenever
 // the Work panel or the Shop is opened. Credits are spent in the Shop tab.
 const WORK={
+  hologram:{job:'Create your first world in the Hologram Room — the door on lab level 5', pay:200},   // first on the line (2026-10-24, asked for): Episode 1 ends at the lab, and the room is the floor above Cerebrum's
   crypt:   {job:'Defend the hall', pay:200, side:true},   // side: a paid job still, but not on the main quest line — never the standing objective (2026-09-25, asked for)
   delivery:{job:'Delivery Run — drive the routes, hand the package over on foot', pay:200, side:true},   // side (2026-09-25, asked for): a paid job, off the main quest line
   cerebrum: {job:'Listening shift — staff the Cerebrum dome, hear the week\'s voices', pay:200}
@@ -7774,14 +7792,10 @@ function collectAllPay(){                            // credit every finished-bu
   if(earned){savePaid(paid);saveCredits(loadCredits()+earned);}
   return earned;
 }
-// the QUEST VIEW is the fountain page's home: main + side quests on the left, the
-// profile plus the app's buttons on the right. openMenu('fountain') always lands here.
+// the QUEST VIEW — the Quests page (2026-10-24: it was the fountain page's home; the fountain app is "Your profile" now).
+// Whoever asks for it from elsewhere gets the page; on the page itself it repaints.
 function openWork(){
-  stopFountainVoices();
-  document.getElementById('fountainContent').style.display='none';
-  document.getElementById('workPanel').style.display='block';
-  renderWork();
-  renderOrganiserProfile();          // right column repaints — buttons ride along below
+  if(menuPage==='quests')renderWork(); else openMenu('quests');
 }
 // the fountain app's buttons, shown under the profile while the quest view is up
 // (renderOrganiserProfile re-appends them on every repaint of that column). Clicking
@@ -7804,7 +7818,7 @@ function appendQuestButtons(host){
   host.appendChild(box);
 }
 // the MAIN QUEST line — one at a time, in this order; each card shows the room's screenshot
-const QUEST_IMG={crypt:'assets/walls/crypt.jpg',delivery:'assets/walls/delivery.jpg',cerebrum:'assets/walls/cerebrum.jpg'};
+const QUEST_IMG={crypt:'assets/walls/crypt.jpg',delivery:'assets/walls/delivery.jpg',cerebrum:'assets/walls/cerebrum.jpg',hologram:'assets/walls/hologram.jpg'};
 function renderWork(){
   const earned=collectAllPay();
   document.getElementById('wkBal').textContent='◈ '+loadCredits()+(earned?'  (+'+earned+' just collected)':'');
@@ -7841,6 +7855,7 @@ function renderWork(){
     const go=document.createElement('button');go.textContent='start ▶';go.title='Set it as my objective and go';
     go.style.cssText='pointer-events:auto;flex:none;align-self:center;background:none;border:1px solid rgba(255,210,127,.5);border-radius:8px;color:var(--amber);font-size:14px;padding:8px 14px;cursor:pointer';
     go.onclick=()=>{addObjective(cur);closeMenu(true);banner('MAIN QUEST SET · FOLLOW THE ◆ ON THE MAP');};
+    if(!gateDone){ go.disabled=true; go.style.opacity='.45'; go.title='After START'; }   // (the menu opens from the START card too, 2026-10-24)
     card.appendChild(go);
     el.appendChild(card);
   }
@@ -7867,6 +7882,7 @@ function ep1Card(el){
   const go=document.createElement('button');go.textContent=playing?'restart ▶':'start ▶';go.title='Go home to level 3 and play Episode 1 from the start';
   go.style.cssText='pointer-events:auto;flex:none;align-self:center;background:none;border:1px solid rgba(255,210,127,.5);border-radius:8px;color:var(--amber);font-size:14px;padding:8px 14px;cursor:pointer';
   go.onclick=()=>ep1FromMenu();
+  if(!gateDone){ go.disabled=true; go.style.opacity='.45'; go.title='After START'; }
   card.appendChild(go);
   el.appendChild(card);
 }
@@ -9957,7 +9973,7 @@ const HALL_TITLES={hologram:'THE HOLOGRAM ROOM',lab:'THE LAB',games:'GAMES, WORK
 const HALL_INFO={                                                     // the fuller notes, one a topic (making: the planner's only)
   hologram:"The door on lab level 5 (E) and the console in each space open the planner, which asks what you want: a place (surroundings), the people in it (a search of its own for each), things, a story. It searches Sketchfab's free models — only ones anyone may download and alter: CC BY, CC BY-SA, CC0, or Sketchfab's free Standard licence, which needs the visitor's own free Sketchfab login — up to 60 MB a model (25 for someone, so they load quickly), 220 MB a space. Most come from a public mirror with no login at all; the pictures say which need one. For someone, only models the hall can animate are shown (marked 'moves'): they play the hall's animations, walk, follow, talk with a mind of their own, and can be turned into enemies that fight back (the visitor and the companions shoot; everyone has health, is knocked down, gets up). Sizes are guessed and can be said bigger or smaller. More ▸ under a row brings the next pictures, then wider searches. Make it fetches the list, builds the place in the chosen space (a row of tabs picks which of the six), stands the people in it, and the room's own voice begins the story; the surroundings repeat in every direction unless several stand side by side. 'exit' calls the door back; 'end program' clears the space. Anywhere in the hall, Huginn's E menu has Call the door: the Hologram Room's door comes to where you are, and E on it opens the planner as the door on lab level 5 does. Boards by the door and in the spaces: MY WORLDS (this visitor's saved worlds — build again, edit the title, prompt, opening and models, share), WORLDS OTHERS MADE (what everyone shared), MY DATA (what the room keeps of this visitor), SETTINGS (quality high, the biggest archive, slower; low, the smallest, quicker). Every model is credited on a board in its space and on the Credits page. The room's log of what was asked and made is kept under the visitor's save key and can be deleted from the Privacy page.",
   lab:"Ground floor: through the LAB shopfront and a short corridor, a wing 91 m wide and 114 m deep with twenty marked spaces, 12 by 10 m, each with a sign, a ring of light and a test character that loads when you step in; the hall's own scientist in space 02 (talk, follow, a face that shows expressions). An annexe of more spaces lies through the back wall. The tower: a glass lift on the south wall and a glass stair in the south-east corner to six levels, 10 m storeys with glass walls onto the city. Level 1: three empty circles. Level 2: circle 1 — step in and the nightmare appears, 2.6 m tall, plays its moves, walks at you, swings and taunts, does no real harm; Elara and Jack draw pistols and shoot it until it falls. Circle 2 — the combat drill: eight of Huginn line up across the floor. Circle 3 is empty. Jack stands on this level too. Level 3: empty. Level 4: the Cerebrum circle — step in for the listening dome, where the week's voices orbit as cards; the listening shift pays 200 credits; walk off its platform to come back. Level 5: the Hologram Room's door facing the lift, its four boards either side, two portal doors (18 m west, 21 m east) whose rooms are seen only through the doorway; a new visit starts here. Level 6: the Earth and the solar system, turning.",
-  games:"Things to do: the Work panel lists quests; one at a time is the standing objective (top right), the rest side quests; finishing pays credits for the Shop (virtual goods for now; the balance shows in the panel). Paid work, 200 credits each: Defend the hall — Fountain Keeper, a tower-defence game started from the circle beside the stranger at the east wall; the Delivery Run — a driving game, two routes, the package handed over on foot at the end; the listening shift — Cerebrum's dome on lab level 4, hearing the week's voices. Any other finished task pays 8 credits: the tour with Elara, objectives from the chats. The companions' chats give objectives of their own (a marker on the map, a beam of light at the place; some pay). Each game opens in its own page and brings you back to the hall where you left; Save game (sign in) carries progress, credits and what you have done between visits and games. Map & tracking (M) shows the minimap, the big map with zoom and pan, and the objectives you follow.",
+  games:"Things to do: the menu's Quests page (Esc) lists them — main quests on the left, side quests on the right; the fountain app is the menu's 'Your profile' page (C): Profile for your organiser / counselor; one at a time is the standing objective (top right), the rest side quests; finishing pays credits for the Shop (virtual goods for now; the balance shows in the panel). Paid work, 200 credits each: Defend the hall — Fountain Keeper, a tower-defence game started from the circle beside the stranger at the east wall; the Delivery Run — a driving game, two routes, the package handed over on foot at the end; the listening shift — Cerebrum's dome on lab level 4, hearing the week's voices. Any other finished task pays 8 credits: the tour with Elara, objectives from the chats. The companions' chats give objectives of their own (a marker on the map, a beam of light at the place; some pay). Each game opens in its own page and brings you back to the hall where you left; Save game (sign in) carries progress, credits and what you have done between visits and games. Map & tracking (M) shows the minimap, the big map with zoom and pan, and the objectives you follow.",
   community:"The hall is the arrivals hall of a community being designed with AI: homes people can afford (the land, the shells, about a third of an income), neighbours people choose, a council of their own, and work worth doing. How it works is told in the plays on level 5 over the hall: An Invitation to the Community (a friend put your name on the map), Welcome to the Garden (moving day), How We Made the Affordable Homes, and two first drafts, The Bench and The Bench · The Deposit (choosing neighbours). Find a home (Elara, or the fountain app) is a short conversation about a home there. The Ideas room's wall takes ideas for the hall and the community, kept for everyone; the Things people asked board shows what visitors asked for; a wish said at the fountain that needs a community change is passed to the community's organiser, who sees it the same day. The Garden room's door leads to the community's own pages.",
   fountain:"The centrepiece of the hall, 'our AI centre': the Custodian is the intelligence that speaks from the water — honest, warm, dry, curious about people, hoping for what this community becomes — and Huginn is the same mind in a body that walks. The three Conversations with the fountain (I, II, III) are short plays: a visitor talking with the mind that runs the hall, about what it is and what it hopes; heard at the water, from Huginn, and in the fountain app, which also has About the fountain app, the Custodian's own answer to 'What are you?'. The app (E at the water, C anywhere): Just talk — a chat; Counselling / talk to organizer — say what is on your mind, and Elara and the Custodian answer in a short conversation with one small step to take (a note goes on your profile for the organiser; deletable on the Privacy page); Things to do — list something you have wanted to do, and they find you something here to do meanwhile; Find a home; Submit your ideas.",
   people:"Elara: the guide — a realistic body, lip sync from her speech, eyes and head that follow you; she leads the opening walk (the tour) round the hall, then follows close behind, rides lifts with you and catches up if left behind; she carries a pistol for the combat tests; E on her: Walk with me again, Stop or Follow me, What she's wearing (outfits and hair), Just talk, Find a home. Jack: the hall's agent — the one who was sick of staring at screens, knocked on the visitor's door in the flats upstairs and brought them down to see the place; he wants it bought, done up and filled with people who want something to do; direct, dry, practical, a philosopher of boredom; stands by the Ideas room at the north end and follows when asked; carries a pistol; on lab level 2 for the combat tests. Huginn: the humanoid robot — the visitor's own intelligence, a personal robot assigned to them with access to the whole system (the Custodian at the fountain is that system's voice), their chats with him their own — calm, dry, kind; looks into things for them; goes about with the visitor; eight of him make the combat drill; can draw a pistol; E on him: Follow me or Stay here, Just talk, Counselling, Call the door (the Hologram Room's door comes to wherever you are). The stranger: waits by the east wall; the Defend the hall circle is beside him. The scientist: the hall's own, in the lab, with a face that shows expressions. The lab's test characters, one a space, loaded when you walk in. The nightmare: the lab's monster on level 2, 2.6 m, seven moves, forty hits to fall. Anyone the chats put in — robots, soldiers, scientists, people fetched from Sketchfab — with minds, voices and names of their own; and the people the Hologram Room makes.",
@@ -14270,7 +14286,7 @@ addEventListener('keydown',e=>{
       sel.style.display='none';lockPointer();
     }
     else if(menuPage){ if(performance.now()-LOCKX.escAt>400)closeMenu(false); }   // (not the same Esc that just opened it, in a browser that also hands the page that key)
-    else openMenu('fountain');                         // Esc opens the fountain app page, as C does (2026-09-27: it was the controls page; the touch menu button still opens those)
+    else openMenu('quests');                           // Esc opens the main menu page — Quests since 2026-10-24 (the fountain app's quest view before that; C opens the fountain app, Your profile) (2026-09-27: it was the controls page; the touch menu button still opens those)
   }
 });
 function anyModalOpen(){
@@ -14290,7 +14306,7 @@ document.addEventListener('pointerlockchange',()=>{
   const was=look.locked;
   look.locked=(document.pointerLockElement===renderer.domElement);
   if(was&&!look.locked&&performance.now()-LOCKX.self>800&&gateDone&&state.phase==='play'&&!paused&&!menuPage&&!anyModalOpen()&&!devOpen()&&!TOUCH.on
-     &&document.hasFocus()&&document.visibilityState==='visible'){ LOCKX.escAt=performance.now(); openMenu('fountain'); }
+     &&document.hasFocus()&&document.visibilityState==='visible'){ LOCKX.escAt=performance.now(); openMenu('quests'); }
   document.getElementById('lockHint').style.display=(look.locked||paused||devOpen()||!gateDone)?'none':'block';
 });
 // every click-to-start takes the page fullscreen again if it isn't already
