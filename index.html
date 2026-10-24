@@ -187,6 +187,8 @@
   .holoCard .r{position:absolute;bottom:44px;left:6px;border-radius:10px;font-size:10.5px;padding:1px 7px;background:rgba(8,16,28,.85)}
   .holoCard .r.free{border:1px solid rgba(182,255,156,.6);color:#b6ff9c}
   .holoCard .r.you{border:1px solid rgba(255,210,127,.7);color:#ffd27f}
+  .holoCard .r.fresh{border:1px solid rgba(255,170,230,.7);color:#ffb6e0}
+  .holoCard .m.off{border-color:rgba(159,180,204,.5);color:#9fb4cc}
 .holoCard.more{display:flex;align-items:center;justify-content:center;min-height:118px;border-style:dashed;border-color:rgba(127,230,255,.45);color:#9fd8ff;font-weight:600;font-size:13px;letter-spacing:.04em}
 </style>
 </head>
@@ -435,6 +437,7 @@
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">LAB LEVEL 6</div>
         “Earth” by <a href="https://sketchfab.com/PatelDev" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">PatelDev</a> on <a href="https://sketchfab.com/3d-models/earth-f7a76c63ff1846afb2d606e5c8369c15" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the Earth turning over its beam of light.
         “Solar System Model (Orrery)” by <a href="https://sketchfab.com/Smoggybeard" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Smoggybeard</a> on <a href="https://sketchfab.com/3d-models/solar-system-model-orrery-ca0a6f6971a94fcc8d47421342dc6f40" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the solar system beside it, moving by its own animation.
+        “Starry Night” by <a href="https://sketchfab.com/Tycho_Magnetic_Anomaly" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Tycho Magnetic Anomaly</a> on <a href="https://sketchfab.com/3d-models/starry-night-8776eb46f8d549069eab1e123c913e8e" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Sketchfab</a> · CC BY 4.0 — the night sky over lab level 6, in the ring round the Earth and the solar system (the sky only, without its dunes; its pictures made smaller).
         <div id="holoCredits"></div>
         <div style="color:#ffd27f;font-weight:700;letter-spacing:.06em;margin-top:12px">QUICK STORIES</div>
         <a href="https://lightsmithforge.linkpc.net/quick-stories/index.html" onclick="try{sessionStorage.setItem('atd:fromHub','1')}catch(e){}" style="color:var(--cyan);pointer-events:auto">Quick Stories</a> — a theatre of small plays: the Custodian &amp; AI self-perception, the Commons, Choose Neighbours, missions of faith and healing, the Sleeper's redemption, and the classics (Plato, Dostoevsky, Ibsen — public domain, adapted freely). Produced by <a href="https://lightsmithforge.linkpc.net/" target="_blank" rel="noopener" style="color:var(--cyan);pointer-events:auto">Lightsmith Forge</a> · story dialogue written by <span style="color:#b6ff9c">Claude</span>, Anthropic's AI — who, in the fiction, also plays the Custodian at the fountain. Player engine &amp; TTS by Lightsmith Forge · voices — browser text-to-speech with recorded lines to come.
@@ -1018,6 +1021,7 @@ function zoneUpdate(){
   const zn=zoneAt(player.pos.x,player.pos.z,player.y);
   if(zn!==ZONE.now){ const was=ZONE.now; ZONE.now=zn; zoneSweep();
     if(zn.charAt(0)==='k')labLights(+zn.slice(1));   // the lab tower's eight lights follow you up (one set for six floors)
+    lab6Night(zn==='k'+LABT.Y.length);               // level 6 is dark, under its night sky (2026-10-25) — see LAB LEVEL 6 AT NIGHT
     if(zn==='city'&&was==='garden'&&gateDone&&!tour.active)say('elara',"There's nothing out here. Go back to the hall."); }   // out through the garden gate: Elara turns you round (2026-09-17)
   if(zn==='k5'&&gateDone&&!K5_LINE.due&&!K5_LINE.said){ K5_LINE.due=true; K5_LINE.t0=state.time; }   // up on lab level 5: Elara says how the Hologram Room is used (2026-10-01, asked for) — see K5_LINE
   if(zn==='l5'&&gateDone&&!L5_LINE.due&&!l5Said()){ L5_LINE.due=true; L5_LINE.t0=state.time; }   // the first time on level 5: Jack has something to say (2026-09-25, asked for) — see L5_LINE
@@ -2008,9 +2012,40 @@ function buildAnnexe(){
    Nothing here is built until the hall is (it is in buildHall's queue).
    ============================================================ */
 LABT.lights=[];
-function labLights(n){                       // the eight follow you up: one set of lights for six floors
+function labLights(n){                       // the eight follow you up: one set of lights for six floors — on the top floor they are its night lamps (lab6Lamps)
   const Y=LABT.Y[n-1]; if(Y===undefined)return;
-  for(const l of LABT.lights)l.position.y=Y+l.userData.dy;
+  for(const l of LABT.lights){ const b=l.userData.base||(l.userData.base={x:l.position.x,z:l.position.z,i:l.intensity,d:l.distance});   // (where it hangs on every other floor)
+    l.position.set(b.x,Y+l.userData.dy,b.z); l.intensity=b.i; l.distance=b.d; }
+  if(n===LABT.Y.length)lab6Lamps(Y);
+}
+/* LAB LEVEL 6 AT NIGHT (2026-10-25, asked for: "the lighting on level 6 can be less (like the glb (dark)) but the 2 objects in
+   have light"). The floor has no roof and the night sky over it (STARRY), so the room goes dark: while you are on it the hall's
+   lights over every zone (LSET.all) — the ambient, the sky light, the moonlight from above (key) and the small light that goes
+   with you (headLight) — are turned down (only this floor is being drawn then, and they are turned up again the moment you leave
+   it: lab6Night, from zoneUpdate), and the floor's seven ceiling lights, which
+   have no ceiling to hang from here, become lamps on the two models: three round the Earth, three round the orrery, short-ranged
+   so that their light falls on the models and the floor under them and not on the walls, and one, faint, where the lift lets
+   you out. The lift bay's own light keeps to the bay and the car here (its reach 16 m → 6). No light is added or taken away — the count in the set never changes, so no shader
+   is made again; only where they hang, how bright and how far they reach. */
+const LAB6N={on:false, amb:null, hemi:null, ambI:0, hemiI:0, keyI:0, headI:0, amb6:0.16, hemi6:0.08, key6:0.06, head6:0.08,   // (the hall's: 0.85, 0.55, 0.35, 0.35)
+  lamps:[ // [out from the lift's doors, across (- left, + right), height, brightness, reach] — the Earth stands at (30, -13), the orrery at (30, +17)
+    [25,-18,7.5,1.1,12],[25,-8,7.5,1.1,12],[36,-13,8,0.9,12],          // the Earth: front left, front right, behind — close in and short-ranged, so the light stays on it
+    [22,11,9,1.1,15],[22,23,9,1.1,15],[39,17,9,0.9,15],                // the orrery
+    [5,0,5,0.1,9]],                                                    // where the lift lets you out
+  core:[0.6,6]};                                                       // the lift bay's light: as bright, but only as far as its bay and car
+function lab6Lamps(Y){
+  const L=LABT.lights.filter(l=>l.userData.key!=='labTcore'), f=LABLIFT.front(LABT.Y.length);
+  LAB6N.lamps.forEach((p,i)=>{ const l=L[i]; if(!l)return; const [x,z]=LABLIFT.toWorld(f+p[0],p[1]); l.position.set(x,Y+p[2],z); l.intensity=p[3]; l.distance=p[4]; });
+  const c=LABT.lights.find(l=>l.userData.key==='labTcore'); if(c){ c.intensity=LAB6N.core[0]; c.distance=LAB6N.core[1]; }
+}
+function lab6Night(on){                                                 // the hall's ambient and sky light, down while you are on level 6
+  if(!LAB6N.amb){ LAB6N.amb=scene.children.find(o=>o.isAmbientLight)||null; LAB6N.hemi=scene.children.find(o=>o.isHemisphereLight)||null;
+    if(LAB6N.amb)LAB6N.ambI=LAB6N.amb.intensity; if(LAB6N.hemi)LAB6N.hemiI=LAB6N.hemi.intensity; LAB6N.keyI=key.intensity; LAB6N.headI=headLight.intensity; }
+  if(on===LAB6N.on)return; LAB6N.on=on;
+  if(LAB6N.amb)LAB6N.amb.intensity=on?LAB6N.amb6:LAB6N.ambI;
+  if(LAB6N.hemi)LAB6N.hemi.intensity=on?LAB6N.hemi6:LAB6N.hemiI;
+  if(!GA.bolt)key.intensity=on?LAB6N.key6:LAB6N.keyI;                  // (a lightning flash puts its own back when it ends)
+  headLight.intensity=on?LAB6N.head6:LAB6N.headI;
 }
 // one mesh for a whole flight — this build of r128 has no BufferGeometryUtils, so the steps go into one
 // buffer by hand. Local axes: x across, y up, z along and rising. They are only the look of the thing;
@@ -2116,20 +2151,19 @@ function buildLabFloor(i){
       box((o0+o1)/2,Y+3.4,A.z1,o1-o0,H-3.4,0.4,SHELL_MAT,false); }                               // (the header over the opening)
     wall((S.x0+A.x1)/2,A.z1,A.x1-S.x0,0.4,true);
     wall(A.x1,(A.z0+S.z0)/2,0.4,S.z0-A.z0); wall(A.x1,(S.z0+A.z1)/2,0.4,A.z1-S.z0,true);        // east, likewise
-    if(i===A.Y.length-1){                                                  // the top floor's roof, the stair's own head left open to it
-      box((A.x0-0.2+S.x0)/2,Y+H,cz,S.x0-A.x0+0.2,0.4,D+0.4,SHELL_MAT,false);
-      box((S.x0+A.x1+0.2)/2,Y+H,(A.z0-0.2+S.z0)/2,A.x1-S.x0+0.2,0.4,S.z0-A.z0+0.2,SHELL_MAT,false);
-      box((S.x0+A.x1+0.2)/2,Y+H,(S.z0+A.z1+0.2)/2,A.x1-S.x0+0.2,0.4,A.z1-S.z0+0.2,SHELL_MAT,false); }   // and capped over the shaft
+    if(i===A.Y.length-1)                                                   // the top floor has no roof over it (2026-10-25, the user: "no roof on level 6 ever" — see STARRY): only the stair keeps its cap
+      box((S.x0+A.x1+0.2)/2,Y+H,(S.z0+A.z1+0.2)/2,A.x1-S.x0+0.2,0.4,A.z1-S.z0+0.2,SHELL_MAT,false);
   });
   // what you stand on, in two plates: the stair shaft is a hole through the south-east corner of every floor
   BUILDINGS.push({x:(A.x0+S.x0)/2,z:cz,hw:(S.x0-A.x0)/2,hd:D/2,h:Y,y0:Y-0.4});
   BUILDINGS.push({x:(S.x0+A.x1)/2,z:(A.z0+S.z0)/2,hw:(A.x1-S.x0)/2,hd:(S.z0-A.z0)/2,h:Y,y0:Y-0.4});
   zoneBuild(zn,()=>{
-    const plate=(y,mat,rotX)=>{ const mk=(px,pz,pw,pd)=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(pw,pd),mat); m.rotation.x=rotX; m.position.set(px,y,pz); worldGroup.add(m); };
-      mk((A.x0+S.x0)/2,cz,S.x0-A.x0,D); mk((S.x0+A.x1)/2,(A.z0+S.z0)/2,A.x1-S.x0,S.z0-A.z0); };
+    const plate=(y,mat,rotX)=>{ const mk=(px,pz,pw,pd)=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(pw,pd),mat); m.rotation.x=rotX; m.position.set(px,y,pz); worldGroup.add(m); return m; };
+      return [mk((A.x0+S.x0)/2,cz,S.x0-A.x0,D), mk((S.x0+A.x1)/2,(A.z0+S.z0)/2,A.x1-S.x0,S.z0-A.z0)]; };
     plate(Y+0.02,floorM,-Math.PI/2);
-    plate(Y+H-0.06,ceilM,Math.PI/2);                                     // 6 cm under the slab above: never on the same plane as it
-    for(const [x,z] of LABT.lamps)emissiveStrip(x,Y+H-0.1,z,3.6,0.1,3.6,0xbfd8ff,0.8);
+    if(i<A.Y.length-1){                                                   // a ceiling and its lamp panels on every floor but the top, which is open to the sky (STARRY)
+      plate(Y+H-0.06,ceilM,Math.PI/2);                                   // 6 cm under the slab above: never on the same plane as it
+      for(const [x,z] of LABT.lamps)emissiveStrip(x,Y+H-0.1,z,3.6,0.1,3.6,0xbfd8ff,0.8); }
     const cnv=document.createElement('canvas'); cnv.width=512; cnv.height=128; const x2=cnv.getContext('2d');
     x2.fillStyle='#0b1220'; x2.fillRect(0,0,512,128); x2.fillStyle='#7fe6ff'; x2.font='bold 54px Segoe UI'; x2.textAlign='center'; x2.textBaseline='middle'; x2.fillText('LAB LEVEL '+(i+1),256,64);
     const tex=new THREE.CanvasTexture(cnv); tex.encoding=THREE.sRGBEncoding;
@@ -2257,7 +2291,7 @@ LABT.contents={
 };
 function buildLabLights(){
   for(const [k,c,i,d,,y] of EARLY_SPEC)if(k.indexOf('labT')===0){          // the eight lights, and how far each sits above its floor
-    const l=takeLight(k,c,i,d); l.userData.dy=y-LABT.Y[0]; worldGroup.add(l); LABT.lights.push(l); }
+    const l=takeLight(k,c,i,d); l.userData.dy=y-LABT.Y[0]; l.userData.key=k; worldGroup.add(l); LABT.lights.push(l); }
 }
 /* ============================================================
    LAB LEVEL 6 — THE EARTH AND THE SOLAR SYSTEM (2026-10-04, asked for: "those 2 files copy them and put them on level 6 in
@@ -2293,6 +2327,7 @@ const LAB6={state:null, clip:'Earth 1 Min Orbit', out:30, sideE:13, sideO:17,   
 function lab6Build(Y,zn){
   const f=LABLIFT.front(6), [ex,ez]=LABLIFT.toWorld(f+LAB6.out,-LAB6.sideE), [ox,oz]=LABLIFT.toWorld(f+LAB6.out,LAB6.sideO);
   LAB6.Y=Y; LAB6.zn=zn; LAB6.e={x:ex,z:ez}; LAB6.o={x:ox,z:oz};
+  starryBuild(Y,zn);                                                     // the night sky's ring round them both (2026-10-25) — see STARRY
   // the Earth's ring and beam, built now (nothing to fetch) and shown when the Earth itself is in
   const col=0x9fe8ff, H=LAB6.up, g=new THREE.Group(); g.position.set(ex,Y,ez); g.visible=false; worldGroup.add(g); LAB6.beam=g;
   const q=LAB6.R/4.65;                                                   // (the pieces were drawn for a 4.65 m Earth)
@@ -2330,6 +2365,7 @@ function lab6Stage(obj,then){
 }
 function lab6Load(){
   if(LAB6.state)return; LAB6.state='loading';
+  starryLoad();                                                          // the night sky with them (2026-10-25, asked for: "load like the other models") — see STARRY
   let left=2; const failed=[];
   const done=(what,ok)=>{ if(!ok)failed.push(what); if(--left)return;
     LAB6.state=failed.length===2?'failed':'ready';
@@ -2363,6 +2399,98 @@ function lab6Load(){
       LAB6.orrery=grp; lab6Stage(grp,()=>done('the solar system',true)); ok=true;
     }catch(e){ console.warn('lab level 6: the orrery',e); }
     if(!ok)done('the solar system',false); },undefined,()=>done('the solar system',false));
+}
+/* ============================================================
+   LAB LEVEL 6 — THE NIGHT SKY (2026-10-25, asked for: "I would like it on level 6 in the lab … if the user goes into a circle
+   (larger than normal to encompass the objects in the lab) it appears … and when user leaves the circle it disappears"; then,
+   the same day: "load like the other models", "the direction/position it spins around on its axis should be the same as in
+   the original", "no roof on level 6 ever"). "Starry Night" by Tycho Magnetic Anomaly (Sketchfab, CC BY 4.0, on the Credits
+   page) is a desert at night: dunes 48 m across under a star dome 90 m in radius with the Milky Way, a cloud layer inside it
+   and two shooting stars; on an 83-second loop the dome turns twice about one tilted axis (8.6° a second), the cloud layer
+   about the upright. The dunes cannot come into the lab (they would bury the Earth and the orrery), so
+   assets/lab/starry_night.glb is the sky alone — the dome, the cloud layer and the shooting stars, with the animation that moves
+   them — its pictures as WebP, the dome's at 4096 × 2048: 5.9 MB, from 88 (tools/gltf/build-starry.js). The original, 8192 ×
+   4096 and the dunes too, is kept for the Steam build in "assets for claude to copy to game folder/hd-originals/lab/".
+   Level 6 has no roof at all (buildLabFloor builds no slab, ceiling or lamp panels over it; the stair keeps its cap), so the
+   hall's own night sky is over it. A lavender ring on the floor takes in both models with 3 m to spare: step inside and the
+   Starry Night fades in over the open top (and through the windows), step out and it fades away. It is centred on you, at the
+   floor, and follows you about the floor — as if you stood in the middle of the original desert — so it turns about you, not
+   about a point across the room, and never shifts as you walk. It is turned so that the Milky Way stands as an arch over the
+   top of the sky, from the far wall's side (north) over you to the lift's (south), and it turns about the band's own pole — a
+   level axis — at half the file's speed (4.3° a second, one turn in 83 s): the arch stays where it is and the band rolls along
+   it, its stars rising behind the Earth and the orrery (north, as you face them from the lift), passing over the top and going
+   down toward the lift (south), round under the floor and up again. The galaxy's centre with its dark rifts starts 60° up over
+   the two models, the first time you step into the ring, and comes over once a turn. The rest of the loop (the clouds, the shooting stars) runs at half
+   speed too. The band was found in the dome's picture by the great circle with the most light near it (1.8 times the picture's
+   mean), its centre by the brightest stretch along it; STARRY.orient is the turn that stands that circle upright across the room
+   with the centre 60° up on the lift's side (worked out once, from the file), and the spin starts 60° on, which puts the centre
+   60° up on the far side. (2026-10-25, asked for: "can it spin around so the
+   milky way is up top … and 50% slower", then "the milky way goes all around the sphere in a band, it should rotate so this band
+   rotates over top". The file's own spin, two turns a loop about an axis tilted 45°, would carry the band down behind the walls
+   for half of every turn; a turn about the upright swung the arch round the top like a clock hand.) The dome is drawn 130 m out (any radius looks the same from its centre; this one keeps the whole floor inside
+   it from anywhere in the ring), first of the see-through things (the hall's own stars hide behind it). The cloud layer is a
+   cloudy sky's panorama: its clouds fill its upper half, thickest at its horizon and thinning overhead, and its lower half is
+   clear. It stays where the file has it — centred where the dome is, turning about the upright — drawn 126 m out, past every
+   wall seen from the ring (so it never veils one) and inside the dome. (2026-10-25, the user: "cloud layer seems less than in
+   the original, maybe due to lighting": it is faint teal at a third opacity, and over the dome at the file's full glow it hardly
+   showed. The dome's glow is taken to 2.6, a third of the file's 7.98 — the dark navy of the author's own picture of it on
+   Sketchfab, and the dark the user sees in the file — and over that the clouds read as the haze above the horizon they are.
+   Raising the layer instead was tried: it showed its horizon as a hard line over the far wall.) The materials are made plain unlit ones: the file's are lit ones whose colour is all glow — black, with glow strengths
+   (KHR_materials_emissive_strength, 8 and 10) that three r128 does not read, so they are read here from the file. The file is
+   fetched with the Earth and the orrery (lab6Load); its pictures go onto the GPU a frame at a time, unseen (lab6Stage), and it is
+   drawn once at nothing for its shaders before it is wanted.
+   ============================================================ */
+const STARRY={file:'assets/lab/starry_night.glb', col:0xb8a8ff, spare:3, sky:130, cloudR:126, domeGlow:2.6, fade:0.8,   // domeGlow: the dome's (the file says 7.98)
+  orient:[0.28290,0.07277,0.25593,0.92151], spinRate:0.5*8.644*Math.PI/180, slow:0.5, axis:new THREE.Vector3(1,0,0), q0:null, dome:null, spin:-Math.PI/3,   // the Milky Way an arch overhead (spin: where it starts — the centre over the two models); half the file's 8.644° a second; the loop at half speed; axis: the band's pole once turned (orient puts it level, east-west)
+  x:0, z:0, Y:0, zn:0, R:0, state:null, grp:null, mixer:null, mats:[], inside:false, k:0, primed:0};
+function starryBuild(Y,zn){                                             // the ring (from lab6Build, so inside the floor's zone)
+  const f=LABLIFT.front(6), lo=-(LAB6.sideE+LAB6.R), hi=LAB6.sideO+LAB6.reach;   // how far the two reach across the floor, left and right of the lift's line
+  const [x,z]=LABLIFT.toWorld(f+LAB6.out,(lo+hi)/2);
+  Object.assign(STARRY,{x,z,Y,zn,R:Math.max((hi-lo)/2,LAB6.reach)+STARRY.spare});
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(STARRY.R,0.09,8,240),new THREE.MeshStandardMaterial({color:STARRY.col,emissive:STARRY.col,emissiveIntensity:0.9,roughness:0.4}));
+  ring.rotation.x=-Math.PI/2; ring.position.set(x,Y+0.06,z); worldGroup.add(ring);
+  const disc=new THREE.Mesh(new THREE.CircleGeometry(STARRY.R,120),new THREE.MeshBasicMaterial({color:STARRY.col,transparent:true,opacity:0.045,depthWrite:false}));
+  disc.rotation.x=-Math.PI/2; disc.position.set(x,Y+0.03,z); worldGroup.add(disc);
+  animated.push({update(dt){ starryTick(dt); }});
+}
+function starryTick(dt){
+  const p=player.pos, d=Math.hypot(p.x-STARRY.x,p.z-STARRY.z);
+  const here=gateDone&&state.phase==='play'&&Math.abs(player.y-STARRY.Y)<2.5&&d<STARRY.R+(STARRY.inside?0.5:0);   // (half a metre more to leave than to come in: no flicker on the line)
+  STARRY.inside=here;
+  const show=here&&STARRY.state==='ready';
+  const k=Math.max(0,Math.min(1,STARRY.k+(show?dt:-dt)/STARRY.fade));
+  const G=STARRY.grp; if(!G){ STARRY.k=k; return; }
+  if(k!==STARRY.k)for(const [m,o] of STARRY.mats)m.opacity=o*k;
+  const prime=STARRY.state==='ready'&&STARRY.primed<3&&!!(camera.layers.mask&LVL_OBJ.k6);   // drawn at nothing for a few frames on the floor, so its shaders are made before it is wanted
+  if(prime)STARRY.primed++;
+  G.visible=k>0||prime;
+  if(G.visible)G.position.set(camera.position.x,STARRY.Y,camera.position.z);   // centred on you, at the floor: it turns about you, as about someone in the middle of the original
+  if(k>0&&!paused){ if(STARRY.mixer)STARRY.mixer.update(dt);
+    if(STARRY.dome){ STARRY.spin+=dt*STARRY.spinRate; STARRY.dome.quaternion.setFromAxisAngle(STARRY.axis,STARRY.spin).multiply(STARRY.q0); } }   // about the band's own pole: the arch stays, the band rolls along it, rising behind the models and going over toward the lift
+  STARRY.k=k;
+}
+function starryLoad(){
+  if(STARRY.state)return; STARRY.state='loading';
+  new THREE.GLTFLoader().load(STARRY.file,(gl)=>{ let ok=false;
+    try{ const root=gl.scene, J=gl.parser.json, S=STARRY.sky/90.65;          // (90.65 m: the dome's radius in the file)
+      const glow=(mat)=>{ const a=gl.parser.associations&&gl.parser.associations.get(mat), d=a&&J.materials&&J.materials[a.type==='materials'?a.index:a.materials],
+        e=d&&d.extensions&&d.extensions.KHR_materials_emissive_strength; return e?e.emissiveStrength:1; };   // (r128 keeps {type, index} for a material)
+      root.traverse(o=>{ if(!o.isMesh)return; const m=o.material;
+        const b=new THREE.MeshBasicMaterial({color:m.emissive.clone().multiplyScalar(m.emissiveMap?STARRY.domeGlow:glow(m)),map:m.emissiveMap||m.map||null,
+          transparent:true,depthWrite:false,side:THREE.DoubleSide,fog:false});
+        o.renderOrder=-2;                                                   // the sky before every other see-through thing
+        if(m.emissiveMap){ b.depthWrite=true; o.renderOrder=-3; o.frustumCulled=false; }   // the dome first of all, and nothing farther (the hall's own stars) shows through it
+        STARRY.mats.push([b,m.opacity]); b.opacity=0; o.material=b; m.dispose(); });
+      const dust=root.getObjectByName('Sphere001_5'), dome=root.getObjectByName('Sphere_2'), clip=(gl.animations||[])[0];
+      if(clip){ clip.tracks=clip.tracks.filter(t=>!(dust&&t.name===dust.name+'.scale')&&!(dome&&t.name===dome.name+'.quaternion'));   // (the cloud layer's size is set here; the dome's turn is the hall's own: Milky Way overhead)
+        STARRY.mixer=new THREE.AnimationMixer(root); const act=STARRY.mixer.clipAction(clip); act.timeScale=STARRY.slow; act.play(); }
+      if(dome){ STARRY.dome=dome; STARRY.q0=new THREE.Quaternion().fromArray(STARRY.orient); dome.quaternion.setFromAxisAngle(STARRY.axis,STARRY.spin).multiply(STARRY.q0); }
+      if(dust)dust.scale.setScalar(STARRY.cloudR/S);                     // (its own radius: past the walls, inside the dome)
+      const grp=new THREE.Group(); grp.position.set(STARRY.x,STARRY.Y,STARRY.z); grp.scale.setScalar(S); grp.add(root); worldGroup.add(grp); zoneTag(grp,STARRY.zn);
+      STARRY.grp=grp;
+      lab6Stage(grp,()=>{ grp.visible=STARRY.k>0; STARRY.state='ready'; }); ok=true;
+    }catch(e){ console.warn('lab level 6: the night sky',e); }
+    if(!ok){ STARRY.state='failed'; banner('The night sky failed to load'); } },undefined,()=>{ STARRY.state='failed'; banner('The night sky failed to load'); });
 }
 /* ============================================================
    THE PORTAL DOOR (2026-10-04, asked for: "create another door … when looking through the door user see another room
@@ -9961,7 +10089,7 @@ function hallFacts(){                                                 // the she
    +"The Arrivals Hall is a 3D hall of playable worlds and the arrivals hall of an AI-designed community: homes people can afford, chosen neighbours, their own council, work worth doing. It stands in a night city of real streets, under a star dome; a garden forecourt (hedges, benches, maples) lies before its glass entrance, with a gate to the street. The foyer has the elevator to six levels over the hall: level 5 has the story circles — "+(stories||'short plays')+" — and a circle that stops a story; the other levels wait for visitors' levels. The hall itself is 76 by 64 metres: a hex floor, a skylight, shopfronts round the walls with signs that turn to face you, and the fountain at its centre. Makers' Row is its north side.\n"
    +"THE FOUNTAIN, called \"our AI centre\": the Custodian, the intelligence that speaks from the water (Huginn is the same mind in a body that walks). E at the water, or C anywhere, opens the fountain app: Just talk, Counselling / talk to organizer, Things to do (say what you have wanted to do, and the Custodian and Elara find you something here to do meanwhile), Find a home, Submit your ideas, About the fountain app, and the three Conversations with the fountain — short plays heard at the water.\n"
    +'THE ROOMS: '+rooms+'\n'
-   +"THE LAB TOWER (the lift on the lab's south wall, the stair in its south-east corner): six levels over the lab, glass walls onto the city. Lab level 1, three circles with nothing on them yet. Lab level 2, the combat tests — circle 1 calls up the nightmare, the lab's monster, which Elara and Jack draw pistols and shoot down; circle 2 starts the combat drill (eight of Huginn line up); circle 3 is empty — and Jack stands here too. Lab level 3, empty. Lab level 4, the circle that opens Cerebrum, the listening dome where the week's voices orbit as cards (walk off its platform to come back). Lab level 5, the Hologram Room's door with its boards beside it (MY WORLDS, MY DATA, WORLDS OTHERS MADE, SETTINGS — quality high or low) and two portal doors whose rooms show only through the doorway; a new visit begins here, at the door. Lab level 6, the Earth and the solar system turning.\n"
+   +"THE LAB TOWER (the lift on the lab's south wall, the stair in its south-east corner): six levels over the lab, glass walls onto the city. Lab level 1, three circles with nothing on them yet. Lab level 2, the combat tests — circle 1 calls up the nightmare, the lab's monster, which Elara and Jack draw pistols and shoot down; circle 2 starts the combat drill (eight of Huginn line up); circle 3 is empty — and Jack stands here too. Lab level 3, empty. Lab level 4, the circle that opens Cerebrum, the listening dome where the week's voices orbit as cards (walk off its platform to come back). Lab level 5, the Hologram Room's door with its boards beside it (MY WORLDS, MY DATA, WORLDS OTHERS MADE, SETTINGS — quality high or low) and two portal doors whose rooms show only through the doorway; a new visit begins here, at the door. Lab level 6, open to the sky (it has no roof), the Earth and the solar system turning inside a big lavender ring: step into the ring and a starry night sky comes over it — the Milky Way, clouds, shooting stars — and fades again when you step out.\n"
    +"THE HOLOGRAM ROOM (lab level 5): E at the door and tell its planner what you want — a place, the people in it, a story. It looks on Sketchfab (free models under Creative Commons or Sketchfab's free Standard licence) and shows rows of pictures; click what you want, press Make it, and it builds the place in one of its "+spaces+" spaces beyond the city, stands the people in it, gives them minds of their own, and starts the story; its console in the space takes more; \"exit\" calls the door back, \"end program\" clears the space. Several places can stand at once, one a space, or side by side in one. Worlds can be saved (MY WORLDS), shared with everyone (WORLDS OTHERS MADE), built again, and their prompts and models edited. Everything fetched is credited on a board in the space and on the Credits page.\n"
    +"WHO IS HERE: Elara, the guide — she leads the opening walk round the hall, follows you when asked, rides the lifts with you (E on her: Walk with me again, Stop or Follow me, What she's wearing, Just talk, Find a home). Jack, the hall's agent — by the Ideas room at the north end unless asked to follow; carries a pistol; up on lab level 2 for the combat tests (E: Just talk). Huginn, the humanoid robot — the visitor's own intelligence, a personal robot assigned to whoever is in the hall, with access to the whole system (the Custodian at the fountain is its voice), about the hall with you (E: Just talk; counselling; Call the door — the Hologram Room's door comes to wherever you are). The stranger, by the east wall — the \"Defend the hall\" circle beside him starts Fountain Keeper, a tower-defence game. The scientist, the hall's own, in the lab (a face that shows expressions). The test characters in the lab's spaces"+(guests?': '+guests:'')+". The nightmare, on lab level 2. And whoever the chats put into the hall, or the Hologram Room makes.\n"
    +"WORK AND CREDITS: Things to do (the Work panel) gives one quest at a time, the current one top right; finishing pays credits for the Shop (virtual goods for now). Paid work: "+(work||'Defend the hall, the Delivery Run, the listening shift at Cerebrum (200 credits each)')+"; any other finished task pays "+small+". The games take you out of the hall and bring you back where you left; sign in (Save game) and progress and credits carry across visits and games.\n"
@@ -9972,7 +10100,7 @@ function hallFacts(){                                                 // the she
 const HALL_TITLES={hologram:'THE HOLOGRAM ROOM',lab:'THE LAB',games:'GAMES, WORK AND CREDITS',community:'THE COMMUNITY',fountain:'THE FOUNTAIN',people:'WHO IS HERE',howto:'HOW TO PLAY',hall:'THE BUILDING',making:'WHAT MAKES A GOOD WORLD'};
 const HALL_INFO={                                                     // the fuller notes, one a topic (making: the planner's only)
   hologram:"The door on lab level 5 (E) and the console in each space open the planner, which asks what you want: a place (surroundings), the people in it (a search of its own for each), things, a story. It searches Sketchfab's free models — only ones anyone may download and alter: CC BY, CC BY-SA, CC0, or Sketchfab's free Standard licence, which needs the visitor's own free Sketchfab login — up to 60 MB a model (25 for someone, so they load quickly), 220 MB a space. Most come from a public mirror with no login at all; the pictures say which need one. For someone, only models the hall can animate are shown (marked 'moves'): they play the hall's animations, walk, follow, talk with a mind of their own, and can be turned into enemies that fight back (the visitor and the companions shoot; everyone has health, is knocked down, gets up). Sizes are guessed and can be said bigger or smaller. More ▸ under a row brings the next pictures, then wider searches. Make it fetches the list, builds the place in the chosen space (a row of tabs picks which of the six), stands the people in it, and the room's own voice begins the story; the surroundings repeat in every direction unless several stand side by side. 'exit' calls the door back; 'end program' clears the space. Anywhere in the hall, Huginn's E menu has Call the door: the Hologram Room's door comes to where you are, and E on it opens the planner as the door on lab level 5 does. Boards by the door and in the spaces: MY WORLDS (this visitor's saved worlds — build again, edit the title, prompt, opening and models, share), WORLDS OTHERS MADE (what everyone shared), MY DATA (what the room keeps of this visitor), SETTINGS (quality high, the biggest archive, slower; low, the smallest, quicker). Every model is credited on a board in its space and on the Credits page. The room's log of what was asked and made is kept under the visitor's save key and can be deleted from the Privacy page.",
-  lab:"Ground floor: through the LAB shopfront and a short corridor, a wing 91 m wide and 114 m deep with twenty marked spaces, 12 by 10 m, each with a sign, a ring of light and a test character that loads when you step in; the hall's own scientist in space 02 (talk, follow, a face that shows expressions). An annexe of more spaces lies through the back wall. The tower: a glass lift on the south wall and a glass stair in the south-east corner to six levels, 10 m storeys with glass walls onto the city. Level 1: three empty circles. Level 2: circle 1 — step in and the nightmare appears, 2.6 m tall, plays its moves, walks at you, swings and taunts, does no real harm; Elara and Jack draw pistols and shoot it until it falls. Circle 2 — the combat drill: eight of Huginn line up across the floor. Circle 3 is empty. Jack stands on this level too. Level 3: empty. Level 4: the Cerebrum circle — step in for the listening dome, where the week's voices orbit as cards; the listening shift pays 200 credits; walk off its platform to come back. Level 5: the Hologram Room's door facing the lift, its four boards either side, two portal doors (18 m west, 21 m east) whose rooms are seen only through the doorway; a new visit starts here. Level 6: the Earth and the solar system, turning.",
+  lab:"Ground floor: through the LAB shopfront and a short corridor, a wing 91 m wide and 114 m deep with twenty marked spaces, 12 by 10 m, each with a sign, a ring of light and a test character that loads when you step in; the hall's own scientist in space 02 (talk, follow, a face that shows expressions). An annexe of more spaces lies through the back wall. The tower: a glass lift on the south wall and a glass stair in the south-east corner to six levels, 10 m storeys with glass walls onto the city. Level 1: three empty circles. Level 2: circle 1 — step in and the nightmare appears, 2.6 m tall, plays its moves, walks at you, swings and taunts, does no real harm; Elara and Jack draw pistols and shoot it until it falls. Circle 2 — the combat drill: eight of Huginn line up across the floor. Circle 3 is empty. Jack stands on this level too. Level 3: empty. Level 4: the Cerebrum circle — step in for the listening dome, where the week's voices orbit as cards; the listening shift pays 200 credits; walk off its platform to come back. Level 5: the Hologram Room's door facing the lift, its four boards either side, two portal doors (18 m west, 21 m east) whose rooms are seen only through the doorway; a new visit starts here. Level 6: no roof — the Earth and the solar system turning under the open sky, in a big lavender ring; inside the ring a starry night sky comes over it (the Milky Way, clouds, shooting stars), outside it fades.",
   games:"Things to do: the menu's Quests page (Esc) lists them — main quests on the left, side quests on the right; the fountain app is the menu's 'Your profile' page (C): Profile for your organiser / counselor; one at a time is the standing objective (top right), the rest side quests; finishing pays credits for the Shop (virtual goods for now; the balance shows in the panel). Paid work, 200 credits each: Defend the hall — Fountain Keeper, a tower-defence game started from the circle beside the stranger at the east wall; the Delivery Run — a driving game, two routes, the package handed over on foot at the end; the listening shift — Cerebrum's dome on lab level 4, hearing the week's voices. Any other finished task pays 8 credits: the tour with Elara, objectives from the chats. The companions' chats give objectives of their own (a marker on the map, a beam of light at the place; some pay). Each game opens in its own page and brings you back to the hall where you left; Save game (sign in) carries progress, credits and what you have done between visits and games. Map & tracking (M) shows the minimap, the big map with zoom and pan, and the objectives you follow.",
   community:"The hall is the arrivals hall of a community being designed with AI: homes people can afford (the land, the shells, about a third of an income), neighbours people choose, a council of their own, and work worth doing. How it works is told in the plays on level 5 over the hall: An Invitation to the Community (a friend put your name on the map), Welcome to the Garden (moving day), How We Made the Affordable Homes, and two first drafts, The Bench and The Bench · The Deposit (choosing neighbours). Find a home (Elara, or the fountain app) is a short conversation about a home there. The Ideas room's wall takes ideas for the hall and the community, kept for everyone; the Things people asked board shows what visitors asked for; a wish said at the fountain that needs a community change is passed to the community's organiser, who sees it the same day. The Garden room's door leads to the community's own pages.",
   fountain:"The centrepiece of the hall, 'our AI centre': the Custodian is the intelligence that speaks from the water — honest, warm, dry, curious about people, hoping for what this community becomes — and Huginn is the same mind in a body that walks. The three Conversations with the fountain (I, II, III) are short plays: a visitor talking with the mind that runs the hall, about what it is and what it hopes; heard at the water, from Huginn, and in the fountain app, which also has About the fountain app, the Custodian's own answer to 'What are you?'. The app (E at the water, C anywhere): Just talk — a chat; Counselling / talk to organizer — say what is on your mind, and Elara and the Custodian answer in a short conversation with one small step to take (a note goes on your profile for the organiser; deletable on the Privacy page); Things to do — list something you have wanted to do, and they find you something here to do meanwhile; Find a home; Submit your ideas.",
@@ -10808,8 +10936,8 @@ function holoView(){
 function holoCard(r,role){
   const d=document.createElement('div'); d.className='holoCard'+(HOLO.picks.find(p=>p.uid===r.uid)?' on':''); d.title=r.name+' — by '+r.user+' — '+holoLic(r.license)+(r.faces?' — '+Math.round(r.faces/1000)+'k faces':'');
   d.innerHTML='<img src="'+r.thumb+'" alt="" loading="lazy"><div class="t">'+escHtml(r.name)+'</div><div class="s">by '+escHtml(r.user)+' · '+holoMB(holoSize(r))+' · '+holoLic(r.license)+'</div><div class="k">✓ on the list</div>'
-    +(r.mirror?'<div class="r free">no login</div>':/Standard/.test(r.license)?'<div class="r you">your Sketchfab login</div>':'')
-    +(r.peekOk?'<div class="m" title="the hall can read its skeleton: it will stand, gesture, walk and follow">moves</div>':'');
+    +(r.fresh&&role==='character'?'<div class="r fresh" title="among the newest on Sketchfab — '+(r.mirror?'no login':'fetched with the hall\'s key')+'">new · ♥ '+(r.likes||0)+'</div>':r.mirror?'<div class="r free">no login</div>':/Standard/.test(r.license)?'<div class="r you">your Sketchfab login</div>':'')
+    +(r.peekOk?'<div class="m" title="the hall can read its skeleton: it will stand, gesture, walk and follow">moves</div>':r.fresh&&r.peekOk===undefined?'<div class="m off" title="its skeleton is read when it is fetched: it may stand still">not tested</div>':'');
   const a=document.createElement('a'); a.href=r.viewerUrl; a.target='_blank'; a.rel='noopener'; a.textContent='↗'; a.title='on Sketchfab'; a.onclick=(e)=>e.stopPropagation(); d.appendChild(a);
   d.onclick=()=>{ const i=HOLO.picks.findIndex(p=>p.uid===r.uid);
     if(i>=0){ if(HOLO.picks[i].made)return; HOLO.picks.splice(i,1); d.classList.remove('on'); }
@@ -10915,6 +11043,13 @@ function holoRow(sr,h){                                               // one row
       const q=R.alts[0].q; R.feeds.push(...R.alts.filter(f=>f.q===q)); R.alts=R.alts.filter(f=>f.q!==q); return true; };
     try{
       let out=[];
+      let fresh=[];                                                    // the newest on Sketchfab first (2026-10-25, asked for): up to four liked ones the hall's key can fetch — newest added, a rig or animations of its own preferred, the like count on the card; off the mirror a skeleton cannot be read before the fetch, so those are shown 'not tested'
+      if(who&&first&&holoKeyRoom()){ try{
+        const got=(await holoSearch(cq,'character',true,true,false,{newest:true})).filter(r=>small(r)&&!/Standard/.test(r.license||'')&&!R.shown.has(r.uid)&&!notPlace.test(r.name));
+        got.forEach((r,i)=>{ r._i=i; r._s=(r.rig?2:0)+(r.anim?1:0); }); got.sort((a,b)=>b._s-a._s||a._i-b._i);
+        fresh=got.slice(0,4);
+        await Promise.all(fresh.map(async r=>{ if(r.mirror===undefined)r.mirror=await holoMirror(r.uid); if(r.mirror){ const pk=await holoPeek(r.mirror).catch(()=>null); r.peekOk=!!(pk&&pk.readable); } }));   // on the mirror: looked at as the others are; off it: untested
+        fresh=fresh.filter(r=>r.peekOk!==false); fresh.forEach(r=>{ r.fresh=true; r.found=cq; R.shown.add(r.uid); }); }catch(e){ fresh=[]; } }
       if(who){                                                           // eight candidates at a time, their skeletons looked at (mirror models only: the others cannot be read before they are fetched), and ONLY the ones the hall can animate shown — 2026-10-04, the user: "can it hide ones that dont move or just display 8 that do move". Dropped for good: a look that said no, and the ones that cannot be looked at (not on the mirror, or the look failed).
         while(out.length<R.batch&&peeked<(first?32:48)){
           await fill(); const cand=take(8); if(!cand.length)break;
@@ -10922,7 +11057,7 @@ function holoRow(sr,h){                                               // one row
           cand.forEach((r,i)=>{ if(r.peekOk===undefined)r.peekOk=!!(pk[i]&&pk[i].readable); });
           peeked+=cand.length;
           for(const r of cand){ R.shown.add(r.uid); if(r.peekOk)out.push(r); } }   // (every candidate looked at is marked taken at once: one accepted here and back from a later search in the same round was shown twice — 2026-10-07)
-        R.pool.unshift(...out.slice(R.batch)); out=out.slice(0,R.batch); }   // (the spare back to the front, for the next click)
+        R.pool.unshift(...out.slice(R.batch)); out=fresh.concat(out.slice(0,R.batch)); }   // (the spare back to the front, for the next click; the newest ones ahead of the movers)
       else { await fill(); out=take(want); }
       if(!h.isConnected)return;                                        // (another answer's rows have taken the pane since)
       for(const r of out){ r.q=r.found||sr.q; const c=holoCard(r,sr.role); R.shown.add(r.uid); if(R.tile)R.tile.insertAdjacentElement('beforebegin',c); else R.last.insertAdjacentElement('afterend',c); R.last=c; R.n++; }
@@ -10938,7 +11073,7 @@ function holoRow(sr,h){                                               // one row
   };
   return R;
 }
-const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals Hall', a 3D hall of playable worlds. A visitor is at the console and wants something of their own made for this visit from models on Sketchfab: a place, the people in it, a story. You talk with them in plain sentences (no markdown, no lists) and you decide what to ask. For everything you want to show them, give a Sketchfab search as {\"q\":\"<search words>\",\"role\":\"environment\"|\"character\"|\"prop\"}: the game runs it and shows them a row of pictures of what came back, and they click what they want; you do not see the pictures, but each turn you are told what is on their list. \"environment\" is the surroundings (the ground, the room, the landscape); \"character\" is someone — a person, a creature, a robot — with a search of their own for each person or kind of person; \"prop\" is a thing. Up to five searches a turn. When they ask for a story, or for people, look for both in the same answer — one row of surroundings and two or three rows of people, a search for each person the story needs — so that they pick the place and its people together; do not leave the people for later. Good search words matter, and few of them: two or three plain words to a search, since every word more finds less. Sketchfab is full of very large scenes, so for surroundings think small — 'space station', 'forest diorama', 'low poly village', 'room', 'island'; for someone, plain words — 'old wizard', 'knight', 'girl', 'robot' (the game looks among the rigged models and shows only the ones it can animate, marked 'moves'); for things, the plain name of the thing. With any search you may add \"also\": one or two wider searches in other, more general words (\"zeus\" — also \"greek god\"), which the game runs only when the visitor presses More under that row and the first words have run dry. "
+const HOLO_SYSTEM=()=>"You are the planner of the Hologram Room in 'The Arrivals Hall', a 3D hall of playable worlds. A visitor is at the console and wants something of their own made for this visit from models on Sketchfab: a place, the people in it, a story. You talk with them in plain sentences (no markdown, no lists) and you decide what to ask. For everything you want to show them, give a Sketchfab search as {\"q\":\"<search words>\",\"role\":\"environment\"|\"character\"|\"prop\"}: the game runs it and shows them a row of pictures of what came back, and they click what they want; you do not see the pictures, but each turn you are told what is on their list. \"environment\" is the surroundings (the ground, the room, the landscape); \"character\" is someone — a person, a creature, a robot — with a search of their own for each person or kind of person; \"prop\" is a thing. Up to five searches a turn. When they ask for a story, or for people, look for both in the same answer — one row of surroundings and two or three rows of people, a search for each person the story needs — so that they pick the place and its people together; do not leave the people for later. Good search words matter, and few of them: two or three plain words to a search, since every word more finds less. Sketchfab is full of very large scenes, so for surroundings think small — 'space station', 'forest diorama', 'low poly village', 'room', 'island'; for someone, plain words — 'old wizard', 'knight', 'girl', 'robot' (the game looks among the rigged models: first a few of the newest liked ones on Sketchfab, not yet tested, then only the ones it can animate, marked 'moves'); for things, the plain name of the thing. With any search you may add \"also\": one or two wider searches in other, more general words (\"zeus\" — also \"greek god\"), which the game runs only when the visitor presses More under that row and the first words have run dry. "
   +"What can be used: only models Sketchfab lets anyone download under CC BY, CC BY-SA, CC0 or Sketchfab's free Standard licence (all of which allow a model to be altered), each at most "+HOLO.maxMB+" MB (someone: "+GA_MODEL.maxMB+" MB; the game drops the rest before they see them; many whole environments are far bigger), the room at most "+HOLO.maxTotalMB+" MB in all; a model that came with an animation of its own plays it. Someone picked as a \"character\" becomes a person of the place once it is made: they can be talked with (a mind of their own, which you give them), and when their skeleton can be read they play the hall's animations, walk and follow; one of them can be turned into an enemy with \"change\" (\"hostile\":true), or an enemy fetched outright (\"sketchfab\" with \"hostile\":true) — the visitor and the companions with them shoot it down, and it fights back (\"weapon\": \"gun\", the default, or \"melee\"); the visitor and the companions can be knocked down and get up again. Sizes are guessed by the game (models come in every unit), so they are often wrong: the visitor can say bigger or smaller, and you have the resize action. Most of the Creative Commons models are fetched with no login at all; those under the free Standard licence need the visitor's own Sketchfab login (the pictures say which) — a Sketchfab account is free, and so is everything fetched with it. "
   +"The room is a simulation of a place: once made, the surroundings repeat in every direction so the visitor can walk on without end, what is imported is solid, saying 'exit' calls the door to them, and 'end program' clears the space. There are "+HOLO.spaces.length+" spaces, so several places can stand at once: the visitor picks which space the list is for (a row of tabs over it; you are told which each turn), and what already stands in the others is listed below. Several surroundings can stand in one space, side by side: the game sets them in a row as they are made (the room does not repeat then), tells you each one's size and place, and you move them with the \"place\" action as the story wants. Besides the models, you have the hall's own actions (below) — someone with a mind of their own, things, effects, signs, objectives — used as you see fit, or not; what you do, you do in the space being planned, and the visitor is taken into it to see. In \"actions\", a \"say\" with no \"who\" is spoken by the room's own voice: yours. "
   +"When they seem to have what they want, say so and set \"done\": true — the game then offers Make it, which fetches their list (the hall's own Sketchfab key where the licence allows, else their own Sketchfab login), builds the place, stands the people they picked in it and takes the visitor there. Then the game asks you — the visitor having said nothing — to begin: that is when you give each of the people who they are and set the story going, so have the story in mind while you look for its place and its people. Respond with STRICT JSON only, no fences: {\"reply\":\"...\",\"searches\":[...],\"actions\":[],\"done\":false}.";
